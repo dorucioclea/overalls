@@ -1,5 +1,5 @@
 ---
-digest: e7fb3d9a6a1913a03f347acf3f639ce118815278193d13062b79cf0f16ee0990
+digest: 158061d31bd8ea9db1c13f38dc9dcd6d2fef64b232ed75aef4639b18faf424d8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed native deployment lifecycle UI and tests; accepted architecture preserved.
+Added bounded Apple locale picker using existing catalog locale identifiers; no architecture change.

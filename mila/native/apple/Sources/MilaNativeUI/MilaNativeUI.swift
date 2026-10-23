@@ -304,6 +304,7 @@ private struct SettingsView: View {
     let lockController: MilaAppLockController
     @ObservedObject var session: MilaDeploymentSessionController
     @AppStorage("mila.appearance") private var appearance = "system"
+    @AppStorage("mila.locale") private var locale = "en"
     @AppStorage("mila.appLockEnabled") private var appLockEnabled = false
     @State private var notificationToken = ""
     @State private var notificationEndpoint = ""
@@ -353,6 +354,19 @@ private struct SettingsView: View {
                     Text(MilaStrings.text(.appearanceDark)).tag("dark")
                 }
                 .pickerStyle(.segmented)
+            }
+            Section("Language") {
+                Picker("Language", selection: $locale) {
+                    Text("English").tag("en")
+                    Text("Français").tag("fr-FR")
+                    Text("Deutsch").tag("de")
+                    Text("Español").tag("es")
+                    Text("日本語").tag("ja")
+                    Text("العربية").tag("ar")
+                }
+                .onChange(of: locale) { _, value in
+                    if !["en", "fr-FR", "de", "es", "ja", "ar"].contains(value) { locale = "en" }
+                }
             }
             Section(MilaStrings.text(.lockTitle)) {
                 Toggle(MilaStrings.text(.lockTitle), isOn: Binding(get: { appLockEnabled }, set: { value in

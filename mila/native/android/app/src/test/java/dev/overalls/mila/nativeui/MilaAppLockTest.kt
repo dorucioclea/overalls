@@ -31,3 +31,11 @@ class MilaAppLockTest {
         assertEquals(MilaLockPhase.Unlocked, state.phase)
     }
 }
+
+    @Test fun unavailableAuthenticatorCannotEnableOrUnlock() {
+        var state = MilaAppLockState(false, MilaLockDelay.Immediate)
+        state = state.availability(MilaLockAvailability.Unavailable)
+        assertEquals(MilaLockPhase.Unlocked, state.enable().phase)
+        assertEquals(false, state.enable().enabled)
+        assertEquals(null, MilaAppLockController(MilaAppLockMemoryStore(state)).requestUnlock())
+    }

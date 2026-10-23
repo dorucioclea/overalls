@@ -70,6 +70,11 @@ internal static class Program
         MilaNativeSessionActionResult invalidWebSet = RustNative.TrySessionWebSet(
             0, machineId, 8080, false, 0, "porsche-0123456789abcdef0123456789abcdef");
         Require(invalidWebSet.Status == MilaNativeStatus.InvalidRequest, "missing authenticated web mutation refusal");
+        MilaNativeSessionActionResult invalidShare = RustNative.TrySessionShareMutation(
+            0, machineId, "operator@example.test", "operator", true,
+            "porsche-0123456789abcdef0123456789abcdef");
+        Require(invalidShare.Status == MilaNativeStatus.InvalidRequest,
+            "missing authenticated share mutation refusal");
         MilaWebEndpoint endpoint = MilaWebEndpointDecoder.Decode(Encoding.UTF8.GetBytes($"{{\"machine_id\":\"{machineId:D}\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":4,\"url\":\"https://web.example.test\"}}"), machineId);
         Require(endpoint.Revision == 4 && endpoint.IsPublic && endpoint.Url?.Scheme == "https", "web endpoint revision projection");
         bool badWeb = false;

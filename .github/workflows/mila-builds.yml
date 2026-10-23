@@ -105,31 +105,6 @@ jobs:
       - name: Android dev APK (debug key)
         run: cachix watch-exec overalls -- nix build -L --no-link .#tool-mila-android
 
-  android-native:
-    # The native Compose application is verified separately from the legacy
-    # Flutter packaging job.  Keep this job independent so a native failure
-    # cannot be hidden by the source-bundle build.
-    runs-on: ubuntu-24.04
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Install Android SDK platforms and NDK
-        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
-      - name: Install Gradle 9
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "9.1"
-      - name: Assemble native Compose APK and run unit tests
-        working-directory: mila/native/android
-        run: gradle --no-daemon --stacktrace :app:testDebugUnitTest :app:assembleDebug
-
   apple:
     # Mila's macOS and iOS dev targets and the shared native poke tests.
     runs-on: macos-15

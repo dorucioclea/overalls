@@ -1,5 +1,5 @@
 ---
-digest: aef5f0153ffab92ef3d4075a5de58de285f6c875123b120fb5be0e9a3a5f7046
+digest: c2e4ed11483aa71b134616e75b64f1bb49cd68dfe00e427c4b8b986a8ddb7902
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Updated native parity evidence for authenticated Android thread and sharing controls plus Windows share mutation UI.
+Updated native parity evidence for deployment lifecycle and authenticated machine create/resize UI slices.

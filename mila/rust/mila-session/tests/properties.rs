@@ -59,6 +59,26 @@ fn arbitrary_bytes_and_duplicate_ids_never_form_a_listing(tc: TestCase) {
     assert!(decode_listing(&envelope(vec![m.clone(), m], None)).is_err());
 }
 
+#[hegel::test(test_cases = 128)]
+fn valid_cursor_is_preserved_without_changing_authority(tc: TestCase) {
+    let count = tc.draw(gs::default::<u8>()) % 8;
+    let has_cursor = tc.draw(gs::default::<bool>());
+    let rows = (0..count)
+        .map(|index| row(index, false, false, false, index % 2 == 0))
+        .collect();
+    let cursor = has_cursor.then(|| "00000000-0000-0000-0000-000000000001".to_owned());
+    let listing = decode_listing(&envelope(rows, cursor)).unwrap();
+    assert_eq!(listing.has_more(), has_cursor);
+    for machine in listing.machines() {
+        assert!(!machine.write);
+        assert!(!machine.manage);
+        assert!(!machine.owner.is_some());
+        assert!(!machine
+            .available_actions()
+            .contains(&mila_runtime::MachineAction::Delete));
+    }
+}
+
 #[test]
 fn read_envelope_and_cursor_are_closed_while_descriptions_are_extensible() {
     let mut m = row(1, true, true, true, false);

@@ -1,5 +1,5 @@
 ---
-digest: 56fc0d2f7d5619cfce24296f7620a39c1847051e49ab1cc80ea2db70733c9cbc
+digest: 3a36282b48befde9c064e5eb9f900f450cfccaeec4a6bb5f2355537b425b2b01
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android delegated state smart-cast correction; no documented behavior or architecture change.
+Android UI smart-cast fix preserves existing native mutation behavior and architecture.

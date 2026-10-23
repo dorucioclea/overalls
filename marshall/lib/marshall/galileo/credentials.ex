@@ -1,7 +1,6 @@
 defmodule Marshall.Galileo.Credentials do
   @moduledoc "Trusted deployment enrollment/rotation and fresh Galileo-only request authority."
   alias Marshall.Compute.Ledger
-  alias Marshall.Compute.Host
   alias Marshall.Galileo.{Credential, IssuedCredential}
   require Marshall.Events
   @maximum_lifetime 5 * 365 * 86_400
@@ -14,7 +13,7 @@ defmodule Marshall.Galileo.Credentials do
   def rotate(host_id, ttl) when is_integer(ttl) and ttl > 0 and ttl <= @maximum_lifetime do
     Ledger.transaction(
       fn ->
-        host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_galileo_host)
+        host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_galileo_host)
         unless host.enabled, do: Ledger.rollback(:galileo_disabled)
         revoke_locked!(host.id)
         secret = Base.url_encode64(:crypto.strong_rand_bytes(32), padding: false)
@@ -53,7 +52,7 @@ defmodule Marshall.Galileo.Credentials do
   def revoke(host_id) do
     Ledger.transaction(
       fn ->
-        host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_galileo_host)
+        host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_galileo_host)
         revoke_locked!(host.id)
       end,
       :operator
@@ -103,15 +102,7 @@ defmodule Marshall.Galileo.Credentials do
     %{host_id: host.id, credential_id: credential.id, now: now, host: host}
   end
 
-  defp shared_host!(id) do
-    require Ash.Query
-
-    Host
-    |> Ash.Query.filter(id == ^id)
-    |> Ash.Query.lock("FOR SHARE")
-    |> Ash.read_one!(actor: Marshall.Authorization.SystemActor.compute()) ||
-      Ledger.rollback(:unauthorized)
-  end
+  defp shared_host!(id), do: Ledger.share_host!(id) || Ledger.rollback(:unauthorized)
 
   defp active?(credential, host, now),
     do:

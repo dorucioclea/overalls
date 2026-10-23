@@ -9,6 +9,7 @@ let
   logsEnabled = lib.attrByPath [ "services" "overallsLogStore" "enable" ] false config;
   fleetExporterEnabled = lib.attrByPath [ "services" "overallsFleetExporter" "enable" ] false config;
   candidateQuery = import ./candidate-query.nix { inherit hosts; };
+  deploymentRevision = import ./deployment-revision.nix { inherit config lib; };
   latencySources = import ./candidate-sources.nix;
   sloCatalog = import ./slo-catalog.nix { inherit hosts; };
   underclassReady = import ./underclass-ready.nix { inherit hosts; };
@@ -322,6 +323,14 @@ in {
             collection_interval = "30s";
             scrapers = { cpu = {}; memory = {}; load = {}; filesystem = {}; disk = {}; network = {}; };
           };
+          # @cc [owner:ghuntley,label:observability] deployment-info-series
+          # The deployed revision MUST reach Prometheus as one separate
+          # overalls_deployment_info series per host and MUST NOT label any other
+          # series, so roster and exact-count rules keep their series identity.
+          "hostmetrics/deployment" = {
+            collection_interval = "60s";
+            scrapers.system = {};
+          };
           "prometheus/collector-health".config.scrape_configs = [{
             job_name = "otel-local";
             scrape_interval = "30s";
@@ -365,6 +374,25 @@ in {
             { key = "host.name"; value = config.networking.hostName; action = "upsert"; }
             { key = "overalls.telemetry.origin"; value = "host"; action = "upsert"; }
           ];
+          "resource/deployment".attributes = [
+            { key = "host.name"; value = config.networking.hostName; action = "upsert"; }
+            { key = "overalls.telemetry.origin"; value = "host"; action = "upsert"; }
+            { key = "overalls.deployment.revision"; value = deploymentRevision; action = "upsert"; }
+          ];
+          # Guest spans name their own build; this records the host deployment
+          # that received them, under its own key so guests cannot claim it.
+          "resource/guest-traces".attributes = [
+            { key = "overalls.host.deployment.revision"; value = deploymentRevision; action = "upsert"; }
+          ];
+          "filter/deployment".metrics.include = {
+            match_type = "strict";
+            metric_names = [ "system.uptime" ];
+          };
+          "metricstransform/deployment".transforms = [{
+            include = "system.uptime";
+            action = "update";
+            new_name = "overalls.deployment.info";
+          }];
           "resource/application".attributes = [
             { key = "service.name"; value = "brady"; action = "upsert"; }
             { key = "overalls.telemetry.origin"; value = "application"; action = "upsert"; }
@@ -462,6 +490,11 @@ in {
               processors = [ "memory_limiter" "resource/host" "batch" ];
               exporters = [ "prometheus" ];
             };
+            "metrics/deployment" = {
+              receivers = [ "hostmetrics/deployment" ];
+              processors = [ "memory_limiter" "filter/deployment" "metricstransform/deployment" "resource/deployment" "batch" ];
+              exporters = [ "prometheus" ];
+            };
             "metrics/guest" = {
               receivers = [ "otlp" ];
               processors = [ "memory_limiter" "batch" ];
@@ -529,7 +562,7 @@ in {
             };
             traces = {
               receivers = [ "otlp" ];
-              processors = [ "memory_limiter" ];
+              processors = [ "memory_limiter" "resource/guest-traces" ];
               exporters = [ "otlp/tempo" ];
             };
             # @cc [owner:ghuntley,label:recovery] application-trace-durable-ack

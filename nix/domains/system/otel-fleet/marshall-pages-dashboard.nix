@@ -77,5 +77,11 @@ in {
       targets = [{ refId = "A"; datasource = tempo; queryType = "traceql"; limit = 20;
         query = ''{ name = "marshall.live.callback" && duration > 500ms }''; }];
     })
+    (grid 14 10 24 0 64 // {
+      title = "Diagnostic · failed LiveView callbacks by reason and deployed revision";
+      type = "table"; datasource = tempo;
+      targets = [{ refId = "A"; datasource = tempo; queryType = "traceql"; limit = 50;
+        query = ''{ name = "marshall.live.callback" && status = error } | select(span.live_view, span.phase, span.reason, span.query_count, resource.service.version)''; }];
+    })
   ];
 }

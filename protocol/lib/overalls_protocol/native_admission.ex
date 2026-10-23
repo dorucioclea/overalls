@@ -5,14 +5,17 @@ defmodule OverallsProtocol.NativeAdmission do
 
   @selected_files %{
     freebsd: Path.expand("../../priv/native/freebsd-14.3-db752667.json", __DIR__),
-    illumos: Path.expand("../../priv/native/omnios-r151050.json", __DIR__)
+    illumos: Path.expand("../../priv/native/omnios-r151050-a96f291b.json", __DIR__)
   }
   @history_files %{
     freebsd: [
       Path.expand("../../priv/native/freebsd-14.3.json", __DIR__),
       Path.expand("../../priv/native/freebsd-14.3-db752667.json", __DIR__)
     ],
-    illumos: [Path.expand("../../priv/native/omnios-r151050.json", __DIR__)]
+    illumos: [
+      Path.expand("../../priv/native/omnios-r151050.json", __DIR__),
+      Path.expand("../../priv/native/omnios-r151050-a96f291b.json", __DIR__)
+    ]
   }
   for path <- Enum.uniq(Map.values(@selected_files) ++ List.flatten(Map.values(@history_files))) do
     @external_resource path

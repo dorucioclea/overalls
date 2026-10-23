@@ -140,4 +140,44 @@ defmodule MarshallWeb.LiveObservabilityTest do
     assert is_integer(measurements.queries) and measurements.queries >= 0
     :ok
   end
+
+  test "failed callbacks classify into the closed reviewed reason vocabulary" do
+    pg = fn code ->
+      %Postgrex.Error{
+        postgres: %{code: code, pg_code: "40P01", severity: "ERROR", message: "fixture"}
+      }
+    end
+
+    wrapped = fn error -> Ash.Error.to_error_class(error) end
+
+    assert LiveObservability.exception_reason(:error, %DBConnection.ConnectionError{}) ==
+             :db_unavailable
+
+    assert LiveObservability.exception_reason(:error, pg.(:deadlock_detected)) == :deadlock
+    assert LiveObservability.exception_reason(:error, pg.(:lock_not_available)) == :lock_timeout
+    assert LiveObservability.exception_reason(:error, pg.(:query_canceled)) == :statement_timeout
+    assert LiveObservability.exception_reason(:error, pg.(:unique_violation)) == :database_error
+
+    assert LiveObservability.exception_reason(
+             :error,
+             wrapped.(%DBConnection.ConnectionError{message: "queue"})
+           ) == :db_unavailable
+
+    assert LiveObservability.exception_reason(:error, wrapped.(pg.(:deadlock_detected))) ==
+             :deadlock
+
+    assert LiveObservability.exception_reason(:error, Ash.Error.Forbidden.exception([])) ==
+             :ash_error
+
+    assert LiveObservability.exception_reason(:error, %RuntimeError{message: "x"}) == :other
+    assert LiveObservability.exception_reason(:error, :badarg) == :other
+    assert LiveObservability.exception_reason(:exit, :killed) == :exit
+    assert LiveObservability.exception_reason(:throw, :value) == :throw
+
+    vocabulary =
+      ~w(db_unavailable deadlock lock_timeout statement_timeout database_error ash_error exit throw other)a
+
+    for reason <- vocabulary,
+        do: assert(Overalls.Diagnostics.Context.attributes(reason: reason) != %{})
+  end
 end

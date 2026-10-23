@@ -1,21 +1,17 @@
 ---
-digest: 8c171e0b5618d7b43dce39f355ac77bb00777401f8c7f224e6689fb165479897
+digest: 8270963249074aeb84b2690d622f5c4ca627186d7dbbc8ceee5edb99b8859028
 disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
-migration:
-  governance:
-    chapter_digest: 751ceb5fdfcc269772d47964ba027021dfc5bbf898375b131030c5c474f3edc0
-    source_digest: 9d32ce22ccb4f120978a3e89a9ead131666dc31eab3a6227ca7efab86556993c
 path: docs/guests/os-matrix.md
 reviewed_chapters:
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/19-coverage.md: 5dc84656f2a81c5674ed8311af44a7f2e9c33262d36f624e11f8ba378a32db61
-  marshall/priv/hldd/20-security.md: ebf5f76bb3b9c45d1bd1dd0c370480f4634f4ad6df267fa706355fb48ed38537
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/19-coverage.md: 3013a16fd909d453f4c177ed004f5cbc0c52beab7ba86c0c2ab9a6b66cc838f8
+  marshall/priv/hldd/20-security.md: 6f505682683ace1b4b948ed6df21f924df87fd5a71793a725906722e7601a211
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-governance: Reviewed the Apple native compile fixes for route hashing and list identity; they preserve the documented native scaffold behavior.
+ADR-0190 evidence, ADR index, overview, guest matrix and review record the a96f291b promotion; no decision change; handbook update is in 07-guests

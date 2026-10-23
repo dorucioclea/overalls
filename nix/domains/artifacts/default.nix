@@ -439,7 +439,10 @@ rec {
     inherit pkgs;
     elixir = toolchain.elixir;
   };
-  omniosGuest = legacyOmniosGuest;
+  omniosGuest = import ./guest/native-promotion/omnios-r151050-a96f291b.nix {
+    inherit pkgs;
+    elixir = toolchain.elixir;
+  };
   # illumos.org is the upstream project; its installable downstream image is
   # exposed through an explicit constructor so callers do not mistake the
   # OmniOS distribution name for a second image source.

@@ -158,7 +158,10 @@ in
       nameservers = [ { addressFile = service; } ]
         ++ map (peer: { addressFile = addresses.files.${peer}; }) host.peerNameservers;
     };
-    poolSize = 10;
+    # One replica serves every LiveView timer, Oban queue and host exchange;
+    # ten connections saturated under steady agent load (2026-10-23 incident).
+    # Budget: 1 * (20 + 3) + 10 = 33 of the 64 PostgreSQL connections.
+    poolSize = 20;
     databaseConnectionBudget = 64;
     databaseCAFile = "/etc/overalls/service-ca.crt";
     environmentFile = "/run/overalls-secrets/marshall/environment";

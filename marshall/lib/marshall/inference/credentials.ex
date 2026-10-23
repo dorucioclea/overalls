@@ -14,7 +14,7 @@ defmodule Marshall.Inference.Credentials do
   def rotate(host_id, ttl) when is_integer(ttl) and ttl > 0 and ttl <= @maximum_lifetime do
     Ledger.transaction(
       fn ->
-        host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_inference_host)
+        host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_inference_host)
         unless host.enabled, do: Ledger.rollback(:inference_disabled)
         revoke_locked!(host.id)
         secret = Base.url_encode64(:crypto.strong_rand_bytes(32), padding: false)
@@ -62,7 +62,7 @@ defmodule Marshall.Inference.Credentials do
          {:ok, id, secret} <- parse(token) do
       Ledger.transaction(
         fn ->
-          host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_inference_host)
+          host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_inference_host)
           unless host.enabled, do: Ledger.rollback(:inference_disabled)
           now = Ledger.now()
           digest = :crypto.hash(:sha256, secret)
@@ -103,7 +103,7 @@ defmodule Marshall.Inference.Credentials do
   def revoke(host_id) do
     Ledger.transaction(
       fn ->
-        host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_inference_host)
+        host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_inference_host)
         revoke_locked!(host.id)
       end,
       :operator
@@ -164,15 +164,7 @@ defmodule Marshall.Inference.Credentials do
     %{host_id: host.id, credential_id: credential.id, now: now, host: host}
   end
 
-  defp shared_host!(id) do
-    require Ash.Query
-
-    Host
-    |> Ash.Query.filter(id == ^id)
-    |> Ash.Query.lock("FOR SHARE")
-    |> Ash.read_one!(actor: Marshall.Authorization.SystemActor.compute()) ||
-      reject!(:host_unavailable)
-  end
+  defp shared_host!(id), do: Ledger.share_host!(id) || reject!(:host_unavailable)
 
   @doc "Caller holds the inference host lock throughout persistence."
   @spec current?(String.t(), Host.t(), DateTime.t()) :: boolean()

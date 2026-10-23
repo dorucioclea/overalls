@@ -207,7 +207,9 @@ reset, Lilly-policy, services, growth and process-crash runners, while its
 daemon-recovery attempt failed. The final SMF/listener-corrected `45983bb7`
 image passed all five required direct host-KVM scenarios, ordinary transport
 and one reset event. Its exact immutable promotion and dual-family registry
-qualification passed; formal nested-NixOS gates remain separate.
+qualification passed; formal nested-NixOS gates remain separate. The later
+Nix-assembled `a96f291b` disk passed all five scenarios as Nix machine checks
+and is now selected, with `45983bb7` retained in reviewed history.
 The
 [OS matrix](../guests/os-matrix.md) distinguishes the seven declared families
 from the seven source-selected catalog rows and their execution evidence.

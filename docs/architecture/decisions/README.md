@@ -253,7 +253,9 @@ recorded separately. Final sealed disk `45983bb7` subsequently passed all five
 direct host-KVM scenarios, ordinary transport and one reset event. Its exact
 immutable promotion and registry qualification are recorded in the
 [matrix review](../reviews/2026-10-18-guest-os-matrix.md); the selected OmniOS
-fleet aliases now select that exact immutable promotion. Candidate constructors
+fleet aliases first selected that exact immutable promotion; they now select the
+later Nix-assembled `a96f291b` promotion, with `45983bb7` retained in history
+and staging. Candidate constructors
 remain unadmitted; deployment and live acceptance retain separate records.
 The [review](../reviews/2026-10-17-native-kernel-attestation.md) records exact
 artifacts and limits; the [activation review](../reviews/2026-10-17-native-image-admission.md)
@@ -1083,3 +1085,4 @@ ADR-0015/0037 retain their statuses and accepted rationale.
 | [ADR-0256](0256-batched-page-authorization-snapshots.md) | accepted | partial | Batched page authorization over one read-only snapshot |
 | [ADR-0257](0257-liveview-callback-observability.md) | accepted | partial | Trace every Marshall LiveView callback |
 | [ADR-0258](0258-marshall-page-service-levels.md) | accepted | partial | Marshall page interaction service levels |
+| [ADR-0259](0259-deployment-revision-telemetry.md) | accepted | partial | Deployment revision in telemetry provenance |

@@ -2167,3 +2167,79 @@ Retained GitHub tools are not used for native runs, so the change was not
 re-qualified against `github-tools-illumos-retained` and the candidate was not
 promoted. The promoted `45983bb7` image and its admission are unchanged and
 still carry the stall until a separate promotion under ADR-0190.
+
+## 2026-10-23: OmniOS `a96f291b` promotion
+
+The Nix KVM candidate
+`/nix/store/yl2zb69m8l18cl5ynl1lwaaqpx6xz6m7-overalls-omnios-native-image-candidate`
+carries the `vioif` receive budget and the growth helper's disk-link creation.
+Its 8,589,934,592-byte disk SHA-256 is
+`a96f291b7874c005e295ed1d1958471e0d84095aa8ddd143786fcc1199357240`, with stock
+kernel `c56dc5c1` and firmware `261c6d43`. Its assembly receipt SHA-256 is
+`3bb1dada687994082250cb82dfb47a4e4bdad9e511ed9a48200c6a9aa441d1e8`.
+
+All five scenarios ran as Nix machine checks against those exact bytes with
+VMM `9815649a9bed84194ca45c5aef4c9307a596c7ffbe1f9f0e881c1ae536226d02`, using
+temporary catalog entries that pointed the maintained runners at the candidate.
+
+| Scenario | Output | Service receipt SHA-256 |
+| --- | --- | --- |
+| Services | `/nix/store/mbl6i0nhxhq307z0v6lc1ia9dbjrxg9l-vm-test-run-overalls-illumos-native-services` | `0710bf88266bbce4135889dcf644a5f5fdeec128cc67b75825e7c50614bb50bf` |
+| Growth | `/nix/store/bw4n8dc0m9i011al13sly83avkw8bx38-vm-test-run-overalls-illumos-native-growth` | `9d330d31094ff2bb747265e04e31d31163e020765e9a07d75cb0c96970173a48` |
+| Isolation | `/nix/store/jgn0l5h6nhd48qr86lnf8f774wf3n1hv-vm-test-run-overalls-illumos-native-isolation` | `c8c6bff93be2caf9bac3171377e4975cac55f744783bef3ddced5e6c44f98f41` |
+| Daemon recovery | `/nix/store/7j0923ha2y23zznnxrx66l1q44ikh876-vm-test-run-overalls-illumos-native-recovery` | `4faef82a37dcc4972bae67b2b9afdad683e4573d32dc4c16ba6d03c2507f707b` |
+| Crash recovery | `/nix/store/lp2wrsdv830gxcb3zd2cs7a4vs44fcmm-vm-test-run-overalls-illumos-native-crash-recovery` | `7463109b25bad312e655247bc57b87820ae9e47796a72e88708cda18c8789a9f` |
+
+Every service receipt binds the disk, kernel, firmware and VMM above, records
+distinct boot IDs and the exact 25-check OmniOS oracle, and ends `clean`
+(`sigkill,clean` for crash recovery). The images do not claim Git identity
+support; no receipt carries the attribution oracle. Supporting receipts cover
+their boots: one growth receipt for three boots, one isolation and one recovery
+receipt per boot, and one crash receipt.
+
+One earlier isolation attempt on the same bytes failed at `stage boot
+category=runtime`; its guest console was not retained, so the cause is not
+established. Two other attempts at isolation, recovery and crash recovery were
+stopped by an external interrupt, not by a check. The recorded passes are the
+next serial attempts with unchanged inputs and oracles.
+
+The sealed directory holds `disk.raw`, a dereferenced `firmware` and the public
+receipts under `evidence/`: check names, digests, boot IDs, sizes and pool/vdev
+GUIDs, with no credentials, logs or probes. It was added as
+`/nix/store/n07g05k2160s3zfbd8i4m9abxz84vxgn-overalls-native-omnios-r151050-a96f291b`,
+recursive NAR hash `sha256-JtShi7noaG35U4pUfUKVKQtNwOLna9acXFSi1lOOxTo=`, with
+no references. The host watch-store agent published it to the signed Overalls
+cache within two minutes. A fresh empty store substituted it from that cache
+with `require-sigs=true` and the reviewed public key, reproducing the NAR hash
+and disk digest.
+
+The reviewed version-6 manifest
+[`omnios-r151050-a96f291b.json`](../../../protocol/priv/native/omnios-r151050-a96f291b.json)
+differs from `omnios-r151050.json` only in the root digest. Its image ID is
+`sha256:6dc1a0840e50e508c964c2890e805c919b78c2cddb3e1e8e9d379e001c28617d`.
+The [admission registry](../../../protocol/lib/overalls_protocol/native_admission.ex)
+selects it and keeps `98b23b79` in illumos history. The
+[promotion constructor](../../../nix/domains/artifacts/guest/native-promotion/omnios-r151050-a96f291b.nix)
+ran `verify_approved!` and produced
+`/nix/store/8zl5axlb9phfi075az710wjpx8ga87f0-lilly-omnios-r151050-x86_64-a96f291b-promoted`
+(NAR hash `sha256-kqdXCIXf3HpOFG7bgY6mukA4GTjA3mmiwQQO86xdidY=`, no references),
+containing only `disk.raw`, `firmware` and the reviewed `manifest.json`.
+`omniosGuest` and `illumosGuest` select it; `legacyOmniosGuest` keeps the
+`45983bb7` promotion staged for retained machines. `native-image-promotion`
+passed 23 checks, `native-os-guest-unit` passed with the new identity, and the
+protocol admission tests passed 12 of 12.
+
+With the promotion selected, the regular `native-omnios-power-loss` check passed
+(first boot 78 seconds, script 310 seconds) and `native-omnios-interrupted-growth`
+passed (script 469 seconds), both against the promoted package.
+
+The earlier sealed candidates
+`/nix/store/9r92hvbj5zch8r0xdv4wsw7rhhwg6as7-overalls-native-omnios-r151050-45983bb7`
+and FreeBSD `4ccphabcl7f0dcjyvy7s3hx4a1dnnj36` now return 404 from the signed
+cache, so a host without the built promoted output cannot rebuild
+`legacyOmniosGuest` or `guest-freebsd`. Their cache retention is a separate
+publication gap.
+
+Not established: live Marshall-driven OmniOS lifecycle on `a96f291b` (the
+recorded CLI journeys ran on `45983bb7`), deployment, physical isolation,
+reproducible raw-disk assembly and Git identity support.

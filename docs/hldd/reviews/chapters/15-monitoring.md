@@ -1,5 +1,5 @@
 ---
-digest: 185a956b7033aebff87a54c5b275b8368bd130205d7bb6a8cccb2ebdd4507c7a
+digest: 47cae9cafce18ef57d278be5b04ce1dce3799f6583aa1a5bfa8ff80babbf1a99
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-15-monitoring documents the marshall_live recorder source, suffixed recorder configuration, latency objective kind, 24-objective/48-burn roster and the Marshall pages dashboard; 19-coverage regenerated with the marshall-page-service-levels scenario (ADR-0258).
+Host rows lock FOR NO KEY UPDATE so foreign-key KEY SHARE checks no longer queue behind or deadlock with exchanges (02-control-plane); Threads and Machines refresh fail closed on database/authorization errors; failed marshall.live.callback spans carry a closed reason (15-monitoring signal table).

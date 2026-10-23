@@ -150,6 +150,11 @@ defmodule MarshallWeb.LiveObservability do
       duration = max(Map.get(measurements, :duration, 0), 0)
       status = if outcome == :stop, do: :ok, else: :error
 
+      failure =
+        if outcome == :exception,
+          do: [reason: exception_reason(metadata[:kind], metadata[:reason])],
+          else: []
+
       :ok =
         Producer.complete(
           Marshall.LiveRecorder,
@@ -158,7 +163,7 @@ defmodule MarshallWeb.LiveObservability do
           System.convert_time_unit(duration, :native, :microsecond)
         )
 
-      :ok = Tracing.finish(span, status, query_count: queries)
+      :ok = Tracing.finish(span, status, [query_count: queries] ++ failure)
 
       _ =
         Metrics.record(
@@ -174,4 +179,83 @@ defmodule MarshallWeb.LiveObservability do
   end
 
   def handle(_event, _measurements, _metadata, _config), do: :ok
+
+  @type exception_reason ::
+          :db_unavailable
+          | :deadlock
+          | :lock_timeout
+          | :statement_timeout
+          | :database_error
+          | :ash_error
+          | :exit
+          | :throw
+          | :other
+
+  # @cc [owner:ghuntley,label:observability;security] live-callback-exception-reason
+  # A failed callback span MUST carry exactly one closed exception reason derived
+  # from the exception's kind and struct module, unwrapping Ash error classes and
+  # the leading module and PostgreSQL condition name Ash keeps when it
+  # stringifies a foreign exception. The message, query, parameters and
+  # stacktrace MUST NOT be recorded.
+  @doc "The closed failure reason a failed callback span records."
+  @spec exception_reason(term(), term()) :: exception_reason()
+  def exception_reason(:exit, _reason), do: :exit
+  def exception_reason(:throw, _reason), do: :throw
+  def exception_reason(:error, reason), do: classify(reason, 4)
+  def exception_reason(_kind, _reason), do: :other
+
+  @spec classify(term(), non_neg_integer()) :: exception_reason()
+  defp classify(%DBConnection.ConnectionError{}, _depth), do: :db_unavailable
+  defp classify(%DBConnection.OwnershipError{}, _depth), do: :db_unavailable
+  defp classify(%Postgrex.Error{postgres: %{code: :deadlock_detected}}, _depth), do: :deadlock
+
+  defp classify(%Postgrex.Error{postgres: %{code: :lock_not_available}}, _depth),
+    do: :lock_timeout
+
+  defp classify(%Postgrex.Error{postgres: %{code: :query_canceled}}, _depth),
+    do: :statement_timeout
+
+  defp classify(%Postgrex.Error{}, _depth), do: :database_error
+
+  defp classify("** (" <> rest, _depth) do
+    case String.split(rest, ")", parts: 2) do
+      ["DBConnection.ConnectionError" | _] -> :db_unavailable
+      ["DBConnection.OwnershipError" | _] -> :db_unavailable
+      ["Postgrex.Error", detail] -> postgres_condition(detail)
+      _ -> :other
+    end
+  end
+
+  defp classify(%{__exception__: true} = error, depth) when depth > 0 do
+    nested =
+      error
+      |> Map.get(:errors, [])
+      |> List.wrap()
+      |> Kernel.++(List.wrap(Map.get(error, :error)))
+      |> Enum.map(&classify(&1, depth - 1))
+      |> Enum.reject(&(&1 in [:ash_error, :other]))
+
+    case nested do
+      [reason | _] -> reason
+      [] -> if ash_error?(error), do: :ash_error, else: :other
+    end
+  end
+
+  defp classify(%{__exception__: true} = error, _depth),
+    do: if(ash_error?(error), do: :ash_error, else: :other)
+
+  defp classify(_reason, _depth), do: :other
+
+  @spec postgres_condition(String.t()) :: exception_reason()
+  defp postgres_condition(detail) do
+    cond do
+      String.contains?(detail, "(deadlock_detected)") -> :deadlock
+      String.contains?(detail, "(lock_not_available)") -> :lock_timeout
+      String.contains?(detail, "(query_canceled)") -> :statement_timeout
+      true -> :database_error
+    end
+  end
+
+  @spec ash_error?(Exception.t()) :: boolean()
+  defp ash_error?(%module{}), do: match?(["Ash", "Error" | _], Module.split(module))
 end

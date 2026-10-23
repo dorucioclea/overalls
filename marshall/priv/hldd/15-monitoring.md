@@ -185,7 +185,10 @@ available alongside numeric projection, while a metrics-only reader exports no
 application payload.
 
 Application trace intake authenticates the producer account and exact systemd
-cgroup before replacing service, host and application-origin attributes. The
+cgroup before replacing service, host, application-origin and deployment
+revision attributes. The revision (`service.version` and
+`overalls.deployment.revision`) is the host build's flake source revision from
+`system.configurationRevision`, or `unknown`; producers cannot supply it. The
 independent spool durably accepts validated bounded spans before acknowledgment,
 retains unacknowledged delivery and reports saturation, storage failures and
 poisoned state numerically. A full or unavailable spool refuses diagnostics without
@@ -204,7 +207,10 @@ not reserve physical storage or guarantee ninety days at an unmeasured input rat
 
 Guest OTLP is a separate untrusted path. Audi supplies the current Lilly binding;
 the receiver authenticates the Audi peer, replaces resource provenance, applies
-per-VM and host budgets and permits only reviewed guest metric names. Guest claims
+per-VM and host budgets and permits only reviewed guest metric names. Guest spans
+keep their own `service.version` (Lyra reports its crate version); the host
+collector adds `overalls.host.deployment.revision` for the receiving host build,
+under a separate key so a guest cannot claim a host deployment revision. Guest claims
 cannot enter authoritative fleet SLO arithmetic. Customer guests remain outside
 the private integration zone. The guest path cannot impersonate an application
 trace producer or fleet resource exporter.
@@ -367,12 +373,20 @@ the transaction, but absence of one does not authorize a replacement mutation.
 
 Grafana adds operations, log and Marshall pages dashboards alongside the existing baseline.
 Operations show numeric resource/state observations and independent queue health.
-The operations dashboard provisions twenty-two stable panels covering fleet and
+The operations dashboard provisions twenty-five stable panels covering fleet and
 backup/updater measurements, log queues/retries/refusals, trace custody,
 SDK availability/age/refusals/export failures, fresh BEAM memory/run queues,
 stuck agent turns, Marshall page refresh duration and query count by view,
 mean database query and connection-pool wait time, and LiveView callback
-duration and query count by phase.
+duration and query count by phase, plus the deployed source revision by host,
+callers waiting for a Marshall pool connection and failed queries per minute.
+Deployment annotations mark the first sample of each host's new revision.
+The revision reaches Prometheus only as the separate per-host
+`overalls_deployment_info` series (from a dedicated collector pipeline), never
+as a label on other series, so roster and exact-count rules keep their identity.
+A mean pool wait can look small while the pool is saturated; the waiting-callers
+panel divides the per-minute summed wait by sixty seconds, so sustained values
+near the pool size identify saturation.
 Logs select explicit application/platform sources and expose trace correlation.
 Grafana access and reader credential custody remain independent of Marshall
 sessions. Optional burn delivery uses private runtime webhook/credential files,
@@ -442,7 +456,9 @@ The **Marshall pages** dashboard (`/d/overalls-marshall-pages`) shows:
 - burn alerts and objective status.
 
 Separately titled diagnostic panels show per-view refresh and per-phase callback
-gauges, and a Tempo table of `marshall.live.callback` spans slower than 500 ms.
+gauges, a Tempo table of `marshall.live.callback` spans slower than 500 ms, and a
+Tempo table of failed callbacks by view, phase, closed failure `reason` and
+deployed `service.version`.
 p95 is a dashboard indicator, not an objective. Periodic `handle_info` ticks count
 as interactions.
 
@@ -457,7 +473,7 @@ recording span, and never raises.
 | `marshall.views.read` | internal span | `operation`; end attributes `query_count`, `row_count` |
 | `marshall.live.refresh` | metric | duration, queries; view |
 | `live_<view>_count`, `_duration_us`, `_queries` | `marshall.runtime_metrics` fields | per-minute totals for `overview`, `machines`, `machine_new`, `machine` |
-| `marshall.live.callback` | internal span | `live_view`, `phase`; end attribute `query_count`; error status on exception |
+| `marshall.live.callback` | internal span | `live_view`, `phase`; end attribute `query_count`; error status and closed `reason` (`db_unavailable`, `deadlock`, `lock_timeout`, `statement_timeout`, `database_error`, `ash_error`, `exit`, `throw`, `other`) on exception |
 | `marshall.live.callback` | metric | duration, queries; live_view, phase |
 | `liveview_<phase>_count`, `_duration_us`, `_queries` | `marshall.runtime_metrics` fields | per-minute totals across views for `mount`, `params`, `event`, `info` |
 | `overalls_gauge_live_<view>_*`, `overalls_gauge_liveview_<phase>_*`, `overalls_gauge_database_*` | Prometheus gauges | admitted by the SDK health scrape allowlist |

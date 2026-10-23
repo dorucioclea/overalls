@@ -69,7 +69,16 @@ impl Schema {
     /// @cc [owner:ghuntley,label:security] trace-schema-closes-provenance
     /// Unreviewed names/attributes MUST refuse. Producer resources, events,
     /// baggage and status messages MUST be discarded before durable storage.
-    pub fn sanitize(&self, body: &[u8], service: &str, host: &str) -> Result<Vec<u8>, Error> {
+    /// The resource MUST be exactly the configured service, host, application
+    /// origin and deployment revision; the revision comes from the host build,
+    /// never from the producer.
+    pub fn sanitize(
+        &self,
+        body: &[u8],
+        service: &str,
+        host: &str,
+        revision: &str,
+    ) -> Result<Vec<u8>, Error> {
         if body.len() > BODY_LIMIT {
             return Err(Error::Capacity);
         }
@@ -85,6 +94,8 @@ impl Schema {
                     attribute("service.name", service),
                     attribute("host.name", host),
                     attribute("overalls.telemetry.origin", "application"),
+                    attribute("service.version", revision),
+                    attribute("overalls.deployment.revision", revision),
                 ],
                 dropped_attributes_count: 0,
                 ..Resource::default()
@@ -739,7 +750,7 @@ mod tests {
     fn schema_replaces_origin_and_discards_unreviewed_context() {
         let (schema, request) = schema_request();
         let clean = schema
-            .sanitize(&request.encode_to_vec(), "galileo", "trusted-host")
+            .sanitize(&request.encode_to_vec(), "galileo", "trusted-host", "0123abc")
             .unwrap();
         let decoded = ExportTraceServiceRequest::decode(clean.as_slice()).unwrap();
         let resource = &decoded.resource_spans[0];
@@ -748,7 +759,9 @@ mod tests {
             vec![
                 attribute("service.name", "galileo"),
                 attribute("host.name", "trusted-host"),
-                attribute("overalls.telemetry.origin", "application")
+                attribute("overalls.telemetry.origin", "application"),
+                attribute("service.version", "0123abc"),
+                attribute("overalls.deployment.revision", "0123abc")
             ]
         );
         let span = &resource.scope_spans[0].spans[0];
@@ -763,7 +776,7 @@ mod tests {
         fn arbitrary_unreviewed_attribute_bytes_never_pass(value in ".*") {
             let (schema, mut request) = schema_request();
             request.resource_spans[0].scope_spans[0].spans[0].attributes.push(attribute("payload", &value));
-            prop_assert_eq!(schema.sanitize(&request.encode_to_vec(), "galileo", "host"), Err(Error::Invalid));
+            prop_assert_eq!(schema.sanitize(&request.encode_to_vec(), "galileo", "host", "rev"), Err(Error::Invalid));
         }
     }
 
@@ -783,7 +796,7 @@ mod tests {
             let mut request = template.clone();
             request.resource_spans[0].scope_spans[0].spans[0].attributes = vec![invalid];
             assert_eq!(
-                schema.sanitize(&request.encode_to_vec(), "galileo", "host"),
+                schema.sanitize(&request.encode_to_vec(), "galileo", "host", "rev"),
                 Err(Error::Invalid)
             );
         }
@@ -792,7 +805,7 @@ mod tests {
             .attributes
             .push(attribute("reason", "unauthorized"));
         assert_eq!(
-            schema.sanitize(&request.encode_to_vec(), "galileo", "host"),
+            schema.sanitize(&request.encode_to_vec(), "galileo", "host", "rev"),
             Err(Error::Invalid)
         );
     }

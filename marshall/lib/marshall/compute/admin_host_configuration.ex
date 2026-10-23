@@ -3,7 +3,7 @@ defmodule Marshall.Compute.AdminHostConfiguration do
   use Ash.Resource.Actions.Implementation
   alias Marshall.Accounts.AdminEvent
   alias Marshall.Authorization.Cedar
-  alias Marshall.Compute.{Host, Ledger}
+  alias Marshall.Compute.Ledger
 
   # @cc [owner:ghuntley,label:security;capacity;concurrency] admin-host-config-serialized
   # Host admission and CPU/RAM margins MUST be changed only by a current
@@ -19,7 +19,8 @@ defmodule Marshall.Compute.AdminHostConfiguration do
 
   defp configure(args, actor) do
     Ledger.transaction(fn ->
-      host = Ledger.lock!(Host, args.host_id) || Ledger.rollback(:unknown_host)
+      # Enabling changes what guest-credential readers check; fence them out.
+      host = Ledger.fence_host!(args.host_id) || Ledger.rollback(:unknown_host)
       Marshall.Accounts.Security.require_admin!(actor)
 
       if args.enabled and

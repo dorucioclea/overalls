@@ -46,7 +46,8 @@ defmodule Marshall.Compute.Drains do
             log: false
           )
 
-          host = Ledger.lock!(Host, host_id) || Ledger.rollback(:unknown_host)
+          # Draining disables the host for guest-credential readers; fence them out.
+          host = Ledger.fence_host!(host_id) || Ledger.rollback(:unknown_host)
 
           {drain, pending} =
             case Ledger.read!(HostDrain, id: id) do
@@ -252,7 +253,8 @@ defmodule Marshall.Compute.Drains do
         [] -> Ledger.rollback(:unknown_drain)
       end
 
-    host = Ledger.lock!(Host, drain.host_id)
+    # Retirement disables the host for guest-credential readers; fence them out.
+    host = Ledger.fence_host!(drain.host_id)
     {host, Ledger.lock!(HostDrain, id)}
   end
 

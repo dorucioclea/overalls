@@ -25,6 +25,7 @@ let
         traceSettings = {
           service = "galileo";
           host = "recorder-host";
+          revision = "antithesis";
           producer_user = "recorder-peer";
           producer_unit = "recorder-peer.service";
           producer_cgroup = "/fixture.slice/recorder-peer.service";

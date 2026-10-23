@@ -18,6 +18,7 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 struct Config {
     service: String,
     host: String,
+    revision: String,
     producer_user: String,
     producer_unit: String,
     producer_cgroup: String,
@@ -363,6 +364,8 @@ fn run(config: Config, replay_only: bool) -> Result<(), Error> {
     };
     if !simple(&config.service)
         || !simple(&config.host)
+        || !simple(&config.revision)
+        || config.revision.len() > 64
         || !simple(&config.producer_user)
         || !simple(&config.producer_unit)
         || config.service.len() > 32
@@ -449,7 +452,7 @@ fn run(config: Config, replay_only: bool) -> Result<(), Error> {
                     if authenticate(&stream, &config)? != producer {
                         return Err(Error::Foreign);
                     }
-                    let body = schema.sanitize(&body, &config.service, &config.host)?;
+                    let body = schema.sanitize(&body, &config.service, &config.host, &config.revision)?;
                     store
                         .lock()
                         .map_err(|_| Error::Storage)?

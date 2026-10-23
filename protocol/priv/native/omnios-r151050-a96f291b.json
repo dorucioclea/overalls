@@ -1,0 +1,30 @@
+{
+  "version": 6,
+  "os": "illumos",
+  "architecture": "x86_64",
+  "boot": {
+    "kind": "firmware",
+    "pci": true,
+    "firmware": {
+      "bytes": 4194304,
+      "sha256": "261c6d43a4d74e6e7f4ea98390b35b6e0d90c511cf961e4b7abb60410b1c24a2"
+    }
+  },
+  "kernel": {
+    "bytes": 2299392,
+    "sha256": "c56dc5c19523ef29511e2bfe4b98a6544b786a089b55b654c30ea32e821bdd21",
+    "source_revision": "6f87d0b5d63b957991dc9d4a01a7e6c95483282c",
+    "patch_hash": "3c6f483ac897a263bf74f812568a7b4b952a88ae3777c324f0587c7297e9f0ad",
+    "configuration_hash": "d44cd517efc4f57dcfa5c98a99165203a20e4d0bf1af809f101782481d0aab42",
+    "compiler": "clang-21.1.8 (x86_64-pc-solaris2.11)"
+  },
+  "root": {
+    "format": "raw-gpt",
+    "bytes": 8589934592,
+    "sha256": "a96f291b7874c005e295ed1d1958471e0d84095aa8ddd143786fcc1199357240"
+  },
+  "guest_agents": "illumos-v1",
+  "minimum_memory_bytes": 2147483648,
+  "minimum_disk_bytes": 17179869184,
+  "workspace_source_version": 2
+}

@@ -21,12 +21,19 @@ let
     gridPos = { h = 10; w = 24; x = 0; inherit y; };
     targets = [{ refId = "A"; inherit expr; instant = true; format = "table"; }];
   };
+  deployment = ''max by(host_name, overalls_deployment_revision) ({__name__=~"overalls_deployment_info.*"})'';
 in {
   uid = "overalls-fleet-operations";
   title = "Overalls fleet operations";
   tags = [ "overalls" "fleet" "operations" ];
   schemaVersion = 41; version = 1; refresh = "30s";
   time = { from = "now-6h"; to = "now"; };
+  # A deployment annotation marks the first sample of each host's new revision.
+  annotations.list = [{
+    name = "Deployments"; enable = true; iconColor = "blue"; datasource = prometheus;
+    expr = ''${deployment} unless max by(host_name, overalls_deployment_revision) ({__name__=~"overalls_deployment_info.*"} offset 5m)'';
+    step = "60s"; titleFormat = "Deployed {{overalls_deployment_revision}}"; textFormat = "{{host_name}}";
+  }];
   description = "Host, pool, guest and infrastructure diagnostics. Missing or invalid source data stays unavailable. Infrastructure alerts are operational signals, separate from seven-day objectives.";
   panels = [
     (table 1 "Fleet measurements · numeric observations with bounded dimensions" 0
@@ -69,5 +76,13 @@ in {
       (liveview "duration_ms") "ms")
     (timeseries 22 "Marshall LiveView callbacks · mean database queries by phase" 124
       (liveview "queries") "short")
+    (table 23 "Deployed source revision by host" 132 deployment)
+    # Per-minute summed checkout wait over 60 s: the mean number of callers
+    # queued for a connection. Sustained values near the pool size mean the
+    # pool is saturated even when the per-query mean wait looks small.
+    (timeseries 24 "Marshall database · callers waiting for a pool connection" 142
+      ''overalls_gauge_database_queue_duration_ms / 60000'' "short")
+    (timeseries 25 "Marshall database · failed queries per minute" 142
+      ''overalls_gauge_database_errors'' "short")
   ];
 }

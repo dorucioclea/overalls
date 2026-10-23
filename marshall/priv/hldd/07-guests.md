@@ -1194,6 +1194,13 @@ to unrelated candidate builds.
 Catalog evaluation, the promotion gate and the actual promoted package build
 passed after alias selection; exact `98b23b79` identity/flags and alias equality
 are checked while candidate-kit admission/runtime flags stay false.
+A later promotion selects Nix-assembled disk `a96f291b`, image
+`sha256:6dc1a0840e50e508c964c2890e805c919b78c2cddb3e1e8e9d379e001c28617d`,
+through its [constructor](repo:nix/domains/artifacts/guest/native-promotion/omnios-r151050-a96f291b.nix).
+It carries the `vioif` receive budget and growth disk-link fixes. All five
+scenario receipts come from the Nix machine checks on the exact candidate bytes
+with one VMM. The `45983bb7` promotion remains in reviewed history and fleet
+staging for retained machines; its live CLI journeys do not transfer.
 The [matrix review](repo:docs/architecture/reviews/2026-10-18-guest-os-matrix.md)
 records exact disk/manifest/NAR/receipt pins. Declared minimums are 2 GiB memory
 and 16 GiB disk; the scoped growth history is 8-to-10-to-12 GiB, while the
@@ -1334,7 +1341,8 @@ required. Assembly pool GUID, one canonical whole-disk vdev and raw-device
 custody remain mandatory. Because the kernel keeps the assembly vdev path, the
 helper first creates disk links (`devfsadm -c disk`) so discovery on a first
 boot at a new device path cannot race link creation; the candidate image carries
-this fix and the promoted image does not. A disposable missing-cache diagnostic passed the
+this fix, as does the selected `a96f291b` promotion; the retained `45983bb7`
+image does not. A disposable missing-cache diagnostic passed the
 revised helper's preflight, expansion, post-GPT preservation and success receipt
 where the old query refused. This same-boot fault case is separate from new-image
 growth/recovery qualification. Twelve pure checks and three native FreeBSD
@@ -1455,8 +1463,8 @@ for the guest until it closed. Without guest receive offload, buffers are now on
 page-aligned cookie sized to the MTU plus headers. Loans are capped at half the
 buffers the ring can hold. The extracted helper's ASan/UBSan test covers the
 regression vectors. The patched Nix KVM candidate passed `native-omnios-transport`
-and `native-omnios-reset` on 2026-10-22. The promoted `45983bb7` image is unchanged
-and still has the stall until a separate promotion.
+and `native-omnios-reset` on 2026-10-22. The `a96f291b` promotion selects it;
+the retained `45983bb7` image still has the stall.
 
 ## Windows guests (experimental)
 

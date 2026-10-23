@@ -50,7 +50,10 @@
       hostSystem = name: enrolled: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { overallsPackages = hostPackages; };
-        modules = [ self.nixosModules.default self.nixosModules.fleetBuilds (import ./nix/platform/hosts/profile.nix {
+        modules = [ self.nixosModules.default self.nixosModules.fleetBuilds
+          # Telemetry and backups name the deployed source revision.
+          { system.configurationRevision = self.rev or self.dirtyRev or null; }
+          (import ./nix/platform/hosts/profile.nix {
           host = inventory.hosts.${name}; diskoModule = disko.nixosModules.disko; inherit enrolled;
         }) ] ++ nixpkgs.lib.optionals (enrolled && builtins.pathExists (./fleet/hosts + "/${name}/configuration.nix"))
           [ (./fleet/hosts + "/${name}/configuration.nix") ];

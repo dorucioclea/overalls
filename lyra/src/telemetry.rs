@@ -203,12 +203,24 @@ fn encode_trace(command_id: &str, started_ns: u64, ended_ns: u64) -> Option<Vec<
         ExportTraceServiceRequest {
             resource_spans: vec![ResourceSpans {
                 resource: Some(Resource {
-                    attributes: vec![KeyValue {
-                        key: "service.name".to_owned(),
-                        value: Some(AnyValue {
-                            value: Some(Value::StringValue("lyra".to_owned())),
-                        }),
-                    }],
+                    // The host collector adds the receiving host's deployment
+                    // revision; the guest names only its own build version.
+                    attributes: vec![
+                        KeyValue {
+                            key: "service.name".to_owned(),
+                            value: Some(AnyValue {
+                                value: Some(Value::StringValue("lyra".to_owned())),
+                            }),
+                        },
+                        KeyValue {
+                            key: "service.version".to_owned(),
+                            value: Some(AnyValue {
+                                value: Some(Value::StringValue(
+                                    env!("CARGO_PKG_VERSION").to_owned(),
+                                )),
+                            }),
+                        },
+                    ],
                     ..Default::default()
                 }),
                 scope_spans: vec![ScopeSpans {
@@ -338,11 +350,15 @@ mod tests {
         let bytes = encode_trace(&command_id, 100, 200).expect("valid id");
         let decoded = ExportTraceServiceRequest::decode(bytes.as_slice()).expect("trace protobuf");
         let resource = &decoded.resource_spans[0];
-        assert_eq!(resource.resource.as_ref().unwrap().attributes.len(), 1);
-        assert_eq!(
-            resource.resource.as_ref().unwrap().attributes[0].key,
-            "service.name"
-        );
+        let keys: Vec<&str> = resource
+            .resource
+            .as_ref()
+            .unwrap()
+            .attributes
+            .iter()
+            .map(|attribute| attribute.key.as_str())
+            .collect();
+        assert_eq!(keys, ["service.name", "service.version"]);
         let span = &resource.scope_spans[0].spans[0];
         assert_eq!(span.name, "lyra.tool_result");
         assert!(span.attributes.is_empty() && span.events.is_empty() && span.links.is_empty());

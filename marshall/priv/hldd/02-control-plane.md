@@ -300,6 +300,19 @@ Services connect to Marshall over one WebSocket each (ADR-0142):
     request module. The hello binds the host credential's `host_id`, each
     exchange still fences session and epoch under the host lock, and the
     socket allows 1 MiB + 4 KiB frames and 64 concurrent requests.
+    The host lock is a `FOR NO KEY UPDATE` row lock: it serializes every host
+    mutation (exchanges, rotation, placement), while foreign-key checks from
+    model calls, operations and placements (`FOR KEY SHARE`) neither queue
+    behind it nor deadlock with it. Guest-credential authentication
+    (inference, Galileo, Peach) takes `FOR KEY SHARE`, which never waits for an
+    exchange; host enable, drain and retire, and those credentials' issue,
+    rotation and revocation take `FOR UPDATE`, which waits for and excludes
+    every in-flight guest reader. A `FOR UPDATE` host lock exhausted the
+    database pool on 2026-10-23
+    ([review](repo:docs/architecture/reviews/2026-10-23-host-row-lock-convoy.md)).
+    The Threads and Machines pages degrade to their unavailable state on a
+    database or authorization failure during refresh, clearing details,
+    permissions and grants instead of crashing.
   - Ziggy (`ziggy.<route>`, host-bound, 256 in flight, 1.1 MB inbound frames
     for agent results) and Porsche's gateway routes (`porsche.<route>`,
     gateway-bound, 256 in flight) use shared request modules. Porsche's

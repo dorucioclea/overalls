@@ -22,6 +22,7 @@ let
   group = producer: "ktp-${builtins.substring 0 16 (builtins.hashString "sha256" producer.instance)}";
   source = producer: "overalls-trace-${producer.instance}-source";
   schema = ../../../../elixir/diagnostics/priv/trace-schema.json;
+  deploymentRevision = import ./deployment-revision.nix { inherit config lib; };
   producerCgroup = producer:
     let
       slice = lib.attrByPath [ "systemd" "services" producer.instance "serviceConfig" "Slice" ] "system.slice" config;
@@ -31,6 +32,8 @@ let
   runtime = producer: pkgs.writeText "${account producer}.json" (builtins.toJSON {
     inherit (producer) service;
     host = config.networking.hostName;
+    # The host build's source revision; producers never supply provenance.
+    revision = deploymentRevision;
     producer_user = producer.user;
     producer_unit = "${producer.instance}.service";
     producer_cgroup = producerCgroup producer;

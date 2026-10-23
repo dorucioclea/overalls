@@ -721,6 +721,19 @@ is not durability-qualified; promotion of a fixed image remains a separate
 obligation under this decision. The [matrix review](../reviews/2026-10-18-guest-os-matrix.md)
 records the receipts.
 
+A second OmniOS promotion selects Nix-assembled disk `a96f291b`, image
+`sha256:6dc1a0840e50e508c964c2890e805c919b78c2cddb3e1e8e9d379e001c28617d`.
+It carries the `vioif` receive descriptor budget and the growth helper's
+synchronous disk-link creation. All five required scenarios ran as Nix machine
+checks on its exact bytes with one VMM; the sealed candidate was published to
+the signed cache and substituted into a fresh store with signatures required.
+The [constructor](../../../nix/domains/artifacts/guest/native-promotion/omnios-r151050-a96f291b.nix)
+passed `verify_approved!` against the
+[registry](../../../protocol/lib/overalls_protocol/native_admission.ex), which
+keeps `98b23b79` in reviewed history; fleet staging retains its promotion.
+The selected image passed the ADR-0243 power-loss and interrupted-growth
+checks. Live Marshall-driven lifecycle on the new image is not yet recorded.
+
 ## Open questions
 
 - Which further signed FreeBSD and OmniOS/illumos inputs should be accepted. OmniOS is

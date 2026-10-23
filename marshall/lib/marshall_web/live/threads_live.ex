@@ -83,8 +83,8 @@ defmodule MarshallWeb.ThreadsLive do
       |> stream(:activity_threads, [])
       |> stream(:events, [])
       |> stream(:thread_grants, [])
-      |> refresh()
 
+    # handle_params/3 always follows mount and performs the first refresh.
     if connected?(socket), do: Process.send_after(self(), :refresh_threads, 2_000)
     {:ok, socket}
   end
@@ -833,7 +833,57 @@ defmodule MarshallWeb.ThreadsLive do
   # clear selected content, its list entry, transcript and machine actions in that
   # same refresh, even if later permission reads observe a concurrent regrant.
   @spec refresh(socket()) :: socket()
+  # @cc [owner:ghuntley,label:reliability;security] threads-refresh-fails-closed
+  # A database or authorization failure during refresh MUST degrade the page to
+  # its unavailable state instead of crashing the LiveView, and MUST clear the
+  # selected thread, its events, write/manage controls and grants rather than
+  # keep details or permissions from an earlier refresh.
+  @spec refresh(socket()) :: socket()
   defp refresh(socket) do
+    load(socket)
+  rescue
+    _ in [
+      Ash.Error.Forbidden,
+      Ash.Error.Invalid,
+      Ash.Error.Unknown,
+      DBConnection.ConnectionError,
+      Postgrex.Error
+    ] ->
+      unavailable(socket)
+  end
+
+  @spec unavailable(socket()) :: socket()
+  defp unavailable(socket) do
+    socket
+    |> assign(
+      threads_empty: false,
+      thread_page_empty: false,
+      thread_matches_empty: false,
+      threads_available: false,
+      activity_empty: true,
+      selected: nil,
+      generations: [],
+      selected_generation: nil,
+      generation_current: false,
+      can_write: false,
+      can_manage: false,
+      editor_available: false,
+      events_empty: true,
+      events_available: false,
+      controls_available: false,
+      work_busy: false,
+      pending_question: nil,
+      latest_plan: nil,
+      detail_error: if(socket.assigns[:selected_id], do: :unavailable)
+    )
+    |> stream(:threads, [], reset: true)
+    |> stream(:activity_threads, [], reset: true)
+    |> stream(:events, [], reset: true)
+    |> clear_grants()
+  end
+
+  @spec load(socket()) :: socket()
+  defp load(socket) do
     actor = socket.assigns.current_user
 
     {all_threads, thread_next, threads_available} =

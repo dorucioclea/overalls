@@ -130,7 +130,13 @@ defmodule MarshallWeb.MachinesLive do
   # a slow refresh delays the next tick instead of queueing refreshes back to back.
   def handle_info(:refresh, socket) do
     socket = refresh(socket)
-    Process.send_after(self(), :refresh, 1000)
+    # Back off while the database is unavailable instead of adding load.
+    Process.send_after(
+      self(),
+      :refresh,
+      if(socket.assigns[:refresh_failed], do: 5000, else: 1000)
+    )
+
     {:noreply, socket}
   end
 
@@ -466,7 +472,41 @@ defmodule MarshallWeb.MachinesLive do
         _ -> :machine
       end
 
-    Marshall.Observability.measure_refresh(view, fn -> load(socket) end)
+    Marshall.Observability.measure_refresh(view, fn ->
+      socket |> load() |> assign(:refresh_failed, false)
+    end)
+  rescue
+    _ in [
+      Ash.Error.Forbidden,
+      Ash.Error.Invalid,
+      Ash.Error.Unknown,
+      DBConnection.ConnectionError,
+      Postgrex.Error
+    ] ->
+      unavailable(socket)
+  end
+
+  # @cc [owner:ghuntley,label:reliability;security] machines-refresh-fails-closed
+  # A database or authorization failure during refresh MUST degrade the page
+  # instead of crashing the LiveView. The list MUST be cleared rather than show
+  # rows from an earlier refresh, and a machine page MUST leave for the list
+  # rather than keep VM details it could not reauthorize.
+  @spec unavailable(Phoenix.LiveView.Socket.t()) :: Phoenix.LiveView.Socket.t()
+  defp unavailable(%{assigns: %{live_action: :new}} = socket),
+    do: assign(socket, catalog_available: false, refresh_failed: true)
+
+  defp unavailable(%{assigns: %{live_action: :index}} = socket) do
+    socket
+    |> assign(catalog_available: false, empty: false, next_cursor: nil, refresh_failed: true)
+    |> stream(:machines, [], reset: true)
+    |> put_flash(:error, dgettext("machines", "Machines are temporarily unavailable."))
+  end
+
+  defp unavailable(socket) do
+    socket
+    |> assign(:refresh_failed, true)
+    |> put_flash(:error, dgettext("machines", "Machines are temporarily unavailable."))
+    |> push_navigate(to: ~p"/machines")
   end
 
   defp load(%{assigns: %{live_action: :new}} = socket) do

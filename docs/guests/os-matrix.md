@@ -24,7 +24,7 @@ separately in the [editor repair review](../architecture/reviews/2026-10-18-fore
 | Arch Linux | `archGuest` | Linux kernel, version 4, `linux` | Editor-bearing `0b3da3e8` passed actual-image checks and fresh `132308` strict CLI SSH/PAM/sudo, stop/checkpoint/restart, repeat checks and original owned deletion. Native fixture `b1c8ff76` passed all twelve browser stages on the captured diagnostic source. The earlier broker-restart 502 remains unexplained; neither result qualifies the later trunk merge or production browser sign-in. Earlier helper-fixed `99fa9876` retains its `114223` lifecycle pass. Earlier `8ab89c2d` failed SSH at PAM account management; historical failure and cleanup retain their own receipts. |
 | AlmaLinux | `almaLinuxGuest` | Linux kernel, version 4, `linux` | Editor-bearing `65e7700b` passed actual-image checks and fresh `132308` strict CLI SSH/PAM/sudo, stop/checkpoint/restart, repeat checks and original owned deletion. Isolated browser fixture `90eca504` passed all twelve native subtests, including recovery and current-authority refusal. Earlier helper-fixed `473f9589` retains its `114223` lifecycle pass. Earlier `bed87c33` failed authentication; historical failure and cleanup remain separate. |
 | FreeBSD 14.3 | `freebsdGuest` | CloudHv firmware, raw GPT/UFS, version 6, `freebsd-v1` | Exact promoted image; five native scenarios passed. Runs `072900` and `075200` passed CLI lifecycle and terminal deleted cleanup. The later cleanup required scoped idle rootless-namespace recovery; that manual recovery does not establish general automatic cleanup. |
-| OmniOS r151050 | `illumosGuest` | CloudHv firmware, raw GPT/ZFS, version 6, `illumos-v1` | Exact promoted image is selected and admitted. Disk `45983bb7` passed all five direct host-KVM scenarios, ordinary transport and reset. Fresh `122228` passed the full 16 GiB strict CLI lifecycle, separate current-owner stopped checkpoint and completed deletion. Earlier `091638` retains its own lifecycle and original release-label oracle failure; it lacked that separate checkpoint. |
+| OmniOS r151050 | `illumosGuest` | CloudHv firmware, raw GPT/ZFS, version 6, `illumos-v1` | Exact promoted image is selected and admitted. Disk `a96f291b` (Nix KVM assembly carrying the `vioif` receive budget and growth disk-link fixes) passed all five Nix machine scenarios, transport, reset and power loss; the earlier `45983bb7` promotion stays admitted and staged for retained machines. The live CLI journeys below ran on `45983bb7` and do not transfer to `a96f291b`. Fresh `122228` passed the full 16 GiB strict CLI lifecycle, separate current-owner stopped checkpoint and completed deletion. Earlier `091638` retains its own lifecycle and original release-label oracle failure; it lacked that separate checkpoint. |
 | Windows Server 2025 | `windowsGuestPublished` | CloudHv firmware, raw GPT, version 5, `windows-v1` | Repaired `8ca0a11f` passed installation, sealing, executable readback, signed publication and independent full-content substitution. Fresh `103842` passed create/readiness, exact strict CLI SSH, stop with separate stopped checkpoint, restart, repeat SSH and deleted cleanup. Its original warning-only failure is preserved; the runner admits only the exact stock Windows warning without changing trust/algorithms. Terminal, executor, workspace, growth and isolation remain separate. See the [Windows guide](windows-guests.md). |
 
 The helper repair following the Arch/Alma rows' failed SSH attempts is now implemented in exact
@@ -53,8 +53,11 @@ do not add the editor to existing disks.
 The qualified FreeBSD image ID is
 `sha256:d141e4266c29da00a1378157b1d39369b1d48e577bca4ce7375e8ff6d399557b`.
 The [compiled registry](../../protocol/lib/overalls_protocol/native_admission.ex)
-also qualifies OmniOS image
-`sha256:98b23b7931bc52d55b3c5b38cc20c97c1c967be96cf301940f88b01c715530d8`.
+also qualifies the selected OmniOS image
+`sha256:6dc1a0840e50e508c964c2890e805c919b78c2cddb3e1e8e9d379e001c28617d`
+and retains the earlier
+`sha256:98b23b7931bc52d55b3c5b38cc20c97c1c967be96cf301940f88b01c715530d8`
+in reviewed history.
 It requires the complete validated immutable identity; a family name, image ID alone, stock
 disk or changed candidate cannot activate native capabilities. Unqualified
 `freebsd-v1` and `illumos-v1` rows remain all false. Exact qualification

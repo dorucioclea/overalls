@@ -406,7 +406,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         guard envelope.machines.count <= 256 else { throw MilaFFIError.outputTooSmall }
         let metadata = MilaSnapshotMetadata(machineCount: UInt32(envelope.machines.count), savedAt: 0, hasMore: envelope.hasMore)
         let machines = try envelope.machines.enumerated().map { index, machine in
-            let actions = machine.actionBits.map(MilaMachineActions.init(bits:)) ?? try machineActionsFromListing(data, index: UInt32(index))
+            let actions = machine.actionBits.map(MilaMachineActions.init(bits:)) ?? (try machineActionsFromListing(data, index: UInt32(index)))
             return MilaMachinePresentation(machine: machine, actions: actions)
         }
         return MilaValidatedSnapshot(machines: machines, metadata: metadata)

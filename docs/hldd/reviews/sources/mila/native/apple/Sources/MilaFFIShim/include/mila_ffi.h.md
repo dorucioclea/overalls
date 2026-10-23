@@ -1,5 +1,5 @@
 ---
-digest: dcdb33d3dcf675e0ddc36b91ae502b1d5ca958d6e18183c36a68a91b3defa730
+digest: 77bc95dbdf77e79cc794a02a20cb640081e849c9572460e0d012ac9e803ac1dc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Apple FFI header update; no additional architecture impact.
+Native CI compile fix preserves existing platform boundary and behavior.

@@ -1,5 +1,5 @@
 ---
-digest: d312d914a281ce8369d2ba5c7321fcfe0f16355f317764acafd22e2124c9465c
+digest: 518142ca035913f71f98bc77737efc21db405b76493bae4b10dd837dfe86ed86
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows WebView2 UI wiring preserves existing documented native web controls and requires no chapter change.
+Native CI compile fix preserves existing platform boundary and behavior.

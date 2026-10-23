@@ -1,5 +1,5 @@
 ---
-digest: 7d34124ea1bfeb5cb74b87b593be7e7a0997516cced6fa7bf5dfd4580be25110
+digest: b86eb198e49f8900b1d9c405770e5b50646d30d7000cbd58a8a47b6b173af6ef
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Apple live session web boundary change; no new documented behavior beyond authenticated native transport.
+Native CI compile fix preserves existing platform boundary and behavior.

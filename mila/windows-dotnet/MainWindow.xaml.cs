@@ -90,7 +90,7 @@ public sealed partial class MainWindow : Window
         MachineDelete.Content = S("actionDelete", "Delete"); MachineShareAdd.Content = S("sharingAdd", "Share add");
         MachineShareRemove.Content = S("sharingRemove", "Share remove"); MachineWebShow.Content = S("webOpen", "Web show");
         MachineWebSet.Content = S("webSave", "Web set");
-        CreateMachine.Content = S("actionCreate", "Create machine");
+        CreateMachineButton.Content = S("actionCreate", "Create machine");
         ShareAdd.Content = S("sharingAdd", "Share add");
         ShareRemove.Content = S("sharingRemove", "Share remove");
         SshKeysTitle.Text = S("sshKeysTitle", "SSH keys");

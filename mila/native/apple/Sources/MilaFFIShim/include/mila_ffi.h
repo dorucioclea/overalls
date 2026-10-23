@@ -95,6 +95,8 @@ int32_t mila_session_web_set(uint64_t handle, const uint8_t *machine, size_t mac
     const uint8_t *request_id, size_t request_id_len);
 int32_t mila_session_listing(uint64_t handle, uint8_t *output, size_t capacity,
     size_t *written);
+int32_t mila_session_whoami(uint64_t handle, uint8_t *output, size_t capacity,
+                             size_t *written);
 int32_t mila_session_close(uint64_t handle);
 
 #ifdef __cplusplus

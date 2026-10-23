@@ -1,5 +1,5 @@
 ---
-digest: e5360be461bff88cc4bff53d1615838dea9a7a709026d47731a386e0a635e524
+digest: 44d7bd4124ac39ab06aefa406c4b7cab00a3d7fac6586e03361507331f01ec13
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android native thread UI action binding; no documented chapter behavior or architecture boundary changed.
+Added authenticated deployment forget UI; no architecture change.

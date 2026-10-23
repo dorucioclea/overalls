@@ -491,6 +491,21 @@ internal static partial class RustNative
         finally { Marshal.FreeCoTaskMem(machinePtr); Marshal.FreeCoTaskMem(requestPtr); }
     }
 
+    internal static MilaNativeSessionActionResult TrySessionShareMutation(ulong handle, Guid machineId, string email, string? role, bool add, string requestId)
+    {
+        if (handle == 0 || machineId == Guid.Empty || string.IsNullOrWhiteSpace(email) || email.Length > 320 || email.Any(char.IsControl) || !IsCanonicalRequestId(requestId))
+            return new(MilaNativeStatus.InvalidRequest);
+        if (add && role is not ("viewer" or "operator" or "manager")) return new(MilaNativeStatus.InvalidRequest);
+        if (!add) role = string.Empty;
+        string machine = machineId.ToString("D");
+        IntPtr m = Marshal.StringToCoTaskMemUTF8(machine), e = Marshal.StringToCoTaskMemUTF8(email), r = Marshal.StringToCoTaskMemUTF8(role), q = Marshal.StringToCoTaskMemUTF8(requestId);
+        try { return new((MilaNativeStatus)SessionShareMutationNative(handle, m, 36, e, (nuint)Encoding.UTF8.GetByteCount(email), r, (nuint)Encoding.UTF8.GetByteCount(role), add ? (byte)1 : (byte)0, q, (nuint)Encoding.UTF8.GetByteCount(requestId))); }
+        catch (DllNotFoundException) { return new(MilaNativeStatus.Unavailable); }
+        catch (EntryPointNotFoundException) { return new(MilaNativeStatus.Unavailable); }
+        catch (BadImageFormatException) { return new(MilaNativeStatus.Unavailable); }
+        finally { Marshal.FreeCoTaskMem(m); Marshal.FreeCoTaskMem(e); Marshal.FreeCoTaskMem(r); Marshal.FreeCoTaskMem(q); }
+    }
+
     internal static MilaNativeSessionBytesResult TrySessionWebShow(ulong handle, Guid machineId)
     {
         if (handle == 0) return new(MilaNativeStatus.InvalidRequest, null);
@@ -763,6 +778,11 @@ internal static partial class RustNative
     [LibraryImport(LibraryName, EntryPoint = "mila_session_machine_resize")]
     private static partial int SessionMachineResizeNative(ulong handle, IntPtr machine, nuint machineLength,
         uint cpu, ulong memory, ulong disk, IntPtr requestId, nuint requestIdLength);
+
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_share_mutation")]
+    private static partial int SessionShareMutationNative(ulong handle, IntPtr machine, nuint machineLength,
+        IntPtr email, nuint emailLength, IntPtr role, nuint roleLength, byte add,
+        IntPtr requestId, nuint requestIdLength);
 
     [LibraryImport(LibraryName, EntryPoint = "mila_session_web_show")]
     private static partial MilaNativeStatus SessionWebShowNative(ulong handle, IntPtr machine, nuint machineLength,

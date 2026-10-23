@@ -158,6 +158,17 @@ fun MilaNativeRoot(
                     onFailure = { hostInvalid = true },
                 )
             },
+            onForget = { forgotten ->
+                if (deployment.remove(forgotten.host, forgotten.port)) {
+                    if (selectedDeployment == forgotten) deploymentStore.clear()
+                    deploymentEntries = deployment.deployments
+                    selectedDeployment = deployment.selected
+                    hostInput = selectedDeployment?.label.orEmpty()
+                    hostInvalid = false
+                    signIn.close()
+                    signInState = MilaSignInState.SignedOut
+                }
+            },
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button({
@@ -245,12 +256,18 @@ private fun MilaDeploymentPicker(
     onHostChanged: (String) -> Unit,
     onSelect: (MilaDeployment) -> Unit,
     onAdd: () -> Unit,
+    onForget: (MilaDeployment) -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(MilaStrings.text(MilaMessage.Deployments), style = MaterialTheme.typography.titleMedium)
         deployments.forEach { deployment ->
-            Button({ onSelect(deployment) }, enabled = deployment != selected) {
-                Text(deployment.label, style = MaterialTheme.typography.bodyMedium)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button({ onSelect(deployment) }, enabled = deployment != selected) {
+                    Text(deployment.label, style = MaterialTheme.typography.bodyMedium)
+                }
+                Button({ onForget(deployment) }) {
+                    Text(MilaStrings.text(MilaMessage.ForgetDeployment))
+                }
             }
         }
         OutlinedTextField(

@@ -1,5 +1,5 @@
 ---
-digest: b82a81dbf865e1897ee536a44ff62a225e44f68934f71f1c93902e8ab62ea6bd
+digest: 745c495c0e488cd1f00236cd85c53e3add7685bf068019ca4f4b6dd8d52837f1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows WebView2 UI wiring preserves existing documented native web controls and requires no chapter change.
+Reviewed Windows authenticated share mutation bridge; no chapter architecture change.

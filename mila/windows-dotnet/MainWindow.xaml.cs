@@ -665,8 +665,15 @@ public sealed partial class MainWindow : Window
     private void ClassifyMachinePause(object sender, RoutedEventArgs args) => SubmitMachineMutation("pause");
     private void ClassifyMachineResume(object sender, RoutedEventArgs args) => SubmitMachineMutation("resume");
     private void ClassifyMachineDelete(object sender, RoutedEventArgs args) => SubmitMachineMutation("rm");
-    private void ClassifyMachineShareAdd(object sender, RoutedEventArgs args) => ClassifyMachine($"share add {SampleMachine} user viewer");
-    private void ClassifyMachineShareRemove(object sender, RoutedEventArgs args) => ClassifyMachine($"share remove {SampleMachine} user");
+    private void ClassifyMachineShareAdd(object sender, RoutedEventArgs args) => SubmitShare(true);
+    private void ClassifyMachineShareRemove(object sender, RoutedEventArgs args) => SubmitShare(false);
+    private void SubmitShare(bool add)
+    {
+        if (_session.Handle is not { } handle || _selectedMachine is not { } machine)
+        { MachineCommandStatus.Text = S("signInFirst", "Sign in first"); return; }
+        MilaNativeSessionActionResult result = RustNative.TrySessionShareMutation(handle, machine.Id, "user@example.invalid", add ? "viewer" : null, add, "porsche-" + Guid.NewGuid().ToString("N"));
+        MachineCommandStatus.Text = result.Succeeded ? S("requestSucceeded", "Request submitted") : S("requestFailed", "Request refused");
+    }
     private void ClassifyMachineWebShow(object sender, RoutedEventArgs args) => ClassifyMachine($"web show {SampleMachine}");
     private void ClassifyMachineWebSet(object sender, RoutedEventArgs args) => ClassifyMachine($"web set {SampleMachine} --port=8080");
 

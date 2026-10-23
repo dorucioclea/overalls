@@ -11,13 +11,12 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertFalse(controller.set("https://user:secret@console.example.test"))
         XCTAssertFalse(controller.set("https://console.example.test/#fragment"))
     }
-}
-
 
     func testAuthenticatedProjectionIsMachineBoundAndHTTPSOnly() throws {
         let id = UUID(uuidString: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")!
-        let json = """{"machine_id":"\(id.uuidString.lowercased())","label":"Console","port":443,"visibility":"private","policy_revision":7,"url":"https://console.example.test/","route":"overalls://machines/\(id.uuidString.lowercased())/web"}""".data(using: .utf8)!
+        let json = "{\"machine_id\":\"\(id.uuidString.lowercased())\",\"label\":\"Console\",\"port\":443,\"visibility\":\"private\",\"policy_revision\":7,\"url\":\"https://console.example.test/\",\"route\":\"overalls://machines/\(id.uuidString.lowercased())/web\"}".data(using: .utf8)!
         let projection = try JSONDecoder().decode(MilaWebEndpointProjection.self, from: json)
         XCTAssertEqual(try projection.endpoint(for: id).url.absoluteString, "https://console.example.test/")
         XCTAssertThrowsError(try projection.endpoint(for: UUID()))
     }
+}

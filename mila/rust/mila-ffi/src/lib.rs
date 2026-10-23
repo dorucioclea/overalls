@@ -927,12 +927,35 @@ pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSession
 
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionMachineResize(
-    mut env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong,
-    machine: jni::objects::JString<'_>, cpu: jni::sys::jint, memory: jni::sys::jint,
-    disk: jni::sys::jint, request_id: jni::objects::JString<'_>) -> jni::sys::jint {
-    let machine = match env.get_string(&machine) { Ok(v) => v.to_bytes().to_vec(), Err(_) => return -4 };
-    let request_id = match env.get_string(&request_id) { Ok(v) => v.to_bytes().to_vec(), Err(_) => return -4 };
-    unsafe { session::mila_session_machine_resize(handle as u64, machine.as_ptr(), machine.len(), cpu as u32, memory as u64, disk as u64, request_id.as_ptr(), request_id.len()) as jni::sys::jint }
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    machine: jni::objects::JString<'_>,
+    cpu: jni::sys::jint,
+    memory: jni::sys::jint,
+    disk: jni::sys::jint,
+    request_id: jni::objects::JString<'_>,
+) -> jni::sys::jint {
+    let machine = match env.get_string(&machine) {
+        Ok(v) => v.to_bytes().to_vec(),
+        Err(_) => return -4,
+    };
+    let request_id = match env.get_string(&request_id) {
+        Ok(v) => v.to_bytes().to_vec(),
+        Err(_) => return -4,
+    };
+    unsafe {
+        session::mila_session_machine_resize(
+            handle as u64,
+            machine.as_ptr(),
+            machine.len(),
+            cpu as u32,
+            memory as u64,
+            disk as u64,
+            request_id.as_ptr(),
+            request_id.len(),
+        ) as jni::sys::jint
+    }
 }
 
 #[no_mangle]
@@ -1221,24 +1244,64 @@ pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSession
     session_copy(&mut env, handle as u64, true)
 }
 #[no_mangle]
-pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDeviceList(mut env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong) -> jni::sys::jbyteArray {
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDeviceList(
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+) -> jni::sys::jbyteArray {
     let mut size = 0usize;
-    let status = unsafe { session::mila_session_device_ls(handle as u64, std::ptr::null_mut(), 0, &mut size) };
-    if status != session::SessionStatus::SmallBuffer || size == 0 || size > 256 * 1024 { return std::ptr::null_mut(); }
+    let status = unsafe {
+        session::mila_session_device_ls(handle as u64, std::ptr::null_mut(), 0, &mut size)
+    };
+    if status != session::SessionStatus::SmallBuffer || size == 0 || size > 256 * 1024 {
+        return std::ptr::null_mut();
+    }
     let mut data = vec![0u8; size];
-    let status = unsafe { session::mila_session_device_ls(handle as u64, data.as_mut_ptr(), size, &mut size) };
-    if status != session::SessionStatus::Ok { return std::ptr::null_mut(); }
-    env.byte_array_from_slice(&data[..size]).map_or(std::ptr::null_mut(), |a| a.into_raw())
+    let status = unsafe {
+        session::mila_session_device_ls(handle as u64, data.as_mut_ptr(), size, &mut size)
+    };
+    if status != session::SessionStatus::Ok {
+        return std::ptr::null_mut();
+    }
+    env.byte_array_from_slice(&data[..size])
+        .map_or(std::ptr::null_mut(), |a| a.into_raw())
 }
 #[no_mangle]
-pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDeviceRemove(mut env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong, device: jni::objects::JString<'_>) -> jni::sys::jint {
-    let value = match env.get_string(&device) { Ok(v) => v.to_bytes().to_vec(), Err(_) => return -2 };
-    unsafe { session::mila_session_device_rm(handle as u64, value.as_ptr(), value.len()) as jni::sys::jint }
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDeviceRemove(
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    device: jni::objects::JString<'_>,
+) -> jni::sys::jint {
+    let value = match env.get_string(&device) {
+        Ok(v) => v.to_bytes().to_vec(),
+        Err(_) => return -2,
+    };
+    unsafe {
+        session::mila_session_device_rm(handle as u64, value.as_ptr(), value.len())
+            as jni::sys::jint
+    }
 }
 #[no_mangle]
-pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDevicePreferences(mut env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong, device: jni::objects::JString<'_>, enabled: jni::sys::jboolean) -> jni::sys::jint {
-    let value = match env.get_string(&device) { Ok(v) => v.to_bytes().to_vec(), Err(_) => return -2 };
-    unsafe { session::mila_session_device_prefs(handle as u64, value.as_ptr(), value.len(), if enabled == 0 { 0 } else { 1 }) as jni::sys::jint }
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionDevicePreferences(
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    device: jni::objects::JString<'_>,
+    enabled: jni::sys::jboolean,
+) -> jni::sys::jint {
+    let value = match env.get_string(&device) {
+        Ok(v) => v.to_bytes().to_vec(),
+        Err(_) => return -2,
+    };
+    unsafe {
+        session::mila_session_device_prefs(
+            handle as u64,
+            value.as_ptr(),
+            value.len(),
+            if enabled == 0 { 0 } else { 1 },
+        ) as jni::sys::jint
+    }
 }
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionClose(
@@ -1452,30 +1515,53 @@ pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTermina
 /// authenticated session; this JNI seam rejects detached or malformed requests.
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalAttach(
-    _env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong,
-    from: jni::sys::jlong, columns: jni::sys::jint, rows: jni::sys::jint,
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    from: jni::sys::jlong,
+    columns: jni::sys::jint,
+    rows: jni::sys::jint,
     read_write: jni::sys::jboolean,
 ) -> jni::sys::jint {
-    if handle <= 0 { return -4; }
-    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalAttach(_env, _class, from, columns, rows, read_write)
+    if handle <= 0 {
+        return -4;
+    }
+    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalAttach(
+        _env, _class, from, columns, rows, read_write,
+    )
 }
 
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalInput(
-    _env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong,
-    length: jni::sys::jint, read_write: jni::sys::jboolean,
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    length: jni::sys::jint,
+    read_write: jni::sys::jboolean,
 ) -> jni::sys::jint {
-    if handle <= 0 { return -4; }
-    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalInput(_env, _class, length, read_write)
+    if handle <= 0 {
+        return -4;
+    }
+    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalInput(
+        _env, _class, length, read_write,
+    )
 }
 
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalResize(
-    _env: jni::JNIEnv<'_>, _class: jni::objects::JClass<'_>, handle: jni::sys::jlong,
-    columns: jni::sys::jint, rows: jni::sys::jint, read_write: jni::sys::jboolean,
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    columns: jni::sys::jint,
+    rows: jni::sys::jint,
+    read_write: jni::sys::jboolean,
 ) -> jni::sys::jint {
-    if handle <= 0 { return -4; }
-    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalResize(_env, _class, columns, rows, read_write)
+    if handle <= 0 {
+        return -4;
+    }
+    Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalResize(
+        _env, _class, columns, rows, read_write,
+    )
 }
 
 /// JNI projection of the bounded machine action policy.  The returned value is

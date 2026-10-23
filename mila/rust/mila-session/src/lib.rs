@@ -215,16 +215,33 @@ impl ApplicationSession {
 
     /// Execute an authenticated machine creation with bounded resource values.
     pub async fn machine_create(
-        &mut self, name: &str, cpu: u32, memory: u64, disk: u64, request_id: &str,
+        &mut self,
+        name: &str,
+        cpu: u32,
+        memory: u64,
+        disk: u64,
+        request_id: &str,
     ) -> Result<(), SessionError> {
-        let request_id = mila_model::RequestId::parse(request_id).map_err(|_| SessionError::MutationRefused)?;
-        if name.is_empty() || name.len() > 128 || !name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
-            || !(1..=256).contains(&cpu) || !(256..=4_194_304).contains(&memory) || !(1..=500).contains(&disk) {
+        let request_id =
+            mila_model::RequestId::parse(request_id).map_err(|_| SessionError::MutationRefused)?;
+        if name.is_empty()
+            || name.len() > 128
+            || !name
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'-' || b == b'_')
+            || !(1..=256).contains(&cpu)
+            || !(256..=4_194_304).contains(&memory)
+            || !(1..=500).contains(&disk)
+        {
             return Err(SessionError::MutationRefused);
         }
         let line = format!("new --name={name} --cpu={cpu} --memory={memory} --disk={disk} --no-wait --json --request-id={request_id}");
         let output = self.ssh.exec(&line, &[]).await?;
-        if output.exit_status == 0 { Ok(()) } else { Err(SessionError::MutationRefused) }
+        if output.exit_status == 0 {
+            Ok(())
+        } else {
+            Err(SessionError::MutationRefused)
+        }
     }
 
     /// Execute an authenticated machine resize with bounded resource values.

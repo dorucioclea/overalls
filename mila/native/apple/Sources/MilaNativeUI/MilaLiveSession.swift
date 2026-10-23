@@ -55,6 +55,20 @@ public final class MilaLiveSession: @unchecked Sendable {
         return try copyListing(current)
     }
 
+    /// Fetches the bounded browser-approval identity envelope from the live session.
+    /// The Rust boundary returns either an authenticated identity or an approval-required
+    /// link; callers must decode and validate the envelope before presenting it.
+    public func whoami() throws -> Data {
+        let current = try validHandle()
+        var required = 0
+        var status = mila_session_whoami(current, nil, 0, &required)
+        guard status == 0 || status == -3, required > 0, required <= 65_536 else { throw Self.error(status) }
+        var bytes = [UInt8](repeating: 0, count: required)
+        status = mila_session_whoami(current, &bytes, bytes.count, &required)
+        guard status == 0 else { throw Self.error(status) }
+        return Data(bytes.prefix(required))
+    }
+
     public func sshKeys() throws -> Data {
         let current = try validHandle(); var required = 0
         var status = mila_session_ssh_keys(current, nil, 0, &required)

@@ -394,6 +394,12 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         return try projectListing(data)
     }
 
+    public func checkApproval() async throws -> Data {
+        guard let liveSession else { throw MilaFFIError.unavailable }
+        do { return try liveSession.whoami() }
+        catch { throw MilaFFIError.unavailable }
+    }
+
     private func projectListing(_ data: Data) throws -> MilaValidatedSnapshot {
         let decoder = JSONDecoder()
         let envelope = try decoder.decode(MilaSnapshotEnvelope.self, from: data)
@@ -498,6 +504,7 @@ private struct MilaSnapshotEnvelope: Codable {
 public protocol MilaFFIAdapter: Sendable {
     func call(_ request: MilaFFIRequest) async throws -> MilaFFIResponse
     func refreshSnapshot() async throws -> MilaValidatedSnapshot
+    func checkApproval() async throws -> Data
     func listSSHKeys() async throws -> [MilaSSHKey]
     func revokeSSHKey(_ key: MilaSSHKey, requestID: UUID) async throws
     func submit(_ action: MilaMachineAction, machine: MilaMachinePresentation, requestID: UUID) async throws
@@ -513,6 +520,7 @@ public protocol MilaFFIAdapter: Sendable {
 }
 
 public extension MilaFFIAdapter {
+    func checkApproval() async throws -> Data { throw MilaFFIError.unavailable }
     func listSSHKeys() async throws -> [MilaSSHKey] { throw MilaFFIError.unavailable }
     func revokeSSHKey(_ key: MilaSSHKey, requestID: UUID) async throws { _ = key; _ = requestID; throw MilaFFIError.unavailable }
     func refreshSnapshot() async throws -> MilaValidatedSnapshot { throw MilaFFIError.unavailable }

@@ -55,6 +55,7 @@ private fun effectivePort(uri: URI): Int = if (uri.port == -1) 443 else uri.port
 class MilaWebController(private val adapter: MilaFfiAdapter) {
     var endpoint by mutableStateOf<MilaWebEndpoint?>(null); private set
     var error by mutableStateOf<String?>(null); private set
+    fun clear() { endpoint = null; error = null }
     suspend fun show(machine: UUID): Boolean = runCatching {
         val result = adapter.webShow(machine).getOrThrow()
         endpoint = parseMilaWebEndpoint(result).getOrThrow().also { require(it.machineId == machine) { "web endpoint machine mismatch" } }
@@ -87,7 +88,7 @@ fun MilaWebView(url: String, modifier: Modifier = Modifier) {
 fun MilaWebControls(adapter: MilaFfiAdapter, machine: MilaMachineRow) {
     val controller = remember { MilaWebController(adapter) }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(machine.id) { controller.show(machine.id) }
+    LaunchedEffect(machine.id) { controller.clear(); controller.show(machine.id) }
     var port by remember { mutableStateOf("") }
     var public by remember { mutableStateOf(true) }
     LaunchedEffect(controller.endpoint?.revision) {

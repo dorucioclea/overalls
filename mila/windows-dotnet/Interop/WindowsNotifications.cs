@@ -57,11 +57,20 @@ internal sealed class MilaWindowsNotificationController
 {
     private readonly Func<string, string, string, MilaNativeStatus> _validate;
     internal MilaWindowsNotificationState State { get; private set; } = MilaWindowsNotificationState.Disabled;
+    private long generation;
+    private bool signedIn;
 
     internal MilaWindowsNotificationController(
         Func<string, string, string, MilaNativeStatus>? validate = null)
     {
         _validate = validate ?? RustNative.TryValidateWindowsPushRegistration;
+    }
+
+    internal void SetSession(bool authenticated)
+    {
+        signedIn = authenticated;
+        generation++;
+        if (!authenticated) State = MilaWindowsNotificationState.Disabled;
     }
 
     /// <summary>
@@ -72,7 +81,18 @@ internal sealed class MilaWindowsNotificationController
     internal MilaWindowsNotificationState Register(
         string channelUri, string appId, string deployment)
     {
+        if (!signedIn)
+        {
+            State = MilaWindowsNotificationState.Invalid;
+            return State;
+        }
+        long current = generation;
         MilaNativeStatus status = _validate(channelUri, appId, deployment);
+        if (current != generation || !signedIn)
+        {
+            State = MilaWindowsNotificationState.Disabled;
+            return State;
+        }
         State = status switch
         {
             MilaNativeStatus.Ok => MilaWindowsNotificationState.Registered,

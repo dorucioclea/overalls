@@ -9,6 +9,8 @@ internal static class WindowsNotificationsSmoke
             app == "dev.overalls.mila" && host == "mgmt.example.test"
                 ? MilaNativeStatus.Ok
                 : MilaNativeStatus.InvalidRequest);
+        Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt.example.test") == MilaWindowsNotificationState.Invalid, "signed-out registration refusal");
+        controller.SetSession(true);
         Program.Require(
             controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt.example.test") ==
             MilaWindowsNotificationState.Registered, "WNS metadata registration");
@@ -16,6 +18,8 @@ internal static class WindowsNotificationsSmoke
             MilaWindowsNotificationState.Invalid, "foreign WNS channel refusal");
         controller.Disable();
         Program.Require(controller.State == MilaWindowsNotificationState.Disabled, "notification disable");
+        controller.SetSession(false);
+        Program.Require(controller.State == MilaWindowsNotificationState.Disabled, "sign-out clears notification state");
 
         Guid id = Guid.NewGuid();
         byte[] listing = System.Text.Encoding.UTF8.GetBytes($"{{\"devices\":[{{\"id\":\"{id:D}\",\"platform\":\"wns\",\"enabled\":true}}]}}");

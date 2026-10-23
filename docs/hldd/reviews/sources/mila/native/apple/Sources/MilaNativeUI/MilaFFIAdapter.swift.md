@@ -1,5 +1,5 @@
 ---
-digest: b987a345cf774107ac038f404ce883d3e969a4d0e47a6ceca038cd2c463f2ae1
+digest: 7d34124ea1bfeb5cb74b87b593be7e7a0997516cced6fa7bf5dfd4580be25110
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native FCM bridge remains within existing Android notification boundary; no documented chapter behavior changes.
+Reviewed concurrent Apple live session web boundary change; no new documented behavior beyond authenticated native transport.

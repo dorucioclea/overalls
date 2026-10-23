@@ -435,11 +435,6 @@ class LinkedMilaFfiAdapter(
         bindings.sessionConnect(config.trustDocument.copyOf(), deployment.host, config.publicKey,
             deployment.port, config.timeoutMs, signer)?.also { authenticatedFingerprint = milaSshFingerprint(config.publicKey) }
 
-    suspend fun machineResize(machineId: UUID, cpu: Int, memoryMiB: Int, diskGiB: Int): Result<Unit> {
-        val session = authenticatedSession ?: return Result.failure(IllegalStateException("session unavailable"))
-        val requestId = "porsche-" + UUID.randomUUID().toString().replace("-", "")
-        return session.machineResize(machineId, cpu, memoryMiB, diskGiB, requestId)
-    }
     override suspend fun machineResize(machineId: UUID, cpu: Int, memoryMiB: Int, diskGiB: Int): Result<Unit> {
         val session = authenticatedSession ?: return Result.failure(IllegalStateException("session unavailable"))
         return session.machineResize(machineId, cpu, memoryMiB, diskGiB, "porsche-" + UUID.randomUUID().toString().replace("-", ""))

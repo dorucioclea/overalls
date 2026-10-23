@@ -1,5 +1,5 @@
 ---
-digest: 7045f35b7131cf5d7934867eca4853e7be783627f97b1b388a4040924c554327
+digest: 8f25219964535a2bab43ce5772747d12ac97694d71390e92d11c25e3c0ad8672
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android app-lock settings controls; native lifecycle remains within accepted boundary.
+Reviewed Android Compose bounded field-width import correction; no architecture change.

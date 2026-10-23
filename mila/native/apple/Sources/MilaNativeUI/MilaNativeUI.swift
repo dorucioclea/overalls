@@ -106,7 +106,7 @@ private struct MilaMachineCreateView: View {
         busy = true
         Task {
             do { try await adapter.createMachine(name: name.trimmingCharacters(in: .whitespacesAndNewlines), cpu: c, memory: m, disk: d, requestID: UUID()); completed(true); dismiss() }
-            catch { busy = false; error = true; completed(false) }
+            catch { busy = false; self.error = true; completed(false) }
         }
     }
 }

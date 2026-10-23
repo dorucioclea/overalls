@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace Mila.Windows.Interop;
 
 /// <summary>Persisted endpoint for one Porsche management gateway.</summary>
-internal sealed record MilaDeployment(string Host, ushort Port = DefaultPort)
+internal sealed record MilaDeployment(string Host, ushort Port = 22)
 {
     /// <summary>Porsche's public management SSH listener.</summary>
     internal const ushort DefaultPort = 22;

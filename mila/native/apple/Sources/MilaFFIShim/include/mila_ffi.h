@@ -37,6 +37,7 @@ typedef struct MilaSnapshotSummary {
 MilaFfiStatus mila_session_command_format(const char *action, const char *machine_id, const char *request_id, MilaRouteOutput output);
 int32_t mila_session_machine_action(uint64_t handle, const uint8_t *machine, size_t machine_len, const uint8_t *action, size_t action_len, const uint8_t *request_id, size_t request_id_len);
 int32_t mila_session_machine_resize(uint64_t handle, const uint8_t *machine, size_t machine_len, uint32_t cpu, uint64_t memory, uint64_t disk, const uint8_t *request_id, size_t request_id_len);
+int32_t mila_session_machine_create(uint64_t handle, const uint8_t *name, size_t name_len, uint32_t cpu, uint64_t memory, uint64_t disk, const uint8_t *request_id, size_t request_id_len);
 MilaFfiStatus mila_snapshot_machine_actions(const uint8_t *bytes, size_t length, const char *host, uint16_t port, uint8_t has_port, uint32_t index, MilaMachineActions *out_actions);
 /* Returns the ABI major version. */
 uint32_t mila_ffi_version(void);

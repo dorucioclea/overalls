@@ -1,5 +1,5 @@
 ---
-digest: b86eb198e49f8900b1d9c405770e5b50646d30d7000cbd58a8a47b6b173af6ef
+digest: 9f0aa2b0dda2acf712d3b2891cc49a959b5326d99b923a14a897491c94cfefce
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native CI compile fix preserves existing platform boundary and behavior.
+Replaced Swift throwing fallback expression with explicit typed branching; behavior and architecture unchanged.

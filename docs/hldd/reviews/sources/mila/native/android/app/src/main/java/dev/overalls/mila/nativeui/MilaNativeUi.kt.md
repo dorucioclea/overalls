@@ -1,5 +1,5 @@
 ---
-digest: 3a36282b48befde9c064e5eb9f900f450cfccaeec4a6bb5f2355537b425b2b01
+digest: 9470a118792b82672acf3a989c0c8876fd6f47e01ee023d77ee879ad1dd8e506
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android UI smart-cast fix preserves existing native mutation behavior and architecture.
+Replaced fragile Compose weight modifiers with bounded widths for native Android compile compatibility.

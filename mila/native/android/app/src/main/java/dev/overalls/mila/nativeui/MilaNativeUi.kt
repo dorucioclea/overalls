@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.weight
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -344,7 +343,7 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
         } else {
             keys.forEach { key ->
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Column(modifier = Modifier.weight(1f)) {
+                    Column(modifier = Modifier.width(120.dp)) {
                         Text(key.label.ifBlank { key.fingerprint })
                         Text("${MilaStrings.text(MilaMessage.SshKeyAlgorithm)}: ${key.algorithm}", style = MaterialTheme.typography.labelSmall)
                         Text(key.fingerprint, style = MaterialTheme.typography.labelSmall)
@@ -409,9 +408,9 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
         Text(MilaStrings.text(MilaMessage.MachineCreate), style = MaterialTheme.typography.titleMedium)
         OutlinedTextField(name, { name = it }, label = { Text(MilaStrings.text(MilaMessage.MachineName)) }, singleLine = true)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(cpu, { cpu = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineCpu)) }, singleLine = true, modifier = Modifier.weight(1f))
-            OutlinedTextField(memory, { memory = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineMemory)) }, singleLine = true, modifier = Modifier.weight(1f))
-            OutlinedTextField(disk, { disk = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineDisk)) }, singleLine = true, modifier = Modifier.weight(1f))
+            OutlinedTextField(cpu, { cpu = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineCpu)) }, singleLine = true, modifier = Modifier.width(120.dp))
+            OutlinedTextField(memory, { memory = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineMemory)) }, singleLine = true, modifier = Modifier.width(120.dp))
+            OutlinedTextField(disk, { disk = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineDisk)) }, singleLine = true, modifier = Modifier.width(120.dp))
         }
         Button(enabled = !submitting, onClick = {
             val request = runCatching { MilaMachineCreateRequest(name, cpu.toInt(), memory.toInt(), disk.toInt()) }
@@ -460,9 +459,9 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
         if (machine != null) {
             Text(MilaStrings.text(MilaMessage.Resize), style = MaterialTheme.typography.titleMedium)
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                OutlinedTextField(resizeCpu, { resizeCpu = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineCpu)) }, singleLine = true, modifier = Modifier.weight(1f))
-                OutlinedTextField(resizeMemory, { resizeMemory = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineMemory)) }, singleLine = true, modifier = Modifier.weight(1f))
-                OutlinedTextField(resizeDisk, { resizeDisk = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineDisk)) }, singleLine = true, modifier = Modifier.weight(1f))
+                OutlinedTextField(resizeCpu, { resizeCpu = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineCpu)) }, singleLine = true, modifier = Modifier.width(120.dp))
+                OutlinedTextField(resizeMemory, { resizeMemory = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineMemory)) }, singleLine = true, modifier = Modifier.width(120.dp))
+                OutlinedTextField(resizeDisk, { resizeDisk = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineDisk)) }, singleLine = true, modifier = Modifier.width(120.dp))
                 Button(enabled = signedIn, onClick = { scope.launch { resizeResult = adapter.machineResize(id, resizeCpu.toIntOrNull() ?: 0, resizeMemory.toIntOrNull() ?: 0, resizeDisk.toIntOrNull() ?: 0).fold({ "Resize submitted" }, { "Resize rejected" }) } }) { Text(MilaStrings.text(MilaMessage.Resize)) }
             }
             if (resizeResult.isNotEmpty()) Text(resizeResult, style = MaterialTheme.typography.labelSmall)

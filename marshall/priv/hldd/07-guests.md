@@ -1168,6 +1168,13 @@ there is no temporary-path fallback, signing secret in evaluation or automatic
 stock-image reconstruction. See the
 [publication procedure](repo:nix/domains/artifacts/guest/native-promotion/README.md).
 
+Promotions whose sealed candidates are no longer in the cache stay as retained
+promotions. These are FreeBSD `5022d714`, FreeBSD `db752667` and OmniOS `45983bb7`.
+Each pins the exact output of its original verified promotion build by recursive
+NAR hash. A cache miss refuses; nothing re-promotes or rebuilds the image. A
+registry change therefore no longer needs the lost candidate evidence, but those
+images are not re-verified against later registry revisions.
+
 This activates the previously tested sealed image. Rebuilding current native
 userland after local MAC normalization yields a different FreeBSD candidate,
 which remains unadmitted; it does not replace the sealed closure. The

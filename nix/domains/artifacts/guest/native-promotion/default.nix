@@ -54,6 +54,39 @@ in
       exit 1
     '';
 
+  # @cc [owner:ghuntley,label:security;deployment] native-retained-promotion-fixed-output
+  # A promotion whose sealed candidate is no longer substitutable MAY be kept
+  # only as the exact output its original verify_approved! build produced,
+  # pinned by recursive NAR hash and substituted from the signed cache. The
+  # fallback MUST only refuse; it MUST NOT verify or emit any other bytes.
+  retained = { imageName, narHash, approval }:
+    assert lib.types.str.check imageName && builtins.match "lilly-[a-z0-9_-]+-promoted" imageName != null;
+    assert lib.types.str.check narHash && builtins.match "sha256-[A-Za-z0-9+/]{43}=" narHash != null;
+    assert approval.version == 1;
+    assert builtins.elem approval.manifest.os [ "freebsd" "illumos" ];
+    assert lib.types.str.check approval.image_id && builtins.match "sha256:[0-9a-f]{64}" approval.image_id != null;
+    pkgs.runCommand imageName {
+      outputHash = narHash;
+      outputHashMode = "recursive";
+      preferLocalBuild = true;
+      passthru = {
+        os = approval.manifest.os;
+        imageId = approval.image_id;
+        nativeAdmission = true;
+        imageAssemblyReady = true;
+        runtimeValidated = true;
+      };
+    } ''
+      cat >&2 <<'PUBLICATION'
+        The retained promoted image ${imageName} is absent from the signed Overalls cache.
+        Add the exact output of its original promotion build:
+          nix store add-path --name ${imageName} <original-promoted-output>
+        and verify the returned NAR hash before the Cachix publisher uploads it.
+        Do not rebuild, re-promote or substitute a different image.
+      PUBLICATION
+      exit 1
+    '';
+
   # @cc [owner:ghuntley,label:security;build] native-promoted-image-closed-output
   # Only explicitly reviewed approval data may select an admitted package. Its
   # build MUST verify exact artifacts and evidence before emitting the closed

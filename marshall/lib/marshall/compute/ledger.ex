@@ -146,12 +146,6 @@ defmodule Marshall.Compute.Ledger do
     |> Ash.read_one!(actor: SystemActor.compute())
   end
 
-  # @cc [owner:ghuntley,label:concurrency;reliability] ledger-host-lock-no-key
-  # Host rows MUST be locked FOR NO KEY UPDATE, never FOR UPDATE. Every model
-  # call, operation and placement row references compute_hosts, and their
-  # foreign-key FOR KEY SHARE checks MUST NOT queue behind (or deadlock with) the
-  # host lock that serializes exchanges, rotation and placement. Host keys are
-  # immutable, so the weaker mode still serializes every host mutation.
   # @cc [owner:ghuntley,label:concurrency;security] ledger-host-guest-fence
   # Guest-credential authentication (inference, Galileo, Peach) MUST take
   # share_host!/1 (FOR KEY SHARE), which never queues behind host exchanges.
@@ -174,6 +168,12 @@ defmodule Marshall.Compute.Ledger do
     |> Ash.read_one!(actor: SystemActor.compute())
   end
 
+  # @cc [owner:ghuntley,label:concurrency;reliability] ledger-host-lock-no-key
+  # Host rows MUST be locked FOR NO KEY UPDATE, never FOR UPDATE. Every model
+  # call, operation and placement row references compute_hosts, and their
+  # foreign-key FOR KEY SHARE checks MUST NOT queue behind (or deadlock with) the
+  # host lock that serializes exchanges, rotation and placement. Host keys are
+  # immutable, so the weaker mode still serializes every host mutation.
   @doc "The row lock mode `lock!/2` and `lock_history!/2` take for a resource."
   @spec lock_mode(module()) :: :for_update | String.t()
   def lock_mode(Marshall.Compute.Host), do: "FOR NO KEY UPDATE"

@@ -1,5 +1,5 @@
 ---
-digest: 98b72189286993f3b2fb42b6caef148fa3a35077b1b099d8e4a99e8241a7ee63
+digest: aef5f0153ffab92ef3d4075a5de58de285f6c875123b120fb5be0e9a3a5f7046
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Updated parity evidence for Apple durable app-lock lifecycle; platform authenticator integration remains explicitly open.
+Updated native parity evidence for authenticated Android thread and sharing controls plus Windows share mutation UI.

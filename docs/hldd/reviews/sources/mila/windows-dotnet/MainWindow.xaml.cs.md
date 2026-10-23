@@ -1,5 +1,5 @@
 ---
-digest: 745c495c0e488cd1f00236cd85c53e3add7685bf068019ca4f4b6dd8d52837f1
+digest: 05f9bd0a9f25576555948832be3b84f226964c67eaf82913ff443f912d92dc29
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows authenticated share mutation bridge; no chapter architecture change.
+Reviewed Windows WebView origin fence; no handbook chapter behavior changes.

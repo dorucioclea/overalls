@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using System.Security.Cryptography;
 using Windows.System;
 using Mila.Windows.Interop;
@@ -20,6 +21,7 @@ public sealed partial class MainWindow : Window
     private long _terminalGeneration;
     private ulong _webRevision;
     private Uri? _webUrl;
+    private bool _webNavigationBound;
     private readonly MilaSignInFlow _signIn = new();
     private bool _closed;
     public MainWindow(string? activation = null)
@@ -216,11 +218,27 @@ public sealed partial class MainWindow : Window
             if (endpoint.Url is { } address)
             {
                 await WebBrowser.EnsureCoreWebView2Async();
+                BindWebNavigationFence();
                 WebBrowser.Source = address;
                 WebBrowser.Visibility = Visibility.Visible;
             }
         }
         catch (InvalidDataException) { WebStatus.Text = S("webFailed", "Web control unavailable"); }
+    }
+    private void BindWebNavigationFence()
+    {
+        if (_webNavigationBound || WebBrowser.CoreWebView2 is not { } core) return;
+        core.NavigationStarting += (_, eventArgs) =>
+        {
+            if (_webUrl is not { } origin || !Uri.TryCreate(eventArgs.Uri, UriKind.Absolute, out Uri? target) ||
+                target.Scheme != Uri.UriSchemeHttps || !string.Equals(target.Host, origin.Host, StringComparison.OrdinalIgnoreCase) ||
+                target.Port != origin.Port || !string.IsNullOrEmpty(target.UserInfo) || !string.IsNullOrEmpty(target.Fragment))
+            {
+                eventArgs.Cancel = true;
+                WebStatus.Text = S("webFailed", "Web navigation refused");
+            }
+        };
+        _webNavigationBound = true;
     }
     private async void CopyWebAddress(object sender, RoutedEventArgs args)
     {

@@ -1,5 +1,5 @@
 ---
-digest: e3b3dce496894dd617d98bd2be23830e37ec81fef5e63e0c0902285efa9ba488
+digest: 34a6f8531aa08909d5f683400665cff43948917479c6c616d92c840f2b43ae5e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Linux implementation reviewed by its owner; no-impact receipt required for shared worktree.
+Applied rustfmt-only changes; runtime behavior and architecture unchanged.

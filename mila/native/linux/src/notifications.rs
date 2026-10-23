@@ -101,7 +101,10 @@ mod tests {
         assert!(!state.enabled());
         assert_eq!(state.enable(), Err(NotificationUnavailable::NoPushProvider));
         assert!(!state.enabled());
-        assert_eq!(state.register(), Err(NotificationUnavailable::NoPushProvider));
+        assert_eq!(
+            state.register(),
+            Err(NotificationUnavailable::NoPushProvider)
+        );
         assert!(!state.enabled());
     }
 
@@ -111,7 +114,10 @@ mod tests {
         assert!(state.can_display_locally());
         assert_eq!(state.enable(), Ok(()));
         assert!(state.enabled());
-        assert_eq!(state.register(), Err(NotificationUnavailable::NoPushProvider));
+        assert_eq!(
+            state.register(),
+            Err(NotificationUnavailable::NoPushProvider)
+        );
         assert!(!state.enabled());
     }
 }

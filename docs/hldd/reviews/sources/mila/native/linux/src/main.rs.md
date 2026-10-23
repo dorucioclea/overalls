@@ -1,5 +1,5 @@
 ---
-digest: 5234c800822c208ca554fc2ed574ddd204a8f8c58f0cce4fe922ba0cb4a993a4
+digest: 5ecd160d4a5d8015ec45cb635810c9562dbdd41614902155482ad1ab1a896a50
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Deployment switching and forgetting now clear authenticated Linux session authority; documented native lifecycle boundary.
+Applied rustfmt-only changes; runtime behavior and architecture unchanged.

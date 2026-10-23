@@ -621,10 +621,17 @@ impl TerminalStream {
         &self.renderer
     }
     pub fn render_output(&mut self, generation: u64, text: &str) -> Result<(), RuntimeError> {
-        if !self.state.output(generation, text.chars().count()).then_some(()).is_some() {
+        if !self
+            .state
+            .output(generation, text.chars().count())
+            .then_some(())
+            .is_some()
+        {
             return Err(RuntimeError::InvalidInput);
         }
-        self.renderer.append_text(text).map_err(|_| RuntimeError::InvalidInput)
+        self.renderer
+            .append_text(text)
+            .map_err(|_| RuntimeError::InvalidInput)
     }
     pub fn rendered_text(&self) -> String {
         self.renderer.lines().join("\n")

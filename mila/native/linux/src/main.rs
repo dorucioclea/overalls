@@ -155,8 +155,10 @@ impl NativeState {
                     let mut flow = deployment_sign_in.borrow_mut();
                     *flow = flow.clone().apply(SignInEvent::SignOut);
                     let parsed = ActivationRoute::parse(&route).expect("validated route");
-                    deployment_status
-                        .set_label(&format!("Deployment selected\n{}\nSign in required.", parsed.canonical()))
+                    deployment_status.set_label(&format!(
+                        "Deployment selected\n{}\nSign in required.",
+                        parsed.canonical()
+                    ))
                 }
                 Err(_) => deployment_status.set_label("Deployment host rejected by Rust policy."),
             }

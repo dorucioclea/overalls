@@ -562,7 +562,7 @@ fn parse_whoami(bytes: &[u8]) -> Option<WhoamiOutcome> {
     match value.get("status").and_then(serde_json::Value::as_str)? {
         "authenticated" => {
             let account = value.get("account").and_then(serde_json::Value::as_str)?;
-            ( !account.is_empty() && account.len() <= 320).then(|| WhoamiOutcome::Authenticated {
+            (!account.is_empty() && account.len() <= 320).then(|| WhoamiOutcome::Authenticated {
                 account: account.to_owned(),
             })
         }

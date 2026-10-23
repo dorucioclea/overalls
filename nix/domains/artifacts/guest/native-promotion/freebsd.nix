@@ -47,7 +47,11 @@ let
     ];
   };
 in
-promotion.promote {
+# The sealed candidate above is no longer substitutable, so this keeps the
+# exact output of its original verified promotion build. The candidate and
+# receipts remain the review record of that verification.
+promotion.retained {
   imageName = "lilly-freebsd-14_3-x86_64-promoted";
-  inherit candidate approval;
+  narHash = "sha256-wcEv0jqRuJRZHRuTDi1IRQQhvQ+2NVOxVoHLFMaDl5Q=";
+  inherit approval;
 }

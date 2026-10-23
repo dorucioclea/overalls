@@ -1,6 +1,6 @@
 ---
-digest: d81eb318b8f16def0c64568c158b00419c1c8f648c021c6709dbbd9c1d0be4dc
-disposition: updated
+digest: b767879e2ecea0310145e735a8ee784a7e844cddbd3b08f27c1a8d68aaebf134
+disposition: no-impact
 kind: source
 mapping_digest: c5d6b9e33b777c90bbc22e5608c825ce6977ecc6384e262a6c79b99b4af3d9a2
 path: marshall/lib/marshall/compute/ledger.ex
@@ -21,4 +21,4 @@ state: present
 version: 2
 ---
 
-Guest-credential authentication (inference, Galileo, Peach) now locks hosts FOR KEY SHARE so it never queues behind exchanges; host enable, drain, retire and those credentials issue/rotate/revoke take a FOR UPDATE fence that excludes in-flight readers (02-control-plane host lock paragraph).
+Moves the ledger-host-lock-no-key contract comment into its own block above lock_mode/1; code and documented lock modes are unchanged

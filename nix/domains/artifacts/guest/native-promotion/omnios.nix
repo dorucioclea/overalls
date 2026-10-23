@@ -47,7 +47,11 @@ let
     ];
   };
 in
-promotion.promote {
+# The sealed candidate above is no longer substitutable, so this keeps the
+# exact output of its original verified promotion build. The candidate and
+# receipts remain the review record of that verification.
+promotion.retained {
   imageName = "lilly-omnios-r151050-x86_64-promoted";
-  inherit candidate approval;
+  narHash = "sha256-qKv00aAEuM+ObUg2GpzEvepykgDpn3EE9aoG3EKWAhs=";
+  inherit approval;
 }

@@ -1,5 +1,5 @@
 ---
-digest: 9abf510d619dcd3068a9330f3b4af11bef9f47ba8d31fbe92aeffaebe63c562f
+digest: 35ad495b84f5dc5054c38e2b6f6d3bcab92f813eae44198773dea8777dd99ad8
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-07-guests records the a96f291b OmniOS promotion: Nix-assembled disk with vioif budget and growth disk-link fixes, five Nix machine scenario receipts, signed-cache publication; omniosGuest selects it, legacyOmniosGuest keeps 45983bb7 staged; evaluation asserts the new image ID and distinct retained package
+Guests chapter now records retained promotions for FreeBSD 5022d714, FreeBSD db752667 and OmniOS 45983bb7: exact original promoted outputs pinned by recursive NAR hash, refusing on cache miss, not re-verified against later registry revisions

@@ -78,3 +78,25 @@ incomplete scenarios and extra output files. It is a host verifier test, not
 native runtime acceptance. Passing this structural verifier does not qualify a
 new image, enter it in the exact admission registry, publish its bytes or activate
 its catalog selection; each remains a separate reviewed prerequisite.
+
+## Retained promotions
+
+The registry is an input of every `promote` build, so a registry change rebuilds
+every promotion and needs each sealed candidate again. `retained` keeps a promotion
+whose candidate is no longer substitutable. It takes the exact output of the
+original verified promotion build and pins it by recursive NAR hash. Before
+publishing a retained output:
+
+- run `nix store verify --no-trust` on the original promoted path;
+- compare its `manifest.json` with the reviewed manifest under `protocol/priv/native`;
+- check the disk and firmware SHA-256 against that manifest.
+
+Then add it:
+
+```sh
+nix store add-path --name lilly-OS-...-promoted /nix/store/ORIGINAL-PROMOTED-PATH
+```
+
+The Cachix publisher uploads the returned path. A cache miss refuses. A retained
+image is not re-verified against later registry revisions; runtime admission still
+uses the compiled registry.

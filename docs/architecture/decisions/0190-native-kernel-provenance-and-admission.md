@@ -734,6 +734,22 @@ keeps `98b23b79` in reviewed history; fleet staging retains its promotion.
 The selected image passed the ADR-0243 power-loss and interrupted-growth
 checks. Live Marshall-driven lifecycle on the new image is not yet recorded.
 
+On 2026-10-23 that registry change made every earlier promotion rebuild, because
+the registry is an input of the `verify_approved!` build. The sealed candidates and
+evidence of FreeBSD `5022d714`, FreeBSD `db752667` (VMM `f0d9275b`) and OmniOS
+`45983bb7` were no longer in the signed cache or any local store, and native
+assembly is not reproducible. Those three images therefore use a `retained`
+constructor in the
+[promotion module](../../../nix/domains/artifacts/guest/native-promotion/default.nix).
+It pins the exact output of each original verified promotion build by recursive NAR
+hash, and a cache miss only refuses. The pinned outputs came from the running
+production closure. Before publication they passed `nix store verify`, exact
+manifest equality with `protocol/priv/native` and disk/firmware SHA-256 checks.
+Re-verification of their evidence against later registry revisions is no longer
+possible; their admission still depends on the compiled registry at runtime.
+Authorization: the operator's instruction to rebuild the images and unblock
+deployment (2026-10-23).
+
 ## Open questions
 
 - Which further signed FreeBSD and OmniOS/illumos inputs should be accepted. OmniOS is

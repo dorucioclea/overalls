@@ -1,5 +1,5 @@
 ---
-digest: c2e4ed11483aa71b134616e75b64f1bb49cd68dfe00e427c4b8b986a8ddb7902
+digest: 298233725933ea35e1072230d14bf536e134bdd85a4e18ebd401d028c9da215c
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Updated native parity evidence for deployment lifecycle and authenticated machine create/resize UI slices.
+Updated native parity evidence for locale, lock, and web origin slices.

@@ -1,5 +1,5 @@
 ---
-digest: 1c5360325ac02e3c69d11f2bb44c3be109196ac0d0d5cddd9fc2cd97033b7a64
+digest: 828208f143544b625a8f65e384ed95b888c8df0ca3e1d63b40ecefd24f6ef195
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Typed Android share intent factory validates canonical navigation targets and emits bounded text payloads.
+Closed malformed canonical Android share URI literal; no behavior beyond restoring intended route output.

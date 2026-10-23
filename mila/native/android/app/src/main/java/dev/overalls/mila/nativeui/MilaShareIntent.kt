@@ -13,7 +13,7 @@ internal object MilaShareIntentFactory {
         MilaRoute.Machines -> "overalls://mila/machines"
         MilaRoute.Threads -> "overalls://mila/threads"
         MilaRoute.Settings -> "overalls://mila/settings"
-        is MilaRoute.Machine -> "overalls://mila/machines/${id}
+        is MilaRoute.Machine -> "overalls://mila/machines/${id}"
         is MilaRoute.Thread -> "overalls://mila/threads/${id}"
     }
 }

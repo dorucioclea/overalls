@@ -438,11 +438,12 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(MilaStrings.text(MilaMessage.MachineActions), style = MaterialTheme.typography.titleLarge)
         Text(id.toString(), style = MaterialTheme.typography.labelSmall)
-        val machine = when (state) {
-            is MilaMachineMutationState.Ready -> state.machine
-            is MilaMachineMutationState.Submitting -> state.machine
-            is MilaMachineMutationState.Applied -> state.machine
-            is MilaMachineMutationState.Failed -> state.machine
+        val currentState = state
+        val machine = when (currentState) {
+            is MilaMachineMutationState.Ready -> currentState.machine
+            is MilaMachineMutationState.Submitting -> currentState.machine
+            is MilaMachineMutationState.Applied -> currentState.machine
+            is MilaMachineMutationState.Failed -> currentState.machine
             else -> null
         }
         if (machine != null) Text("${machine.name} · ${machine.status}")

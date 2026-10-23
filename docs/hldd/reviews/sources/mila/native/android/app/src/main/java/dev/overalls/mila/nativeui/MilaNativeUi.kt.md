@@ -1,5 +1,5 @@
 ---
-digest: 44d7bd4124ac39ab06aefa406c4b7cab00a3d7fac6586e03361507331f01ec13
+digest: 56fc0d2f7d5619cfce24296f7620a39c1847051e49ab1cc80ea2db70733c9cbc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Added authenticated deployment forget UI; no architecture change.
+Reviewed Android delegated state smart-cast correction; no documented behavior or architecture change.

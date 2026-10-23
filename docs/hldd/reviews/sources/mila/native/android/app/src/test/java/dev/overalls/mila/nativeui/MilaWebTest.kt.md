@@ -1,5 +1,5 @@
 ---
-digest: 6f2235e78569f5356d289e577bdf8023ddab717dd51fa96b7d32d1cf271dfcd8
+digest: 5009640e0119402c4d27edd8e55342bf75d98f5df47131533016b129c8eeb825
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android web controller regression test verifies stale authenticated endpoint state is cleared.
+Reviewed Android unit test compatibility correction; no architecture change.

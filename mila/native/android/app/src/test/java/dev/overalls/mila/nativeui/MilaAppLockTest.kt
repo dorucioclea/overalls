@@ -33,9 +33,15 @@ class MilaAppLockTest {
 }
 
     @Test fun unavailableAuthenticatorCannotEnableOrUnlock() {
-        var state = MilaAppLockState(false, MilaLockDelay.Immediate)
-        state = state.availability(MilaLockAvailability.Unavailable)
-        assertEquals(MilaLockPhase.Unlocked, state.enable().phase)
-        assertEquals(false, state.enable().enabled)
-        assertEquals(null, MilaAppLockController(MilaAppLockMemoryStore(state)).requestUnlock())
+        val store = object : MilaAppLockStore {
+            var value: MilaAppLockState? = null
+            override fun read(): MilaAppLockState? = value
+            override fun write(state: MilaAppLockState) { value = state }
+        }
+        val controller = MilaAppLockController(store, MilaAppLockState(false, MilaLockDelay.Immediate))
+        controller.setAvailability(MilaLockAvailability.Unavailable)
+        controller.setEnabled(true)
+        assertEquals(false, controller.state.enabled)
+        assertEquals(null, controller.requestUnlock())
     }
+}

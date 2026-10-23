@@ -50,16 +50,19 @@ class MilaWebTest {
  }
  @Test fun setRequiresLoadedRevisionAndUsesIt() = kotlinx.coroutines.runBlocking {
   val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
-  var revision = -1L
+  var seenRevision = -1L
   val adapter = object : MilaFfiAdapter {
    override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
    override suspend fun webShow(machineId: java.util.UUID) = Result.success("{\"machine_id\":\"$id\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":7}")
-   override suspend fun webSet(machineId: java.util.UUID, port: Int, public: Boolean, requestRevision: Long) { revision = requestRevision; }
+   override suspend fun webSet(machineId: java.util.UUID, port: Int, public: Boolean, revision: Long): Result<Unit> {
+    seenRevision = revision
+    return Result.success(Unit)
+   }
   }
   val controller = MilaWebController(adapter)
   assertFalse(controller.set(id, 8081, false))
   assertTrue(controller.show(id))
   assertTrue(controller.set(id, 8081, false))
-  assertEquals(7L, revision)
+  assertEquals(7L, seenRevision)
  }
 }

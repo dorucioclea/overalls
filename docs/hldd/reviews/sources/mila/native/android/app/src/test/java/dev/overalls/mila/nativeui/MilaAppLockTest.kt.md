@@ -1,5 +1,5 @@
 ---
-digest: d60212aab7d0a520e72bfc49497d5c634019737d694669d14dcbee7edb1a90cd
+digest: 287d78346d7ff0a29e7dbf642c9701407ee46b5d8777b1dc103315a62e2ab7be
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Added Android app-lock unavailable-authenticator regression test; behavior remains within existing lock lifecycle.
+Reviewed Android unit test compatibility correction; no architecture change.

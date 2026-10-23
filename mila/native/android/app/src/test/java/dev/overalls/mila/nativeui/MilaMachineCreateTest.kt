@@ -2,7 +2,7 @@ package dev.overalls.mila.nativeui
 
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFailsWith
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 private class CreateAdapter : MilaFfiAdapter {
@@ -23,7 +23,7 @@ class MilaMachineCreateTest {
     }
 
     @Test fun rejectsInvalidResources() {
-        assertFailsWith<IllegalArgumentException> { MilaMachineCreateRequest("", 1, 256, 1) }
-        assertFailsWith<IllegalArgumentException> { MilaMachineCreateRequest("x", 0, 256, 1) }
+        assertThrows(IllegalArgumentException::class.java) { MilaMachineCreateRequest("", 1, 256, 1) }
+        assertThrows(IllegalArgumentException::class.java) { MilaMachineCreateRequest("x", 0, 256, 1) }
     }
 }

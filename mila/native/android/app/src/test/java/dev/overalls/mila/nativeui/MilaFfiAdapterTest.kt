@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -276,42 +277,6 @@ class MilaTrustEnrollmentTest {
         assertTrue(result.isFailure)
         assertEquals(0, store.writes)
         assertEquals(null, bindings.seenFetched)
-    }
-}
-
-class MilaAppLockTest {
-    private class Store : MilaAppLockStore {
-        var value: MilaAppLockState? = null
-        override fun read(): MilaAppLockState? = value
-        override fun write(state: MilaAppLockState) { value = state }
-    }
-
-    @Test fun staleAuthenticationNeverUnlocks() {
-        val c = MilaAppLockController(Store(), MilaAppLockState(true, MilaLockDelay.Immediate))
-        c.setAvailability(MilaLockAvailability.Available)
-        val token = c.requestUnlock()!!
-        c.finishUnlock(token + 1u, true)
-        assertEquals(MilaLockPhase.Authenticating, c.state.phase)
-        c.finishUnlock(token, true)
-        assertEquals(MilaLockPhase.Unlocked, c.state.phase)
-    }
-
-    @Test fun delayedBackgroundRelocksOnlyAfterDelay() {
-        val c = MilaAppLockController(Store(), MilaAppLockState(true, MilaLockDelay.OneMinute))
-        c.setAvailability(MilaLockAvailability.Available)
-        val token = c.requestUnlock()!!; c.finishUnlock(token, true)
-        c.onBackground(1000)
-        c.onForeground(60_999)
-        assertEquals(MilaLockPhase.Unlocked, c.state.phase)
-        c.onBackground(1000); c.onForeground(61_000)
-        assertEquals(MilaLockPhase.Locked, c.state.phase)
-    }
-
-    @Test fun unavailableFailOpenIsExplicitAndDisablesObscuring() {
-        val c = MilaAppLockController(Store(), MilaAppLockState(true, MilaLockDelay.Immediate))
-        c.setAvailability(MilaLockAvailability.Unavailable)
-        assertEquals(MilaLockPhase.Unlocked, c.state.phase)
-        assertTrue(!c.state.obscured)
     }
 }
 

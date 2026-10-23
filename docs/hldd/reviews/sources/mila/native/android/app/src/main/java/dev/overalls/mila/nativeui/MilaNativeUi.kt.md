@@ -1,5 +1,5 @@
 ---
-digest: 9470a118792b82672acf3a989c0c8876fd6f47e01ee023d77ee879ad1dd8e506
+digest: 7045f35b7131cf5d7934867eca4853e7be783627f97b1b388a4040924c554327
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Replaced fragile Compose weight modifiers with bounded widths for native Android compile compatibility.
+Reviewed Android app-lock settings controls; native lifecycle remains within accepted boundary.

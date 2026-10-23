@@ -72,6 +72,7 @@ fun MilaNativeRoot(
     materialProvider: MilaSessionMaterialProvider? = null,
     initialRoute: MilaRoute? = null,
     routeState: State<MilaRoute>? = null,
+    appLockController: MilaAppLockController? = null,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -217,7 +218,7 @@ fun MilaNativeRoot(
             is MilaRoute.Thread -> ThreadDetail(threadDetail, selected.id) {
                 scope.launch { threadListing = sessionAdapter.threadListing().getOrNull() }
             }
-            MilaRoute.Settings -> MilaSettingsScreen(sessionAdapter, signInState is MilaSignInState.SignedIn)
+            MilaRoute.Settings -> MilaSettingsScreen(sessionAdapter, signInState is MilaSignInState.SignedIn, appLockController)
         }
         if (route == MilaRoute.Machines && signInState is MilaSignInState.SignedIn) TerminalControls(sessionAdapter)
     }
@@ -287,7 +288,7 @@ private fun MilaDeploymentPicker(
 }
 
 @Composable
-private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean) {
+private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean, appLockController: MilaAppLockController? = null) {
     val context = LocalContext.current
     val controller = remember { MilaSettingsController(MilaSharedPreferencesStore(context.getSharedPreferences("mila.settings", 0))) }
     var settings by remember { mutableStateOf(controller.load()) }
@@ -312,6 +313,18 @@ private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean) {
                     MilaStrings.configure(context, Locale.forLanguageTag(canonical))
                 }, enabled = settings.locale != localeTag) {
                     Text(localeTag)
+                }
+            }
+        }
+        appLockController?.let { lock ->
+            Text(MilaStrings.text(MilaMessage.LockTitle), style = MaterialTheme.typography.titleMedium)
+            Text(if (lock.state.availability == MilaLockAvailability.Unavailable) MilaStrings.text(MilaMessage.LockExplain) else "${lock.state.phase}: ${lock.state.delay}")
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { lock.setEnabled(!lock.state.enabled) }, enabled = lock.state.availability == MilaLockAvailability.Available && lock.state.phase == MilaLockPhase.Unlocked) {
+                    Text(if (lock.state.enabled) "Disable" else "Enable")
+                }
+                MilaLockDelay.entries.forEach { delay ->
+                    Button(onClick = { lock.setDelay(delay) }, enabled = lock.state.phase == MilaLockPhase.Unlocked && lock.state.enabled) { Text(delay.name) }
                 }
             }
         }

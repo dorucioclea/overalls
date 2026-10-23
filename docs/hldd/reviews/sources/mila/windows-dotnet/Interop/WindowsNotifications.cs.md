@@ -1,5 +1,5 @@
 ---
-digest: 36072d0dcd3098a5fdd621072e78e19c4274e995374e3ee4e24b993d7af36ec5
+digest: 3007adf3b5475e39686da66418a37a9db1572fe206f450da8a478965079767a7
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows notification session fencing and smoke coverage; no chapter architecture change.
+Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.

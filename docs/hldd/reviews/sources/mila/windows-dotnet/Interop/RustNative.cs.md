@@ -1,5 +1,5 @@
 ---
-digest: 2f1cb2ddeb6cbeae10b31cd479f5384e85e61836d45b47fc678c0ebfe19c9253
+digest: 78dc98b5dd8a20cea0d0e3363146b2b790dd9cb9b61d902574c856c774b400a9
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows authenticated share mutation bridge; no chapter architecture change.
+Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.

@@ -62,7 +62,7 @@ public sealed partial class MainWindow : Window
             MilaRouteKind.Thread => $"{S("routeThread", "Thread")}: {route.Value.Id?.ToString("D")}",
             _ => $"{S("routeOpened", "Opened")}: {route.Value.Path}"
         };
-        if (external.Value.IsShareTarget)
+        if (external is { IsShareTarget: true })
             StatusText.Text += $" ({S("routeShared", "shared")})";
     }
     private static string S(string id, string fallback) => MilaStrings.Text(id, fallback);
@@ -248,9 +248,9 @@ public sealed partial class MainWindow : Window
             if (_webUrl is not { } loaded) return;
             address = loaded;
         }
-        var package = new Windows.ApplicationModel.DataTransfer.DataPackage();
+        var package = new global::Windows.ApplicationModel.DataTransfer.DataPackage();
         package.SetText(address.ToString());
-        Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
+        global::Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(package);
         WebStatus.Text = S("webCopied", "Web address copied");
     }
 

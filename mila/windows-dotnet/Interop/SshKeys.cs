@@ -71,7 +71,7 @@ internal sealed class MilaSshKeysController
     internal static IReadOnlyList<MilaSshKey> DecodeListing(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length > 256 * 1024) throw new InvalidDataException("SSH key listing too large");
-        using JsonDocument document = JsonDocument.Parse(bytes);
+        using JsonDocument document = JsonDocument.Parse(bytes.ToArray());
         JsonElement keys = document.RootElement.GetProperty("keys");
         if (keys.ValueKind != JsonValueKind.Array || keys.GetArrayLength() > 256) throw new InvalidDataException("Invalid SSH key listing");
         List<MilaSshKey> result = new(keys.GetArrayLength());

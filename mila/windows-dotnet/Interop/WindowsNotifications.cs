@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.IO;
 namespace Mila.Windows.Interop;
 
 internal sealed record MilaWindowsNotificationDevice(string Id, string Platform, bool Enabled);
@@ -32,7 +34,7 @@ internal sealed class MilaWindowsNotificationDevicesController
     internal static IReadOnlyList<MilaWindowsNotificationDevice> DecodeListing(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length > 256 * 1024) throw new InvalidDataException("Notification listing too large");
-        using JsonDocument document = JsonDocument.Parse(bytes);
+        using JsonDocument document = JsonDocument.Parse(bytes.ToArray());
         JsonElement devices = document.RootElement.GetProperty("devices");
         if (devices.ValueKind != JsonValueKind.Array || devices.GetArrayLength() > 256) throw new InvalidDataException("Invalid notification listing");
         List<MilaWindowsNotificationDevice> result = new(devices.GetArrayLength());

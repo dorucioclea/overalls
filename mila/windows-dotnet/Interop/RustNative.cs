@@ -499,7 +499,7 @@ internal static partial class RustNative
         if (!add) role = string.Empty;
         string machine = machineId.ToString("D");
         IntPtr m = Marshal.StringToCoTaskMemUTF8(machine), e = Marshal.StringToCoTaskMemUTF8(email), r = Marshal.StringToCoTaskMemUTF8(role), q = Marshal.StringToCoTaskMemUTF8(requestId);
-        try { return new((MilaNativeStatus)SessionShareMutationNative(handle, m, 36, e, (nuint)Encoding.UTF8.GetByteCount(email), r, (nuint)Encoding.UTF8.GetByteCount(role), add ? (byte)1 : (byte)0, q, (nuint)Encoding.UTF8.GetByteCount(requestId))); }
+        try { return new((MilaNativeStatus)SessionShareMutationNative(handle, m, 36, e, (nuint)Encoding.UTF8.GetByteCount(email), r, (nuint)Encoding.UTF8.GetByteCount(role ?? string.Empty), add ? (byte)1 : (byte)0, q, (nuint)Encoding.UTF8.GetByteCount(requestId))); }
         catch (DllNotFoundException) { return new(MilaNativeStatus.Unavailable); }
         catch (EntryPointNotFoundException) { return new(MilaNativeStatus.Unavailable); }
         catch (BadImageFormatException) { return new(MilaNativeStatus.Unavailable); }

@@ -442,8 +442,15 @@ public struct MilaSSHKeysView: View {
 @MainActor public struct MilaNativeApp: App {
     private let adapter: any MilaFFIAdapter
     @StateObject private var session: MilaDeploymentSessionController
-    public init() { adapter = LinkedMilaFFIAdapter() }
-    public init(adapter: any MilaFFIAdapter) { self.adapter = adapter }
+    public init() {
+        let selectedAdapter: any MilaFFIAdapter = LinkedMilaFFIAdapter()
+        self.adapter = selectedAdapter
+        self._session = StateObject(wrappedValue: MilaDeploymentSessionController(factory: { _ in selectedAdapter }))
+    }
+    public init(adapter: any MilaFFIAdapter) {
+        self.adapter = adapter
+        self._session = StateObject(wrappedValue: MilaDeploymentSessionController(factory: { _ in adapter }))
+    }
     public var body: some Scene { WindowGroup { MilaNativeRootView(adapter: adapter) } }
 }
 

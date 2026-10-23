@@ -1,5 +1,5 @@
 ---
-digest: 4b35929b26bbba61bd8b3459070e6b9e9b3880a2fb50a2177846a02db82e7bed
+digest: 8f33a6a24d7b4d4f96a970b66c0e98320f2a0873ff76826ee3aed76112808b2a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native CI compile fix preserves existing platform boundary and behavior.
+Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.

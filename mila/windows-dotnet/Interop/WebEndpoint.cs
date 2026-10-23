@@ -9,7 +9,7 @@ internal static class MilaWebEndpointDecoder
     internal static MilaWebEndpoint Decode(ReadOnlySpan<byte> bytes, Guid expectedMachine)
     {
         if (bytes.Length is 0 or > 64 * 1024) throw new InvalidDataException("web response bounds");
-        using JsonDocument document = JsonDocument.Parse(bytes);
+        using JsonDocument document = JsonDocument.Parse(bytes.ToArray());
         JsonElement root = document.RootElement;
         if (!root.TryGetProperty("machine_id", out JsonElement idValue) ||
             !Guid.TryParseExact(idValue.GetString(), "D", out Guid machine) || machine != expectedMachine)

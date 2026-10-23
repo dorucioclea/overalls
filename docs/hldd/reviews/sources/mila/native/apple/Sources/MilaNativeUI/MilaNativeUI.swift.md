@@ -1,5 +1,5 @@
 ---
-digest: 618b1e3f9a3d8bae66bb71fef0126ec45f5140ba8744844c54e89bcc04a21bce
+digest: 2e8dde9f3336dc67bd1dce02eee0f7c06847b68d1452501ab7466e3767fa1b43
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Apple native UI update; no additional architecture impact.
+Reviewed concurrent native platform change; no new documented behavior beyond existing parity scope.

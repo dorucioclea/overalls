@@ -49,7 +49,24 @@ public final class MilaUserDefaultsNotificationStore: MilaNotificationDeviceStor
 
 #if canImport(UserNotifications)
 /// Thin platform bridge. The app delegate supplies the APNs token to `register`.
-public final class MilaAppleNotificationService: NSObject {
+public final class MilaAppleNotificationService: NSObject, UNUserNotificationCenterDelegate {
+    /// Called on the main queue when the user taps a notification. The payload is
+    /// intentionally reduced to a bounded category so UI code never handles raw APNs data.
+    public var onAction: (@Sendable (String) -> Void)?
+
+    public override init() { super.init() }
+
+    public func installAsNotificationDelegate() {
+        UNUserNotificationCenter.current().delegate = self
+    }
+
+    public func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                       didReceive response: UNNotificationResponse,
+                                       withCompletionHandler completionHandler: @escaping () -> Void) {
+        let category = response.notification.request.content.categoryIdentifier
+        if !category.isEmpty { onAction?(String(category.prefix(64))) }
+        completionHandler()
+    }
     /// APNs delivers the token as opaque bytes. Encode it deterministically for
     /// the Rust validation boundary and never retain the bytes in this object.
     public static func tokenString(from deviceToken: Data) -> String? {

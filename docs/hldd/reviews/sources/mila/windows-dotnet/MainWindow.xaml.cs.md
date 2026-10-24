@@ -1,5 +1,5 @@
 ---
-digest: 8f33a6a24d7b4d4f96a970b66c0e98320f2a0873ff76826ee3aed76112808b2a
+digest: fc01ef0565e5738c9528d62a39e8ea895110a204d471f26bb33f741c1ce30756
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.
+Windows share activation now requires authenticated same-deployment route authorization

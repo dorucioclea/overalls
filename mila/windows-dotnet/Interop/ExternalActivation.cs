@@ -3,6 +3,26 @@ namespace Mila.Windows.Interop;
 /// <summary>Typed external activation accepted by the Windows host.</summary>
 internal readonly record struct MilaExternalActivation(MilaRoute Route, bool IsShareTarget);
 
+internal static class MilaShareTarget
+{
+    /// <summary>Authorizes a share activation before it reaches native controls.</summary>
+    /// <remarks>Sharing a route is navigation only; it must never implicitly mutate data.</remarks>
+    internal static bool TryAuthorize(
+        MilaExternalActivation activation,
+        bool authenticated,
+        string? activeHost,
+        out MilaRoute route)
+    {
+        route = default;
+        if (!activation.IsShareTarget || !authenticated ||
+            !string.Equals(activeHost, activation.Route.Host, StringComparison.OrdinalIgnoreCase) ||
+            activation.Route.Kind is not (MilaRouteKind.Machine or MilaRouteKind.Thread or MilaRouteKind.Threads))
+            return false;
+        route = activation.Route;
+        return true;
+    }
+}
+
 internal static class MilaExternalActivationParser
 {
     private const int MaxShareText = 4096;

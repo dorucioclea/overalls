@@ -157,6 +157,15 @@ internal static class Program
             "--share overalls://mgmt.example.test/threads");
         Require(shared is { Route.Kind: MilaRouteKind.Threads, IsShareTarget: true },
             "share activation routing");
+        Require(shared is { } accepted && MilaShareTarget.TryAuthorize(
+            accepted, authenticated: true, "mgmt.example.test", out MilaRoute authorized) &&
+            authorized.Kind == MilaRouteKind.Threads, "authenticated share authorization");
+        Require(shared is { } rejected && !MilaShareTarget.TryAuthorize(
+            rejected, authenticated: false, "mgmt.example.test", out _),
+            "signed-out share refusal");
+        Require(shared is { } wrongHost && !MilaShareTarget.TryAuthorize(
+            wrongHost, authenticated: true, "other.example.test", out _),
+            "cross-deployment share refusal");
         foreach (string invalid in new[] { "--share", "--sharex overalls://mgmt.example.test/machines", "--share https://example.test" })
             Require(MilaExternalActivationParser.ParseArguments(invalid) is null,
                 "invalid external activation refusal");

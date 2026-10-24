@@ -1,5 +1,5 @@
 ---
-digest: 8f25219964535a2bab43ce5772747d12ac97694d71390e92d11c25e3c0ad8672
+digest: 684a653e4d7e9e11d5752cfa5be408de12d1c006dd589930e8cb75fbfbd2f97f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android Compose bounded field-width import correction; no architecture change.
+Android native share chooser preserves canonical route boundaries

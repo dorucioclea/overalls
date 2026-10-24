@@ -1,5 +1,5 @@
 ---
-digest: 298233725933ea35e1072230d14bf536e134bdd85a4e18ebd401d028c9da215c
+digest: 44d2aa41b062c55b7e56586d85ff3213b0fea3ef8d1e2d71612710df2cc5ef1a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Updated native parity evidence for locale, lock, and web origin slices.
+Apple notification delegate routes bounded actions without changing deployment architecture

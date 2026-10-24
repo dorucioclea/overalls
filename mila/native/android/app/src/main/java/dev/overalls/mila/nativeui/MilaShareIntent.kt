@@ -9,6 +9,9 @@ internal object MilaShareIntentFactory {
         putExtra(Intent.EXTRA_TEXT, route.toCanonicalUri())
     }
 
+    /** Wraps the route payload in the platform chooser without exposing arbitrary text. */
+    fun chooser(route: MilaRoute): Intent = Intent.createChooser(create(route), null)
+
     private fun MilaRoute.toCanonicalUri(): String = when (this) {
         MilaRoute.Machines -> "overalls://mila/machines"
         MilaRoute.Threads -> "overalls://mila/threads"

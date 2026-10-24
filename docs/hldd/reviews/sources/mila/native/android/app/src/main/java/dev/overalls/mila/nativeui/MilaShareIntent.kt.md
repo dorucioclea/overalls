@@ -1,5 +1,5 @@
 ---
-digest: 828208f143544b625a8f65e384ed95b888c8df0ca3e1d63b40ecefd24f6ef195
+digest: 19cfaa9f6e1380db7d0520da9c58232b22b3e73b34e7cc1ac9e8c5570d2d1b3c
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Closed malformed canonical Android share URI literal; no behavior beyond restoring intended route output.
+Android native share chooser preserves canonical route boundaries

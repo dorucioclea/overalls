@@ -62,8 +62,16 @@ public sealed partial class MainWindow : Window
             MilaRouteKind.Thread => $"{S("routeThread", "Thread")}: {route.Value.Id?.ToString("D")}",
             _ => $"{S("routeOpened", "Opened")}: {route.Value.Path}"
         };
-        if (external is { IsShareTarget: true })
+        if (external is { IsShareTarget: true } share)
+        {
+            bool authenticated = _session.Handle is { } handle && handle != 0;
+            if (!MilaShareTarget.TryAuthorize(share, authenticated, _activeHost, out _))
+            {
+                StatusText.Text = S("signInFirst", "Sign in first");
+                return;
+            }
             StatusText.Text += $" ({S("routeShared", "shared")})";
+        }
     }
     private static string S(string id, string fallback) => MilaStrings.Text(id, fallback);
     private void ApplyStrings()

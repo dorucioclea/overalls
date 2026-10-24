@@ -192,6 +192,7 @@ fun MilaNativeRoot(
             Button({ route = MilaRoute.Machines }) { Text(MilaStrings.text(MilaMessage.Machines)) }
             Button({ route = MilaRoute.Threads }) { Text(MilaStrings.text(MilaMessage.Threads)) }
             Button({ route = MilaRoute.Settings }) { Text(MilaStrings.text(MilaMessage.Settings)) }
+            Button({ context.startActivity(MilaShareIntentFactory.chooser(route)) }) { Text("Share") }
             Button(::refresh) { Text(MilaStrings.text(MilaMessage.Refresh)) }
         }
         Text(status, style = MaterialTheme.typography.labelSmall)

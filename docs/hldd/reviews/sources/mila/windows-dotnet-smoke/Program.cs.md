@@ -1,5 +1,5 @@
 ---
-digest: ca57fd2302a36279c54d45ac11b97cacc0479bbec35163fe3d2f0935027ad8b9
+digest: 22ba3db4af57d4a489b3dd1647e100838b6fd0c884720d8ce92d56219a27932b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows smoke adds authenticated share refusal coverage within existing native smoke architecture.
+Windows share activation now requires authenticated same-deployment route authorization

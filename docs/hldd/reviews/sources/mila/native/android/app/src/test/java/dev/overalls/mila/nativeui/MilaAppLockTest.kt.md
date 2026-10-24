@@ -1,5 +1,5 @@
 ---
-digest: 57ab2dd4ae3db254443e5491426586d4d6c9e3b41b57c2ad67972bd3e9c24771
+digest: d279b60314ca3a11c28040f0a98474f2b73a4e2daee8c1fddd7b5a0f3f73e618
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Syntax-only Android test fix preserves documented behavior and architecture.
+Android app lock test remains behavior preserving

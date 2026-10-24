@@ -1345,7 +1345,6 @@ mod tests {
     }
 
     #[test]
-    #[test]
     fn web_set_requires_positive_policy_revision() {
         let mut session = LiveSession {
             handle: None,

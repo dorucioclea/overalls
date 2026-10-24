@@ -6,6 +6,9 @@ import java.util.Locale
 /** Persisted user preferences shared by the Android shell and its tests. */
 enum class MilaAppearance { System, Light, Dark }
 
+/** Direction used by the native shell's shared catalog and layout policy. */
+enum class MilaLocaleDirection { Ltr, Rtl }
+
 data class MilaSettings(
     val appearance: MilaAppearance = MilaAppearance.System,
     val locale: String = "en",
@@ -20,6 +23,16 @@ fun canonicalMilaLocale(value: String): String? {
     if (!normalized.matches(Regex("^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"))) return null
     val tag = Locale.forLanguageTag(normalized).toLanguageTag()
     return tag.takeIf { it != "und" && it.substringBefore('-').length in 2..3 }
+}
+
+/** Return RTL only for the language tags whose scripts flow right-to-left. */
+fun milaLocaleDirection(value: String): MilaLocaleDirection {
+    val language = canonicalMilaLocale(value)?.substringBefore('-')?.lowercase(Locale.ROOT)
+    return if (language in setOf("ar", "fa", "he", "ps", "ur", "yi")) {
+        MilaLocaleDirection.Rtl
+    } else {
+        MilaLocaleDirection.Ltr
+    }
 }
 
 interface MilaSettingsStore {

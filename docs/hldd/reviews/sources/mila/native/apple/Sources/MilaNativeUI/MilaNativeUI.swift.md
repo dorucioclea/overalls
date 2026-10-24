@@ -1,5 +1,5 @@
 ---
-digest: 115dcebe6631582d467083265bed7806ca2a44a9343aa906e6f3b24fb20b07fa
+digest: 7635091658e3c11d495622b94ee73572d1e9565aa5d3df47ee4d76b4f4260eea
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/apple/Sources/MilaNativeUI/MilaNativeUI.swift
+Apple locale catalog and RTL direction remain within existing native settings boundary.

@@ -396,6 +396,7 @@ private struct SettingsView: View {
                     Text("Español").tag("es")
                     Text("日本語").tag("ja")
                     Text("العربية").tag("ar")
+                    Text("עברית").tag("he")
                 }
                 .onChange(of: locale) { _, value in
                     let canonical = MilaStrings.canonicalLocale(value)
@@ -474,6 +475,8 @@ public struct MilaSSHKeysView: View {
                         if key.isCurrentDevice { Text(MilaStrings.text(.sshKeyThisDevice)).font(.caption) }
                         Button(MilaStrings.text(.sshKeyRevoke)) { Task { await controller.revoke(key) } }.disabled(key.isCurrentDevice)
                     }
+        .environment(\.locale, Locale(identifier: locale))
+        .environment(\.layoutDirection, ["ar", "he"].contains(locale) ? .rightToLeft : .leftToRight)
                 }
             }
         }.navigationTitle(MilaStrings.text(.sshKeysTitle)).task { await controller.load(signedIn: signedIn) }

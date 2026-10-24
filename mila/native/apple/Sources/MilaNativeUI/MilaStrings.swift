@@ -12,7 +12,7 @@ public enum MilaStrings {
         let script = parts.dropFirst().first(where: { $0.count == 4 })?.capitalized
         let region = parts.dropFirst().first(where: { $0.count == 2 || $0.count == 3 && $0.allSatisfy(\.isNumber) })?.uppercased()
         let candidate = [language, script, region].compactMap { $0 }.joined(separator: "-")
-        return ["en", "fr-FR", "de", "es", "ja", "ar"].contains(candidate) ? candidate : "en"
+        return ["en", "fr-FR", "de", "es", "ja", "ar", "he"].contains(candidate) ? candidate : "en"
     }
     private static let ids: [MilaMessage: String] = [
         .appName: "appTitle", .sharePrincipal: "sharePrincipal", .shareAdd: "shareAdd", .shareRemove: "shareRemove", .shareAdded: "shareAdded", .shareRemoved: "shareRemoved", .machines: "machinesTitle", .threads: "tabThreads", .settings: "settingsTitle",

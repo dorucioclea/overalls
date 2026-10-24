@@ -1,5 +1,5 @@
 ---
-digest: 2fcc63b11caf8860ffd93e029bca0ff1bbbf312fff748f06253672cccac206ba
+digest: 4e0ddb358baa17a40fa2f2523b5edb797b876b63d7cde8a6e4c888917c9fd5a0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale persistence bounds canonicalization only
+Apple locale catalog and RTL direction remain within existing native settings boundary.

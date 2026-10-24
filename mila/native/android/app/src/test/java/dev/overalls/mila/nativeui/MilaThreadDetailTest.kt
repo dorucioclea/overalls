@@ -41,6 +41,15 @@ class MilaThreadDetailTest {
         assertFalse(controller.submit(MilaThreadCommand.Show, "unexpected"))
     }
 
+    @Test fun planApprovalUsesClosedCommandInputContract() = runBlocking {
+        val controller = MilaThreadDetailController(ThreadAdapter())
+        controller.setSession(true, listing)
+        controller.select(id)
+        assertTrue(controller.submit(MilaThreadCommand.PlanApprove))
+        assertFalse(controller.submit(MilaThreadCommand.PlanApprove, "unexpected"))
+        assertTrue(controller.submit(MilaThreadCommand.PlanRevise, "tighten rollout"))
+    }
+
     @Test fun rejectedThreadCommandIsTyped() = runBlocking {
         val controller = MilaThreadDetailController(ThreadAdapter(false))
         controller.setSession(true, listing)

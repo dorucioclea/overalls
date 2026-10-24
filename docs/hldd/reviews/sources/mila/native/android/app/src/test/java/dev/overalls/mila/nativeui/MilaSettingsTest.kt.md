@@ -1,5 +1,5 @@
 ---
-digest: e3cf0c7946f713961d80706aedc68de3b13dba972a484680c0210da246a948de
+digest: d8a7034724681adbcce874d22fe7c31afe6fe598b7ce92b2faed25678fba8fdf
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android locale boundary now canonicalizes storage input
+Android locale direction test preserves native settings behavior

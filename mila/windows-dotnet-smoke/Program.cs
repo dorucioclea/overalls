@@ -118,6 +118,11 @@ internal static class Program
         Require(terminal.Resize(7, 120, 40) && terminal.SendInput(7, new byte[] { 13 }), "terminal live controls");
         Require(!terminal.Append(6, "stale"), "stale terminal generation refusal");
         terminal.Kill(7); Require(!terminal.Reconnect(7), "killed terminal reconnect refusal");
+        terminal.BeginAuthenticatedAttach(9, 8, true);
+        Require(terminal.Append(8, "reconnected\n"), "terminal reconnect attach");
+        terminal.SignOut();
+        Require(!terminal.Reconnect(8), "signed-out terminal reconnect refusal");
+        Require(!terminal.Append(8, "late"), "signed-out stale terminal output refusal");
         MilaSessionListing listing = RustNative.DecodeSessionListing(Encoding.UTF8.GetBytes("{\"machines\":[{\"id\":\"0d9cc041-9db2-4e4c-b28b-1e41d7f472c1\",\"name\":\"test\",\"desired_state\":\"running\",\"observed_state\":\"running\",\"pinned\":false,\"read\":true,\"write\":true,\"manage\":true}],\"has_more\":true}"));
         Require(listing.HasMore && listing.Machines.Count == 1 && listing.Machines[0].Name == "test", "bounded live listing projection");
         bool refused = false;

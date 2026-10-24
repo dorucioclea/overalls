@@ -20,10 +20,11 @@ pub enum NotificationCapability {
 }
 
 /// Native notification state owned by the Linux presentation host.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct NotificationState {
     capability: NotificationCapability,
     enabled: bool,
+    devices: Vec<String>,
 }
 
 impl NotificationState {
@@ -34,6 +35,7 @@ impl NotificationState {
                 NotificationUnavailable::NoPushProvider,
             ),
             enabled: false,
+            devices: Vec::new(),
         }
     }
 
@@ -41,6 +43,7 @@ impl NotificationState {
         Self {
             capability: NotificationCapability::LocalDesktop,
             enabled: false,
+            devices: Vec::new(),
         }
     }
 
@@ -51,6 +54,35 @@ impl NotificationState {
     pub const fn enabled(&self) -> bool {
         self.enabled
     }
+
+    /// Restores bounded local device identifiers from a JSON array.
+    pub fn load_devices(&mut self, bytes: &[u8]) -> Result<(), NotificationUnavailable> {
+        let values: Vec<String> = serde_json::from_slice(bytes)
+            .map_err(|_| NotificationUnavailable::NoPushProvider)?;
+        if values.len() > 32 || values.iter().any(|id| id.is_empty() || id.len() > 128) {
+            return Err(NotificationUnavailable::NoPushProvider);
+        }
+        self.devices = values;
+        Ok(())
+    }
+
+    pub fn devices(&self) -> &[String] { &self.devices }
+
+    pub fn persist_devices(&self) -> Result<Vec<u8>, NotificationUnavailable> {
+        serde_json::to_vec(&self.devices).map_err(|_| NotificationUnavailable::NoPushProvider)
+    }
+
+    pub fn register_device(&mut self, id: &str) -> Result<(), NotificationUnavailable> {
+        if id.is_empty() || id.len() > 128 || self.devices.len() >= 32 {
+            return Err(NotificationUnavailable::NoPushProvider);
+        }
+        if !self.devices.iter().any(|existing| existing == id) {
+            self.devices.push(id.to_owned());
+        }
+        Ok(())
+    }
+
+    pub fn remove_device(&mut self, id: &str) { self.devices.retain(|existing| existing != id); }
 
     /// Attempts to register this host with the platform push provider.
     ///
@@ -126,5 +158,18 @@ mod tests {
             Err(NotificationUnavailable::NoPushProvider)
         );
         assert!(!state.enabled());
+    }
+
+    #[test]
+    fn desktop_devices_round_trip_with_bounds() {
+        let mut state = NotificationState::desktop();
+        state.register_device("desktop-a").expect("register");
+        state.register_device("desktop-a").expect("idempotent");
+        let bytes = state.persist_devices().expect("persist");
+        let mut restored = NotificationState::desktop();
+        restored.load_devices(&bytes).expect("load");
+        assert_eq!(restored.devices(), &["desktop-a"]);
+        restored.remove_device("desktop-a");
+        assert!(restored.devices().is_empty());
     }
 }

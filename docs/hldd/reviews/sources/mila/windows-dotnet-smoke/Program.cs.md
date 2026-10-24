@@ -1,5 +1,5 @@
 ---
-digest: 878e04f0c218cf25c66c829af651099ea8704185bdc149460f6d968a98085aee
+digest: 9368532f276702af6abd8789e7bfbc8460ee238f3282d67058b5703ed05122a0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review native session security changes preserve documented boundaries
+Windows terminal smoke covers reconnect signout stale frame refusal

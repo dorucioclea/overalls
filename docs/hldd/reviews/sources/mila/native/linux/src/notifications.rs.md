@@ -1,5 +1,5 @@
 ---
-digest: 2b9110d14f0b0d04799c401921780dd451ec3886ee7b85260995279bd757f262
+digest: 2ea5f81644d8538dc0b6fccf647b646abd1be95bca3cfe5c961c73add870371e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux notification disable lifecycle preserves capability and fail-closed state
+Linux notification device persistence remains local bounded state

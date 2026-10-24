@@ -83,7 +83,8 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
    state = MilaSignInState.Failed(awaiting.deployment, MilaFfiError.Unavailable)
    return false
   }
-  return when (MilaApprovalInfo.decode(whoamiPayload, awaiting.deployment.host)) {
+  val whoami = MilaApprovalInfo.decode(whoamiPayload, awaiting.deployment.host)
+  return when (whoami) {
    MilaWhoami.Approved -> {
     val listing = runCatching {
      session.readMachines()

@@ -92,9 +92,6 @@ fun MilaNativeRoot(
     var route by remember { mutableStateOf(initialRoute ?: MilaRoute.Machines) }
     LaunchedEffect(routeState?.value) { routeState?.value?.let { route = it } }
     LaunchedEffect(initialRoute) { initialRoute?.let { route = it } }
-    LaunchedEffect(signInState) {
-        if (signInState is MilaSignInState.SignedIn) onAuthenticatedRoute?.invoke()
-    }
     var connection by remember { mutableStateOf<MilaSessionConnection>(MilaSessionConnection.Idle) }
     val localContext = LocalContext.current
     val deploymentStore = remember(localContext) { MilaSharedPreferencesDeploymentStore(localContext.getSharedPreferences("mila.deployment", 0)) }
@@ -108,6 +105,9 @@ fun MilaNativeRoot(
     val machineDetail = remember(sessionAdapter) { MilaMachineDetailController(sessionAdapter) }
     val threadDetail = remember(sessionAdapter) { MilaThreadDetailController(sessionAdapter) }
     var signInState by remember { mutableStateOf<MilaSignInState>(MilaSignInState.SignedOut) }
+    LaunchedEffect(signInState) {
+        if (signInState is MilaSignInState.SignedIn) onAuthenticatedRoute?.invoke()
+    }
     var threadListing by remember { mutableStateOf<MilaThreadListing?>(null) }
     // Changing the selected deployment fences the authenticated session immediately. This keeps
     // machine/thread data from the previous host from remaining actionable while the user edits

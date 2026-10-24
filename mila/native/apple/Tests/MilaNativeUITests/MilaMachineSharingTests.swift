@@ -18,4 +18,11 @@ final class MilaMachineSharingTests: XCTestCase {
         c.submit(principal: "person@example.test")
         guard case .failed(nil, nil, false, .signedOut) = c.state else { XCTFail("signed out must be rejected") ; return }
     }
+
+    func testRejectsZeroRequestIDBeforeSubmission() throws {
+        let c = MilaMachineSharingController(adapter: UnavailableMilaFFIAdapter())
+        c.setSession(signedIn: true, machine: try machine())
+        c.submit(principal: "person@example.test", requestID: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!)
+        guard case .failed(_, nil, false, .invalidRequestID) = c.state else { XCTFail("zero request IDs must be rejected"); return }
+    }
 }

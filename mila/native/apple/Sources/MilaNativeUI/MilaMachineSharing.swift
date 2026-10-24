@@ -21,6 +21,7 @@ public enum MilaShareRole: String, CaseIterable, Identifiable, Sendable {
 
 public enum MilaMachineSharingError: Error, Equatable, Sendable {
     case invalidPrincipal
+    case invalidRequestID
     case signedOut
     case noMachine
     case unavailable
@@ -60,6 +61,7 @@ public final class MilaMachineSharingController: ObservableObject {
     public func submit(principal raw: String, role: MilaShareRole = .viewer, remove: Bool = false, requestID: UUID = UUID()) {
         guard authenticated else { state = .failed(machineID: machine?.id, principal: nil, remove: remove, error: .signedOut); return }
         guard let machine else { state = .failed(machineID: nil, principal: nil, remove: remove, error: .noMachine); return }
+        guard requestID.uuidString != "00000000-0000-0000-0000-000000000000" else { state = .failed(machineID: machine.id, principal: nil, remove: remove, error: .invalidRequestID); return }
         let principal: MilaSharePrincipal
         do { principal = try MilaSharePrincipal(raw) }
         catch { state = .failed(machineID: machine.id, principal: nil, remove: remove, error: .invalidPrincipal); return }

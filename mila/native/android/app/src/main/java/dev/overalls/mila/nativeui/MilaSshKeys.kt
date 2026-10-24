@@ -37,16 +37,19 @@ interface MilaSshKeyStore {
  */
 class MilaSshKeyController(initialStore: MilaSshKeyStore? = null) {
     private var store: MilaSshKeyStore? = initialStore
+    private var generation: Long = 0
     var keys: List<MilaSshKey> = readKeys()
         private set
 
     /** Replaces the authority without retaining the previous session handle. */
     fun bindSession(session: MilaSessionHandle?, currentFingerprint: String? = null) {
+        generation++
         store = session?.let { MilaSessionSshKeyStore(it, currentFingerprint) }
         refresh()
     }
 
     fun bindStore(value: MilaSshKeyStore?) {
+        generation++
         store = value
         refresh()
     }
@@ -65,9 +68,13 @@ class MilaSshKeyController(initialStore: MilaSshKeyStore? = null) {
 
     fun revoke(key: MilaSshKey): Boolean {
         if (key.isCurrentDevice) return false
+        val observedGeneration = generation
+        val observedStore = store ?: return false
         val target = key.id?.toString() ?: key.fingerprint
-        val ok = store?.revoke(target) == true
-        if (ok) refresh()
+        val ok = observedStore.revoke(target)
+        // A session switch may complete while the revoke request is in flight.
+        // Never refresh a projection from the old authority after that switch.
+        if (ok && observedGeneration == generation && observedStore === store) refresh()
         return ok
     }
 

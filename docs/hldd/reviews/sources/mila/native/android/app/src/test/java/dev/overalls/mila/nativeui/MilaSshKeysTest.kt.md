@@ -1,5 +1,5 @@
 ---
-digest: c8ff5773ee3f72fe297abdb6b0e274427b243a88ec60029f7602b3e384b2b0c7
+digest: 7a5d0ba3c09886a8e2cf2b1d427e3d0d7bdcdd35a00163467617ee29ff2dd371
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-SSH projection validation only
+SSH revoke generation fencing

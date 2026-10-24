@@ -68,6 +68,23 @@ class MilaSshKeysTest {
   }
   assertFalse(MilaSshKeyController(store).revoke("SHA256:device"))
  }
+
+ @Test fun staleRevokeCannotRefreshNewSessionProjection() {
+  lateinit var controller: MilaSshKeyController
+  val old = object : MilaSshKeyStore {
+   override fun list() = listOf(MilaSshKey("old", "old"))
+   override fun revoke(fingerprint: String): Boolean {
+    controller.bindStore(object : MilaSshKeyStore {
+     override fun list() = listOf(MilaSshKey("new", "new"))
+     override fun revoke(fingerprint: String) = false
+    })
+    return true
+   }
+  }
+  controller = MilaSshKeyController(old)
+  assertTrue(controller.revoke("old"))
+  assertEquals(listOf("new"), controller.keys.map { it.fingerprint })
+ }
 }
 
 private open class AndroidKeysRustBindings : MilaRustBindings {

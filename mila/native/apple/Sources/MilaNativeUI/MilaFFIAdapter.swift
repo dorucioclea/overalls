@@ -404,7 +404,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
     }
 
     public func revokeSSHKey(_ key: MilaSSHKey, requestID: UUID) async throws {
-        guard let liveSession else { throw MilaFFIError.unavailable }
+        guard requestID != UUID.zero, let liveSession else { throw MilaFFIError.unavailable }
         try liveSession.revokeSSHKey(id: key.id, requestID: requestID)
     }
 
@@ -455,6 +455,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
     /// @cc [owner:ghuntley,label:security] mila-apple-no-fabricated-submission
     /// Formatting MUST NOT be reported as submission; absent an authenticated session, actions fail unavailable.
     public func submit(_ action: MilaMachineAction, machine: MilaMachinePresentation, requestID: UUID) async throws {
+        guard requestID != UUID.zero else { throw MilaFFIError.unavailable }
         guard machine.actions.values.contains(action) else { throw MilaFFIError.actionNotAllowed }
         _ = try formatMachineAction(action, machineID: machine.id, requestID: requestID)
         guard let liveSession else { throw MilaFFIError.unavailable }
@@ -464,19 +465,19 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
     }
 
     public func resize(machine: MilaMachinePresentation, cpu: UInt32, memory: UInt64, disk: UInt64, requestID: UUID) async throws {
-        guard machine.machine.write, (1...256).contains(cpu), (256...4_194_304).contains(memory), (1...16_777_216).contains(disk), let liveSession else { throw MilaFFIError.unavailable }
+        guard requestID != UUID.zero, machine.machine.write, (1...256).contains(cpu), (256...4_194_304).contains(memory), (1...16_777_216).contains(disk), let liveSession else { throw MilaFFIError.unavailable }
         do { try liveSession.machineResize(machine: machine.id, cpu: cpu, memory: memory, disk: disk, requestID: requestID) }
         catch { throw MilaFFIError.unavailable }
     }
 
     public func createMachine(name: String, cpu: UInt32, memory: UInt64, disk: UInt64, requestID: UUID) async throws {
-        guard let liveSession, !name.isEmpty, name.utf8.count <= 128, cpu > 0, memory > 0, disk > 0 else { throw MilaFFIError.unavailable }
+        guard requestID != UUID.zero, let liveSession, !name.isEmpty, name.utf8.count <= 128, cpu > 0, memory > 0, disk > 0 else { throw MilaFFIError.unavailable }
         do { try liveSession.machineCreate(name: name, cpu: cpu, memory: memory, disk: disk, requestID: requestID) }
         catch { throw MilaFFIError.unavailable }
     }
 
     public func submitShare(_ principal: MilaSharePrincipal, role: MilaShareRole?, machine: MilaMachinePresentation, remove: Bool, requestID: UUID) async throws {
-        guard machine.machine.write else { throw MilaMachineSharingError.unavailable }
+        guard requestID != UUID.zero, machine.machine.write else { throw MilaMachineSharingError.unavailable }
         guard let liveSession else { throw MilaMachineSharingError.unavailable }
         do { try liveSession.shareMutation(machine: machine.id, email: principal.value, role: remove ? nil : role?.rawValue, add: !remove, requestID: requestID) }
         catch { throw MilaMachineSharingError.unavailable }

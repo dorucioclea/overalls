@@ -1,5 +1,5 @@
 ---
-digest: d475d3721fd08a2dca799695ee1f702472d5e9a52a965271b46a413998db03d1
+digest: 6bc4bc8c5e30cc5668945a6e4ab2aeefaafe37ce449294217499a26fbc96503d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple thread prompt action and UI wiring
+Apple FFI rejects zero request identifiers before native submission

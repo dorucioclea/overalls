@@ -406,7 +406,7 @@ public sealed partial class MainWindow : Window
             return;
         }
         byte[] input = System.Text.Encoding.UTF8.GetBytes(TerminalInputText.Text);
-        MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput((ulong)input.Length, true);
+        MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput((nuint)input.Length, true);
         bool sent = result.IsValid && _terminal.SendInput(_terminalGeneration, input);
         TerminalStatus.Text = sent ? S("terminalLive", "Terminal live") : S("terminalReadOnly", "Terminal is read only");
         if (sent) TerminalInputText.Text = string.Empty;
@@ -582,7 +582,7 @@ public sealed partial class MainWindow : Window
         string locale = LocalePicker.SelectedItem?.ToString() ?? "en";
         try
         {
-            MilaSettings settings = new(locale, DarkModeToggle.IsOn).Normalize();
+            MilaSettings settings = new MilaSettings(locale, DarkModeToggle.IsOn).Normalize();
             MilaSettingsStore.Save(settings);
             Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
                 ? FlowDirection.RightToLeft

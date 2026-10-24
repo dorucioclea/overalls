@@ -8,6 +8,8 @@ internal enum MilaWindowsNotificationDevicesStatus { SignedOut, Loading, Loaded,
 
 internal sealed class MilaWindowsNotificationDevicesController
 {
+    private static bool ValidText(string value, int maxBytes) =>
+        !string.IsNullOrWhiteSpace(value) && value.Length <= maxBytes && value.All(character => !char.IsControl(character));
     private readonly Func<CancellationToken, Task<IReadOnlyList<MilaWindowsNotificationDevice>>> load;
     private readonly Func<string, CancellationToken, Task> remove;
     private readonly Func<string, bool, CancellationToken, Task> preferences;

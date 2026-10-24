@@ -131,6 +131,7 @@ class MilaAuthenticatedNotificationController(
     fun refresh() = delegate.refresh()
 
     fun register(provider: MilaNotificationProvider, os: MilaNotificationOs): Boolean {
+        if (!sessionActive) return false
         if (!os.notificationsEnabled()) return false
         val id = provider.registrationId() ?: return false
         if (adapter.validatePushRegistration(id.value, appId, deployment, null).isFailure) return false

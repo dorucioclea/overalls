@@ -1,5 +1,5 @@
 ---
-digest: 365db87564454d6b39fc6240f6f9b1af7db5ad599c26c20813e7f69c369ffa20
+digest: 595625331be85916526fcc7cd9026479cbe0d8f36f81c2a07e9ed669cc75731c
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-notification validation bounds
+Linux notification device lifecycle validation and idempotent persistence

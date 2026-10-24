@@ -59,7 +59,13 @@ impl NotificationState {
     pub fn load_devices(&mut self, bytes: &[u8]) -> Result<(), NotificationUnavailable> {
         let values: Vec<String> =
             serde_json::from_slice(bytes).map_err(|_| NotificationUnavailable::NoPushProvider)?;
-        if values.len() > 32 || values.iter().any(|id| !Self::valid_device_id(id)) {
+        if values.len() > 32
+            || values.iter().any(|id| !Self::valid_device_id(id))
+            || values
+                .iter()
+                .enumerate()
+                .any(|(index, id)| values[..index].iter().any(|existing| existing == id))
+        {
             return Err(NotificationUnavailable::NoPushProvider);
         }
         self.devices = values;
@@ -75,9 +81,13 @@ impl NotificationState {
     }
 
     pub fn register_device(&mut self, id: &str) -> Result<(), NotificationUnavailable> {
-        if !Self::valid_device_id(id)
-            || self.devices.len() >= 32
-        {
+        if !Self::valid_device_id(id) {
+            return Err(NotificationUnavailable::NoPushProvider);
+        }
+        if self.devices.iter().any(|existing| existing == id) {
+            return Ok(());
+        }
+        if self.devices.len() >= 32 {
             return Err(NotificationUnavailable::NoPushProvider);
         }
         if !self.devices.iter().any(|existing| existing == id) {
@@ -205,6 +215,14 @@ mod tests {
         assert!(state.register_device("bad\nvalue").is_err());
         let invalid = serde_json::to_vec(&["bad id"]).expect("json");
         assert!(state.load_devices(&invalid).is_err());
+        let duplicate = serde_json::to_vec(&["desktop-a", "desktop-a"]).expect("json");
+        assert!(state.load_devices(&duplicate).is_err());
+        let mut full = NotificationState::desktop();
+        for index in 0..32 {
+            full.register_device(&format!("desktop-{index}")).expect("register");
+        }
+        full.register_device("desktop-0").expect("duplicate is idempotent");
+        assert!(full.register_device("desktop-new").is_err());
         let multibyte = "é".repeat(65);
         assert!(state.register_device(&multibyte).is_err());
     }

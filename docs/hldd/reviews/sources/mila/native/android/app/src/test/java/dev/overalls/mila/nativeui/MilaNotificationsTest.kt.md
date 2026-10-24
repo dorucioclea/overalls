@@ -1,5 +1,5 @@
 ---
-digest: a72b1b234a5075f34e5e5170f56f9ba0641e8525a1f19e69e9a4fdb368a0bdf1
+digest: fc35cb8f61243ab1fab9daf4809f5267b2da0dbbe4353eb43b6adb8249401bb0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android notification invalidation refusal test preserves signed-out device state
+notification registration requires authenticated session

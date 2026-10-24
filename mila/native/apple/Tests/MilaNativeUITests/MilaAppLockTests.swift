@@ -1,12 +1,12 @@
 import XCTest
 @testable import MilaNativeUI
 
-private actor FakeEvaluator: MilaBiometricEvaluator {
+private struct FakeEvaluator: MilaBiometricEvaluator, Sendable {
     var available: Bool
     var result: Bool
     init(available: Bool = true, result: Bool = true) { self.available = available; self.result = result }
-    nonisolated func availability() -> Bool { true }
-    nonisolated func authenticate(reason: String) async -> Bool { true }
+    nonisolated func availability() -> Bool { available }
+    nonisolated func authenticate(reason: String) async -> Bool { result }
 }
 
 @MainActor
@@ -14,6 +14,17 @@ final class MilaAppLockTests: XCTestCase {
     func testDisabledStartsUnlocked() {
         let controller = MilaAppLockController(enabled: false, evaluator: FakeEvaluator())
         XCTAssertEqual(controller.state, .unlocked)
+    }
+
+    func testUnavailableAuthenticatorRefusesEnablement() async {
+        let suite = "MilaAppLockTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let controller = MilaAppLockController(enabled: false, evaluator: FakeEvaluator(available: false), defaults: defaults)
+        await controller.setEnabled(true)
+        XCTAssertEqual(controller.state, .unavailable)
+        XCTAssertTrue(defaults.bool(forKey: "mila.appLockEnabled"))
+        XCTAssertFalse(controller.canEnable)
     }
 
     func testEnabledAuthenticatesAndUnlocks() async {

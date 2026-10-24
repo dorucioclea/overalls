@@ -518,6 +518,18 @@ mod transport_tests {
     }
 
     #[test]
+    fn authenticated_transport_reconnect_rejects_stale_generation() {
+        let authority = Authority(true);
+        let mut pty = AuthenticatedPty::new(&authority, FakeTransport::default(), 80, 24).unwrap();
+        let first = pty.attach(request()).unwrap();
+        pty.kill(first).unwrap();
+        let second = pty.attach(request()).unwrap();
+        assert_ne!(first, second);
+        assert_eq!(pty.read_output(first), Err(PtyError::InvalidRequest));
+        assert_eq!(pty.read_output(second).unwrap(), "ready");
+    }
+
+    #[test]
     fn unauthenticated_attach_never_calls_transport() {
         let authority = Authority(false);
         let mut pty = AuthenticatedPty::new(&authority, FakeTransport::default(), 80, 24).unwrap();

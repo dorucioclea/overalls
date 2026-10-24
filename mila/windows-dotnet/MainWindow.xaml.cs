@@ -32,6 +32,15 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         _sshKeys = new MilaSshKeysController(LoadSshKeysAsync, RevokeSshKeyAsync);
         Closed += (_, _) => { _closed = true; _signIn.SignOut(); _session.Dispose(); };
+        Activated += (_, args) =>
+        {
+            if (args.WindowActivationState == WindowActivationState.Deactivated)
+            {
+                _appLock.OnDeactivated();
+                LockButton.Content = S("unlock", "Unlock");
+                LockStatus.Text = S("lockedTitle", "Mila is locked");
+            }
+        };
         ApplyStrings();
         LoadSettings();
         if (MilaDeploymentStore.Load() is { } deployment)

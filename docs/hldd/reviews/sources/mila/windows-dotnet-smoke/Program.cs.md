@@ -1,5 +1,5 @@
 ---
-digest: 3d8370e88898eba614707a284d35db2120aef6abb40ecacb9643d3f4442c57aa
+digest: 5f0808519b624ab39e433fedf50167c54abe2062334c2cfc0e0e7983f6f63c33
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-WebView navigation origin validation remains within existing architecture
+Windows Hello app-lock lifecycle activation fencing

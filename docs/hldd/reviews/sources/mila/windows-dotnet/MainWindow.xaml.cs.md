@@ -1,5 +1,5 @@
 ---
-digest: b170d92cce21b8013c45b4f341ca5d44847830a03ff5e72c0c18180d98ed76ff
+digest: ddedfc2f17e5535235d06f3a36c6ce44745c91ed2a4be3cd5f540aee5b29bbe9
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/apple/Sources/MilaNativeUI/MilaNativeUI.swift
+Windows Hello app-lock lifecycle activation fencing

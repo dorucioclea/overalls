@@ -50,6 +50,9 @@ public sealed class MilaAppLockController
         return State;
     }
 
+    /// Locks the app when the native window loses activation.
+    public void OnDeactivated() => Lock();
+
     public void Lock()
     {
         if (State != MilaAppLockState.Unavailable) State = MilaAppLockState.Locked;

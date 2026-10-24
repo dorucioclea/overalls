@@ -35,6 +35,14 @@ final class MilaNotificationsTests: XCTestCase {
         func remove(id: String) -> Bool { let old = values.count; values.removeAll { $0.id == id }; return values.count != old }
     }
 
+    func testStoreRejectsOversizedMetadataAndBoundsProjection() {
+        let store = Store()
+        XCTAssertFalse(store.upsert(MilaNotificationDevice(id: String(repeating: "x", count: 257), deployment: "mila.example.test", enabled: true)))
+        XCTAssertFalse(store.upsert(MilaNotificationDevice(id: "device", deployment: String(repeating: "x", count: 257), enabled: true)))
+        for index in 0..<140 { XCTAssertTrue(store.upsert(MilaNotificationDevice(id: "device-\(index)", deployment: "mila.example.test", enabled: true))) }
+        XCTAssertLessThanOrEqual(store.list().count, 128)
+    }
+
     func testRegistrationUsesRustBoundaryAndDoesNotRetainTokenInControllerState() {
         let adapter = Adapter()
         let store = Store()

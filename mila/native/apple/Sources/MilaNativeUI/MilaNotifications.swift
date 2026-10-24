@@ -31,12 +31,13 @@ public final class MilaUserDefaultsNotificationStore: MilaNotificationDeviceStor
     public init(defaults: UserDefaults = .standard) { self.defaults = defaults }
     public func list() -> [MilaNotificationDevice] {
         guard let data = defaults.data(forKey: key), let values = try? JSONDecoder().decode([MilaNotificationDevice].self, from: data) else { return [] }
-        return values.filter { !$0.id.isEmpty && !$0.deployment.isEmpty }
+        return values.filter { !$0.id.isEmpty && $0.id.utf8.count <= 256 && !$0.deployment.isEmpty && $0.deployment.utf8.count <= 256 }.prefix(128).map { $0 }
     }
     @discardableResult public func upsert(_ device: MilaNotificationDevice) -> Bool {
-        guard !device.id.isEmpty, !device.deployment.isEmpty else { return false }
+        guard !device.id.isEmpty, device.id.utf8.count <= 256, !device.deployment.isEmpty, device.deployment.utf8.count <= 256 else { return false }
         var values = list().filter { $0.id != device.id }
         values.append(device)
+        if values.count > 128 { values.removeFirst(values.count - 128) }
         guard let data = try? JSONEncoder().encode(values) else { return false }
         defaults.set(data, forKey: key); return true
     }

@@ -1,5 +1,5 @@
 ---
-digest: 314cfb8e4b10a33872dad52a6dff393b2f292ab13765e356ee916e54a3d49532
+digest: 747ec14a366515bc89912f6add84180516ddba13489dd9feb51e60a6ee4fb4b0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple notification session lifecycle tests preserve documented behavior
+Bound Apple notification metadata persistence and projection size

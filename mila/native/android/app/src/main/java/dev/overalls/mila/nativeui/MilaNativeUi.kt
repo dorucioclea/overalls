@@ -19,7 +19,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.util.Locale
@@ -261,6 +264,13 @@ private fun MilaDeploymentPicker(
     onAdd: () -> Unit,
     onForget: (MilaDeployment) -> Unit,
 ) {
+    CompositionLocalProvider(
+        LocalLayoutDirection provides if (milaLocaleDirection(settings.locale) == MilaLocaleDirection.Rtl) {
+            LayoutDirection.Rtl
+        } else {
+            LayoutDirection.Ltr
+        },
+    ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(MilaStrings.text(MilaMessage.Deployments), style = MaterialTheme.typography.titleMedium)
         deployments.forEach { deployment ->
@@ -332,6 +342,7 @@ private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean, appLo
             }
         }
         MilaSshKeysPanel(adapter, signedIn)
+    }
     }
 }
 

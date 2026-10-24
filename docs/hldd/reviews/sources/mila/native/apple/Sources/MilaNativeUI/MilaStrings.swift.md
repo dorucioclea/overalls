@@ -1,5 +1,5 @@
 ---
-digest: 4e0ddb358baa17a40fa2f2523b5edb797b876b63d7cde8a6e4c888917c9fd5a0
+digest: 46f0dc3dbf826bb69bd9f16f2c6519b6b94283c0119bc78cb80612fd4b481aad
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale catalog and RTL direction remain within existing native settings boundary.
+localized locale picker labels use canonical typed catalog names

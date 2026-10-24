@@ -1,5 +1,5 @@
 ---
-digest: 6ed51faf99948d9049128b13a61367fad130b841a2686e27cfceba94dd570f0e
+digest: 012bdf708e11503bd8ad2ed5a06970a7d72eb0db8f125ce3c3ac4fd5d1c7484f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple thread prompt action and UI wiring
+localized locale picker labels use canonical typed catalog names

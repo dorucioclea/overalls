@@ -17,6 +17,12 @@ final class MilaDesignSystemTests: XCTestCase {
         XCTAssertEqual(MilaMonoTokens.dark.backgroundAlt, Color(red: 0.066667, green: 0.066667, blue: 0.066667))
     }
 
+    func testLocaleDisplayNamesUseCanonicalCatalogLocales() {
+        XCTAssertEqual(MilaStrings.localeDisplayName("fr_fr"), "Français")
+        XCTAssertEqual(MilaStrings.localeDisplayName("he-IL"), "עברית")
+        XCTAssertEqual(MilaStrings.localeDisplayName("unknown"), "English")
+    }
+
     func testLocaleCanonicalizationNormalizesBCP47AndRejectsUnknown() {
         XCTAssertEqual(MilaStrings.canonicalLocale(" fr_fr "), "fr-FR")
         XCTAssertEqual(MilaStrings.canonicalLocale("AR"), "ar")

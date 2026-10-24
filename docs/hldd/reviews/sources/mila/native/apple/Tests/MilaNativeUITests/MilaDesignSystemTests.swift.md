@@ -1,5 +1,5 @@
 ---
-digest: 6c67f1cb0eeb30adf453e14f3e05b1a50c0ff53843c5bc34f9e22d8c64e45ad7
+digest: 278fe415ff0088b279196526bdae8e00dced9b7ff637a1becf882544cab104cf
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale canonicalization regression coverage remains within existing design-system test boundary.
+localized locale picker labels use canonical typed catalog names

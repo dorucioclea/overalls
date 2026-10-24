@@ -14,6 +14,19 @@ public enum MilaStrings {
         let candidate = [language, script, region].compactMap { $0 }.joined(separator: "-")
         return ["en", "fr-FR", "de", "es", "ja", "ar", "he"].contains(candidate) ? candidate : "en"
     }
+    /// Stable display names for the locale picker, independent of the host locale.
+    public static func localeDisplayName(_ raw: String) -> String {
+        switch canonicalLocale(raw) {
+        case "fr-FR": return "Français"
+        case "de": return "Deutsch"
+        case "es": return "Español"
+        case "ja": return "日本語"
+        case "ar": return "العربية"
+        case "he": return "עברית"
+        default: return "English"
+        }
+    }
+
     private static let ids: [MilaMessage: String] = [
         .appName: "appTitle", .sharePrincipal: "sharePrincipal", .shareAdd: "shareAdd", .shareRemove: "shareRemove", .shareAdded: "shareAdded", .shareRemoved: "shareRemoved", .machines: "machinesTitle", .threads: "tabThreads", .settings: "settingsTitle",
         .ready: "ready", .refresh: "refresh", .connecting: "signInConnecting", .connected: "connected",

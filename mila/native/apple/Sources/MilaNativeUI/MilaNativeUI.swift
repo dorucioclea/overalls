@@ -391,13 +391,13 @@ private struct SettingsView: View {
             }
             Section("Language") {
                 Picker("Language", selection: $locale) {
-                    Text("English").tag("en")
-                    Text("Français").tag("fr-FR")
-                    Text("Deutsch").tag("de")
-                    Text("Español").tag("es")
-                    Text("日本語").tag("ja")
-                    Text("العربية").tag("ar")
-                    Text("עברית").tag("he")
+                    Text(MilaStrings.localeDisplayName("en")).tag("en")
+                    Text(MilaStrings.localeDisplayName("fr-FR")).tag("fr-FR")
+                    Text(MilaStrings.localeDisplayName("de")).tag("de")
+                    Text(MilaStrings.localeDisplayName("es")).tag("es")
+                    Text(MilaStrings.localeDisplayName("ja")).tag("ja")
+                    Text(MilaStrings.localeDisplayName("ar")).tag("ar")
+                    Text(MilaStrings.localeDisplayName("he")).tag("he")
                 }
                 .onChange(of: locale) { _, value in
                     let canonical = MilaStrings.canonicalLocale(value)

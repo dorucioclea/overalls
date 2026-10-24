@@ -1,5 +1,5 @@
 ---
-digest: 567801e8026a24b95152c07910a58ff2433a851cf5a7578fe1d2d8002b27b6dc
+digest: cb0d8b1ed578f457175c67e1e61408c546f5166b789f6bd14fc39343393842fc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android web controls now fence authenticated session state
+Android web response generation fencing preserves documented authenticated lifecycle

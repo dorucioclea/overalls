@@ -70,6 +70,23 @@ class MilaWebTest {
  }
 }
 
+ @Test fun staleShowAfterSignOutCannotRestoreEndpoint() = kotlinx.coroutines.runBlocking {
+  val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
+  val gate = kotlinx.coroutines.CompletableDeferred<String>()
+  val adapter = object : MilaFfiAdapter {
+   override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
+   override suspend fun webShow(machineId: java.util.UUID): Result<String> = Result.success(gate.await())
+  }
+  val controller = MilaWebController(adapter)
+  controller.setSession(true)
+  val job = kotlinx.coroutines.launch { assertFalse(controller.show(id)) }
+  kotlinx.coroutines.yield()
+  controller.setSession(false)
+  gate.complete("{\"machine_id\":\"$id\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2}")
+  job.join()
+  assertNull(controller.endpoint)
+ }
+
  @Test fun signedOutControllerRefusesWebShow() = kotlinx.coroutines.runBlocking {
   val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
   val adapter = object : MilaFfiAdapter {

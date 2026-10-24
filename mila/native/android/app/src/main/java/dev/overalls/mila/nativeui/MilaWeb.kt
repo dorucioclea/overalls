@@ -54,7 +54,9 @@ private fun effectivePort(uri: URI): Int = if (uri.port == -1) 443 else uri.port
 
 class MilaWebController(private val adapter: MilaFfiAdapter) {
     private var signedIn: Boolean = false
+    private var sessionGeneration: Long = 0
     fun setSession(authenticated: Boolean) {
+        sessionGeneration += 1
         signedIn = authenticated
         if (!authenticated) clear()
     }
@@ -63,7 +65,9 @@ class MilaWebController(private val adapter: MilaFfiAdapter) {
     fun clear() { endpoint = null; error = null }
     suspend fun show(machine: UUID): Boolean = runCatching {
         check(signedIn) { "web controls require sign-in" }
+        val generation = sessionGeneration
         val result = adapter.webShow(machine).getOrThrow()
+        check(signedIn && generation == sessionGeneration) { "stale web response" }
         endpoint = parseMilaWebEndpoint(result).getOrThrow().also { require(it.machineId == machine) { "web endpoint machine mismatch" } }
         error = null
     }.onFailure { error = it.message ?: "web endpoint unavailable" }.isSuccess

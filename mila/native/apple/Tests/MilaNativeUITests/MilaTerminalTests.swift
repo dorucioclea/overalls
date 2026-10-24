@@ -37,4 +37,12 @@ final class MilaTerminalTests: XCTestCase {
         }
         XCTAssertEqual(controller.state, .failed)
     }
+
+    func testOutputArrivingAfterCloseIsIgnored() async {
+        let controller = MilaTerminalController(transport: EOFTransport())
+        await controller.attach()
+        await controller.close()
+        controller.appendOutput(Data("late".utf8))
+        XCTAssertTrue(controller.output.isEmpty)
+    }
 }

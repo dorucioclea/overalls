@@ -159,6 +159,7 @@ public final class MilaTerminalController: ObservableObject {
     }
 
     public func appendOutput(_ bytes: Data) {
+        guard state == .attached else { return }
         guard bytes.count <= Self.maximumRenderedOutput else { state = .failed; return }
         let available = Self.maximumRenderedOutput - output.count
         output.append(bytes.prefix(available))

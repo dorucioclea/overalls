@@ -1,5 +1,5 @@
 ---
-digest: daf586e6cac2dedd48ba628d45eec01248fc3284dc72081e7101020d5797bd43
+digest: de94896968d6bbe7e316ce674a2d6cac776457fdac4d0395f294908607daa72f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apply persisted locale direction to GTK root layout
+Linux browser launch revalidates canonical HTTPS destination at the GTK launch boundary

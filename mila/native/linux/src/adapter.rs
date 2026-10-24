@@ -493,7 +493,9 @@ pub fn decode_web_endpoint(bytes: &[u8]) -> Result<WebEndpoint, RuntimeError> {
     Ok(endpoint)
 }
 
-fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
+/// Revalidates a browser destination immediately before launching it.
+/// Keeping this boundary public lets GTK callers avoid trusting stale UI state.
+pub fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
     let Some(rest) = url.strip_prefix("https://") else {
         return false;
     };

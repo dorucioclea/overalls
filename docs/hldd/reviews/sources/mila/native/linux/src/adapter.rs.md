@@ -1,5 +1,5 @@
 ---
-digest: 855359f191ddc8c1eb2a7dac7da033f1741af4376b08b7f5f8a27b576621c1b5
+digest: 4a33e5c16a41684c1eb0371530f4b118e82f673b54a1079bd771222588743c63
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-reject duplicate machine sharing grant identifiers before GTK projection
+Linux browser launch revalidates canonical HTTPS destination at the GTK launch boundary

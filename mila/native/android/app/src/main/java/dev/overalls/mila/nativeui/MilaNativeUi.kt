@@ -98,8 +98,8 @@ fun MilaNativeRoot(
     var connection by remember { mutableStateOf<MilaSessionConnection>(MilaSessionConnection.Idle) }
     val localContext = LocalContext.current
     val deploymentStore = remember(localContext) { MilaSharedPreferencesDeploymentStore(localContext.getSharedPreferences("mila.deployment", 0)) }
-    val savedDeployment = remember { deploymentStore.read() }
-    val deployment = remember { MilaDeploymentSelection(listOfNotNull(savedDeployment)) }
+    val savedDeployments = remember { deploymentStore.readAll() }
+    val deployment = remember { MilaDeploymentSelection(savedDeployments) }
     var selectedDeployment by remember { mutableStateOf(deployment.selected) }
     var deploymentEntries by remember { mutableStateOf(deployment.deployments) }
     var hostInput by remember { mutableStateOf(selectedDeployment?.host.orEmpty()) }
@@ -169,7 +169,7 @@ fun MilaNativeRoot(
             },
             onForget = { forgotten ->
                 if (deployment.remove(forgotten.host, forgotten.port)) {
-                    if (selectedDeployment == forgotten) deploymentStore.clear()
+                    deploymentStore.remove(forgotten)
                     deploymentEntries = deployment.deployments
                     selectedDeployment = deployment.selected
                     hostInput = selectedDeployment?.label.orEmpty()

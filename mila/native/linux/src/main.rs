@@ -537,7 +537,21 @@ impl NativeState {
                     label.set_label("Machine mutations require sign-in.");
                     return;
                 };
-                match live.machine_action(machine.text().trim(), &action, request.text().trim()) {
+                let machine_id = machine.text().trim();
+                let request_id = request.text().trim();
+                if request_id.is_empty() {
+                    label.set_label("Machine mutations require a request UUID.");
+                    return;
+                }
+                // Run the same bounded Rust command formatter used by the
+                // non-transport path before touching the authenticated
+                // session. This rejects malformed IDs and command-like input
+                // at the GTK boundary and keeps lifecycle requests replay-safe.
+                if format_machine_action(&action, machine_id, Some(request_id)).is_err() {
+                    label.set_label("Machine mutation rejected by Rust policy.");
+                    return;
+                }
+                match live.machine_action(machine_id, &action, request_id) {
                     Ok(()) => label.set_label("Machine mutation accepted."),
                     Err(_) => label.set_label("Machine mutation rejected by Rust policy."),
                 }

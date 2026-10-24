@@ -123,6 +123,7 @@ public sealed partial class MainWindow : Window
         TerminalAttach.Content = S("terminalAttach", "Attach");
         TerminalResize.Content = S("terminalModeControl", "Resize");
         TerminalInput.Content = S("terminalPaste", "Send input");
+        TerminalKill.Content = S("terminalKill", "Kill");
         NotificationsButton.Content = S("notificationsTurnOn", "Turn notifications on");
         NotificationsStatus.Text = S("pushStateOff", "Notifications off");
         WebOpen.Content = S("webOpen", "Open web");
@@ -381,6 +382,16 @@ public sealed partial class MainWindow : Window
         }
         MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput(0, true);
         TerminalStatus.Text = result.IsValid ? S("terminalLive", "Terminal live") : S("terminalReadOnly", "Terminal is read only");
+    }
+    private void KillTerminal(object sender, RoutedEventArgs args)
+    {
+        if (_session.Handle is not { } sessionHandle || sessionHandle == 0 || !_terminal.Reconnect(_terminalGeneration))
+        {
+            TerminalStatus.Text = S("signInFirst", "Sign in first");
+            return;
+        }
+        _terminal.Kill(_terminalGeneration);
+        TerminalStatus.Text = S("terminalEnded", "Terminal ended");
     }
     private void ConnectToDeployment(object sender, RoutedEventArgs args)
     {

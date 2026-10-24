@@ -1,5 +1,5 @@
 ---
-digest: fc01ef0565e5738c9528d62a39e8ea895110a204d471f26bb33f741c1ce30756
+digest: b538ebea1dd360ccd1234d62ceaa43e61ed26539c6ae8baa33ad2219021652b8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows share activation now requires authenticated same-deployment route authorization
+Windows terminal kill control preserves authenticated generation fencing

@@ -15,8 +15,9 @@ data class MilaSettings(
 
 /** Canonical BCP-47 locale accepted by the shared catalog loader. */
 fun canonicalMilaLocale(value: String): String? {
-    if (!value.matches(Regex("^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"))) return null
-    val tag = Locale.forLanguageTag(value).toLanguageTag()
+    val normalized = value.trim().replace('_', '-')
+    if (!normalized.matches(Regex("^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"))) return null
+    val tag = Locale.forLanguageTag(normalized).toLanguageTag()
     return tag.takeIf { it != "und" && it.substringBefore('-').length in 2..3 }
 }
 

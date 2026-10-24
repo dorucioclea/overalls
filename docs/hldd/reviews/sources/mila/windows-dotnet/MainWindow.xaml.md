@@ -1,5 +1,5 @@
 ---
-digest: 518142ca035913f71f98bc77737efc21db405b76493bae4b10dd837dfe86ed86
+digest: 84f2e092924ae548450d4c4bc26616e2fb77bb2269cae059307cd31241cc092d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native CI compile fix preserves existing platform boundary and behavior.
+Windows terminal kill control preserves authenticated generation fencing

@@ -11,7 +11,7 @@ private class MemorySettingsStore : MilaSettingsStore {
 
 class MilaSettingsTest {
     @Test fun localeIsCanonicalizedToBcp47() {
-        assertEquals(null, canonicalMilaLocale("fr_fr")) // underscore is rejected at boundary
+        assertEquals("fr-FR", canonicalMilaLocale(" fr_fr ")) // storage input is canonicalized
         assertEquals("fr-FR", canonicalMilaLocale("fr-FR"))
         assertEquals(null, canonicalMilaLocale("not a locale"))
     }

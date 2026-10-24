@@ -1,5 +1,5 @@
 ---
-digest: 44d2aa41b062c55b7e56586d85ff3213b0fea3ef8d1e2d71612710df2cc5ef1a
+digest: e5adae006f756f319ea6db0760b4576343a293e77ba936e3347a87ae11bc697d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple notification delegate routes bounded actions without changing deployment architecture
+Native parity matrix and Android settings review updated with authenticated controls

@@ -98,6 +98,7 @@
             <Button x:Name="TerminalAttach" Click="ValidateTerminalAttach" />
             <Button x:Name="TerminalResize" Click="ValidateTerminalResize" />
             <Button x:Name="TerminalInput" Click="ValidateTerminalInput" />
+            <Button x:Name="TerminalKill" Click="KillTerminal" />
           </StackPanel>
           <TextBox x:Name="TerminalOutput" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" FontFamily="Consolas" />
           <TextBlock x:Name="TerminalStatus" Opacity="0.7" />

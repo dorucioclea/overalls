@@ -401,6 +401,11 @@ private struct SettingsView: View {
                     Button("Sign in") { if let value = session.selectedDeployment { _ = session.signIn(value) } }.disabled(session.selectedDeployment == nil)
                     Button("Reconnect") { _ = session.reconnect() }.disabled(session.selectedDeployment == nil)
                     Button("Sign out") { session.signOut() }.disabled(session.state == .signedOut)
+                    Button("Refresh approval") {
+                        guard let adapter = session.adapter(), let host = session.selectedDeployment?.host else { return }
+                        Task { await approval.inspect(adapter, expectedHost: host) }
+                    }
+                    .disabled(session.adapter() == nil)
                 }
                 Text(String(describing: session.state)).font(.caption).foregroundStyle(.secondary)
                 if case .pending(let info) = approval.result {

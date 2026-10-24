@@ -718,6 +718,13 @@ impl TrustStore for XdgTrustStore {
         if !metadata.file_type().is_file() {
             return Err(RuntimeError::InvalidInput);
         }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            if metadata.permissions().mode() & 0o077 != 0 {
+                return Err(RuntimeError::InvalidInput);
+            }
+        }
         let bytes = std::fs::read(path).map_err(|_| RuntimeError::Unavailable)?;
         if bytes.is_empty() || bytes.len() > MAX_TRUST_BYTES {
             return Err(RuntimeError::InvalidInput);
@@ -951,7 +958,11 @@ impl ApprovalInfo {
                         .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '.' | '-'))
             })
             && !url[8..].contains(['@', '#', ' ', '\t', '\n', '\r']);
-        if !valid_url || fingerprint.is_empty() || fingerprint.len() > 256 {
+        if !valid_url
+            || fingerprint.is_empty()
+            || fingerprint.len() > 256
+            || fingerprint.bytes().any(|byte| byte.is_ascii_control() || byte.is_ascii_whitespace())
+        {
             return Err(RuntimeError::InvalidInput);
         }
         Ok(Self {
@@ -1545,6 +1556,13 @@ mod tests {
         assert!(ApprovalInfo::validate("https://?approval", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://:443/a", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://example.test/a", "fp", 0).is_ok());
+    }
+
+    #[test]
+    fn approval_fingerprint_rejects_control_and_whitespace() {
+        assert!(ApprovalInfo::validate("https://example.test/a", "fp\n", 0).is_err());
+        assert!(ApprovalInfo::validate("https://example.test/a", "fp value", 0).is_err());
+        assert!(ApprovalInfo::validate("https://example.test/a", "SHA256:abc", 0).is_ok());
     }
 
     #[test]

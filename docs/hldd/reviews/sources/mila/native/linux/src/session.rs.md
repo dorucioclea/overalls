@@ -1,5 +1,5 @@
 ---
-digest: a034ee71bdb1fc5b0aeace2db3de82cd52830a12d47d725f28468c823300b148
+digest: 64623d8b2469740065c9c0716e12339a798a7b4218b4571ce8bd1f8246e232a3
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Android thread projections and tests
+mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaSignInState.kt

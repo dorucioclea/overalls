@@ -1,5 +1,5 @@
 ---
-digest: ce47ebeae5979a59befcc684ebaea63649ef7f9dcecd03a3f04ae6cee98439b1
+digest: 361bc17ba6e62a90700cbc6bd935b95f1e50e3942f97ee394c6d158ba4310d68
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaSignInState.kt
+close pending Android session before reconnect

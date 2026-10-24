@@ -25,6 +25,8 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
   store?.writeApproval(MilaApprovalState.NotRequired)
   // A new attempt owns the adapter's session. Release a previous attempt before
   // connecting so a refused reconnect cannot leave the old authenticated channel live.
+  pendingSession?.close()
+  pendingSession = null
   (adapter as? MilaSessionConnector)?.bindSession(null)
   state = MilaSignInState.Connecting(deployment)
   val connector = adapter as? MilaSessionConnector

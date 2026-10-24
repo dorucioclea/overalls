@@ -26,7 +26,7 @@ class MilaThreadDetailTest {
         assertEquals("Build", listing.threads.single().title)
     }
     private val id = UUID.fromString("00000000-0000-0000-0000-000000000002")
-    private val listing = MilaThreadListing(listOf(MilaThreadRow(id, "deploy", "active")), false)
+    private val listing = MilaThreadListing(listOf(MilaThreadRow(id, "deploy", "active", UUID.fromString("00000000-0000-0000-0000-000000000006"))), false)
 
 
     @Test fun rejectsZeroThreadIdentifier() {

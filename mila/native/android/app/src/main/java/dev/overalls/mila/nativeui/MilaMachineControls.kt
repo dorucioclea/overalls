@@ -26,6 +26,7 @@ data class MilaTerminalState(
 /** Bounded terminal text projection; control bytes and unbounded history never reach Compose. */
 class MilaTerminalRenderer {
     private val lines = ArrayDeque<String>()
+    private var current = StringBuilder()
     private var escape = false
     private var csi = false
     fun append(bytes: ByteArray) {
@@ -46,14 +47,18 @@ class MilaTerminalRenderer {
                 append(character)
             }
         }
-        val text = visible
-        text.split('\n').forEach { raw ->
-            val clean = raw.filter { it == '\t' || it.code >= 0x20 && it != '\u007f' }.take(4096)
-            if (lines.size == 200) lines.removeFirst()
-            lines.addLast(clean)
+        for (character in visible) {
+            if (character == '\n') {
+                val clean = current.toString().filter { it == '\t' || it.code >= 0x20 && it != '\u007f' }.take(4096)
+                if (lines.size == 200) lines.removeFirst()
+                lines.addLast(clean)
+                current = StringBuilder()
+            } else if (current.length < 4096) {
+                current.append(character)
+            }
         }
     }
-    fun text(): String = lines.joinToString("\n").removeSuffix("\n")
+    fun text(): String = (lines + listOf(current.toString()).filter { it.isNotEmpty() }).joinToString("\n")
 }
 /** Bounded host-side source. Implementations must bind reads to the authenticated session. */
 fun interface MilaPtySource {

@@ -12,7 +12,12 @@ public enum MilaStrings {
         let script = parts.dropFirst().first(where: { $0.count == 4 })?.capitalized
         let region = parts.dropFirst().first(where: { $0.count == 2 || $0.count == 3 && $0.allSatisfy(\.isNumber) })?.uppercased()
         let candidate = [language, script, region].compactMap { $0 }.joined(separator: "-")
-        return ["en", "fr-FR", "de", "es", "ja", "ar", "he"].contains(candidate) ? candidate : "en"
+        let supported = ["en", "fr-FR", "de", "es", "ja", "ar", "he"]
+        if supported.contains(candidate) { return candidate }
+        // Region/script-qualified requests should fall back to the bundled
+        // language catalog when no qualified catalog exists (for example,
+        // `he-IL` uses the Hebrew catalog `he`).
+        return supported.contains(language) ? language : "en"
     }
     /// Stable display names for the locale picker, independent of the host locale.
     public static func localeDisplayName(_ raw: String) -> String {

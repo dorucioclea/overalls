@@ -544,8 +544,12 @@ impl NativeState {
                     label.set_label("Machine mutations require sign-in.");
                     return;
                 };
-                let machine_id = machine.text().trim();
-                let request_id = request.text().trim();
+                // Keep the owned GTK entry text alive while its trimmed views
+                // are passed through validation and the authenticated session.
+                let machine_text = machine.text();
+                let machine_id = machine_text.trim();
+                let request_text = request.text();
+                let request_id = request_text.trim();
                 if request_id.is_empty() {
                     label.set_label("Machine mutations require a request UUID.");
                     return;

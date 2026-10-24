@@ -325,7 +325,10 @@ jobs:
       - name: Verify native client is independent of Flutter
         shell: pwsh
         run: |
+          # Contract and README text mentions Flutter by design; inspect only
+          # source and project files for accidental runtime dependencies.
           $matches = Get-ChildItem -Path mila/windows-dotnet -Recurse -File |
+            Where-Object { $_.Extension -in '.cs', '.csproj', '.h', '.cpp', '.c', '.rs', '.props', '.targets', '.json', '.dll' } |
             Select-String -Pattern 'flutter' -CaseSensitive:$false
           if ($matches) {
             $matches | ForEach-Object { $_.ToString() }

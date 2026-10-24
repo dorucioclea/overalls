@@ -307,7 +307,7 @@ jobs:
         working-directory: mila/native/linux
         run: |
           cargo build --locked --release
-          test -x target/release/mila-linux
+          test -x target/release/mila-native-linux
           cargo test --locked
       - name: Check formatting
         working-directory: mila/native/linux

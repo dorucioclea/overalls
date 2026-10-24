@@ -1,5 +1,5 @@
 ---
-digest: b4560358b702ed6b835e26398cc61767f3b9c8c30594aa747420dbb563d76d8e
+digest: f4ee63128950cc834da565119f848070d3d92a30683d31ecc585b70cd029f8ef
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android terminal clean EOF closes the native terminal state
+Android UTF-8 terminal input bound

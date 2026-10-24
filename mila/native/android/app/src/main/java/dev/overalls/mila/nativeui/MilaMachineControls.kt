@@ -1,5 +1,8 @@
 package dev.overalls.mila.nativeui
 
+internal fun boundedTerminalInput(value: String, maxBytes: Int = 4096): Boolean =
+    value.toByteArray(Charsets.UTF_8).size <= maxBytes
+
 /** UI-facing typed machine action result; operation names never bypass Rust classification. */
 sealed interface MilaMachineActionState {
  data object Idle : MilaMachineActionState

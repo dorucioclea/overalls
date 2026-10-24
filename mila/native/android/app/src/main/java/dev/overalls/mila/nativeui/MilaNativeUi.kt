@@ -538,7 +538,7 @@ private fun controllerSelect(controller: MilaMachineDetailController, command: S
     var input by remember { mutableStateOf("") }
     var actionState by remember { mutableStateOf(controller.state) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(value = input, onValueChange = { if (it.length <= 4096) input = it }, label = { Text(MilaStrings.text(MilaMessage.Input)) })
+        OutlinedTextField(value = input, onValueChange = { if (boundedTerminalInput(it)) input = it }, label = { Text(MilaStrings.text(MilaMessage.Input)) })
         Text(MilaStrings.text(MilaMessage.ThreadCommands), style = MaterialTheme.typography.titleLarge)
         Text(id.toString(), style = MaterialTheme.typography.labelSmall)
         threadCommandChoices.chunked(3).forEach { row ->

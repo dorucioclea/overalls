@@ -54,6 +54,17 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
     /// intentionally reduced to a bounded category so UI code never handles raw APNs data.
     public var onAction: (@Sendable (String) -> Void)?
 
+    /// Accept only the small, documented notification action vocabulary. Raw
+    /// APNs category identifiers must never become navigation commands.
+    public static func boundedActionCategory(_ category: String) -> String? {
+        let value = String(category.prefix(64))
+        guard !value.isEmpty,
+              value.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "_" || $0 == "." }),
+              ["machine", "thread", "deployment", "terminal"].contains(value.split(separator: ".").first.map(String.init) ?? "")
+        else { return nil }
+        return value
+    }
+
     public override init() { super.init() }
 
     public func installAsNotificationDelegate() {
@@ -64,7 +75,7 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
                                        didReceive response: UNNotificationResponse,
                                        withCompletionHandler completionHandler: @escaping () -> Void) {
         let category = response.notification.request.content.categoryIdentifier
-        if !category.isEmpty { onAction?(String(category.prefix(64))) }
+        if let bounded = Self.boundedActionCategory(category) { onAction?(bounded) }
         completionHandler()
     }
     /// APNs delivers the token as opaque bytes. Encode it deterministically for

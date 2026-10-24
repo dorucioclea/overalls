@@ -11,6 +11,7 @@ public sealed partial class MainWindow : Window
     private string? _deviceFingerprint;
     private ushort _deploymentPort = MilaDeployment.DefaultPort;
     private bool _notificationsEnabled;
+    private readonly MilaWindowsNotificationController _notificationController = new();
     private readonly MilaSshKeysController _sshKeys;
     private readonly MilaThreadController _threadController = new();
     private readonly MilaMachineMutationController _machineMutation = new();
@@ -325,6 +326,13 @@ public sealed partial class MainWindow : Window
     }
     private void ToggleNotifications(object sender, RoutedEventArgs args)
     {
+        if (_session.Handle is not { } handle || handle == 0)
+        {
+            _notificationController.SetSession(false);
+            _notificationsEnabled = false;
+            NotificationsStatus.Text = S("signInFirst", "Sign in first");
+            return;
+        }
         _notificationsEnabled = !_notificationsEnabled;
         MilaNativePokeResult result = RustNative.TryValidatePushPoke(ReadOnlySpan<byte>.Empty, (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         NotificationsStatus.Text = result.IsValid
@@ -414,6 +422,8 @@ public sealed partial class MainWindow : Window
         _machineMutation.SetSession(false);
         long generation = _signIn.Start();
         _session.SignOut();
+        _notificationController.SetSession(false);
+        _notificationsEnabled = false;
         _ = RefreshSshKeyListAsync();
         _ = ConnectDeploymentAsync(host, generation);
     }
@@ -455,6 +465,7 @@ public sealed partial class MainWindow : Window
 
             _activeHost = host;
             _signIn.Authenticated(generation, host);
+            _notificationController.SetSession(true);
             ApprovalUrl.Visibility = Visibility.Collapsed;
             ApprovalFingerprint.Visibility = Visibility.Collapsed;
             OpenApproval.Visibility = Visibility.Collapsed;

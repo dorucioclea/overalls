@@ -8,6 +8,13 @@ final class MilaNotificationsTests: XCTestCase {
         XCTAssertEqual(MilaAppleNotificationService.tokenString(from: Data([0x00, 0xab, 0xff])), "00abff")
         XCTAssertNil(MilaAppleNotificationService.tokenString(from: Data()))
     }
+
+    func testNotificationActionsAreBoundedToDocumentedCategories() {
+        XCTAssertEqual(MilaAppleNotificationService.boundedActionCategory("machine.open"), "machine.open")
+        XCTAssertEqual(MilaAppleNotificationService.boundedActionCategory("thread.reply"), "thread.reply")
+        XCTAssertNil(MilaAppleNotificationService.boundedActionCategory("javascript:alert(1)"))
+        XCTAssertNil(MilaAppleNotificationService.boundedActionCategory("unknown.open"))
+    }
     #endif
 
     private final class Adapter: MilaFFIAdapter, @unchecked Sendable {

@@ -1,5 +1,5 @@
 ---
-digest: 2ec874e3afa1c699321e426d02281864f35d636b6d0610f11c5063f296ece1be
+digest: 1d3860d64b41f2aed670b4314b153c99cab8b8fe6996a1e02994936a0f055498
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple notification delegate routes bounded actions without changing deployment architecture
+Bound APNs action categories before native routing

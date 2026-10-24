@@ -1,5 +1,5 @@
 ---
-digest: b538ebea1dd360ccd1234d62ceaa43e61ed26539c6ae8baa33ad2219021652b8
+digest: d0eb4e620d012f13c07975320382af06f1fc67b80fcfe54355a146aecfab1cdf
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows terminal kill control preserves authenticated generation fencing
+Windows notification toggle now requires authenticated session and clears on sign-out

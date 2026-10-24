@@ -37,7 +37,21 @@ impl Default for Settings {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum LocaleDirection {
+    Ltr,
+    Rtl,
+}
+
 impl Settings {
+    pub(crate) fn direction(&self) -> LocaleDirection {
+        let language = self.locale.split('-').next().unwrap_or_default();
+        match language {
+            "ar" | "fa" | "he" | "ur" => LocaleDirection::Rtl,
+            _ => LocaleDirection::Ltr,
+        }
+    }
+
     pub(crate) fn validate(appearance: Appearance, locale: &str) -> Result<Self, PersistenceError> {
         let locale = locale.trim().replace('_', "-");
         let valid = locale.len() >= 2
@@ -238,5 +252,7 @@ mod tests {
         assert_eq!(settings.appearance, Appearance::Dark);
         assert!(Settings::validate(Appearance::System, "not a locale").is_err());
         assert!(Settings::validate(Appearance::System, "").is_err());
+        assert_eq!(settings.direction(), LocaleDirection::Ltr);
+        assert_eq!(Settings::validate(Appearance::System, "ar_SA").unwrap().direction(), LocaleDirection::Rtl);
     }
 }

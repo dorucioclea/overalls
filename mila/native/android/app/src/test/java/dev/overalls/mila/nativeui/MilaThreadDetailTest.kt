@@ -34,6 +34,7 @@ class MilaThreadDetailTest {
         assertThrows(IllegalArgumentException::class.java) {
             MilaThreadListing.decode("""{"result":{"threads":[{"id":"$id","title":"$title","status":"open"}]}}""".toByteArray())
         }
+    }
 
     @Test fun threadActionsRequireAuthenticationAndSelection() = runBlocking {
         val controller = MilaThreadDetailController(ThreadAdapter())

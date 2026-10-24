@@ -9,7 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.UUID
 
-private class DetailAdapter(private val accepted: Boolean = true) : MilaFfiAdapter {
+private open class DetailAdapter(private val accepted: Boolean = true) : MilaFfiAdapter {
     override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
     override suspend fun machineAction(machineId: UUID, command: MilaMachineCommand): Result<Unit> =
         if (accepted) Result.success(Unit) else Result.failure(IllegalStateException("rejected"))

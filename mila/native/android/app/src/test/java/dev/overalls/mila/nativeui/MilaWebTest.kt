@@ -95,8 +95,6 @@ class MilaWebTest {
   assertEquals("web policy revision conflict", controller.error)
   assertEquals(7L, controller.endpoint?.revision)
  }
-}
-
  @Test fun staleShowAfterSignOutCannotRestoreEndpoint() = kotlinx.coroutines.runBlocking {
   val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
   val gate = kotlinx.coroutines.CompletableDeferred<String>()
@@ -135,3 +133,4 @@ class MilaWebTest {
   val controller = MilaWebController(adapter)
   assertFalse(controller.show(id)); assertNull(controller.endpoint)
  }
+}

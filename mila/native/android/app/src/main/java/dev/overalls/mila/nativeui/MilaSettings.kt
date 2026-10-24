@@ -16,6 +16,7 @@ data class MilaSettings(
 /** Canonical BCP-47 locale accepted by the shared catalog loader. */
 fun canonicalMilaLocale(value: String): String? {
     val normalized = value.trim().replace('_', '-')
+    if (normalized.length > 64) return null
     if (!normalized.matches(Regex("^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"))) return null
     val tag = Locale.forLanguageTag(normalized).toLanguageTag()
     return tag.takeIf { it != "und" && it.substringBefore('-').length in 2..3 }
@@ -45,7 +46,7 @@ class MilaSettingsController(private val store: MilaSettingsStore) {
 
     fun save(settings: MilaSettings) {
         store.write(KEY_APPEARANCE, settings.appearance.name.lowercase())
-        store.write(KEY_LOCALE, settings.locale)
+        store.write(KEY_LOCALE, canonicalMilaLocale(settings.locale) ?: "en")
     }
 
     private companion object {

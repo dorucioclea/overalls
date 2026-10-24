@@ -1,5 +1,5 @@
 ---
-digest: 04b9d151ef451eea98728de8db4ae4efacab3c02e2493ad10e18895465d9ecea
+digest: 9f17d257d261c9270c4e75259823d6da00b03d4098d854fe488acc54befcd546
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android locale fallback remains within existing settings contract
+Android locale persistence bounds and canonical write behavior

@@ -1,11 +1,11 @@
 ---
-digest: b9e826a056e5e3068e39354735c8e6f414e2d01ead66b88973b6332486378d97
+digest: da17c105489a68f474071c350d2175c636200804dd836f40b2a54a1629fcb4ed
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/rust/mila-runtime/tests/properties.rs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Formatting-only updates align Rust sources with enforced CI rustfmt gate; runtime behavior unchanged.
+Flutter-deletion gate now checks native release workflow, source bundles and removal milestone; localization generator docstring only; new runtime Hegel property that write access requires a read-write grant (already documented)

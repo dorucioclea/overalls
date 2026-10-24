@@ -418,6 +418,8 @@ pool and image subscribes to that build's result instead of retrying
 `storage_busy` once a second. A create waits at most two minutes, and prewarm
 waits four times the pool's image I/O deadline. A caller that stops waiting
 never cancels the build, and a later create finds the template ready.
+Contention on an incarnation's audit-record lock during verification or sealing
+returns `storage_busy` for a later retry instead of quarantining the template.
 Startup prewarming runs asynchronously with one builder. No-budget and oversized
 images use fresh verification without caching. A smaller configured budget can
 defer reclamation while readers are active or ownership is uncertain; it never

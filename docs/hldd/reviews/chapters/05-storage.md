@@ -1,5 +1,5 @@
 ---
-digest: 7b6bafc9b2f1bf9eff4aaf65a1802f13a83c7a8f89baaea9083e775a4841bfd9
+digest: 20b3d88d2ba330cd1f7a06b8babe2fd180699c1b60432038b1092ff41f66b855
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Chapter 05-storage adds the artifact blob storage section: content-addressed SHA-256 blobs held as bounded PostgreSQL chunks under existing backups, staged upload chunks with expiry, batched purge and the unreferenced-blob sweep; no Lilly storage path, protocol or host behaviour changes.
+05-storage: audit-record lock contention during template verification/sealing returns storage_busy instead of quarantining; AndroidDisplay binding typespec now names the android_display and generation keys the network target requires (no behavior change)

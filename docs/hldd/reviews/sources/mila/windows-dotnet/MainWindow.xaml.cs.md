@@ -1,11 +1,11 @@
 ---
-digest: ddedfc2f17e5535235d06f3a36c6ce44745c91ed2a4be3cd5f540aee5b29bbe9
+digest: 6569ff9cf83d9d67054d5815a3c21f3536ad66cb70ba0e023ec4c83dd3f4d22a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/windows-dotnet/MainWindow.xaml.cs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows Hello app-lock lifecycle activation fencing
+Windows: notification channel validation matches Susan's documented *.notify.windows.com:443 shape with smoke refusals, device operations bind the current generation, machine mutations validate vocabulary and allow each request id once, compile fixes, and a publish-folder release audit; no documented behavior contradicted

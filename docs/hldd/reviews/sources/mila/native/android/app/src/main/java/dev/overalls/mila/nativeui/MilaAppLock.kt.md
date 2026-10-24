@@ -1,11 +1,11 @@
 ---
-digest: 1e4ded9b2da42a6de64da0146940cf314f5e9389052e143e140003d3248269c9
-disposition: no-impact
+digest: 47d468428f15ec0e2d9d7d323aea24fa9a743400011c2be36ab8d6eba5e40df7
+disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaAppLock.kt
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android app lock background authentication invalidation
+08-interactive now documents native sign-in link rotation (Android) and host-bound approval refusal (Linux/Apple/Windows), native Android/Apple app-lock prompts surviving backgrounding, the Linux public matching-port browser fence and LiveSession SSH-key wrappers, and the unsigned native Android release candidate; also records the Linux thread-action contract refusals before FFI dispatch

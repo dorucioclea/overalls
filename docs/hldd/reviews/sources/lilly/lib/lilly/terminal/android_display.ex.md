@@ -1,26 +1,22 @@
 ---
-digest: 307629958257364481d9babf598bf83645b4f3b06e1e9e5751963d19417c0162
-disposition: no-impact
+digest: 9a45c56925b8b798c327d2ab8fa331285fba77eb53fc133a3641ba56ec73d448
+disposition: updated
 kind: source
 mapping_digest: f7ae1015b8a6b22d2b48a9d01c1d52b5bf0d4191e2a4cb42263c24f5d17194fc
-migration:
-  lilly:
-    chapter_digest: 985473887db844b21221e9cd15fc4274003de7e7113e496f5a79143075489161
-    source_digest: 2b3fed271b8c7d9725d4b0ab37d59c1d7e6d8292013cf4927f5a66f57ebc968c
 path: lilly/lib/lilly/terminal/android_display.ex
 reviewed_chapters:
-  marshall/priv/hldd/04-lifecycle.md: a3c881206a8331e5dbcd995c9762772639a9e28bdc22102c2a2e64bf63aa7449
-  marshall/priv/hldd/05-storage.md: 27149061e064d86119e32f0e54f6be7a23db26ce058743457de10b5e20c9c43b
-  marshall/priv/hldd/06-workflows.md: a35d0a72eb3b3b7afcd667d162ccba51020f8e47877ef29002a77a0dd4cef501
-  marshall/priv/hldd/07-guests.md: 6a5c5b49211308c21cf0a6cc5d1f4666c7adf167e4729336e352aad4e637668f
+  marshall/priv/hldd/04-lifecycle.md: f3c40798f402b553640bb25852bcb205c327c87d7ad6735b4f1b243c5616b4a2
+  marshall/priv/hldd/05-storage.md: 20b3d88d2ba330cd1f7a06b8babe2fd180699c1b60432038b1092ff41f66b855
+  marshall/priv/hldd/06-workflows.md: ad304114da706e2daaf6296aac5c058376e50742cc378ad4fc2a9d475d485124
+  marshall/priv/hldd/07-guests.md: 35ad495b84f5dc5054c38e2b6f6d3bcab92f813eae44198773dea8777dd99ad8
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/19-coverage.md: 5dc84656f2a81c5674ed8311af44a7f2e9c33262d36f624e11f8ba378a32db61
-  marshall/priv/hldd/20-security.md: ebf5f76bb3b9c45d1bd1dd0c370480f4634f4ad6df267fa706355fb48ed38537
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
+  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-lilly: Reviewed concurrent thread-tools and Mila FFI changes; this group’s documented behavior and authority boundaries remain unchanged.
+05-storage: audit-record lock contention during template verification/sealing returns storage_busy instead of quarantining; AndroidDisplay binding typespec now names the android_display and generation keys the network target requires (no behavior change)

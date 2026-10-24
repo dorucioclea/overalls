@@ -770,6 +770,11 @@ defmodule Lilly.Host.ImageTemplate do
       after
         Lock.release(lock)
       end
+    else
+      # Audit-lock contention is transient storage contention, not a failed
+      # template: report it as storage_busy so builds retry instead of quarantining.
+      {:error, :host_already_owned} -> {:error, :storage_busy}
+      error -> error
     end
   end
 

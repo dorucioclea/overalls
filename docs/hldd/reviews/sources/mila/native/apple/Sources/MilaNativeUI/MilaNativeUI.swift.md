@@ -1,11 +1,11 @@
 ---
-digest: a58936068fbcfff0c45bfe773f402fee359aa537e2df76a6347ebeff7574814e
+digest: 898143ca1fa7d00f2e3b79bdb161b4ce5b4f9434824eae0f6ff11de0b5740e99
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/apple/Sources/MilaNativeUI/MilaNativeUI.swift
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-format native sources for CI
+Apple: package-isolated Swift build contract, deployment-selection deadlock fix, policy revision passed to authenticated web open, macOS APNs registration (already documented), and base-locale catalog fallback; no documented behavior changes

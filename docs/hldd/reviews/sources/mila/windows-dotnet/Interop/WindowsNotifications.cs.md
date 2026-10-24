@@ -1,11 +1,11 @@
 ---
-digest: 3cfb0db20a3b3409d1e8bf13b7732038d526ec139817e4a57f208fe5141f5340
+digest: bf3fc6daa4ff26a58d0149520ff31e857eebb6d18bbad721e97ccd23c766f8fd
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/windows-dotnet/Interop/WindowsNotifications.cs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows notification metadata UTF-8 and whitespace validation
+Windows: notification channel validation matches Susan's documented *.notify.windows.com:443 shape with smoke refusals, device operations bind the current generation, machine mutations validate vocabulary and allow each request id once, compile fixes, and a publish-folder release audit; no documented behavior contradicted

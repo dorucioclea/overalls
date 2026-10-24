@@ -75,7 +75,25 @@ defmodule Marshall.ServerToolFixture do
 
   @spec run!(Command.t()) :: Command.t()
   def run!(%Command{id: id}) do
-    :ok = Marshall.Agents.ServerToolJob.perform(%Oban.Job{args: %{"command_id" => id}})
+    now = DateTime.utc_now()
+
+    # A complete executing job: Oban.Job.t() requires its identity, worker,
+    # priority and timestamps, which a bare struct literal leaves nil.
+    job = %Oban.Job{
+      id: 1,
+      state: "executing",
+      queue: "agent_tools",
+      worker: inspect(Marshall.Agents.ServerToolJob),
+      args: %{"command_id" => id},
+      attempt: 1,
+      max_attempts: 5,
+      priority: 0,
+      inserted_at: now,
+      scheduled_at: now,
+      attempted_at: now
+    }
+
+    :ok = Marshall.Agents.ServerToolJob.perform(job)
     [command] = Ledger.read!(Command, id: id)
     command
   end

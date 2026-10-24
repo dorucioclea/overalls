@@ -8,7 +8,12 @@ defmodule Lilly.Terminal.AndroidDisplay do
 
   alias Lilly.Network.{Config, Guest, Ingress}
 
-  @type binding :: %{ticket: String.t(), mode: :viewer | :controller}
+  @type binding :: %{
+          android_display: true,
+          generation: pos_integer(),
+          ticket: String.t(),
+          mode: :viewer | :controller
+        }
 
   @spec start_link(pid(), Config.t(), Guest.t(), binding(), pos_integer(), pos_integer()) ::
           GenServer.on_start()

@@ -1,5 +1,5 @@
 ---
-digest: 467e5d3c09e4c6a8da8935a0baf535883582c23fcd41f08258b99a5910558407
+digest: d1bcaaacb566b1bb0c0e561eae1bc949132539cd9288d4edb24c3b880bee8f4e
 disposition: no-impact
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
@@ -21,4 +21,4 @@ state: present
 version: 2
 ---
 
-native GTK Linux release derivation and tarball wiring
+Mila build outputs: linuxNative and Flutter-free windowsSourceBundle flake outputs, source bundle requires native sources and refuses Cargo target output, Android Maven index hash refresh; linuxRelease unchanged; build-only

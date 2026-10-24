@@ -1,11 +1,11 @@
 ---
-digest: add91fd6e5ad4b369af9e8ca7f1447f34023c8c7f343ea5b5df2ffa068b165aa
+digest: cb19d2553a27ee5ad31b77574475fddcd667da827928f46400c5e3e761972121
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/check_flutter_deletion.exs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fix deletion gate syntax
+Flutter-deletion gate now checks native release workflow, source bundles and removal milestone; localization generator docstring only; new runtime Hegel property that write access requires a read-write grant (already documented)

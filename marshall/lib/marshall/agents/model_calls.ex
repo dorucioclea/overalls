@@ -509,8 +509,6 @@ defmodule Marshall.Agents.ModelCalls do
     retryable_provider_response?(purpose, iteration, response)
   end
 
-  defp transient_provider_failure?(_, _), do: false
-
   @spec recoverable_rejection?(ModelCall.t(), map()) :: boolean()
   defp recoverable_rejection?(call, response) do
     Compaction.failure_reason(response) == :context_limit_exceeded or

@@ -1,11 +1,11 @@
 ---
-digest: df78916a5ceaf63201c9548f4c0283886bc9373a7bfee942dc60481c75abed3c
-disposition: updated
+digest: cc19e5880c42051ad2ef2934410ad7af278efd372dfa5767c62ca00e21f24d47
+disposition: no-impact
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
 path: flake.nix
 reviewed_chapters:
-  marshall/priv/hldd/07-guests.md: 075e5b7b4bc10c66bc2498efded4eace86bbb0c3427337e20bcfe407c3a728be
+  marshall/priv/hldd/07-guests.md: 35ad495b84f5dc5054c38e2b6f6d3bcab92f813eae44198773dea8777dd99ad8
   marshall/priv/hldd/12-configuration.md: 5318d494cf8479636aa2e2c3c61cb5505cb4cb8386e39b935cf62c62b997169f
   marshall/priv/hldd/13-deployment.md: 0bc4fe19bb9cdf60d5edc24c3777c7f54b170426d9ae5d1f611a2240053c3350
   marshall/priv/hldd/14-operations.md: 68c72d0e6fde22edd5d892f824dedd44f1843d68ece6c96ff5b3e2c1e50051c9
@@ -21,4 +21,4 @@ state: present
 version: 2
 ---
 
-Hosts set system.configurationRevision; the spool config carries the build revision; a dedicated collector pipeline exports one overalls_deployment_info series per host and guest traces gain overalls.host.deployment.revision; operations dashboard adds deployed revision, deployment annotations, pool waiting-callers and failed-query panels (25 panels) and Marshall pages adds a failed-callback reason table (14 panels); production poolSize 20; machine tests assert the inventory and series (15-monitoring).
+Mila build outputs: linuxNative and Flutter-free windowsSourceBundle flake outputs, source bundle requires native sources and refuses Cargo target output, Android Maven index hash refresh; linuxRelease unchanged; build-only

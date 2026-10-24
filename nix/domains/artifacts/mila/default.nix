@@ -233,6 +233,7 @@ let
   # machine tests drive; `dev` is a debug bundle (asserts, the VM service)
   # that also accepts `--dart-define=MILA_DEMO=true` from `mila-build`.
   app = flutter.buildFlutterApplication appArgs;
+  nativeLinux = import ./native-linux.nix { inherit pkgs lib; root = ../../../../.; };
   linuxDev = flutter.buildFlutterApplication (appArgs // {
     pname = "mila-dev";
     flutterMode = "debug";
@@ -243,7 +244,7 @@ let
     mkdir -p $out
     name=mila-${version}-linux-x86_64.tar.gz
     tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner \
-      -czf $out/$name -C ${app} .
+      -czf $out/$name -C ${nativeLinux} .
     (cd $out && sha256sum $name > SHA256SUMS)
   '';
 

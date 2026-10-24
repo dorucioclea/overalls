@@ -548,6 +548,16 @@ pub fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
     explicit.is_none_or(|port| port != 0 && port == expected_port)
 }
 
+/// Return a browser destination only for an authenticated public endpoint.
+/// Keeping this decision in the Rust adapter prevents GTK from accidentally
+/// opening a stale or private URL retained in widget state.
+pub fn browser_endpoint_url(endpoint: &WebEndpoint) -> Option<&str> {
+    (endpoint.visibility == "public")
+        .then_some(endpoint.url.as_deref())
+        .flatten()
+        .filter(|url| valid_https_endpoint_url(url, endpoint.port))
+}
+
 /// A presentation-safe notification device projection. Push keys and public
 /// encryption material never cross this decoder.
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq)]
@@ -925,6 +935,26 @@ mod web_tests {
         assert!(decode_web_endpoint(malformed_port).is_err());
         let malformed_host = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":"https://-web-box.example:8080/path","route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
         assert!(decode_web_endpoint(malformed_host).is_err());
+    }
+
+    #[test]
+    fn browser_destination_requires_public_endpoint_and_matching_https_port() {
+        let base = WebEndpoint {
+            machine_id: MACHINE.to_owned(),
+            label: "web-box".to_owned(),
+            port: 8443,
+            visibility: "public".to_owned(),
+            policy_revision: 1,
+            url: Some("https://web-box.example:8443/".to_owned()),
+            route: format!("overalls://fleet.example/machines/{MACHINE}/web"),
+        };
+        assert_eq!(browser_endpoint_url(&base), base.url.as_deref());
+        let mut private = base.clone();
+        private.visibility = "private".to_owned();
+        assert!(browser_endpoint_url(&private).is_none());
+        let mut wrong_port = base;
+        wrong_port.url = Some("https://web-box.example:9443/".to_owned());
+        assert!(browser_endpoint_url(&wrong_port).is_none());
     }
 
     #[test]

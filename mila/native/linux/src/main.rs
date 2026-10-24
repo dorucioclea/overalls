@@ -2,8 +2,8 @@ use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
 use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation, TextDirection};
 use mila_native_linux::adapter::{
-    decode_listing, decode_notification_devices, decode_web_endpoint, format_machine_action,
-    format_ssh_key_revoke, format_thread_response, format_web_command, valid_https_endpoint_url,
+    browser_endpoint_url, decode_listing, decode_notification_devices, decode_web_endpoint, format_machine_action,
+    format_ssh_key_revoke, format_thread_response, format_web_command,
     TerminalStream,
 };
 use mila_native_linux::machine_view::{project_detail, project_listing};
@@ -1096,18 +1096,14 @@ impl NativeState {
                 open_web_status.set_label("Load a web endpoint before opening it.");
                 return;
             };
-            let Some(url) = endpoint.url else {
+            let Some(url) = browser_endpoint_url(&endpoint) else {
                 open_web_status.set_label("This machine has no public web endpoint.");
                 return;
             };
             // decode_web_endpoint already enforces HTTPS and the canonical
             // machine route. Re-check the scheme at the launch boundary so a
             // future state refactor cannot turn this into an open redirect.
-            if !valid_https_endpoint_url(&url, endpoint.port) {
-                open_web_status.set_label("Browser destination rejected by Rust policy.");
-                return;
-            }
-            match gio::AppInfo::launch_default_for_uri(&url, None::<&gio::AppLaunchContext>) {
+            match gio::AppInfo::launch_default_for_uri(url, None::<&gio::AppLaunchContext>) {
                 Ok(()) => open_web_status.set_label("Web endpoint opened in the browser."),
                 Err(_) => open_web_status.set_label("The browser could not open the endpoint."),
             }

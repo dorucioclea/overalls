@@ -1,5 +1,5 @@
 ---
-digest: 981dbfe46a1e6ad98e4c2e786458fafb3774b9ba4bc44f06fc24824fe5e1aab4
+digest: 1dca51f32ee2809a4235498424673ec5fcad260b320e2af500486fddf0ba28e8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH key listing now follows live deployment session authentication
+Apple web and terminal controls now require live authenticated deployment session

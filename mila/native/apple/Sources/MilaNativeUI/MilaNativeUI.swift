@@ -149,7 +149,7 @@ private struct MachineDetailView: View {
                     Button("Resize") { resize(machine) }.disabled(!machine.machine.write)
                 }
                 Text(resizeStatus).font(.caption).foregroundStyle(.secondary)
-                Button(MilaStrings.text(.openTerminal)) { showTerminal = true }.disabled(!machine.machine.write)
+                Button(MilaStrings.text(.openTerminal)) { showTerminal = true }.disabled(!signedIn || !machine.machine.write)
                 HStack {
                     TextField(MilaStrings.text(.sharePrincipal), text: $sharePrincipal)
                         .autocorrectionDisabled()
@@ -165,7 +165,7 @@ private struct MachineDetailView: View {
                 HStack {
                     TextField(MilaStrings.text(.webPlaceholder), text: $webURL).textContentType(.URL).autocorrectionDisabled()
                     Button(MilaStrings.text(.webOpen)) { openAuthenticatedWeb(machine.id) }
-                        .disabled(webLoading || !machine.machine.read)
+                        .disabled(!signedIn || webLoading || !machine.machine.read)
                 }
                 if webControls.error != nil { Text(MilaStrings.text(.webInvalid)).font(.caption).foregroundStyle(.secondary) }
                 ForEach(machine.actions.values, id: \.self) { action in
@@ -193,6 +193,11 @@ private struct MachineDetailView: View {
     }
 
     private func openAuthenticatedWeb(_ machineID: UUID) {
+        guard signedIn else {
+            webControls.clear()
+            _ = webControls.set("signed-out")
+            return
+        }
         webLoading = true
         Task {
             defer { webLoading = false }

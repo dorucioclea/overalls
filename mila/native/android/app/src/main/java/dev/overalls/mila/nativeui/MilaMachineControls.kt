@@ -27,6 +27,7 @@ data class MilaTerminalState(
 class MilaTerminalRenderer {
     private val lines = ArrayDeque<String>()
     private var escape = false
+    private var csi = false
     fun append(bytes: ByteArray) {
         // PTY output is deliberately reduced to display text before it reaches
         // Compose.  Keep CSI state across chunks so a split escape sequence
@@ -35,10 +36,13 @@ class MilaTerminalRenderer {
         val visible = buildString(decoded.length) {
             for (character in decoded) {
                 if (escape) {
-                    if (character in '@'..'~') escape = false
+                    if (!csi && character == '[') { csi = true; continue }
+                    if (csi) {
+                        if (character in '@'..'~') { escape = false; csi = false }
+                    } else if (character in '@'..'~') escape = false
                     continue
                 }
-                if (character == '\u001b') { escape = true; continue }
+                if (character == '\u001b') { escape = true; csi = false; continue }
                 append(character)
             }
         }

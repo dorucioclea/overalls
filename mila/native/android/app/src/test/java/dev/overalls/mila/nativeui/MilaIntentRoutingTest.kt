@@ -11,10 +11,12 @@ class MilaIntentRoutingTest {
         val controller = MilaDeepLinkController()
         val generation = controller.beginSession()
         assertTrue(acceptExternalIntent(controller, Intent(Intent.ACTION_VIEW).setData(android.net.Uri.parse("overalls://mila/machines/$id")), generation))
+        assertEquals(MilaRoute.Machines, controller.target)
+        assertTrue(acceptAuthenticatedExternalIntent(controller, Intent(Intent.ACTION_VIEW).setData(android.net.Uri.parse("overalls://mila/machines/$id")), generation, signedIn = true))
         assertEquals(MilaRoute.Machine(id), controller.target)
         val share = Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, "overalls://mila/threads")
         assertTrue(acceptExternalIntent(controller, share, generation))
-        assertEquals(MilaRoute.Threads, controller.target)
+        assertEquals(MilaRoute.Machines, controller.target)
     }
 
     @Test fun authenticatedShareTargetRefusesSignedOutSession() {
@@ -44,3 +46,4 @@ class MilaIntentRoutingTest {
         assertEquals(MilaRoute.Machines, controller.target)
     }
 }
+

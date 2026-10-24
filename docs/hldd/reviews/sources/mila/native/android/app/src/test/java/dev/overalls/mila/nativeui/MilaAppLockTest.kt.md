@@ -1,5 +1,5 @@
 ---
-digest: d279b60314ca3a11c28040f0a98474f2b73a4e2daee8c1fddd7b5a0f3f73e618
+digest: 43343456ed8776be1b64e1f54464e66b3cbd14cdc455f5868c15eba9153f5fe1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android app lock test remains behavior preserving
+Android app lock background authentication invalidation

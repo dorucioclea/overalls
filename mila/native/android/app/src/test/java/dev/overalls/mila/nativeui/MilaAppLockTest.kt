@@ -30,6 +30,15 @@ class MilaAppLockTest {
         state = state.finishUnlock(token, true)
         assertEquals(MilaLockPhase.Unlocked, state.phase)
     }
+
+    @Test fun backgroundingAuthenticationInvalidatesPromptResult() {
+        var state = MilaAppLockState(true, MilaLockDelay.Immediate, MilaLockAvailability.Available, MilaLockPhase.Locked)
+        val token = state.requestUnlock().attempt
+        state = state.backgrounded(100)
+        assertEquals(MilaLockPhase.Locked, state.phase)
+        state = state.finishUnlock(token, true)
+        assertEquals(MilaLockPhase.Locked, state.phase)
+    }
     @Test fun unavailableAuthenticatorCannotEnableOrUnlock() {
         val store = object : MilaAppLockStore {
             var value: MilaAppLockState? = null

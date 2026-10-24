@@ -36,7 +36,15 @@ public final class MilaDeploymentSessionCoordinator: @unchecked Sendable {
     }
     public func select(_ deployment: MilaDeployment) -> Bool {
         guard store.list().contains(where: { $0.id == deployment.id }) else { return false }
-        lock.lock(); defer { lock.unlock() }; defaults.set(deployment.id.uuidString, forKey: selectionKey); return true
+        lock.lock(); defer { lock.unlock() }
+        let changed = selectedDeployment?.id != deployment.id
+        defaults.set(deployment.id.uuidString, forKey: selectionKey)
+        if changed {
+            generation &+= 1
+            adapter = nil
+            currentState = .signedOut
+        }
+        return true
     }
     /// Removes a persisted deployment and fences any session that was using it.
     @discardableResult public func remove(_ id: UUID) -> Bool {

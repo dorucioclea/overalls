@@ -1,5 +1,5 @@
 ---
-digest: 688bcbf422d5963d0021fda28c3335280546ae9a04876139eb706f9e93bfe274
+digest: 99398d919e52e9278a98268b7d4542ff9284fce917f477746bf0c265daa4f6be
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed native deployment lifecycle UI and tests; accepted architecture preserved.
+fence authenticated session when switching deployments

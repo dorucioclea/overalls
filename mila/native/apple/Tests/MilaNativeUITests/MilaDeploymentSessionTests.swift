@@ -15,6 +15,16 @@ final class MilaDeploymentSessionTests: XCTestCase {
         let store = MilaDeploymentStore(defaults: defaults); let value = deployment(); XCTAssertTrue(store.upsert(value));
         let coordinator = MilaDeploymentSessionCoordinator(store: store, defaults: defaults) { _ in UnavailableMilaFFIAdapter() }; XCTAssertTrue(coordinator.signIn(value)); let generation = coordinator.currentGeneration(); coordinator.signOut(); XCTAssertNil(coordinator.adapter(for: generation)); XCTAssertEqual(coordinator.state, .signedOut)
     }
+
+    func testSelectingDifferentDeploymentFencesAuthenticatedSession() {
+        let suite = "mila.session.\(UUID().uuidString)"; let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
+        let store = MilaDeploymentStore(defaults: defaults); let first = deployment(); let second = deployment("other.example")
+        XCTAssertTrue(store.upsert(first)); XCTAssertTrue(store.upsert(second))
+        let coordinator = MilaDeploymentSessionCoordinator(store: store, defaults: defaults) { _ in UnavailableMilaFFIAdapter() }
+        XCTAssertTrue(coordinator.signIn(first)); let oldGeneration = coordinator.currentGeneration()
+        XCTAssertTrue(coordinator.select(second)); XCTAssertEqual(coordinator.state, .signedOut)
+        XCTAssertNil(coordinator.adapter(for: oldGeneration)); XCTAssertGreaterThan(coordinator.currentGeneration(), oldGeneration)
+    }
     func testFailedReconnectFencesPriorAuthenticatedGeneration() {
         let suite = "mila.session.\(UUID().uuidString)"; let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
         let store = MilaDeploymentStore(defaults: defaults); let value = deployment(); XCTAssertTrue(store.upsert(value))

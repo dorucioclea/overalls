@@ -51,6 +51,14 @@ class MilaThreadDetailTest {
         assertFalse(controller.submit(MilaThreadCommand.Show, "unexpected"))
     }
 
+    @Test fun promptInputUsesUtf8ByteBound() = runBlocking {
+        val controller = MilaThreadDetailController(ThreadAdapter())
+        controller.setSession(true, listing)
+        controller.select(id)
+        assertFalse(controller.submit(MilaThreadCommand.Prompt, "é".repeat(2049)))
+        assertTrue(controller.submit(MilaThreadCommand.Prompt, "é".repeat(2048)))
+    }
+
     @Test fun planApprovalUsesClosedCommandInputContract() = runBlocking {
         val controller = MilaThreadDetailController(ThreadAdapter())
         controller.setSession(true, listing)

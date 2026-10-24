@@ -1,5 +1,5 @@
 ---
-digest: a133970a4838a2de2d4142e4a7fc82628fe9d0d764ff422036ec2d7b68c30307
+digest: 8d135c7fa8b6083ae2ad4d7b2d3639fff5b87f678bb236ff69c1ef8e0b721a51
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Android thread projections and tests
+bound Android thread input by UTF-8 bytes

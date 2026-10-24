@@ -6,11 +6,11 @@ pkgs.runCommand "mila-windows-source-bundle-${version}" {} ''
   name=mila-windows-source-bundle-${version}
   b="$PWD/$name"
   mkdir -p "$b/mila/windows-dotnet" "$b/mila/rust" "$b/mila/app/lib/l10n"
-  cp -r ${root}/mila/windows-dotnet/. "$b/mila/windows-dotnet/"
-  cp -r ${root}/mila/rust/. "$b/mila/rust/"
-  cp -r ${root}/mila/app/lib/l10n/. "$b/mila/app/lib/l10n/"
+  # `root` is the cleaned Mila source tree (not the repository root).
+  cp -r ${root}/windows-dotnet/. "$b/mila/windows-dotnet/"
+  cp -r ${root}/rust/. "$b/mila/rust/"
   mkdir -p "$b/mila/localization"
-  cp ${root}/mila/localization/generate_catalogs.py "$b/mila/localization/generate_catalogs.py"
+  cp ${root}/localization/generate_catalogs.py "$b/mila/localization/generate_catalogs.py"
   cat > "$b/flake.nix" <<'EOT'
   { outputs = _: { }; }
   EOT

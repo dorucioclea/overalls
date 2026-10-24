@@ -184,7 +184,7 @@ internal sealed class MilaWindowsNotificationDeviceStore
         if (devices.Count > 256) throw new ArgumentOutOfRangeException(nameof(devices));
         string? directory = Path.GetDirectoryName(path);
         if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
-        string json = JsonSerializer.Serialize(new { devices });
+        string json = JsonSerializer.Serialize(new { devices }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         File.WriteAllText(path, json);
     }
 }

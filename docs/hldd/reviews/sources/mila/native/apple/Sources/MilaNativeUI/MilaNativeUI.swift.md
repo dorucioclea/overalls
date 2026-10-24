@@ -1,5 +1,5 @@
 ---
-digest: a27cc5e4687c2d0dcaff12859e0a56a4fd9d346afa4907f18de09c0cca0a91eb
+digest: 115dcebe6631582d467083265bed7806ca2a44a9343aa906e6f3b24fb20b07fa
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple machine projections cap native list size and preserve session fencing
+mila/native/apple/Sources/MilaNativeUI/MilaNativeUI.swift

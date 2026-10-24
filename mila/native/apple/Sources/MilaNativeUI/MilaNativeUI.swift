@@ -7,6 +7,7 @@ public struct MilaNativeRootView: View {
     @State private var selection: MilaRoute = .machines
     @State private var machines: [MilaMachinePresentation] = []
     @State private var status = MilaStrings.text(.ready)
+    @State private var deepLinkRouter = MilaDeepLinkRouter()
     @State private var showCreate = false
     @StateObject private var appLock = MilaAppLockController()
     @Environment(\.scenePhase) private var scenePhase
@@ -46,12 +47,26 @@ public struct MilaNativeRootView: View {
                 if result { Task { await refresh() } }
             }
         }.milaDesignSystem().onChange(of: session.state) { _, state in
-            if case .signedOut = state { machines = []; selection = .machines; status = MilaStrings.text(.ready) }
+            let signedIn: Bool
+            if case .signedIn(_, _) = state { signedIn = true } else { signedIn = false }
+            deepLinkRouter.setSession(signedIn: signedIn)
+            if !signedIn { machines = []; selection = .machines; status = MilaStrings.text(.ready) }
         }.onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background: appLock.sceneDidEnterBackground()
             case .active: Task { await appLock.sceneWillEnterForeground() }
             default: break
+            }
+        }.onOpenURL { url in
+            let decision = deepLinkRouter.decide(url.absoluteString)
+            switch decision {
+            case .open(let route, let generation) where deepLinkRouter.accepts(decision, generation: generation):
+                selection = route
+                status = MilaStrings.text(.ready)
+            case .signedOut:
+                status = MilaStrings.text(.ready)
+            default:
+                status = MilaStrings.text(.runtimeUnavailable)
             }
         }.task {
             await refresh()

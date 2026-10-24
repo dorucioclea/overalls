@@ -202,6 +202,38 @@ impl LiveSession {
         })
     }
 
+    /// Read the authenticated account SSH-key inventory. The FFI layer keeps
+    /// the response bounded; callers must decode it with `decode_ssh_keys`.
+    pub fn ssh_keys(&self) -> Result<Vec<u8>, SessionError> {
+        let handle = self.handle()?;
+        copy_output(|out, capacity, written| unsafe {
+            mila_ffi::session::mila_session_ssh_keys(handle, out, capacity, written)
+        })
+    }
+
+    /// Revoke one server-managed SSH key, once per request identifier.
+    pub fn ssh_key_revoke(&mut self, key_id: &str, request_id: &str) -> Result<(), SessionError> {
+        let command = crate::adapter::format_ssh_key_revoke(key_id, request_id)
+            .map_err(|_| SessionError::InvalidInput)?;
+        if !self.submitted_mutations.insert(request_id.to_owned()) {
+            return Err(SessionError::Busy);
+        }
+        let handle = self.handle()?;
+        let status = unsafe {
+            mila_ffi::session::mila_session_ssh_key_revoke(
+                handle,
+                key_id.as_bytes().as_ptr(),
+                key_id.len(),
+                request_id.as_bytes().as_ptr(),
+                request_id.len(),
+            )
+        };
+        let _ = command;
+        (status == mila_ffi::session::SessionStatus::Ok)
+            .then_some(())
+            .ok_or_else(|| status.into())
+    }
+
     /// Poll the authenticated deployment for its bounded identity/approval
     /// envelope.  The response is decoded in Rust so GTK never interprets
     /// untrusted JSON or decides whether approval is required.

@@ -1,5 +1,5 @@
 ---
-digest: c25cd49c399ea99182debb730fcce3485524fcf45c941764ec1354a3164238db
+digest: 96c64c48eb5f0c739d8c87b5b8c4f0851fa52067a9f549580ee40b51d1fdbed0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed formatting and native test changes; no handbook behavior or architecture change.
+Documentation and FFI wording now describe native platform bridges

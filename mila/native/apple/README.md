@@ -1,8 +1,7 @@
 # Mila Apple native UI scaffold
 
-This Swift Package is an isolated SwiftUI presentation seam for iOS and macOS. It does not change
-the Flutter runner or link a Rust library yet. A host app can depend on the package and inject a
-generated binding by conforming to `MilaFFIAdapter`.
+This Swift Package is an isolated SwiftUI presentation seam for iOS and macOS. It is independent of the retired Flutter runner and exposes a typed boundary for a host app to
+link the Rust library. A host app can depend on the package and inject a generated binding by conforming to `MilaFFIAdapter`.
 
 The package uses Swift tools 6.2, iOS 18, and macOS 15 as its deployment floor. The host Xcode
 project remains responsible for signing, entitlements, and embedding the package. `MilaNativeApp`

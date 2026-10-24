@@ -1,6 +1,6 @@
 # Mila Android native UI scaffold
 
-This is an isolated Jetpack Compose application for the native Mila presentation seam. It does not change the Flutter Android runner. The adapter exposes a narrow, typed JNI seam for the
+This is an isolated Jetpack Compose application for the native Mila presentation seam. It is independent of the retired Flutter Android runner. The adapter exposes a narrow, typed JNI seam for the
 Rust `mila-ffi` library; host packaging supplies the ABI-compatible native library and may inject a
 test binding implementing `MilaRustBindings`.
 

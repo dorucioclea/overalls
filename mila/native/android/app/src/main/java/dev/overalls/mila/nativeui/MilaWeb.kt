@@ -53,15 +53,22 @@ internal fun isAllowedMilaWebTarget(base: String, target: String): Boolean = run
 private fun effectivePort(uri: URI): Int = if (uri.port == -1) 443 else uri.port
 
 class MilaWebController(private val adapter: MilaFfiAdapter) {
+    private var signedIn: Boolean = false
+    fun setSession(authenticated: Boolean) {
+        signedIn = authenticated
+        if (!authenticated) clear()
+    }
     var endpoint by mutableStateOf<MilaWebEndpoint?>(null); private set
     var error by mutableStateOf<String?>(null); private set
     fun clear() { endpoint = null; error = null }
     suspend fun show(machine: UUID): Boolean = runCatching {
+        check(signedIn) { "web controls require sign-in" }
         val result = adapter.webShow(machine).getOrThrow()
         endpoint = parseMilaWebEndpoint(result).getOrThrow().also { require(it.machineId == machine) { "web endpoint machine mismatch" } }
         error = null
     }.onFailure { error = it.message ?: "web endpoint unavailable" }.isSuccess
     suspend fun set(machine: UUID, port: Int, public: Boolean): Boolean = runCatching {
+        check(signedIn) { "web controls require sign-in" }
         require(port in 1..65535)
         val current = endpoint?.also { require(it.machineId == machine) }
             ?: error("load endpoint before changing it")
@@ -85,10 +92,10 @@ fun MilaWebView(url: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun MilaWebControls(adapter: MilaFfiAdapter, machine: MilaMachineRow) {
+fun MilaWebControls(adapter: MilaFfiAdapter, machine: MilaMachineRow, signedIn: Boolean) {
     val controller = remember { MilaWebController(adapter) }
     val scope = rememberCoroutineScope()
-    LaunchedEffect(machine.id) { controller.clear(); controller.show(machine.id) }
+    LaunchedEffect(machine.id, signedIn) { controller.setSession(signedIn); if (signedIn) controller.show(machine.id) }
     var port by remember { mutableStateOf("") }
     var public by remember { mutableStateOf(true) }
     LaunchedEffect(controller.endpoint?.revision) {
@@ -97,8 +104,8 @@ fun MilaWebControls(adapter: MilaFfiAdapter, machine: MilaMachineRow) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(MilaStrings.text(MilaMessage.WebEndpoint))
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Button({ scope.launch { controller.show(machine.id) } }) { Text(MilaStrings.text(MilaMessage.WebShow)) }
-            Button({ scope.launch { port.toIntOrNull()?.let { controller.set(machine.id, it, public) } } }) { Text(MilaStrings.text(MilaMessage.WebSave)) }
+            Button(enabled = signedIn, onClick = { scope.launch { controller.show(machine.id) } }) { Text(MilaStrings.text(MilaMessage.WebShow)) }
+            Button(enabled = signedIn, onClick = { scope.launch { port.toIntOrNull()?.let { controller.set(machine.id, it, public) } } }) { Text(MilaStrings.text(MilaMessage.WebSave)) }
         }
         OutlinedTextField(port, { port = it }, label = { Text(MilaStrings.text(MilaMessage.WebPort)) })
         controller.endpoint?.let { endpoint ->

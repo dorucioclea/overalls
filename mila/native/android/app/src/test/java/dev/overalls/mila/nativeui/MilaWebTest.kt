@@ -35,6 +35,7 @@ class MilaWebTest {
    override suspend fun webShow(machineId: java.util.UUID) = Result.success("{\"machine_id\":\"$foreign\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2}")
   }
   val controller = MilaWebController(adapter)
+  controller.setSession(true)
   assertFalse(controller.show(java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")))
   assertNull(controller.endpoint)
  }
@@ -45,6 +46,7 @@ class MilaWebTest {
    override suspend fun webShow(machineId: java.util.UUID) = Result.success("{\"machine_id\":\"$id\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2}")
   }
   val controller = MilaWebController(adapter)
+  controller.setSession(true)
   assertTrue(controller.show(id)); assertNotNull(controller.endpoint)
   controller.clear(); assertNull(controller.endpoint); assertNull(controller.error)
  }
@@ -60,9 +62,19 @@ class MilaWebTest {
    }
   }
   val controller = MilaWebController(adapter)
+  controller.setSession(true)
   assertFalse(controller.set(id, 8081, false))
   assertTrue(controller.show(id))
   assertTrue(controller.set(id, 8081, false))
   assertEquals(7L, seenRevision)
  }
 }
+
+ @Test fun signedOutControllerRefusesWebShow() = kotlinx.coroutines.runBlocking {
+  val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
+  val adapter = object : MilaFfiAdapter {
+   override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
+  }
+  val controller = MilaWebController(adapter)
+  assertFalse(controller.show(id)); assertNull(controller.endpoint)
+ }

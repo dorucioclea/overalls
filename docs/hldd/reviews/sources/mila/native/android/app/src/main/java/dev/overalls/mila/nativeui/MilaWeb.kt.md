@@ -1,5 +1,5 @@
 ---
-digest: e207e8dc320f8e6ad0c235e0f192371377b79c91989aee09c7bb95bef6734eda
+digest: 993d9c09a417486ee1fed1ef567b2a9bcecc31c87aea97c5c916e1a66dd2fba9
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android WebView clears stale authenticated endpoint state when machine selection changes; bounded UI lifecycle behavior only.
+Android web controls now fence authenticated session state

@@ -1,5 +1,5 @@
 ---
-digest: 5009640e0119402c4d27edd8e55342bf75d98f5df47131533016b129c8eeb825
+digest: 567801e8026a24b95152c07910a58ff2433a851cf5a7578fe1d2d8002b27b6dc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android unit test compatibility correction; no architecture change.
+Android web controls now fence authenticated session state

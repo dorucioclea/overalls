@@ -1,5 +1,5 @@
 ---
-digest: 3ca1cc4b44c28143494834dd67ed3d577f4d5fac8c02fb274515dd9c639ad315
+digest: 81de76587b459f90397b1a8467d669d1fbc766d9b93b8ced6794177b69f26a5e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android share action is gated by authenticated session state
+Android web controls now fence authenticated session state

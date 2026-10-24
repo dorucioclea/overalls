@@ -483,7 +483,7 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
             if (resizeResult.isNotEmpty()) Text(resizeResult, style = MaterialTheme.typography.labelSmall)
         }
         MachineSharingControls(adapter, machine, signedIn, listing)
-        if (machine != null) MilaWebControls(adapter, machine)
+        if (machine != null) MilaWebControls(adapter, machine, signedIn)
         Text(
             when (val current = controller.state) {
                 MilaMachineMutationState.SignedOut -> MilaStrings.text(MilaMessage.RuntimeUnavailable)

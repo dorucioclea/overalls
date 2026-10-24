@@ -1,5 +1,5 @@
 ---
-digest: bc5982a81478a6d88984ad1e51b302a18d7ef6c3e963c2b93a675ee44e658e4a
+digest: d475d3721fd08a2dca799695ee1f702472d5e9a52a965271b46a413998db03d1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple machine detail display bounds enforced before SwiftUI projection
+Apple thread prompt action and UI wiring

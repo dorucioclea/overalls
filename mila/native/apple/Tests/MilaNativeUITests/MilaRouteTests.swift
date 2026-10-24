@@ -255,6 +255,7 @@ final class MilaThreadActionTests: XCTestCase {
         XCTAssertEqual(MilaThreadAction.list.command, "thread list")
         XCTAssertEqual(MilaThreadAction.read.command, "thread read")
         XCTAssertEqual(MilaThreadAction.answer("hello").input, "hello")
+        XCTAssertEqual(MilaThreadAction.prompt("question").command, "thread prompt")
         XCTAssertEqual(MilaThreadAction.planApprove("plan-1").secondary, "plan-1")
         XCTAssertEqual(MilaThreadAction.planRevise("plan-2").command, "thread plan revise")
     }
@@ -268,5 +269,6 @@ final class MilaThreadActionTests: XCTestCase {
         XCTAssertFalse(MilaThreadAction.answer(String(repeating: "x", count: 64 * 1024 + 1)).isWellFormed)
         XCTAssertFalse(MilaThreadAction.answer("hello\nworld").isWellFormed)
         XCTAssertFalse(MilaThreadAction.planApprove("plan\u{0000}1").isWellFormed)
+        XCTAssertTrue(MilaThreadAction.prompt("question").isWellFormed)
     }
 }

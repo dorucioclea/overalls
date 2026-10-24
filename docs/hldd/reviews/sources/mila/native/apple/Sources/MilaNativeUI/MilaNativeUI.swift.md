@@ -1,5 +1,5 @@
 ---
-digest: 885d7a7c9c6928484f6a56452cd07339870f1aa04c92eddd5cbe53b257f5b2ba
+digest: 6ed51faf99948d9049128b13a61367fad130b841a2686e27cfceba94dd570f0e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-lock on inactive scene phase
+Apple thread prompt action and UI wiring

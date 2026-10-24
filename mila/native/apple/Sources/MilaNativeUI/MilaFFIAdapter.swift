@@ -158,6 +158,7 @@ public enum MilaThreadAction: Sendable, Equatable {
     case list
     case read
     case answer(String)
+    case prompt(String)
     case planApprove(String)
     case planRevise(String)
 
@@ -167,7 +168,7 @@ public enum MilaThreadAction: Sendable, Equatable {
         }
         switch self {
         case .list, .read: return true
-        case .answer(let value): return !value.isEmpty && safe(value) && value.utf8.count <= 64 * 1024
+        case .answer(let value), .prompt(let value): return !value.isEmpty && safe(value) && value.utf8.count <= 64 * 1024
         case .planApprove(let value), .planRevise(let value): return safe(value) && !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && value.utf8.count <= 256
         }
     }
@@ -177,6 +178,7 @@ public enum MilaThreadAction: Sendable, Equatable {
         case .list: return "thread list"
         case .read: return "thread read"
         case .answer: return "thread answer"
+        case .prompt: return "thread prompt"
         case .planApprove: return "thread plan approve"
         case .planRevise: return "thread plan revise"
         }
@@ -184,6 +186,7 @@ public enum MilaThreadAction: Sendable, Equatable {
 
     public var secondary: String? {
         switch self {
+        case .prompt(let value): return value
         case .planApprove(let value), .planRevise(let value): return value
         default: return nil
         }
@@ -191,6 +194,7 @@ public enum MilaThreadAction: Sendable, Equatable {
 
     public var input: String? {
         if case .answer(let value) = self { return value }
+        if case .prompt(let value) = self { return value }
         return nil
     }
 }

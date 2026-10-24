@@ -319,6 +319,7 @@ private struct ThreadDetailView: View {
             TextField(MilaStrings.text(.input), text: $input).textFieldStyle(.roundedBorder)
             HStack {
                 Button(MilaStrings.text(.send)) { Task { await send(.answer(input)) } }.disabled(!MilaThreadAction.answer(input).isWellFormed || busy)
+                Button("Prompt") { Task { await send(.prompt(input)) } }.disabled(!MilaThreadAction.prompt(input).isWellFormed || busy)
                 Button("Approve plan") { Task { await send(.planApprove(plan)) } }.disabled(!MilaThreadAction.planApprove(plan).isWellFormed || busy)
                 Button("Revise plan") { Task { await send(.planRevise(plan)) } }.disabled(!MilaThreadAction.planRevise(plan).isWellFormed || busy)
             }

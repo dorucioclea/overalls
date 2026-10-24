@@ -1,5 +1,5 @@
 ---
-digest: 0aeabfb6a8a91d499c8bce6ff9ef0a7971837e0c382f1026e9e290f6657b9f2d
+digest: 2b44b750542c4c2a276ba88e9e5baaf0fcefe3a9b32ced0009e803d71073dfe1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-concurrent native validation changes reviewed for commit gate
+Apple thread prompt action and UI wiring

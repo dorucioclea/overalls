@@ -241,8 +241,7 @@ public sealed partial class MainWindow : Window
         core.NavigationStarting += (_, eventArgs) =>
         {
             if (_webUrl is not { } origin || !Uri.TryCreate(eventArgs.Uri, UriKind.Absolute, out Uri? target) ||
-                target.Scheme != Uri.UriSchemeHttps || !string.Equals(target.Host, origin.Host, StringComparison.OrdinalIgnoreCase) ||
-                target.Port != origin.Port || !string.IsNullOrEmpty(target.UserInfo) || !string.IsNullOrEmpty(target.Fragment))
+                !MilaWebOrigin.IsAllowed(origin, target))
             {
                 eventArgs.Cancel = true;
                 WebStatus.Text = S("webFailed", "Web navigation refused");

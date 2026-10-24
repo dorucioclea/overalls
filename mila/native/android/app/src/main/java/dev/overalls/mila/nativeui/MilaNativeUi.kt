@@ -367,7 +367,7 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
                     if (key.isCurrentDevice) {
                         Text(MilaStrings.text(MilaMessage.SshKeyThisDevice), style = MaterialTheme.typography.labelSmall)
                     } else {
-                        Button({ if (controller.revoke(key)) keys = controller.keys }) {
+                        Button(onClick = { if (controller.revoke(key)) keys = controller.keys }, enabled = signedIn) {
                             Text(MilaStrings.text(MilaMessage.SshKeyRevoke))
                         }
                     }

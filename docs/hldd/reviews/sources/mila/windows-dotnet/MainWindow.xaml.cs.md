@@ -1,5 +1,5 @@
 ---
-digest: 35c6cb39c31f6f5b2a668fc1f9ff8fbae9a5350a316e366ea87303fafb31ecbb
+digest: 7ff499282bd5a17b386beac722ff5841f5e36b98af5854069147c3c55cc33f75
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Windows UI change reviewed separately from Linux SSH session fence
+Web origin helper and smoke coverage preserve existing authenticated navigation behavior

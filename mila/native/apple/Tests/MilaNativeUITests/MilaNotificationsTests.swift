@@ -54,6 +54,21 @@ final class MilaNotificationsTests: XCTestCase {
         XCTAssertTrue(controller.devices.isEmpty)
     }
 
+    func testSignedOutSessionHidesDevicesAndRefusesMutations() {
+        let adapter = Adapter()
+        let store = Store()
+        let controller = MilaNotificationController(adapter: adapter, appID: "com.example.mila", deployment: "mila.example.test", store: store)
+        controller.register(token: String(repeating: "a", count: 64), endpoint: "https://mila.example.test/push")
+        XCTAssertEqual(controller.state, .on)
+        controller.setSessionActive(false)
+        XCTAssertTrue(controller.devices.isEmpty)
+        controller.register(token: String(repeating: "b", count: 64), endpoint: "https://mila.example.test/push")
+        XCTAssertEqual(controller.state, .failed)
+        XCTAssertFalse(controller.removeDevice(id: "com.example.mila"))
+        controller.setSessionActive(true)
+        XCTAssertEqual(controller.devices.count, 1)
+    }
+
     func testEmptyTokenFailsBeforeCrossingBoundary() {
         let adapter = Adapter()
         let controller = MilaNotificationController(adapter: adapter, appID: "com.example.mila", deployment: "mila.example.test")

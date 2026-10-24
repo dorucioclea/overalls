@@ -20,6 +20,15 @@ class MilaSshKeysTest {
   assertTrue(bindings.revoked?.second?.matches(Regex("porsche-[0-9a-f]{32}")) == true)
  }
 
+ @Test fun unbindingSessionClearsKeysAndRefusesRevoke() {
+  val store = Keys()
+  val controller = MilaSshKeyController(store)
+  assertEquals(1, controller.keys.size)
+  controller.bindStore(null)
+  assertTrue(controller.keys.isEmpty())
+  assertFalse(controller.revoke("fp1"))
+ }
+
  @Test fun currentDeviceCannotBeRevoked() {
   val id = UUID.fromString("00000000-0000-0000-0000-000000000002")
   val store = object : MilaSshKeyStore {

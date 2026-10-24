@@ -1,5 +1,5 @@
 ---
-digest: 1d3860d64b41f2aed670b4314b153c99cab8b8fe6996a1e02994936a0f055498
+digest: 314cfb8e4b10a33872dad52a6dff393b2f292ab13765e356ee916e54a3d49532
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound APNs action categories before native routing
+Apple notification session lifecycle tests preserve documented behavior

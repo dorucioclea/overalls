@@ -1,5 +1,5 @@
 ---
-digest: 780a7c0eda3ac246ed48941f3be0f328f32ca8ae6eb3945f496896b9dde1a615
+digest: 878e04f0c218cf25c66c829af651099ea8704185bdc149460f6d968a98085aee
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows locale normalization now canonicalizes BCP-47 casing with smoke coverage
+Review native session security changes preserve documented boundaries

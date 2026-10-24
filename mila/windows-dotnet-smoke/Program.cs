@@ -81,6 +81,11 @@ internal static class Program
         bool badWeb = false;
         try { _ = MilaWebEndpointDecoder.Decode(Encoding.UTF8.GetBytes($"{{\"machine_id\":\"{machineId:D}\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":4,\"url\":\"http://web.example.test\"}}"), machineId); } catch (InvalidDataException) { badWeb = true; }
         Require(badWeb, "insecure web endpoint refusal");
+        Uri webOrigin = new("https://web.example.test");
+        Require(MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://web.example.test/path")), "same web origin allowed");
+        Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("http://web.example.test/path")), "http web origin refusal");
+        Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://other.example.test/path")), "foreign web origin refusal");
+        Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://web.example.test/path#fragment")), "fragment web origin refusal");
         MilaNativeSessionBytesResult invalidKeys = RustNative.TrySessionSshKeys(0);
         Require(invalidKeys.Status == MilaNativeStatus.InvalidRequest && invalidKeys.Data is null, "missing authenticated SSH key listing refusal");
         MilaNativeSessionBytesResult invalidListing = RustNative.TrySessionListing(0);

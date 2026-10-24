@@ -1,5 +1,5 @@
 ---
-digest: a918239bacbd6ee405dfc0e2e97d94520035cc346f35c41ed5b7b518a61cbe37
+digest: 13047e2c73d29849cff73b6090c1298b1e9a07ad82290103c08c8db0624219a8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Thread commands are session-gated in native UI
+Review native session security changes preserve documented boundaries

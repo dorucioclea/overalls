@@ -100,6 +100,8 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
 @MainActor public final class MilaNotificationController: ObservableObject {
     @Published public private(set) var state: MilaNotificationState = .off
     @Published public private(set) var devices: [MilaNotificationDevice]
+    /// Mutations and device projections are available only for an authenticated deployment session.
+    @Published public private(set) var sessionActive: Bool = true
     private let adapter: any MilaFFIAdapter
     private let appID: String
     private let deployment: String
@@ -107,11 +109,15 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
     public init(adapter: any MilaFFIAdapter, appID: String, deployment: String, store: MilaNotificationDeviceStore = MilaUserDefaultsNotificationStore()) {
         self.adapter = adapter; self.appID = appID; self.deployment = deployment; self.store = store; self.devices = store.list()
     }
-    public func refreshDevices() { devices = store.list() }
-    @discardableResult public func removeDevice(id: String) -> Bool { let ok = store.remove(id: id); refreshDevices(); return ok }
+    public func setSessionActive(_ active: Bool) {
+        sessionActive = active
+        if active { refreshDevices() } else { devices = []; state = .off }
+    }
+    public func refreshDevices() { guard sessionActive else { devices = []; return }; devices = store.list() }
+    @discardableResult public func removeDevice(id: String) -> Bool { guard sessionActive else { return false }; let ok = store.remove(id: id); refreshDevices(); return ok }
     /// @cc [owner:ghuntley,label:security] mila-apple-push-token-boundary
     public func register(token: String, endpoint: String, environment: MilaPushEnvironment = .production) {
-        guard !token.isEmpty else { state = .failed; return }; state = .registering
+        guard sessionActive, !token.isEmpty else { state = .failed; return }; state = .registering
         do { try adapter.validatePushRegistration(provider: MilaPushProvider.apple.rawValue, environment: environment.rawValue, token: token, appID: appID, deployment: deployment, endpoint: endpoint); _ = store.upsert(MilaNotificationDevice(id: appID, deployment: deployment, enabled: true)); refreshDevices(); state = .on } catch { state = .failed }
     }
 
@@ -125,5 +131,5 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
         _ = deviceToken; _ = endpoint; _ = environment; state = .failed
         #endif
     }
-    public func disable() { _ = store.upsert(MilaNotificationDevice(id: appID, deployment: deployment, enabled: false)); refreshDevices(); state = .off }
+    public func disable() { guard sessionActive else { state = .off; return }; _ = store.upsert(MilaNotificationDevice(id: appID, deployment: deployment, enabled: false)); refreshDevices(); state = .off }
 }

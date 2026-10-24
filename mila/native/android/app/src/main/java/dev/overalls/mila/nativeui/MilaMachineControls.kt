@@ -16,7 +16,13 @@ class MilaMachineActionController(private val adapter: MilaFfiAdapter) {
 }
 
 enum class MilaTerminalPhase { Idle, Attached, ReadOnly, Closed }
-data class MilaTerminalState(val phase: MilaTerminalPhase = MilaTerminalPhase.Idle, val columns: Int = 80, val rows: Int = 24)
+data class MilaTerminalState(
+    val phase: MilaTerminalPhase = MilaTerminalPhase.Idle,
+    val columns: Int = 80,
+    val rows: Int = 24,
+    /** Absolute PTY byte cursor used to resume a dropped attachment. */
+    val cursor: Long = 0,
+)
 /** Bounded terminal text projection; control bytes and unbounded history never reach Compose. */
 class MilaTerminalRenderer {
     private val lines = ArrayDeque<String>()
@@ -54,7 +60,7 @@ class MilaTerminalController(private val adapter: MilaFfiAdapter, private val so
  companion object { const val MAX_READ_BYTES: Int = 64 * 1024 }
  var state = MilaTerminalState(); private set
  val renderer = MilaTerminalRenderer()
- fun attach(readWrite: Boolean): Boolean = adapter.terminalAttach(0, state.columns, state.rows, readWrite).isSuccess.also { if (it) state = state.copy(phase = if (readWrite) MilaTerminalPhase.Attached else MilaTerminalPhase.ReadOnly) }
+ fun attach(readWrite: Boolean): Boolean = adapter.terminalAttach(state.cursor, state.columns, state.rows, readWrite).isSuccess.also { if (it) state = state.copy(phase = if (readWrite) MilaTerminalPhase.Attached else MilaTerminalPhase.ReadOnly) }
  fun reconnect(readWrite: Boolean = state.phase == MilaTerminalPhase.Attached): Boolean { if (state.phase == MilaTerminalPhase.Closed) state = state.copy(phase = MilaTerminalPhase.Idle); return attach(readWrite) }
  /** Send a bounded input payload only while attached read/write. */
  fun input(length: Int): Boolean =
@@ -70,7 +76,11 @@ class MilaTerminalController(private val adapter: MilaFfiAdapter, private val so
    state = state.copy(phase = MilaTerminalPhase.Closed)
    return true
   }
-  renderer.append(bytes); return true
+  val next = state.cursor + bytes.size.toLong()
+  if (next < state.cursor) return false
+  renderer.append(bytes)
+  state = state.copy(cursor = next)
+  return true
  }
  /** Drain one bounded host read. A null result means the PTY currently has no output. */
  fun pollOutput(): Boolean = source?.read(MAX_READ_BYTES)?.let(::receive) ?: false

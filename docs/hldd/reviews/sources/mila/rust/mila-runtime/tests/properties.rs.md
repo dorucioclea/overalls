@@ -1,5 +1,5 @@
 ---
-digest: 2bb42242efbf2f760a19eb0356b73803fbfb1bd2f259c208599c98807016510f
+digest: b9e826a056e5e3068e39354735c8e6f414e2d01ead66b88973b6332486378d97
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Hegel property verifies mutation uncertainty retains one request identity
+Formatting-only updates align Rust sources with enforced CI rustfmt gate; runtime behavior unchanged.

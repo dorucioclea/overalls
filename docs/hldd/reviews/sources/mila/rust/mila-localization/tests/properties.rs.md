@@ -1,5 +1,5 @@
 ---
-digest: 12b7ed59b7a355149af242750ba8b6eb559d43af35e2b88ea0e0bc4fd5eb710c
+digest: ad624a1dbbe342516dafe21ea6f4f0f1d1a5c83c3f2eef493ac81847f87fcdd4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Localization property tests extend verification without behavior changes
+Formatting-only updates align Rust sources with enforced CI rustfmt gate; runtime behavior unchanged.

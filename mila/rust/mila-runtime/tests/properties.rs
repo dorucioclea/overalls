@@ -1,12 +1,12 @@
 use hegel::{generators as gs, TestCase};
+use mila_model::RequestId;
 use mila_runtime::{
     AppLock, LockAvailability, LockDelay, LockEvent, LockPhase, MachineSnapshot, SnapshotMachine,
     MAX_SNAPSHOT_BYTES,
 };
 use mila_runtime::{AttachOutcome, AttachPhase, TerminalAttach};
-use mila_runtime::{PokeEnvelope, RuntimeError, SnapshotStore};
 use mila_runtime::{MutationPhase, MutationTracker, NextAction};
-use mila_model::RequestId;
+use mila_runtime::{PokeEnvelope, RuntimeError, SnapshotStore};
 use mila_runtime::{PushEnvironment, PushProvider, PushRegistrationRequest};
 
 #[hegel::test(test_cases = 64)]
@@ -128,18 +128,11 @@ fn arbitrary_registration_inputs_never_panic(tc: TestCase) {
 fn push_replies_never_accept_expired_or_unbounded_values(tc: TestCase) {
     let raw_key = tc.draw(gs::vecs(gs::default::<u8>()).max_size(900));
     let push_key = "A".repeat(16 + raw_key.len().min(684));
-    let key_id = String::from_utf8_lossy(
-        &tc.draw(gs::vecs(gs::default::<u8>()).max_size(180)),
-    )
-    .into_owned();
+    let key_id =
+        String::from_utf8_lossy(&tc.draw(gs::vecs(gs::default::<u8>()).max_size(180))).into_owned();
     let now = tc.draw(gs::default::<u64>());
     let expires = tc.draw(gs::default::<u64>());
-    if let Ok(reply) = mila_runtime::PushRegistrationReply::new(
-        push_key,
-        key_id,
-        expires,
-        now,
-    ) {
+    if let Ok(reply) = mila_runtime::PushRegistrationReply::new(push_key, key_id, expires, now) {
         assert!(reply.expires_at > now);
         assert!((16..=700).contains(&reply.push_key.len()));
         assert!(!reply.key_id.is_empty());

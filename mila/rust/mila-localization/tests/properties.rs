@@ -3,7 +3,8 @@ use mila_localization::{direction, normalize, Direction, Locale, SUPPORTED_LOCAL
 
 #[hegel::test(test_cases = 128)]
 fn normalized_locale_is_canonical_or_rejected(tc: TestCase) {
-    let input = String::from_utf8_lossy(&tc.draw(gs::vecs(gs::default::<u8>()).max_size(200))).into_owned();
+    let input =
+        String::from_utf8_lossy(&tc.draw(gs::vecs(gs::default::<u8>()).max_size(200))).into_owned();
     match normalize(&input) {
         Some(canonical) => {
             assert!(SUPPORTED_LOCALES.contains(&canonical.as_str()));
@@ -19,7 +20,8 @@ fn normalized_locale_is_canonical_or_rejected(tc: TestCase) {
 
 #[hegel::test(test_cases = 128)]
 fn locale_direction_is_total_and_stable(tc: TestCase) {
-    let input = String::from_utf8_lossy(&tc.draw(gs::vecs(gs::default::<u8>()).max_size(200))).into_owned();
+    let input =
+        String::from_utf8_lossy(&tc.draw(gs::vecs(gs::default::<u8>()).max_size(200))).into_owned();
     let first = direction(&input);
     let second = direction(&input);
     assert_eq!(first, second);

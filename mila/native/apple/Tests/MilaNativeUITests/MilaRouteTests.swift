@@ -265,5 +265,7 @@ final class MilaThreadActionTests: XCTestCase {
         XCTAssertNil(MilaThreadAction.planApprove("").input)
         XCTAssertFalse(MilaThreadAction.planApprove("   ").isWellFormed)
         XCTAssertFalse(MilaThreadAction.answer(String(repeating: "x", count: 64 * 1024 + 1)).isWellFormed)
+        XCTAssertFalse(MilaThreadAction.answer("hello\nworld").isWellFormed)
+        XCTAssertFalse(MilaThreadAction.planApprove("plan\u{0000}1").isWellFormed)
     }
 }

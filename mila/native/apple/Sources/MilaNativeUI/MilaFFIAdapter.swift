@@ -162,10 +162,13 @@ public enum MilaThreadAction: Sendable, Equatable {
     case planRevise(String)
 
     public var isWellFormed: Bool {
+        func safe(_ value: String) -> Bool {
+            !value.unicodeScalars.contains { $0.properties.generalCategory == .control }
+        }
         switch self {
         case .list, .read: return true
-        case .answer(let value): return !value.isEmpty && value.utf8.count <= 64 * 1024
-        case .planApprove(let value), .planRevise(let value): return !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && value.utf8.count <= 256
+        case .answer(let value): return !value.isEmpty && safe(value) && value.utf8.count <= 64 * 1024
+        case .planApprove(let value), .planRevise(let value): return safe(value) && !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && value.utf8.count <= 256
         }
     }
 

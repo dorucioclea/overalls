@@ -119,7 +119,7 @@ defmodule MilaFlutterDeletionGate do
   defp windows_source_bundle_check(root) do
     path = Path.join(root, "nix/domains/artifacts/mila/windows-source-bundle.nix")
     text = File.read!(path)
-    required = ["windows-dotnet", "rust", "app/lib/l10n"]
+    required = ["windows-dotnet", "rust", "localization/catalogs"]
     missing = Enum.reject(required, &String.contains?(text, &1))
     forbidden = Regex.scan(~r/Flutter|Dart|pub-cache|mila\/app\/pubspec/i, text) |> length()
     ok = missing == [] and forbidden == 0

@@ -42,6 +42,6 @@ public enum MilaApprovalDecoder {
     public init() {}
     public func inspect(_ adapter: any MilaFFIAdapter, expectedHost: String) async {
         do { result = try MilaApprovalDecoder.decode(await adapter.checkApproval(), expectedHost: expectedHost); error = false }
-        catch { error = true }
+        catch { self.error = true }
     }
 }

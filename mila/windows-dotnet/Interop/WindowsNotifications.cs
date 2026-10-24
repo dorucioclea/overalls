@@ -56,7 +56,8 @@ internal sealed class MilaWindowsNotificationDevicesController
     {
         if (bytes.Length > 256 * 1024) throw new InvalidDataException("Notification listing too large");
         using JsonDocument document = JsonDocument.Parse(bytes.ToArray());
-        JsonElement devices = document.RootElement.GetProperty("devices");
+        if (!document.RootElement.TryGetProperty("devices", out JsonElement devices))
+            return Array.Empty<MilaWindowsNotificationDevice>();
         if (devices.ValueKind != JsonValueKind.Array || devices.GetArrayLength() > 256) throw new InvalidDataException("Invalid notification listing");
         List<MilaWindowsNotificationDevice> result = new(devices.GetArrayLength());
         foreach (JsonElement item in devices.EnumerateArray())

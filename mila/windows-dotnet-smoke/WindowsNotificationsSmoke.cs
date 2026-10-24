@@ -20,6 +20,10 @@ internal static class WindowsNotificationsSmoke
             MilaWindowsNotificationState.Invalid, "non-HTTPS WNS channel refusal");
         Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila\n", "mgmt.example.test") ==
             MilaWindowsNotificationState.Invalid, "control-character metadata refusal");
+        Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt example.test") == MilaWindowsNotificationState.Invalid,
+            "whitespace metadata refusal");
+        Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", new string('界', 200), "mgmt.example.test") == MilaWindowsNotificationState.Invalid,
+            "UTF-8 metadata bound refusal");
         controller.Disable();
         Program.Require(controller.State == MilaWindowsNotificationState.Disabled, "notification disable");
         controller.SetSession(false);

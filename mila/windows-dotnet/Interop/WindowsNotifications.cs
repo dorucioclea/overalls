@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.IO;
+using System.Text;
 namespace Mila.Windows.Interop;
 
 internal sealed record MilaWindowsNotificationDevice(string Id, string Platform, bool Enabled);
@@ -47,7 +48,7 @@ internal sealed class MilaWindowsNotificationDevicesController
         {
             string id = item.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing device id");
             string platform = item.GetProperty("platform").GetString() ?? throw new InvalidDataException("Missing device platform");
-            if (id.Length is 0 or > 128 || platform.Length is 0 or > 32) throw new InvalidDataException("Invalid device metadata");
+            if (!ValidText(id, 128) || !ValidText(platform, 32)) throw new InvalidDataException("Invalid device metadata");
             result.Add(new(id, platform, item.GetProperty("enabled").GetBoolean()));
         }
         return result;
@@ -118,14 +119,18 @@ internal sealed class MilaWindowsNotificationController
 
     private static bool ValidRegistrationMetadata(string channelUri, string appId, string deployment)
     {
-        if (channelUri.Length is 0 or > 2048 || appId.Length is 0 or > 256 || deployment.Length is 0 or > 256)
-            return false;
-        if (channelUri.Any(char.IsControl) || appId.Any(char.IsControl) || deployment.Any(char.IsControl))
+        if (!ValidText(channelUri, 2048) || !ValidText(appId, 256) || !ValidText(deployment, 256))
             return false;
         if (!Uri.TryCreate(channelUri, UriKind.Absolute, out Uri? uri) || uri.Scheme != Uri.UriSchemeHttps ||
             string.IsNullOrEmpty(uri.Host) || !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment))
             return false;
         return true;
+    }
+
+    private static bool ValidText(string value, int maxBytes)
+    {
+        if (value.Length == 0 || Encoding.UTF8.GetByteCount(value) > maxBytes) return false;
+        return value.All(character => !char.IsControl(character) && !char.IsWhiteSpace(character));
     }
 }
 

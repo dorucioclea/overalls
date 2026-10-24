@@ -1,5 +1,5 @@
 ---
-digest: 80c0a4379a2478ab45190ca4ab9a28f82788c2c1e8ffec0c6ce20ed7b09e1736
+digest: ec6f0fae7436093c5bb358f84d6bbc665dbbb2d242f7b8f47c94ade1da4ce96c
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows notification registration validation preserves documented provider boundary
+Windows notification metadata UTF-8 and whitespace validation

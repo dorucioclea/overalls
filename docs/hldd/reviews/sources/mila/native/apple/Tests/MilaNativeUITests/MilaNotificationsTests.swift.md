@@ -1,5 +1,5 @@
 ---
-digest: 3f92dc52b6e5d1ca64c45ebc61bb0a603f5ad52bf17f2cae3ad89ca401117369
+digest: 78accdbc8fd649f505e6e2d4e285c001cd8905aa786ce399e79728e19bd946d4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple push registration validates token bounds and HTTPS endpoint before Rust boundary
+Apple notification endpoint host validation

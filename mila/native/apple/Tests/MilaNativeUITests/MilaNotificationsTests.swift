@@ -88,6 +88,9 @@ final class MilaNotificationsTests: XCTestCase {
         controller.register(token: String(repeating: "a", count: 32), endpoint: "https://user@mila.example.test/push#fragment")
         XCTAssertEqual(controller.state, .failed)
         XCTAssertTrue(adapter.calls.isEmpty)
+        controller.register(token: String(repeating: "a", count: 32), endpoint: "https://bad host.test/push")
+        XCTAssertEqual(controller.state, .failed)
+        XCTAssertTrue(adapter.calls.isEmpty)
     }
 
     func testEmptyTokenFailsBeforeCrossingBoundary() {

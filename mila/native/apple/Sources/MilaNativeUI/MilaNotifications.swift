@@ -136,7 +136,10 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
               (32...200).contains(token.utf8.count),
               let url = URL(string: endpoint),
               url.scheme?.lowercased() == "https",
-              url.host != nil,
+              let host = url.host,
+              host.utf8.count <= 253,
+              !host.isEmpty,
+              !host.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.properties.isControl }),
               url.user == nil,
               url.fragment == nil
         else { state = .failed; return }

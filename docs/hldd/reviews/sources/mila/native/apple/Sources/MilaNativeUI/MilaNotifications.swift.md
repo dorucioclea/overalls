@@ -1,5 +1,5 @@
 ---
-digest: 50c85dbaa91de8f9cb690bda74874ded7cef97cf5ff45a35701631f966d02ff6
+digest: cfd87cc4ef74e93002d02d6f5434d9a02b759a9a468a7422ec00b2175619aeba
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Adds explicit Apple notification authorization and APNs registration bridge; preserves existing boundaries.
+Apple notification endpoint host validation

@@ -471,18 +471,25 @@ pub fn decode_web_endpoint(bytes: &[u8]) -> Result<WebEndpoint, RuntimeError> {
         || endpoint.route.chars().any(char::is_control)
         || !route_matches_machine
         || (endpoint.visibility == "public" && endpoint.url.is_none())
-        || endpoint.url.as_deref().is_some_and(|url| {
-            let host = url.strip_prefix("https://").unwrap_or("");
-            url.len() > 2_048
-                || host.is_empty()
-                || host.starts_with(['/', ':'])
-                || !url.starts_with("https://")
-                || url.contains(['@', '#', ' ', '\t', '\n', '\r'])
-        })
+        || endpoint
+            .url
+            .as_deref()
+            .is_some_and(|url| !valid_https_endpoint_url(url, endpoint.port))
     {
         return Err(RuntimeError::InvalidInput);
     }
     Ok(endpoint)
+}
+
+fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
+    let Some(rest) = url.strip_prefix("https://") else { return false; };
+    if url.len() > 2_048 || rest.is_empty() { return false; }
+    let authority = rest.split('/').next().unwrap_or("");
+    if authority.is_empty() || authority.starts_with(':')
+        || authority.contains(['@', '#', ' ', '\t', '\n', '\r']) { return false; }
+    if authority.ends_with(':') { return false; }
+    let explicit = authority.rsplit_once(':').and_then(|(_, p)| p.parse::<u16>().ok());
+    explicit.is_none_or(|port| port != 0 && port == expected_port)
 }
 
 /// A presentation-safe notification device projection. Push keys and public
@@ -845,6 +852,8 @@ mod web_tests {
         assert!(decode_web_endpoint(mismatched).is_err());
         let public_without_url = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"public","policy_revision":4,"url":null,"route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
         assert!(decode_web_endpoint(public_without_url).is_err());
+        let wrong_port = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":"https://web-box.example:8443/path","route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
+        assert!(decode_web_endpoint(wrong_port).is_err());
     }
 
     #[test]

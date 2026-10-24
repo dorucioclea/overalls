@@ -1,5 +1,5 @@
 ---
-digest: f445a8ae2c88f674a6e5d4114103cdc4dd0e5405f2aa7478af083f29a8b39b38
+digest: bbee1f950e2c6a8c5e86d3e5b90e107e1d8043d578d95b1e049fb1032e40d34f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux SSH projections clear and reject late reconnect generation responses
+mila/native/linux/src/adapter.rs

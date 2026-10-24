@@ -1,5 +1,5 @@
 ---
-digest: a907a3fc0202131711de243ed4cf50cb81e75aaa29240b6c5f0d9e11b35e78d9
+digest: 505954e8b9859c1430deca1fde6cae2741afcf65f639ac412134cf6bbfc1c241
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple machine workflow validates bounded mutation requests before native submission.
+reject control characters in machine lifecycle display names

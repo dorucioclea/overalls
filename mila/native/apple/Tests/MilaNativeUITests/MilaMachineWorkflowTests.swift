@@ -57,4 +57,9 @@ final class MilaMachineWorkflowTests: XCTestCase {
         guard case .failed(let requestID, .stop, .actionNotAllowed) = workflow.state,
               requestID == zero else { return XCTFail("zero request IDs must be rejected") }
     }
+
+    func testControlCharacterMachineNameIsRejectedBeforeBridgeSubmission() throws {
+        let data = Data(#"{"version":1,"host":"mgmt.example.test","port":null,"saved_at":1,"machines":[{"id":"11111111-1111-1111-1111-111111111111","name":"bad\nname","desired_state":"running","observed_state":"running","pinned":false,"owner":"owner","read":true,"write":true,"manage":false}]}"#.utf8)
+        XCTAssertThrowsError(try LinkedMilaFFIAdapter().projectSnapshot(data, host: "mgmt.example.test"))
+    }
 }

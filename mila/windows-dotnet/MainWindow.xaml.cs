@@ -888,9 +888,12 @@ public sealed partial class MainWindow : Window
             MachineCommandStatus.Text = S("machineNotSelected", "Select a machine first.");
             return;
         }
+        // The Rust/core mutation contract calls destructive removal "delete";
+        // keep the WinUI label/event name "rm" only at the presentation edge.
+        string coreAction = action == "rm" ? "delete" : action;
         bool applied = _machineMutation.Submit(
             _selectedMachine.Id,
-            action,
+            coreAction,
             "porsche-" + Guid.NewGuid().ToString("N"));
         MachineCommandStatus.Text = applied
             ? S("requestSucceeded", "Request submitted")

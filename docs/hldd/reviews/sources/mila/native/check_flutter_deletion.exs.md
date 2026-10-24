@@ -1,5 +1,5 @@
 ---
-digest: ef911038fb1ae057554c32bc128b9c822ec9b1d8848ecc4cec3c641524df0f34
+digest: e384b6c4ae85ef870edf70c65750299f487aba931ae8fbc99b83dbf55ff40795
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fix deletion gate repository root
+fix deletion gate reference scan

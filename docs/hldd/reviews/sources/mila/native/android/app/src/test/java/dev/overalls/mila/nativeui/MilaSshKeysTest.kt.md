@@ -1,5 +1,5 @@
 ---
-digest: 89fdf1aa7c3e65f8f246a3d06d874e0382f42ab89b0b94cfb18915635bfbfccc
+digest: c8ff5773ee3f72fe297abdb6b0e274427b243a88ec60029f7602b3e384b2b0c7
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Android SSH test review preserves native behavior
+SSH projection validation only

@@ -28,6 +28,17 @@ class MilaSshKeysTest {
   assertTrue(controller.keys.isEmpty())
  }
 
+ @Test fun oversizedUtf8DisplayValuesFailClosed() {
+  val bindings = object : AndroidKeysRustBindings() {
+   override fun sessionSshKeys(handle: Long): ByteArray = ("{\"keys\":[{" +
+    "\"id\":\"00000000-0000-0000-0000-000000000004\"," +
+    "\"fingerprint\":\"SHA256:test\",\"algorithm\":\"ssh-ed25519\"," +
+    "\"label\":\"" + "é".repeat(200) + "\"}]}\").toByteArray()
+  }
+  val controller = MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(9, bindings)))
+  assertTrue(controller.keys.isEmpty())
+ }
+
  @Test fun unbindingSessionClearsKeysAndRefusesRevoke() {
   val store = Keys()
   val controller = MilaSshKeyController(store)

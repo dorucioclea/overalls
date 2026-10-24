@@ -103,9 +103,9 @@ class MilaSessionSshKeyStore(
                     val fingerprint = value.getString("fingerprint")
                     val algorithm = value.getString("algorithm")
                     val label = value.optString("label", "")
-                    require(fingerprint.isNotEmpty() && fingerprint.length <= 256)
-                    require(algorithm.isNotEmpty() && algorithm.length <= 256)
-                    require(label.length <= 256)
+                    require(fingerprint.isNotEmpty() && fingerprint.utf8Length() <= 256)
+                    require(algorithm.isNotEmpty() && algorithm.utf8Length() <= 256)
+                    require(label.utf8Length() <= 256)
                     require(listOf(fingerprint, algorithm, label).all { text ->
                         text.none { it.code < 0x20 || it.code == 0x7f } &&
                             text == text.trim()
@@ -117,6 +117,8 @@ class MilaSessionSshKeyStore(
         }
     }
 }
+
+private fun String.utf8Length(): Int = toByteArray(Charsets.UTF_8).size
 
 /** Computes the OpenSSH SHA-256 fingerprint without retaining public-key material. */
 internal fun milaSshFingerprint(publicKey: String): String? = runCatching {

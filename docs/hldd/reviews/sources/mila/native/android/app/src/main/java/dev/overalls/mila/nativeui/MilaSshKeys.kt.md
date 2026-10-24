@@ -1,5 +1,5 @@
 ---
-digest: 794aa444110fb711aab2309cfbe02db2fbf0392d5aba9509dbf5f9b4247a6830
+digest: 60e9102b945d80d91df577a83e6d44547b6365a5853d0a8962b458190f7197e3
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent native security review remains behavior preserving
+SSH projection validation only

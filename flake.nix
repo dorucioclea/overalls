@@ -140,6 +140,8 @@
         tool-mila-linux-release = built.mila.linuxRelease;
         # Sources and pinned dependencies for the Windows build (ADR-0235).
         tool-mila-source-bundle = built.mila.sourceBundle;
+        # Native Windows sources (WinUI/Rust/localization only; no Flutter or Dart).
+        tool-mila-windows-source-bundle = built.mila.windowsSourceBundle;
         tool-mila-demo = built.mila.demo;
         tool-mila-probe = built.mila.probe;
         tool-mila-rust = built.mila.rust;

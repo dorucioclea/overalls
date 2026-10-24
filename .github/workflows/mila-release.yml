@@ -48,10 +48,21 @@ jobs:
           mkdir -p out
           cp -L bundle/* out/
           (cd out && sha256sum -c SHA256SUMS)
+      - name: Build the native Windows source bundle
+        run: |
+          nix build -L .#tool-mila-windows-source-bundle --out-link windows-bundle
+          mkdir -p out-windows
+          cp -L windows-bundle/* out-windows/
+          (cd out-windows && sha256sum -c SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
           name: mila-source-bundle
           path: out/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mila-windows-source-bundle
+          path: out-windows/
           if-no-files-found: error
 
   linux:
@@ -236,6 +247,23 @@ jobs:
         with:
           name: mila-source-bundle
           path: ${{ runner.temp }}/bundle
+      - uses: actions/download-artifact@v4
+        with:
+          name: mila-windows-source-bundle
+          path: ${{ runner.temp }}/windows-bundle
+      - name: Verify native Windows source bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/windows-bundle"
+          sha256sum -c SHA256SUMS
+          tar -xzf mila-windows-source-bundle-*.tar.gz
+          root=$(find . -maxdepth 1 -type d -name 'mila-windows-source-bundle-*' -print -quit)
+          (cd "$root" && sha256sum --quiet -c SHA256SUMS)
+          if find "$root" -type f \( -iname '*flutter*' -o -iname '*.dart' \) -print -quit | grep -q .; then
+            echo 'native Windows source bundle contains Flutter/Dart input' >&2
+            exit 1
+          fi
       - name: Unpack and verify the source bundle
         shell: bash
         run: |
@@ -315,7 +343,7 @@ jobs:
           set -euo pipefail
           mkdir -p release
           # Each job verified its own signatures; re-check its checksums here.
-          for dir in artifacts/release-* artifacts/mila-source-bundle; do
+          for dir in artifacts/release-* artifacts/mila-source-bundle artifacts/mila-windows-source-bundle; do
             (cd "$dir" && sha256sum -c SHA256SUMS)
             find "$dir" -type f ! -name SHA256SUMS -exec cp {} release/ \;
           done

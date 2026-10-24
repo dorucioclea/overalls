@@ -67,6 +67,38 @@ defmodule MarshallWeb.MachinesLiveTest do
     end
   end
 
+  # @cc [owner:ghuntley,label:verification;security] windows-machine-lifecycle-surface
+  # A Windows guest admitted through the native windows-v1 image must project the
+  # same authenticated list/detail lifecycle controls as other guests. Request
+  # keys are UUIDs, rotate after an accepted mutation and remain bound to the
+  # operation kind so forged reuse cannot enqueue a second intent.
+  test "windows machines expose list detail and lifecycle controls", %{conn: conn, owner: owner} do
+    image = windows_v1_image_fixture()
+    {:ok, vm} = Compute.provision(request(%{image_id: image.id}), actor: owner)
+    signed = signed_in(conn, owner)
+
+    {:ok, listing, _} = live(signed, ~p"/machines")
+    assert has_element?(listing, "#machine-#{vm.id}")
+    assert has_element?(listing, "#machine-terminal-#{vm.id}")
+
+    {:ok, detail, _} = live(signed, ~p"/machines/#{vm.id}")
+    assert has_element?(detail, "#machine-detail")
+    assert has_element?(detail, "#machine-os.status-label", "Windows Server 2025 (agents)")
+    assert has_element?(detail, "#stop-machine")
+    stop_key = power_key(detail, "#stop-machine")
+    assert Regex.match?(~r/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/, stop_key)
+
+    render_click(detail, "machine-power", %{"kind" => "stop", "key" => stop_key})
+    assert [%{kind: :stop, request_key: ^stop_key}] = Ledger.read!(Operation, vm_id: vm.id, kind: :stop)
+    assert has_element?(detail, "#start-machine")
+    start_key = power_key(detail, "#start-machine")
+    refute start_key == stop_key
+
+    render_click(detail, "machine-power", %{"kind" => "start", "key" => stop_key})
+    assert has_element?(detail, "#flash-group", "could not be updated")
+    assert [] = Ledger.read!(Operation, vm_id: vm.id, kind: :start)
+  end
+
   test "machine connection keeps installer and SSH commands without a profile download", %{
     conn: conn,
     owner: owner

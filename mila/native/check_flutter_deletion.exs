@@ -11,7 +11,9 @@ defmodule MilaFlutterDeletionGate do
       path_absence_check(root, "mila/app"),
       path_absence_check(root, "mila/packages"),
       path_absence_check(root, "mila/tool"),
-      release_check(root)
+      release_check(root),
+      windows_source_bundle_check(root),
+      compatibility_milestone_check(root)
     ]
     checks ++ flutter_reference_check(root)
   end
@@ -34,16 +36,36 @@ defmodule MilaFlutterDeletionGate do
     path = Path.join(root, "nix/domains/artifacts/mila/default.nix")
     text = File.read!(path)
     linux = String.contains?(text, "nativeLinux") and String.contains?(text, "tar --sort=name")
-    source_bundle = Path.join(root, "nix/domains/artifacts/mila/source-bundle.nix")
-    bundle_text = File.read!(source_bundle)
-    windows = Enum.all?(["windows-dotnet/Mila.Windows.csproj", "windows-dotnet/native/mila_native.h", "rust/Cargo.lock"], fn required -> String.contains?(bundle_text, required) end)
-    ok = linux and windows
+    ok = linux
     detail = cond do
       not linux -> "native Linux release still wired to Flutter"
-      not windows -> "native Windows sources are absent from source-bundle checks"
-      true -> "native Linux release and Windows source inputs wired"
+      true -> "native Linux release wired; Windows bundle reported separately"
     end
     %{name: "native release/source bundle", ok: ok, detail: detail}
+  end
+
+  @spec windows_source_bundle_check(Path.t()) :: check()
+  defp windows_source_bundle_check(root) do
+    path = Path.join(root, "nix/domains/artifacts/mila/windows-source-bundle.nix")
+    text = File.read!(path)
+    required = ["windows-dotnet", "rust", "app/lib/l10n"]
+    missing = Enum.reject(required, &String.contains?(text, &1))
+    forbidden = Regex.scan(~r/Flutter|Dart|pub-cache|mila\/app\/pubspec/i, text) |> length()
+    ok = missing == [] and forbidden == 0
+    detail = cond do
+      missing != [] -> "missing native Windows inputs: #{Enum.join(missing, ", ")}"
+      forbidden != 0 -> "contains #{forbidden} Flutter/Dart compatibility input reference(s)"
+      true -> "native Windows host, Rust lock and locale inputs are source-only"
+    end
+    %{name: "native Windows source bundle", ok: ok, detail: detail}
+  end
+
+  @spec compatibility_milestone_check(Path.t()) :: check()
+  defp compatibility_milestone_check(root) do
+    retained = ["mila/app", "mila/packages", "mila/tool"]
+      |> Enum.filter(&File.exists?(Path.join(root, &1)))
+    detail = if retained == [], do: "Flutter compatibility tree removed; deletion milestone reached", else: "retained compatibility trees: #{Enum.join(retained, ", ")}"
+    %{name: "Flutter compatibility removal milestone", ok: retained == [], detail: detail}
   end
 
   @spec flutter_reference_check(Path.t()) :: [check()]

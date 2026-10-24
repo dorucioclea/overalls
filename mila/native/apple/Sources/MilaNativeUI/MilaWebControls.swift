@@ -15,6 +15,7 @@ public struct MilaWebEndpoint: Equatable, Sendable {
 public enum MilaWebEndpointError: Error, Equatable, Sendable {
     case invalid
     case unavailable
+    case conflict
 }
 
 /// Authenticated projection returned by Rust's `web show --json` command.
@@ -46,6 +47,7 @@ public struct MilaWebEndpointProjection: Codable, Equatable, Sendable {
 
 @MainActor public final class MilaWebControlsController: ObservableObject {
     @Published public private(set) var endpoint: MilaWebEndpoint?
+    @Published public private(set) var policyRevision: UInt64 = 0
     @Published public private(set) var error: MilaWebEndpointError?
     public init() {}
     @discardableResult public func set(_ value: String) -> Bool {
@@ -60,7 +62,21 @@ public struct MilaWebEndpointProjection: Codable, Equatable, Sendable {
         open(endpoint)
         return true
     }
-    public func clear() { endpoint = nil; error = nil }
+    /// Commits a projection only when the optimistic policy revision still matches.
+    @discardableResult public func openAuthenticated(_ endpoint: MilaWebEndpoint, sessionActive: Bool,
+                                                     policyRevision: UInt64, expectedRevision: UInt64) -> Bool {
+        guard sessionActive else { clear(); error = MilaWebEndpointError.unavailable; return false }
+        guard policyRevision > 0, policyRevision == expectedRevision else {
+            self.endpoint = nil
+            error = MilaWebEndpointError.conflict
+            return false
+        }
+        self.endpoint = endpoint
+        self.policyRevision = policyRevision
+        error = nil
+        return true
+    }
+    public func clear() { endpoint = nil; policyRevision = 0; error = nil }
 }
 
 #if canImport(WebKit)

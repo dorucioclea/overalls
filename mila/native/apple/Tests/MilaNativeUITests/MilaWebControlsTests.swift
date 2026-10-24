@@ -22,6 +22,16 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertEqual(controller.endpoint, endpoint)
     }
 
+    @MainActor func testOptimisticRevisionConflictFailsClosed() throws {
+        let controller = MilaWebControlsController()
+        let endpoint = try MilaWebEndpoint("https://console.example.test/")
+        XCTAssertTrue(controller.openAuthenticated(endpoint, sessionActive: true, policyRevision: 4, expectedRevision: 4))
+        XCTAssertFalse(controller.openAuthenticated(endpoint, sessionActive: true, policyRevision: 5, expectedRevision: 4))
+        XCTAssertNil(controller.endpoint)
+        XCTAssertEqual(controller.error, .conflict)
+        XCTAssertFalse(controller.openAuthenticated(endpoint, sessionActive: true, policyRevision: 0, expectedRevision: 0))
+    }
+
     func testAuthenticatedProjectionIsMachineBoundAndHTTPSOnly() throws {
         let id = UUID(uuidString: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")!
         let json = "{\"machine_id\":\"\(id.uuidString.lowercased())\",\"label\":\"Console\",\"port\":443,\"visibility\":\"private\",\"policy_revision\":7,\"url\":\"https://console.example.test/\",\"route\":\"overalls://machines/\(id.uuidString.lowercased())/web\"}".data(using: .utf8)!

@@ -1,5 +1,5 @@
 ---
-digest: 0a95dd41ef9a6c3843b0673afbd5ed9582880d367f7bf0dda357d9a7a78237bf
+digest: 1ce1384e8e32fdce983edfae2b5fb82ae26eeff21c1ef8134dac7c89e864d68a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple web endpoint commit is fenced by live auth
+Apple web revision conflict guard preserves session behavior

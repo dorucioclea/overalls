@@ -89,9 +89,10 @@ import XCTest
         await controller.load(signedIn: true)
         let second = Task { await controller.revoke(key) }
         await Task.yield()
-        gate.release()
+        await gate.release()
         await first.value; await second.value
-        XCTAssertEqual(await counter.value(), 2)
+        let revokeCount = await counter.value()
+        XCTAssertEqual(revokeCount, 2)
     }
 
     func testConcurrentRevokesForSameKeyAreAtMostOnce() async {
@@ -105,8 +106,9 @@ import XCTest
         await Task.yield()
         let second = Task { await controller.revoke(key) }
         await Task.yield()
-        gate.release(); await first.value; await second.value
-        XCTAssertEqual(await counter.value(), 1)
+        await gate.release(); await first.value; await second.value
+        let revokeCount = await counter.value()
+        XCTAssertEqual(revokeCount, 1)
     }
 
     private actor Gate {

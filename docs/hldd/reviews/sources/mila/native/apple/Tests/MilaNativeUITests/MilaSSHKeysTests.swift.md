@@ -1,5 +1,5 @@
 ---
-digest: 3c40074328b717d8ca61caa61618210b6677987e564110913476c73fcdeb5815
+digest: 4e4b04d4fc29d0b9b4f2bbf30b32d4fd3524780d1234d958632aa546755376dc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH validation property coverage
+Async XCTest synchronization fixes preserve documented Mila behavior and test evidence; only actor-await syntax was corrected.

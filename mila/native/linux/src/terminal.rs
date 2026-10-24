@@ -249,14 +249,21 @@ impl<'a, A: SessionAuthority, T: PtyTransport> AuthenticatedPty<'a, A, T> {
 
     pub fn read_output(&mut self, generation: u64) -> Result<String, PtyError> {
         let text = self.transport.read_output(generation)?;
-        if !text.is_empty() {
+        if text.is_empty() {
+            // A clean host EOF is terminal state. Fence input and resize
+            // immediately, even when the backend cannot perform a second
+            // close after EOF.
             self.stream
-                .output(generation, text.chars().count())
+                .kill(generation)
                 .map_err(|_| PtyError::InvalidRequest)?;
-            self.renderer
-                .append_text(&text)
-                .map_err(|_| PtyError::Render)?;
+            return Ok(text);
         }
+        self.stream
+            .output(generation, text.chars().count())
+            .map_err(|_| PtyError::InvalidRequest)?;
+        self.renderer
+            .append_text(&text)
+            .map_err(|_| PtyError::Render)?;
         Ok(text)
     }
 
@@ -515,6 +522,23 @@ mod transport_tests {
         pty.resize(generation, 100, 30).unwrap();
         pty.kill(generation).unwrap();
         assert_eq!(pty.renderer().lines()[0], "ready");
+    }
+
+    #[test]
+    fn clean_eof_fences_subsequent_input() {
+        struct EofTransport;
+        impl PtyTransport for EofTransport {
+            fn attach(&mut self, _: &PtyAttachRequest) -> Result<(), PtyError> { Ok(()) }
+            fn read_output(&mut self, _: u64) -> Result<String, PtyError> { Ok(String::new()) }
+            fn send_input(&mut self, _: u64, _: usize) -> Result<(), PtyError> { Ok(()) }
+            fn resize(&mut self, _: u64, _: u16, _: u16) -> Result<(), PtyError> { Ok(()) }
+            fn kill(&mut self, _: u64) -> Result<(), PtyError> { Ok(()) }
+        }
+        let authority = Authority(true);
+        let mut pty = AuthenticatedPty::new(&authority, EofTransport, 80, 24).unwrap();
+        let generation = pty.attach(request()).unwrap();
+        assert_eq!(pty.read_output(generation).unwrap(), "");
+        assert_eq!(pty.send_input(generation, 1), Err(PtyError::InvalidRequest));
     }
 
     #[test]

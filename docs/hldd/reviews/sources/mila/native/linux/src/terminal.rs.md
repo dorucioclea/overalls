@@ -1,5 +1,5 @@
 ---
-digest: fca82f5ef6d145c66aa55100b9c6b17e9366a7637701b1e52e30c99d73f496fd
+digest: 68dc8e442cc1494de7effd13e146338b5a897af2963757eb91819ea90ea3d0df
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native session and routing validation preserves documented behavior
+Linux terminal clean EOF fences lifecycle

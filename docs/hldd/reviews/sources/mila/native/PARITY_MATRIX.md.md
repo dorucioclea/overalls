@@ -1,6 +1,6 @@
 ---
-digest: 76a83bb593dc44cd87a97e135024c5018e74ed4108f6b9a199bb2603afbff3db
-disposition: updated
+digest: 245b576f8175ec54fe6e7c75a6e55c4fdb9d9d759e2dd8e3a2f7cbfb14c0349a
+disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/PARITY_MATRIX.md
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-08-interactive now documents native sign-in link rotation (Android) and host-bound approval refusal (Linux/Apple/Windows), native Android/Apple app-lock prompts surviving backgrounding, the Linux public matching-port browser fence and LiveSession SSH-key wrappers, and the unsigned native Android release candidate; also records the Linux thread-action contract refusals before FFI dispatch
+Windows deployment persistence now supports typed multi-entry list and forget APIs; HLDD chapters unchanged.

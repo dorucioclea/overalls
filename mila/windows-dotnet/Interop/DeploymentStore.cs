@@ -21,10 +21,24 @@ internal static class MilaDeploymentStore
 {
     private static string PathName => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Mila", "deployment.json");
     internal static MilaDeployment? Load()
+        => LoadAll().FirstOrDefault();
+    internal static IReadOnlyList<MilaDeployment> LoadAll()
     {
-        try { return JsonSerializer.Deserialize<MilaDeployment>(File.ReadAllText(PathName))?.Normalize(); }
-        catch (IOException) { return null; }
-        catch (JsonException) { return null; }
+        try
+        {
+            string json = File.ReadAllText(PathName);
+            try
+            {
+                if (JsonSerializer.Deserialize<List<MilaDeployment>>(json) is { } many)
+                    return many.Select(static deployment => deployment.Normalize()).Distinct().ToArray();
+            }
+            catch (JsonException) { }
+            if (JsonSerializer.Deserialize<MilaDeployment>(json) is { } one)
+                return new[] { one.Normalize() };
+        }
+        catch (IOException) { }
+        catch (JsonException) { }
+        return Array.Empty<MilaDeployment>();
     }
     internal static void Save(MilaDeployment deployment)
     {
@@ -33,6 +47,20 @@ internal static class MilaDeploymentStore
         string? directory = Path.GetDirectoryName(PathName);
         if (directory is null) return;
         Directory.CreateDirectory(directory);
-        File.WriteAllText(PathName, JsonSerializer.Serialize(deployment));
+        List<MilaDeployment> deployments = LoadAll().Where(existing => existing != deployment).Append(deployment).ToList();
+        File.WriteAllText(PathName, JsonSerializer.Serialize(deployments));
+    }
+
+    internal static bool Forget(MilaDeployment deployment)
+    {
+        ArgumentNullException.ThrowIfNull(deployment);
+        IReadOnlyList<MilaDeployment> current = LoadAll();
+        List<MilaDeployment> remaining = current.Where(existing => existing != deployment).ToList();
+        if (remaining.Count == current.Count) return false;
+        string? directory = Path.GetDirectoryName(PathName);
+        if (directory is null) return false;
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(PathName, JsonSerializer.Serialize(remaining));
+        return true;
     }
 }

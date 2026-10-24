@@ -2,8 +2,8 @@ use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
 use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation, TextDirection};
 use mila_native_linux::adapter::{
-    browser_endpoint_url, decode_listing, decode_notification_devices, decode_web_endpoint, format_machine_action,
-    format_ssh_key_revoke, format_thread_response, format_web_command,
+    browser_endpoint_url, decode_listing, decode_notification_devices, decode_web_endpoint,
+    format_machine_action, format_ssh_key_revoke, format_thread_response, format_web_command,
     TerminalStream,
 };
 use mila_native_linux::machine_view::{project_detail, project_listing};

@@ -1584,15 +1584,33 @@ mod tests {
         let plan = "fedcba98-7654-3210-fedc-ba9876543210";
         let request = "porsche-0123456789abcdef0123456789abcdef";
         assert_eq!(
-            session.thread_action(Some(thread), "thread plan approve", Some(plan), None, Some("bad")),
+            session.thread_action(
+                Some(thread),
+                "thread plan approve",
+                Some(plan),
+                None,
+                Some("bad")
+            ),
             Err(SessionError::InvalidInput)
         );
         assert_eq!(
-            session.thread_action(Some(thread), "thread answer", Some(plan), Some("{}"), Some(request)),
+            session.thread_action(
+                Some(thread),
+                "thread answer",
+                Some(plan),
+                Some("{}"),
+                Some(request)
+            ),
             Err(SessionError::StaleHandle)
         );
         assert_eq!(
-            session.thread_action(Some(thread), "thread answer", Some(plan), Some(&"x".repeat(64 * 1024 + 1)), Some(request)),
+            session.thread_action(
+                Some(thread),
+                "thread answer",
+                Some(plan),
+                Some(&"x".repeat(64 * 1024 + 1)),
+                Some(request)
+            ),
             Err(SessionError::InvalidInput)
         );
     }
@@ -1716,15 +1734,24 @@ mod tests {
     #[test]
     fn approval_url_must_remain_on_selected_deployment() {
         assert!(ApprovalInfo::validate_for_host(
-            "https://example.test/ssh/approve/a", "fp", 0, "example.test"
+            "https://example.test/ssh/approve/a",
+            "fp",
+            0,
+            "example.test"
         )
         .is_ok());
         assert!(ApprovalInfo::validate_for_host(
-            "https://evil.example/ssh/approve/a", "fp", 0, "example.test"
+            "https://evil.example/ssh/approve/a",
+            "fp",
+            0,
+            "example.test"
         )
         .is_err());
         assert!(ApprovalInfo::validate_for_host(
-            "https://example.test.evil/ssh/approve/a", "fp", 0, "example.test"
+            "https://example.test.evil/ssh/approve/a",
+            "fp",
+            0,
+            "example.test"
         )
         .is_err());
     }

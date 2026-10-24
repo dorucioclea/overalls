@@ -1,5 +1,5 @@
 ---
-digest: 166c88b39c5d628a804f3f6e460b2ec68609555c16607815ba19046678534abd
+digest: ce47ebeae5979a59befcc684ebaea63649ef7f9dcecd03a3f04ae6cee98439b1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Sign out clears persisted approval state and preserves deployment selection
+mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaSignInState.kt

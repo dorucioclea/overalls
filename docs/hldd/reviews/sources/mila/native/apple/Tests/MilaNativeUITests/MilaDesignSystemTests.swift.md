@@ -1,5 +1,5 @@
 ---
-digest: 4817a979cf21d56b1afab6e71d5078913755a315c671b592a75bd6d3daeb9c9e
+digest: 6c67f1cb0eeb30adf453e14f3e05b1a50c0ff53843c5bc34f9e22d8c64e45ad7
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale persistence bounds canonicalization only
+Apple locale canonicalization regression coverage remains within existing design-system test boundary.

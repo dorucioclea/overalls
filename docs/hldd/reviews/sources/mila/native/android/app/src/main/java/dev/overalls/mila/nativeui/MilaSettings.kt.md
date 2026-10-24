@@ -1,5 +1,5 @@
 ---
-digest: 9f17d257d261c9270c4e75259823d6da00b03d4098d854fe488acc54befcd546
+digest: 2792080434e60eb9428aed2f0ac8c65640afe04cf1a2f6086c858c3ad0ddaab8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android locale persistence bounds and canonical write behavior
+Concurrent Android settings work is isolated to its existing native settings boundary.

@@ -1,5 +1,5 @@
 ---
-digest: 55a1a74a9c65b9a14ff5c387fb33f2dab8b0e19035c68c6d82e4867982a0ed50
+digest: 299babc84a5084f4a6d78fb77857e571ea0573dc468825e9bb401a26c184c89b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux GTK exposes authenticated machine delete action through existing Rust rm command policy
+Linux web projection now requires public endpoints to carry HTTPS URL

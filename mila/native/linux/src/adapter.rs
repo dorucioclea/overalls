@@ -423,6 +423,7 @@ pub fn decode_web_endpoint(bytes: &[u8]) -> Result<WebEndpoint, RuntimeError> {
         || endpoint.route.len() > 2_048
         || endpoint.route.chars().any(char::is_control)
         || !route_matches_machine
+        || (endpoint.visibility == "public" && endpoint.url.is_none())
         || endpoint.url.as_deref().is_some_and(|url| {
             url.len() > 2_048
                 || !url.starts_with("https://")
@@ -790,6 +791,8 @@ mod web_tests {
         assert!(decode_web_endpoint(bad).is_err());
         let mismatched = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":null,"route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdee/web"}"#;
         assert!(decode_web_endpoint(mismatched).is_err());
+        let public_without_url = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"public","policy_revision":4,"url":null,"route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
+        assert!(decode_web_endpoint(public_without_url).is_err());
     }
 
     #[test]

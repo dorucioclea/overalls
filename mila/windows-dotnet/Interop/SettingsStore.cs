@@ -13,7 +13,21 @@ internal sealed record MilaSettings(string Locale, bool DarkMode)
         return normalized.Length is >= 2 and <= 35 && Regex.IsMatch(normalized, "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$", RegexOptions.CultureInvariant);
     }
 
-    internal MilaSettings Normalize() => this with { Locale = Locale.Trim().Replace('_', '-') };
+    internal MilaSettings Normalize()
+    {
+        string[] parts = Locale.Trim().Replace('_', '-').Split('-', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0) return this with { Locale = string.Empty };
+        parts[0] = parts[0].ToLowerInvariant();
+        for (int index = 1; index < parts.Length; index++)
+        {
+            parts[index] = parts[index].Length == 4
+                ? char.ToUpperInvariant(parts[index][0]) + parts[index][1..].ToLowerInvariant()
+                : parts[index].Length is 2 or 3
+                    ? parts[index].ToUpperInvariant()
+                    : parts[index];
+        }
+        return this with { Locale = string.Join('-', parts) };
+    }
 }
 
 internal static class MilaSettingsStore

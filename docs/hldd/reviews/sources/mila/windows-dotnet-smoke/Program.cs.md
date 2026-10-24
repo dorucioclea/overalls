@@ -1,5 +1,5 @@
 ---
-digest: 1b3216e885e1f166b6694d8bd4d0374e69c8fc7c011484604a047d6f38fb6667
+digest: 780a7c0eda3ac246ed48941f3be0f328f32ca8ae6eb3945f496896b9dde1a615
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows smoke expands thread plan command verification
+Windows locale normalization now canonicalizes BCP-47 casing with smoke coverage

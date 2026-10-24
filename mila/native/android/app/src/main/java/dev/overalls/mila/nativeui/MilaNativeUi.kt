@@ -264,13 +264,6 @@ private fun MilaDeploymentPicker(
     onAdd: () -> Unit,
     onForget: (MilaDeployment) -> Unit,
 ) {
-    CompositionLocalProvider(
-        LocalLayoutDirection provides if (milaLocaleDirection(settings.locale) == MilaLocaleDirection.Rtl) {
-            LayoutDirection.Rtl
-        } else {
-            LayoutDirection.Ltr
-        },
-    ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(MilaStrings.text(MilaMessage.Deployments), style = MaterialTheme.typography.titleMedium)
         deployments.forEach { deployment ->

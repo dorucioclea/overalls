@@ -1,5 +1,5 @@
 ---
-digest: 686d77d7f7a76cb4b9dead2671becf60c0924ee0890359be053a53f3a0912551
+digest: 344744299ae59d522c7ee105d8bde9fa4df4e72ca9e3d7740b83b680bf04c5ae
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android settings applies shared RTL layout direction
+fix out-of-scope deployment picker locale reference

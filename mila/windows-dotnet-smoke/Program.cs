@@ -102,13 +102,13 @@ internal static class Program
             "SSH key revoke request-id validation");
         MilaNativeThreadCommandResult thread = RustNative.TryClassifyThreadCommand("thread ls");
         Require(thread.Status == MilaNativeStatus.Ok && thread.Kind == MilaThreadCommandKind.List, "thread command projection");
-        Require(RustNative.TryClassifyThreadCommand("thread plan approve thread-id plan-id").Kind == MilaThreadCommandKind.PlanApprove,
+        Require(RustNative.TryClassifyThreadCommand("thread plan approve 00000000-0000-0000-0000-000000000001 00000000-0000-0000-0000-000000000002").Kind == MilaThreadCommandKind.PlanApprove,
             "thread plan approval projection");
-        Require(RustNative.TryClassifyThreadCommand("thread plan revise thread-id plan-id revision").Kind == MilaThreadCommandKind.PlanRevise,
+        Require(RustNative.TryClassifyThreadCommand("thread plan revise 00000000-0000-0000-0000-000000000001 00000000-0000-0000-0000-000000000002 revision").Kind == MilaThreadCommandKind.PlanRevise,
             "thread plan revision projection");
-        Require(RustNative.TryClassifyThreadCommand("thread plan approve thread-id").Kind is null,
+        Require(RustNative.TryClassifyThreadCommand("thread plan approve 00000000-0000-0000-0000-000000000001").Kind is null,
             "thread plan approval input refusal");
-        Require(RustNative.TryClassifyThreadCommand("thread plan revise thread-id plan-id\0ignored").Kind is null,
+        Require(RustNative.TryClassifyThreadCommand("thread plan revise 00000000-0000-0000-0000-000000000001 00000000-0000-0000-0000-000000000002\0ignored").Kind is null,
             "thread plan revision truncation refusal");
         Require(RustNative.TryClassifyThreadCommand("thread delete abc").Kind is null, "unknown thread command refusal");
         Require(RustNative.TryClassifyThreadCommand("thread ls\0ignored").Kind is null, "thread command truncation refusal");

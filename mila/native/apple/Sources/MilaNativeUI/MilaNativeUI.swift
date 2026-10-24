@@ -338,7 +338,7 @@ private struct ThreadDetailView: View {
 }
 private struct SettingsView: View {
     let adapter: any MilaFFIAdapter
-    let lockController: MilaAppLockController
+    @ObservedObject var lockController: MilaAppLockController
     @ObservedObject var session: MilaDeploymentSessionController
     @AppStorage("mila.appearance") private var appearance = "system"
     @AppStorage("mila.locale") private var locale = "en"
@@ -420,6 +420,12 @@ private struct SettingsView: View {
                     Task { await lockController.setEnabled(value) }
                 }))
                     .disabled(!lockController.canEnable)
+                if appLockEnabled {
+                    Button("Lock now", systemImage: "lock.fill") {
+                        lockController.lock()
+                    }
+                    .disabled(lockController.state == .locked || lockController.state == .unavailable)
+                }
                 Text(lockController.canEnable ? MilaStrings.text(.lockExplain) : MilaStrings.text(.lockUnavailable)).font(.caption).foregroundStyle(.secondary)
             }
             Section(MilaStrings.text(.notificationsTitle)) {

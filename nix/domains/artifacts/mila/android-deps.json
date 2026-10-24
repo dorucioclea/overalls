@@ -644,10 +644,10 @@
  },
  "https://maven.google.com": {
   "com/google/firebase/group-index": {
-   "xml": "sha256-zVUkfiBdjb3Rl7mV7AP6PMVz6ChMoCID8MhcK2CaRuI="
+   "xml": "sha256-szOOdna08XusAp8Rxc0EijqHPybAbx9DCLuTtKdrtao="
   },
   "master-index": {
-   "xml": "sha256-A50cGTtYF/oHm8+QxLqSWihc1xpXg6IUkYEozsBhD08="
+   "xml": "sha256-FGidVTJOBhR6YirTc06mZEsz6r9DREFsYskItxfH4r4="
   }
  },
  "https://plugins.gradle.org/m2": {

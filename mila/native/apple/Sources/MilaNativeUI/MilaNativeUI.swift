@@ -299,6 +299,7 @@ private struct ThreadsView: View {
     @State private var status = ""
     @State private var input = ""
     @State private var busy = false
+    @State private var threadIDs: [UUID] = []
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(MilaStrings.text(.threads)).font(.title)
@@ -311,7 +312,14 @@ private struct ThreadsView: View {
             Button(MilaStrings.text(.send)) { Task { await execute(.answer(input)) } }
                 .disabled(input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || busy)
             Text(status).font(.caption)
-            ContentUnavailableView(MilaStrings.text(.noThreads), systemImage: "bubble.left", description: Text(MilaStrings.text(.threadsHint)))
+            if threadIDs.isEmpty {
+                ContentUnavailableView(MilaStrings.text(.noThreads), systemImage: "bubble.left", description: Text(MilaStrings.text(.threadsHint)))
+            } else {
+                ForEach(threadIDs, id: \.self) { threadID in
+                    Button(threadID.uuidString) { select(threadID) }
+                        .buttonStyle(.bordered)
+                }
+            }
         }.padding()
     }
     @ViewBuilder private func actionButton(_ title: String, action: MilaThreadAction) -> some View {
@@ -323,8 +331,19 @@ private struct ThreadsView: View {
             _ = try adapter.classifyThreadCommand(action.command + (action.secondary.map { " " + $0 } ?? ""))
             let data = try await adapter.threadAction(thread: nil, command: action.command, secondary: action.secondary, input: action.input, requestID: UUID())
             status = String(decoding: data.prefix(4096), as: UTF8.self)
+            if case .list = action { threadIDs = Self.decodeThreadIDs(data) }
             if case .answer = action { input = "" }
         } catch { status = MilaStrings.text(.unavailable) }
+    }
+
+    private static func decodeThreadIDs(_ data: Data) -> [UUID] {
+        struct Row: Decodable { let id: UUID }
+        guard data.count <= 512 * 1024 else { return [] }
+        if let rows = try? JSONDecoder().decode([Row].self, from: data) { return rows.map(\.id).prefix(256).map { $0 } }
+        if let rows = try? JSONDecoder().decode([String].self, from: data) {
+            return rows.compactMap(UUID.init(uuidString:)).prefix(256).map { $0 }
+        }
+        return []
     }
 }
 private struct ThreadDetailView: View {

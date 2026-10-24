@@ -1,5 +1,5 @@
 ---
-digest: 27fafa41f193b848b6bda300c7817600b36f0803b53e641fa2670b5c54a2777f
+digest: b2e7a14b737ae4c94542e3c1972785aa139a9559a2c11b611219e83eeebfd067
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native session and routing validation preserves documented behavior
+Android external intents accept navigation-only text shares

@@ -27,6 +27,15 @@ class MilaIntentRoutingTest {
         assertEquals(MilaRoute.Threads, controller.target)
     }
 
+    @Test fun nonTextSharePayloadIsRejected() {
+        val controller = MilaDeepLinkController()
+        val generation = controller.beginSession()
+        val share = Intent(Intent.ACTION_SEND).setType("image/png")
+            .putExtra(Intent.EXTRA_TEXT, "overalls://mila/threads")
+        assertFalse(acceptExternalIntent(controller, share, generation))
+        assertEquals(MilaRoute.Machines, controller.target)
+    }
+
     @Test fun nonNavigationShareTextIsRejected() {
         val controller = MilaDeepLinkController()
         val generation = controller.beginSession()

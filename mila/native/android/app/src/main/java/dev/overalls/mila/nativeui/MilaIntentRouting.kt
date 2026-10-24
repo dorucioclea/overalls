@@ -5,7 +5,11 @@ import android.content.Intent
 /** Extracts navigation-only targets from Android external intents. */
 internal fun externalMilaUri(intent: Intent): String? = when (intent.action) {
     Intent.ACTION_VIEW -> intent.dataString
-    Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
+    Intent.ACTION_SEND -> {
+        // Route shares are navigation text only; reject binary or ambiguous MIME payloads.
+        val mime = intent.type
+        if (mime != null && mime != "text/plain") null else intent.getStringExtra(Intent.EXTRA_TEXT)
+    }
     else -> null
 }
 

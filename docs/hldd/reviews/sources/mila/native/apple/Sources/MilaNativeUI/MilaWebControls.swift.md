@@ -1,5 +1,5 @@
 ---
-digest: e3ab1614e84306e12c43e46b00d057fbe3e5fcce21f3011f5dd4bb7eb358632b
+digest: 4f1aeb12c1d77b50363d0368b63bb9b1f4c2beee2961ed2487de4ef69f15d65d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native FCM bridge remains within existing Android notification boundary; no documented chapter behavior changes.
+Apple web endpoint commit is fenced by live auth

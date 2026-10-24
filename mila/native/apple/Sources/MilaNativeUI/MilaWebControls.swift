@@ -53,6 +53,13 @@ public struct MilaWebEndpointProjection: Codable, Equatable, Sendable {
         catch { endpoint = nil; self.error = MilaWebEndpointError.invalid; return false }
     }
     public func open(_ endpoint: MilaWebEndpoint) { self.endpoint = endpoint; error = nil }
+    /// Commits an endpoint only while the authenticated session is still active.
+    /// A reconnect/sign-out race therefore cannot publish stale WebView state.
+    @discardableResult public func openAuthenticated(_ endpoint: MilaWebEndpoint, sessionActive: Bool) -> Bool {
+        guard sessionActive else { clear(); error = MilaWebEndpointError.unavailable; return false }
+        open(endpoint)
+        return true
+    }
     public func clear() { endpoint = nil; error = nil }
 }
 

@@ -203,7 +203,7 @@ private struct MachineDetailView: View {
             defer { webLoading = false }
             do {
                 let endpoint = try await adapter.webEndpoint(machine: machineID)
-                webControls.open(endpoint)
+                guard webControls.openAuthenticated(endpoint, sessionActive: signedIn) else { return }
                 showWeb = true
             } catch {
                 webControls.clear()

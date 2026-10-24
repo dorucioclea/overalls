@@ -12,6 +12,16 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertFalse(controller.set("https://console.example.test/#fragment"))
     }
 
+    @MainActor func testAsyncEndpointCommitRejectsSignedOutSession() throws {
+        let controller = MilaWebControlsController()
+        let endpoint = try MilaWebEndpoint("https://console.example.test/")
+        XCTAssertFalse(controller.openAuthenticated(endpoint, sessionActive: false))
+        XCTAssertNil(controller.endpoint)
+        XCTAssertEqual(controller.error, .unavailable)
+        XCTAssertTrue(controller.openAuthenticated(endpoint, sessionActive: true))
+        XCTAssertEqual(controller.endpoint, endpoint)
+    }
+
     func testAuthenticatedProjectionIsMachineBoundAndHTTPSOnly() throws {
         let id = UUID(uuidString: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")!
         let json = "{\"machine_id\":\"\(id.uuidString.lowercased())\",\"label\":\"Console\",\"port\":443,\"visibility\":\"private\",\"policy_revision\":7,\"url\":\"https://console.example.test/\",\"route\":\"overalls://machines/\(id.uuidString.lowercased())/web\"}".data(using: .utf8)!

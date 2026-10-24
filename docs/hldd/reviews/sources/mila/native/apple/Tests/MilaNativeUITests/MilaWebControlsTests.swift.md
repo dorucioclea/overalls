@@ -1,5 +1,5 @@
 ---
-digest: e598101ca73002b89fb43b95bd504571da6aad208e9f80e061d471b7829f85e1
+digest: 0a95dd41ef9a6c3843b0673afbd5ed9582880d367f7bf0dda357d9a7a78237bf
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed formatting and native test changes; no handbook behavior or architecture change.
+Apple web endpoint commit is fenced by live auth

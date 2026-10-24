@@ -1,5 +1,5 @@
 ---
-digest: 7ff499282bd5a17b386beac722ff5841f5e36b98af5854069147c3c55cc33f75
+digest: 9f542d3848e5094e17fc19d9b0097c08b472c6e1e4b68107a0e08fa51fe12f86
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Web origin helper and smoke coverage preserve existing authenticated navigation behavior
+Concurrent Windows source review preserves existing activation behavior

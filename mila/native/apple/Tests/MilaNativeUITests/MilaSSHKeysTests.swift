@@ -2,6 +2,12 @@ import XCTest
 @testable import MilaNativeUI
 
 @MainActor final class MilaSSHKeysTests: XCTestCase {
+    func testValidatedRejectsOversizedUntrustedProjection() {
+        XCTAssertNil(MilaSSHKey.validated(id: UUID(), fingerprint: String(repeating: "x", count: 257), algorithm: "ssh-ed25519"))
+        XCTAssertNil(MilaSSHKey.validated(id: UUID(), fingerprint: "SHA256:x", algorithm: ""))
+        XCTAssertNotNil(MilaSSHKey.validated(id: UUID(), fingerprint: "SHA256:x", algorithm: "ssh-ed25519"))
+    }
+
     func testLoadAndRevokeRefreshesOpaqueKeyIdentity() async {
         let id = UUID(); let key = MilaSSHKey(id: id, fingerprint: "SHA256:test", algorithm: "ssh-ed25519")
         var revoked: [UUID] = []; var loads = 0

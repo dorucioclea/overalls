@@ -1,5 +1,5 @@
 ---
-digest: 0d9faf04f7fbb79459ce24646ca3bf109b59807fab7437f67f8840c5198ab1ca
+digest: 9d5525fe184a6320cd6a1be4413d2644a1e0cc4f1125248d70e07603559a64db
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH refresh generation fencing preserves documented auth behavior
+Apple SSH projection validation bounds untrusted fields

@@ -23,6 +23,7 @@ public sealed partial class MainWindow : Window
     private ulong _webRevision;
     private Uri? _webUrl;
     private bool _webNavigationBound;
+    private long _webGeneration;
     private readonly MilaSignInFlow _signIn = new();
     private bool _closed;
     public MainWindow(string? activation = null)
@@ -209,12 +210,14 @@ public sealed partial class MainWindow : Window
     }
     private async void OpenWebControl(object sender, RoutedEventArgs args)
     {
+        long generation = _webGeneration;
         if (_selectedMachine is not { } machine || _session.Handle is not { } handle)
         {
             WebStatus.Text = S("signInFirst", "Sign in first");
             return;
         }
         MilaNativeSessionBytesResult result = await Task.Run(() => RustNative.TrySessionWebShow(handle, machine.Id));
+        if (generation != _webGeneration || _session.Handle != handle) return;
         if (!result.Succeeded || result.Data is null) { WebStatus.Text = S("webFailed", "Web control unavailable"); return; }
         try
         {
@@ -265,6 +268,7 @@ public sealed partial class MainWindow : Window
 
     private async Task OpenWebControlAsync()
     {
+        long generation = _webGeneration;
         if (_selectedMachine is not { } machine || _session.Handle is not { } handle)
         {
             WebStatus.Text = S("signInFirst", "Sign in first");
@@ -427,6 +431,7 @@ public sealed partial class MainWindow : Window
         // Clear authenticated web and terminal state before beginning a new
         // approval generation. This prevents stale endpoint navigation or a
         // previous PTY stream from surviving a deployment switch.
+        _webGeneration++;
         _webUrl = null;
         _webRevision = 0;
         WebBrowser.Source = null;

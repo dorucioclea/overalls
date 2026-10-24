@@ -10,6 +10,14 @@ public struct MilaSSHKey: Identifiable, Equatable, Sendable {
     public init(id: UUID, fingerprint: String, algorithm: String, label: String? = nil, isCurrentDevice: Bool = false) {
         self.id = id; self.fingerprint = fingerprint; self.algorithm = algorithm; self.label = label; self.isCurrentDevice = isCurrentDevice
     }
+
+    /// Reject untrusted projections before they reach the UI or revoke boundary.
+    public static func validated(id: UUID, fingerprint: String, algorithm: String, label: String? = nil, isCurrentDevice: Bool = false) -> MilaSSHKey? {
+        guard !fingerprint.isEmpty, fingerprint.utf8.count <= 256,
+              !algorithm.isEmpty, algorithm.utf8.count <= 128,
+              label?.utf8.count ?? 0 <= 256 else { return nil }
+        return MilaSSHKey(id: id, fingerprint: fingerprint, algorithm: algorithm, label: label, isCurrentDevice: isCurrentDevice)
+    }
 }
 
 public enum MilaSSHKeysState: Equatable, Sendable { case signedOut, loading, loaded([MilaSSHKey]), failed }

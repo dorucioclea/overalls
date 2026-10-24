@@ -1,5 +1,5 @@
 ---
-digest: 595625331be85916526fcc7cd9026479cbe0d8f36f81c2a07e9ed669cc75731c
+digest: 8dc1191d7c703f1c529688e247e5c4e204875f2d940d2df5c0d738f1c15e2163
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux notification device lifecycle validation and idempotent persistence
+format native sources for CI

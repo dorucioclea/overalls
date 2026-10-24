@@ -139,7 +139,7 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
               let host = url.host,
               host.utf8.count <= 253,
               !host.isEmpty,
-              !host.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.properties.isControl }),
+              !host.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.value < 0x20 || $0.value == 0x7f }),
               url.user == nil,
               url.fragment == nil
         else { state = .failed; return }

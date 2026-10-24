@@ -1,5 +1,5 @@
 ---
-digest: 505954e8b9859c1430deca1fde6cae2741afcf65f639ac412134cf6bbfc1c241
+digest: cc6324c90ae64753d5a7da71cb7c4def06f76f61afa50acf17d8e6c019c17002
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-reject control characters in machine lifecycle display names
+format native sources for CI

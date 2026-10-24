@@ -497,7 +497,10 @@ mod tests {
         for byte in 0u8..=31 {
             let control = char::from(byte);
             let value = format!("overalls://fleet{control}.example/machines");
-            assert!(ActivationRoute::parse(&value).is_err(), "accepted byte {byte}");
+            assert!(
+                ActivationRoute::parse(&value).is_err(),
+                "accepted byte {byte}"
+            );
         }
         assert!(ActivationRoute::parse("overalls://fleet.example/machines").is_ok());
     }

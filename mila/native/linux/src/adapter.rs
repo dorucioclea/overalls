@@ -69,7 +69,10 @@ pub fn decode_ssh_keys(bytes: &[u8]) -> Result<Vec<SshKey>, RuntimeError> {
                 || key.fingerprint.len() > 256
                 || key.id.chars().any(char::is_control)
                 || key.label.chars().any(char::is_control)
-                || key.fingerprint.chars().any(|character| character.is_control() || character.is_whitespace())
+                || key
+                    .fingerprint
+                    .chars()
+                    .any(|character| character.is_control() || character.is_whitespace())
         })
     {
         return Err(RuntimeError::InvalidInput);
@@ -535,7 +538,9 @@ pub fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
                 || label.len() > 63
                 || label.starts_with('-')
                 || label.ends_with('-')
-                || !label.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+                || !label
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
         })
     {
         return false;

@@ -534,11 +534,21 @@ mod transport_tests {
     fn clean_eof_fences_subsequent_input() {
         struct EofTransport;
         impl PtyTransport for EofTransport {
-            fn attach(&mut self, _: &PtyAttachRequest) -> Result<(), PtyError> { Ok(()) }
-            fn read_output(&mut self, _: u64) -> Result<String, PtyError> { Ok(String::new()) }
-            fn send_input(&mut self, _: u64, _: usize) -> Result<(), PtyError> { Ok(()) }
-            fn resize(&mut self, _: u64, _: u16, _: u16) -> Result<(), PtyError> { Ok(()) }
-            fn kill(&mut self, _: u64) -> Result<(), PtyError> { Ok(()) }
+            fn attach(&mut self, _: &PtyAttachRequest) -> Result<(), PtyError> {
+                Ok(())
+            }
+            fn read_output(&mut self, _: u64) -> Result<String, PtyError> {
+                Ok(String::new())
+            }
+            fn send_input(&mut self, _: u64, _: usize) -> Result<(), PtyError> {
+                Ok(())
+            }
+            fn resize(&mut self, _: u64, _: u16, _: u16) -> Result<(), PtyError> {
+                Ok(())
+            }
+            fn kill(&mut self, _: u64) -> Result<(), PtyError> {
+                Ok(())
+            }
         }
         let authority = Authority(true);
         let mut pty = AuthenticatedPty::new(&authority, EofTransport, 80, 24).unwrap();

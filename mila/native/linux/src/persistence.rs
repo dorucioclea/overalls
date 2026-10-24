@@ -292,7 +292,10 @@ mod tests {
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
-            assert_eq!(fs::metadata(&path).unwrap().permissions().mode() & 0o777, 0o600);
+            assert_eq!(
+                fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+                0o600
+            );
         }
         assert_eq!(load().unwrap(), Some(selection.clone()));
         forget().unwrap();
@@ -331,7 +334,10 @@ mod tests {
         std::env::set_var("MILA_SETTINGS_PATH", &path);
         fs::write(&path, br#"{"appearance":"System","locale":"en"}"#).unwrap();
         fs::set_permissions(&path, fs::Permissions::from_mode(0o640)).unwrap();
-        assert!(matches!(load_settings(), Err(PersistenceError::InvalidData)));
+        assert!(matches!(
+            load_settings(),
+            Err(PersistenceError::InvalidData)
+        ));
         let _ = fs::remove_file(&path);
         std::env::remove_var("MILA_SETTINGS_PATH");
     }

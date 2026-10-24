@@ -250,6 +250,7 @@ fun MilaNativeRoot(
         } else {
             threadListing = null
         }
+    }
 }
 
 @Composable

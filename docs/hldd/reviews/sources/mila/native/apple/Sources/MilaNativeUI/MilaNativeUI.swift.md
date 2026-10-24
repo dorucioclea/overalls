@@ -1,5 +1,5 @@
 ---
-digest: 012bdf708e11503bd8ad2ed5a06970a7d72eb0db8f125ce3c3ac4fd5d1c7484f
+digest: a58936068fbcfff0c45bfe773f402fee359aa537e2df76a6347ebeff7574814e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-localized locale picker labels use canonical typed catalog names
+format native sources for CI

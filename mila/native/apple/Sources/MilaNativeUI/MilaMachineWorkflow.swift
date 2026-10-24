@@ -33,7 +33,7 @@ public final class MilaMachineWorkflow: ObservableObject {
               machine.id.uuidString.lowercased() != zeroUUID,
               !machine.machine.name.isEmpty,
               machine.machine.name.utf8.count <= 128,
-              machine.machine.name.unicodeScalars.allSatisfy({ !$0.properties.isControl }) else {
+              machine.machine.name.unicodeScalars.allSatisfy({ $0.value >= 0x20 && $0.value != 0x7f }) else {
             state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
             return
         }

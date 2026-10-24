@@ -1,5 +1,5 @@
 ---
-digest: 769a42253c7e44904801ab8721a0e92b2b6d598b7a78f5473cc097f0db191d84
+digest: 6625ab09755c84e01b50afbad0a67e62b95b2c85bf6832fc7fd89cd278c93053
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-reject duplicate SSH key identifiers before Linux UI projection
+format native sources for CI

@@ -1,5 +1,5 @@
 ---
-digest: 6fae05c87612f2b629a7ec74fa282d66f61d6f1db5ab3442e997bb7ad85a0148
+digest: 5e9e3b9bed2924468615f90a79ae70366bb21cd6ee529891e2995ed1d9ffd7d9
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux terminal stale generation input and resize fencing
+format native sources for CI

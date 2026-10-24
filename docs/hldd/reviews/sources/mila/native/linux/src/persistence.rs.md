@@ -1,5 +1,5 @@
 ---
-digest: d88eebe90f17b6c7594f104823abec6bddf9ea221bfdea486db98dcbd623673f
+digest: 4651e27564ecbcfb4f7b17764cf0cd3c681f5fe98bce87e753eff5c53d3e4fb4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux persistence settings reads enforce owner-only permissions
+format native sources for CI

@@ -219,9 +219,11 @@ mod tests {
         assert!(state.load_devices(&duplicate).is_err());
         let mut full = NotificationState::desktop();
         for index in 0..32 {
-            full.register_device(&format!("desktop-{index}")).expect("register");
+            full.register_device(&format!("desktop-{index}"))
+                .expect("register");
         }
-        full.register_device("desktop-0").expect("duplicate is idempotent");
+        full.register_device("desktop-0")
+            .expect("duplicate is idempotent");
         assert!(full.register_device("desktop-new").is_err());
         let multibyte = "é".repeat(65);
         assert!(state.register_device(&multibyte).is_err());

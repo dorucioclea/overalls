@@ -390,7 +390,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         let machines = try decodeSnapshot(data, host: host, port: port)
         let projected = try machines.enumerated().map { index, machine in
             try validateMachineDisplay(machine)
-            MilaMachinePresentation(machine: machine, actions: try machineActions(data, host: host, port: port, index: UInt32(index)))
+            return MilaMachinePresentation(machine: machine, actions: try machineActions(data, host: host, port: port, index: UInt32(index)))
         }
         return MilaValidatedSnapshot(machines: projected, metadata: metadata)
     }
@@ -440,7 +440,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
 
     private func validateMachineDisplay(_ machine: MilaSnapshotMachine) throws {
         guard machine.name.utf8.count <= 128,
-              !machine.name.unicodeScalars.contains(where: { $0.properties.isControl }) else {
+              !machine.name.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f }) else {
             throw MilaFFIError.outputTooSmall
         }
     }

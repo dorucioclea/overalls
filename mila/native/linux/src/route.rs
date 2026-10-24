@@ -491,6 +491,18 @@ mod tests {
     }
 
     #[test]
+    fn route_parser_rejects_every_ascii_control_byte_in_authority() {
+        // Property-style coverage over the full control-byte domain protects the
+        // activation boundary from accidentally admitting a newly handled byte.
+        for byte in 0u8..=31 {
+            let control = char::from(byte);
+            let value = format!("overalls://fleet{control}.example/machines");
+            assert!(ActivationRoute::parse(&value).is_err(), "accepted byte {byte}");
+        }
+        assert!(ActivationRoute::parse("overalls://fleet.example/machines").is_ok());
+    }
+
+    #[test]
     fn launch_query_round_trips_without_executing_it() {
         let route = ActivationRoute::parse(
             "overalls://fleet.example/launch?source=https%3A%2F%2Fgithub.com%2Fowner%2Frepo",

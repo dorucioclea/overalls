@@ -223,13 +223,19 @@ impl NativeState {
             let authenticated = route_session.borrow().is_authenticated();
             let decisions = batch.decisions(Some(selected.as_str()), authenticated);
             let message = decisions.first().map(|decision| match decision {
-                NavigationDecision::UnknownDeployment { .. } =>
-                    format!("Add deployment before opening {}", decision.canonical()),
-                NavigationDecision::SignInRequired { .. } =>
-                    format!("Sign in before opening {}", decision.canonical()),
+                NavigationDecision::UnknownDeployment { .. } => {
+                    format!("Add deployment before opening {}", decision.canonical())
+                }
+                NavigationDecision::SignInRequired { .. } => {
+                    format!("Sign in before opening {}", decision.canonical())
+                }
                 NavigationDecision::Open { .. } => format!("Open {}", decision.canonical()),
             });
-            route_status.set_label(message.as_deref().unwrap_or("Link rejected by Rust policy."));
+            route_status.set_label(
+                message
+                    .as_deref()
+                    .unwrap_or("Link rejected by Rust policy."),
+            );
         });
         root.append(&route_input);
         root.append(&route_button);

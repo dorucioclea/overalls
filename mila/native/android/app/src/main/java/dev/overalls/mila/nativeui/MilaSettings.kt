@@ -42,7 +42,7 @@ interface MilaSettingsStore {
 
 class MilaSharedPreferencesStore(private val preferences: SharedPreferences) : MilaSettingsStore {
     override fun read(key: String): String? = preferences.getString(key, null)
-    override fun write(key: String, value: String) { preferences.edit().putString(key, value).apply() }
+    override fun write(key: String, value: String) { preferences.edit().putString(key, value).commit() }
 }
 
 /** Typed boundary around platform key/value storage; malformed values fall back safely. */

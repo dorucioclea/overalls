@@ -1,5 +1,5 @@
 ---
-digest: 2792080434e60eb9428aed2f0ac8c65640afe04cf1a2f6086c858c3ad0ddaab8
+digest: 4fe3486a5e21ebde8cc163c15d039cd1bd516a268502e832e44eedac61f3c258
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Android settings work is isolated to its existing native settings boundary.
+Android settings writes commit synchronously for durable persistence

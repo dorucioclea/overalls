@@ -6,7 +6,7 @@ using System.Text.Json;
 /// override these values; English is the deterministic fallback for an incomplete bundle.
 internal static class MilaStrings
 {
-    private static readonly Dictionary<string, string> Catalog = LoadCatalog();
+    private static Dictionary<string, string> Catalog = LoadCatalog(System.Globalization.CultureInfo.CurrentUICulture.Name);
     internal static string AppName => "Mila";
     internal static string Machines => "Machines";
     internal static string Threads => "Threads";
@@ -17,9 +17,14 @@ internal static class MilaStrings
 
     internal static string Text(string id, string fallback) => Catalog.GetValueOrDefault(id, fallback);
 
-    private static Dictionary<string, string> LoadCatalog()
+    internal static void SetLocale(string locale)
     {
-        string locale = System.Globalization.CultureInfo.CurrentUICulture.Name.Replace('_', '-');
+        Catalog = LoadCatalog(locale);
+    }
+
+    private static Dictionary<string, string> LoadCatalog(string requestedLocale)
+    {
+        string locale = requestedLocale.Replace('_', '-');
         foreach (string candidate in new[] { locale, locale.Split('-')[0], "en" })
         {
             string path = Path.Combine(AppContext.BaseDirectory, "Resources", "locales", $"{candidate}.json");

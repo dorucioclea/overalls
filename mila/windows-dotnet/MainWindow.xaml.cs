@@ -636,6 +636,7 @@ public sealed partial class MainWindow : Window
     private void LoadSettings()
     {
         MilaSettings settings = MilaSettingsStore.Load();
+        MilaStrings.SetLocale(settings.Locale);
         LocalePicker.SelectedItem = settings.Locale;
         if (LocalePicker.SelectedItem is null) LocalePicker.SelectedItem = "en";
         DarkModeToggle.IsOn = settings.DarkMode;
@@ -652,6 +653,9 @@ public sealed partial class MainWindow : Window
         {
             MilaSettings settings = new MilaSettings(locale, DarkModeToggle.IsOn).Normalize();
             MilaSettingsStore.Save(settings);
+            MilaStrings.SetLocale(settings.Locale);
+            ApplyStrings();
+            LocalePicker.SelectedItem = settings.Locale;
             ApplyTheme(settings.DarkMode);
             Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
                 ? FlowDirection.RightToLeft

@@ -856,7 +856,10 @@ public sealed partial class MainWindow : Window
     {
         if (_session.Handle is not { } handle || _selectedMachine is not { } machine)
         { MachineCommandStatus.Text = S("signInFirst", "Sign in first"); return; }
-        MilaNativeSessionActionResult result = RustNative.TrySessionShareMutation(handle, machine.Id, "user@example.invalid", add ? "viewer" : null, add, "porsche-" + Guid.NewGuid().ToString("N"));
+        string email = ShareEmail.Text.Trim();
+        if (email.Length is < 3 or > 320 || !email.Contains('@', StringComparison.Ordinal))
+        { MachineCommandStatus.Text = S("sharingEmailInvalid", "Enter a valid sharing email."); return; }
+        MilaNativeSessionActionResult result = RustNative.TrySessionShareMutation(handle, machine.Id, email, add ? "viewer" : null, add, "porsche-" + Guid.NewGuid().ToString("N"));
         MachineCommandStatus.Text = result.Succeeded ? S("requestSucceeded", "Request submitted") : S("requestFailed", "Request refused");
     }
     private void ClassifyMachineWebShow(object sender, RoutedEventArgs args) => ClassifyMachine($"web show {SampleMachine}");

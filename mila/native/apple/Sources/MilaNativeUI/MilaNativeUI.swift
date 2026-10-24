@@ -32,7 +32,7 @@ public struct MilaNativeRootView: View {
             Group {
                 switch selection {
                 case .machines: MachinesView(machines: machines, create: { showCreate = true }) { selection = .machine(id: $0) }
-                case .machine(let id): MachineDetailView(machine: machines.first { $0.id == id }, adapter: session.adapter() ?? adapter)
+                case .machine(let id): MachineDetailView(machine: machines.first { $0.id == id }, adapter: session.adapter() ?? adapter, signedIn: session.adapter() != nil)
                 case .threads: ThreadsView(adapter: session.adapter() ?? adapter, select: { selection = .thread(id: $0) })
                 case .thread(let id): ThreadDetailView(id: id, adapter: session.adapter() ?? adapter)
                 case .settings: SettingsView(adapter: session.adapter() ?? adapter, lockController: appLock, session: session)
@@ -114,6 +114,7 @@ private struct MilaMachineCreateView: View {
 private struct MachineDetailView: View {
     let machine: MilaMachinePresentation?
     let adapter: any MilaFFIAdapter
+    let signedIn: Bool
     @StateObject private var workflow: MilaMachineWorkflow
     @State private var classified = ""
     @State private var showTerminal = false
@@ -128,9 +129,10 @@ private struct MachineDetailView: View {
     @State private var resizeDisk = "20"
     @State private var resizeStatus = ""
     @StateObject private var sharing: MilaMachineSharingController
-    init(machine: MilaMachinePresentation?, adapter: any MilaFFIAdapter) {
+    init(machine: MilaMachinePresentation?, adapter: any MilaFFIAdapter, signedIn: Bool = false) {
         self.machine = machine
         self.adapter = adapter
+        self.signedIn = signedIn
         _workflow = StateObject(wrappedValue: MilaMachineWorkflow(adapter: adapter))
         _sharing = StateObject(wrappedValue: MilaMachineSharingController(adapter: adapter))
     }
@@ -155,9 +157,9 @@ private struct MachineDetailView: View {
                         ForEach(MilaShareRole.allCases) { role in Text(role.rawValue.capitalized).tag(role) }
                     }.frame(maxWidth: 130)
                     Button(MilaStrings.text(.shareAdd)) { sharing.submit(principal: sharePrincipal, role: shareRole) }
-                        .disabled(!machine.machine.write || sharePrincipal.isEmpty)
+                        .disabled(!signedIn || !machine.machine.write || sharePrincipal.isEmpty)
                     Button(MilaStrings.text(.shareRemove)) { sharing.submit(principal: sharePrincipal, remove: true) }
-                        .disabled(!machine.machine.write || sharePrincipal.isEmpty)
+                        .disabled(!signedIn || !machine.machine.write || sharePrincipal.isEmpty)
                 }
                 Text(shareStatus).font(.caption).foregroundStyle(.secondary)
                 HStack {
@@ -182,7 +184,7 @@ private struct MachineDetailView: View {
                 }
                 Text(classified).font(.caption).foregroundStyle(.secondary)
                 Text(mutationStatus).font(.caption).foregroundStyle(.secondary)
-                .onAppear { sharing.setSession(signedIn: true, machine: machine) }
+                .onAppear { sharing.setSession(signedIn: signedIn, machine: machine) }
             } else { ContentUnavailableView(MilaStrings.text(.machineUnavailable), systemImage: "questionmark") }
         }.padding().sheet(isPresented: $showTerminal) { MilaTerminalView() }
         #if canImport(WebKit)

@@ -1,5 +1,5 @@
 ---
-digest: 2e8dde9f3336dc67bd1dce02eee0f7c06847b68d1452501ab7466e3767fa1b43
+digest: ed9e6148c9f0740386128c45b8a3a88d979ab685d57159dc281086992b39d0ab
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent native platform change; no new documented behavior beyond existing parity scope.
+Apple sharing controls now derive signed-in state from live deployment session

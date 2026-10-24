@@ -25,8 +25,10 @@ class MilaThreadDetailTest {
         val controller = MilaThreadDetailController(ThreadAdapter())
         assertFalse(controller.select(id))
         assertFalse(controller.submit(MilaThreadCommand.Show))
+        assertFalse(controller.canSubmit())
         controller.setSession(true, listing)
         assertTrue(controller.select(id))
+        assertTrue(controller.canSubmit())
         assertTrue(controller.submit(MilaThreadCommand.Turns))
         assertEquals(MilaThreadActionState.Applied(listing.threads.single(), MilaThreadCommand.Turns), controller.state)
     }

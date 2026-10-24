@@ -1,5 +1,5 @@
 ---
-digest: a927c115dc421aeaa7e45d7738088575e3e9a7dc368c0833491cbeeb72c74212
+digest: e3c6a444448d22ada216826e6e67cfd83e1d34879b230064b3c0d37f1f64b594
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android thread command input contract test preserves native behavior
+Thread commands are session-gated in native UI

@@ -544,7 +544,7 @@ private fun controllerSelect(controller: MilaMachineDetailController, command: S
         threadCommandChoices.chunked(3).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 row.forEach { (label, raw) ->
-                    Button({
+                    Button(enabled = controller.canSubmit(), onClick = {
                         val command = when (raw) {
                             "thread ls" -> MilaThreadCommand.List
                             "thread show" -> MilaThreadCommand.Show

@@ -51,6 +51,9 @@ class MilaThreadDetailController(private val adapter: MilaFfiAdapter) {
         return true
     }
 
+    /** Whether the selected thread can accept a command in the current authenticated lifecycle. */
+    fun canSubmit(): Boolean = authenticated && state is MilaThreadActionState.Ready
+
     suspend fun submit(command: MilaThreadCommand): Boolean = submit(command, null)
 
     suspend fun submit(command: MilaThreadCommand, input: String?): Boolean {

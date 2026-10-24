@@ -1,5 +1,5 @@
 ---
-digest: 065d927f3e2243d4975a071242c3ca7925127c811b841edd1d1d781c3efecc60
+digest: a918239bacbd6ee405dfc0e2e97d94520035cc346f35c41ed5b7b518a61cbe37
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android machine controls now require authentication
+Thread commands are session-gated in native UI

@@ -1,5 +1,5 @@
 ---
-digest: 04fb1445bf1eacc4889792b72516418a8ea1b781315314f235e0523b5087413f
+digest: add91fd6e5ad4b369af9e8ca7f1447f34023c8c7f343ea5b5df2ffa068b165aa
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fix deletion gate newline handling
+fix deletion gate syntax

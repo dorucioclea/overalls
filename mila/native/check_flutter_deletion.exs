@@ -1,6 +1,6 @@
 # Typed migration gate for retiring Mila's Flutter client.
 defmodule MilaFlutterDeletionGate do
-  @moduledoc """Checks that native parity and release wiring are ready before Flutter removal."""
+  @moduledoc "Checks that native parity and release wiring are ready before Flutter removal."
   @type check :: %{name: String.t(), ok: boolean(), detail: String.t()}
 
   @spec run(Path.t()) :: [check()]

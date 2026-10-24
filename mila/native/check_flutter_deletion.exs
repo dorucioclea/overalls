@@ -33,8 +33,17 @@ defmodule MilaFlutterDeletionGate do
   defp release_check(root) do
     path = Path.join(root, "nix/domains/artifacts/mila/default.nix")
     text = File.read!(path)
-    native = String.contains?(text, "nativeLinux")
-    %{name: "native Linux release", ok: native, detail: if(native, do: "wired", else: "Flutter release still wired")}
+    linux = String.contains?(text, "nativeLinux") and String.contains?(text, "tar --sort=name")
+    source_bundle = Path.join(root, "nix/domains/artifacts/mila/source-bundle.nix")
+    bundle_text = File.read!(source_bundle)
+    windows = Enum.all?(["windows-dotnet/Mila.Windows.csproj", "windows-dotnet/native/mila_native.h", "rust/Cargo.lock"], fn required -> String.contains?(bundle_text, required) end)
+    ok = linux and windows
+    detail = cond do
+      not linux -> "native Linux release still wired to Flutter"
+      not windows -> "native Windows sources are absent from source-bundle checks"
+      true -> "native Linux release and Windows source inputs wired"
+    end
+    %{name: "native release/source bundle", ok: ok, detail: detail}
   end
 
   @spec flutter_reference_check(Path.t()) :: [check()]

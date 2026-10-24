@@ -17,9 +17,10 @@
 #                                         mila-build looks for the repository
 #   SHA256SUMS                            every file above
 #
-# The bundle includes tracked mila/native/linux sources and Cargo.lock so Linux
-# release hosts can build the GTK4/libadwaita client with Rust without Flutter.
-# Flutter remains required for the cross-platform app and Windows/Android targets.
+# The bundle includes tracked native sources and lockfiles so Linux release hosts
+# can build the GTK4/libadwaita client and Windows hosts can build the WinUI
+# client plus its Rust FFI library without Nix. Flutter remains available to
+# existing consumers until native parity is accepted.
 #
 # Use it with PUB_CACHE=<bundle>/pub-cache and
 # `flutter pub get --offline --enforce-lockfile`; Flutter's own engine
@@ -99,6 +100,11 @@ pkgs.runCommand "mila-source-bundle-${version}" {
   # Native Linux release inputs are source-only and must include their lock.
   test -f "$b/mila/native/linux/Cargo.lock"
   test -f "$b/mila/native/linux/Cargo.toml"
+  # Windows release inputs are source-only and must retain the managed host,
+  # C ABI and Rust workspace lock used to build mila_native.dll.
+  test -f "$b/mila/windows-dotnet/Mila.Windows.csproj"
+  test -f "$b/mila/windows-dotnet/native/mila_native.h"
+  test -f "$b/mila/rust/Cargo.lock"
   if find "$b/mila/native/linux" -type d -name target -print -quit | grep -q .; then
     echo "native Linux bundle must not contain Cargo target output" >&2
     exit 1

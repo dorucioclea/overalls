@@ -1,5 +1,5 @@
 ---
-digest: 6f428064f8922f46e4fe8c3272d7aff3e2ca995cd7f0d22318bdf5c09ca8beba
+digest: 3fedfc480804e77c19d5b51b587641b395b92b89b91f4812058cf6001d9ec242
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed native deployment lifecycle UI and tests; accepted architecture preserved.
+Apple reconnect failure fences prior authenticated generation

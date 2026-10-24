@@ -269,7 +269,9 @@ impl LiveSession {
     ) -> Result<(), SessionError> {
         if name.is_empty()
             || name.len() > 128
-            || name.bytes().any(|b| b.is_ascii_control())
+            || name
+                .bytes()
+                .any(|b| b.is_ascii_control() || b.is_ascii_whitespace())
             || !(1..=256).contains(&cpu)
             || !(128..=4_194_304).contains(&memory)
             || !(1..=16_777_216).contains(&disk)
@@ -1431,6 +1433,23 @@ mod tests {
                 "shell",
                 "porsche-00000000000000000000000000000000"
             ),
+            Err(SessionError::InvalidInput)
+        );
+    }
+
+    #[test]
+    fn machine_create_rejects_unsafe_display_names_before_authentication() {
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
+        let request = "porsche-00000000000000000000000000000000";
+        assert_eq!(
+            session.machine_create("Builder\nEast", 2, 1024, 10, request),
+            Err(SessionError::InvalidInput)
+        );
+        assert_eq!(
+            session.machine_create("Builder East", 2, 1024, 10, request),
             Err(SessionError::InvalidInput)
         );
     }

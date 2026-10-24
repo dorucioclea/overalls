@@ -17,7 +17,7 @@ let
     filter = path: type:
       let name = builtins.baseNameOf path;
       in !(builtins.elem name [
-        "build" ".dart_tool" ".hegel" ".idea" "ephemeral" ".flutter-plugins"
+        "build" "target" ".dart_tool" ".hegel" ".idea" "ephemeral" ".flutter-plugins"
         ".flutter-plugins-dependencies" "local.properties" "Generated.xcconfig"
         "flutter_export_environment.sh" ".nix"
       ] || lib.hasPrefix "app_localizations" name || lib.hasPrefix "GeneratedPluginRegistrant" name

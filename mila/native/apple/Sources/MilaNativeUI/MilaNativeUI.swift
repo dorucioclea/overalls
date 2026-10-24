@@ -8,6 +8,7 @@ public struct MilaNativeRootView: View {
     @State private var machines: [MilaMachinePresentation] = []
     @State private var status = MilaStrings.text(.ready)
     @State private var deepLinkRouter = MilaDeepLinkRouter()
+    @State private var pendingDeepLink: MilaRoute?
     @State private var showCreate = false
     @StateObject private var appLock = MilaAppLockController()
     @Environment(\.scenePhase) private var scenePhase
@@ -50,6 +51,7 @@ public struct MilaNativeRootView: View {
             let signedIn: Bool
             if case .signedIn(_, _) = state { signedIn = true } else { signedIn = false }
             deepLinkRouter.setSession(signedIn: signedIn)
+            if signedIn, let pendingDeepLink { selection = pendingDeepLink; self.pendingDeepLink = nil }
             if !signedIn { machines = []; selection = .machines; status = MilaStrings.text(.ready) }
         }.onChange(of: scenePhase) { _, phase in
             switch phase {
@@ -63,7 +65,9 @@ public struct MilaNativeRootView: View {
             case .open(let route, let generation) where deepLinkRouter.accepts(decision, generation: generation):
                 selection = route
                 status = MilaStrings.text(.ready)
-            case .signedOut:
+            case .signedOut(let route):
+                pendingDeepLink = route
+                selection = .settings
                 status = MilaStrings.text(.ready)
             default:
                 status = MilaStrings.text(.runtimeUnavailable)

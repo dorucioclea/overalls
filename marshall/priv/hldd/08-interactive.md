@@ -1441,6 +1441,12 @@ backend. Plan approval and revision buttons use the same bounded input field
 (revision text is limited to 64 KiB); the live deployment journey remains open
 in the GTK shell.
 
+The native Rust session contract test exercises these boundaries directly:
+invalid approval request IDs, missing authentication, and oversized answer
+payloads are refused before FFI dispatch
+(`mila/native/linux/src/session.rs`). A signed native deployment journey remains
+open.
+
 
 Each machine in Mila has Info, Terminals, Threads and Web tabs. A Recent grid
 lists threads across machines. Every action is an ordinary Porsche command

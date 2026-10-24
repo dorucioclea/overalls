@@ -1555,6 +1555,24 @@ mod tests {
             ),
             Err(SessionError::InvalidInput)
         );
+
+        // Native mutations must carry both the proposal/question identity and
+        // a canonical Porsche request id before they can reach the FFI handle.
+        let thread = "01234567-89ab-cdef-0123-456789abcdef";
+        let plan = "fedcba98-7654-3210-fedc-ba9876543210";
+        let request = "porsche-0123456789abcdef0123456789abcdef";
+        assert_eq!(
+            session.thread_action(Some(thread), "thread plan approve", Some(plan), None, Some("bad")),
+            Err(SessionError::InvalidInput)
+        );
+        assert_eq!(
+            session.thread_action(Some(thread), "thread answer", Some(plan), Some("{}"), Some(request)),
+            Err(SessionError::StaleHandle)
+        );
+        assert_eq!(
+            session.thread_action(Some(thread), "thread answer", Some(plan), Some(&"x".repeat(64 * 1024 + 1)), Some(request)),
+            Err(SessionError::InvalidInput)
+        );
     }
 
     #[test]

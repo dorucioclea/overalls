@@ -63,7 +63,12 @@ class MilaThreadDetailController(private val adapter: MilaFfiAdapter) {
     suspend fun submit(command: MilaThreadCommand): Boolean = submit(command, null)
 
     suspend fun submit(command: MilaThreadCommand, input: String?): Boolean {
-        val thread = (state as? MilaThreadActionState.Ready)?.thread ?: return false
+        val thread = when (val current = state) {
+            is MilaThreadActionState.Ready -> current.thread
+            is MilaThreadActionState.Failed -> current.thread
+            is MilaThreadActionState.Applied -> current.thread
+            else -> return false
+        }
         if (!authenticated) { state = MilaThreadActionState.SignedOut; return false }
         val needsInput = command == MilaThreadCommand.Prompt || command == MilaThreadCommand.Answer || command == MilaThreadCommand.PlanRevise
         val inputBytes = input?.toByteArray(Charsets.UTF_8)

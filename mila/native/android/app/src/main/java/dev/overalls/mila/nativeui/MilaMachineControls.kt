@@ -53,7 +53,7 @@ class MilaTerminalRenderer {
             lines.addLast(clean)
         }
     }
-    fun text(): String = lines.joinToString("\n")
+    fun text(): String = lines.joinToString("\n").removeSuffix("\n")
 }
 /** Bounded host-side source. Implementations must bind reads to the authenticated session. */
 fun interface MilaPtySource {

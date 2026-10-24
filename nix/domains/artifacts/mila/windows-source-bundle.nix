@@ -5,16 +5,15 @@
 pkgs.runCommand "mila-windows-source-bundle-${version}" {} ''
   name=mila-windows-source-bundle-${version}
   b="$PWD/$name"
-  mkdir -p "$b/mila/windows-dotnet" "$b/mila/rust" "$b/mila/app/lib/l10n"
+  mkdir -p "$b/mila/windows-dotnet" "$b/mila/rust" "$b/mila/localization/catalogs"
   # `root` is the cleaned Mila source tree (not the repository root).
   cp -r ${root}/windows-dotnet/. "$b/mila/windows-dotnet/"
   cp -r ${root}/rust/. "$b/mila/rust/"
-  mkdir -p "$b/mila/localization"
   cp ${root}/localization/generate_catalogs.py "$b/mila/localization/generate_catalogs.py"
   # The native host generates its Windows resources from the checked-in ARB
   # catalogs. Keep these alongside the path used by the project file so the
   # standalone bundle has all inputs required by dotnet build.
-  cp ${root}/localization/catalogs/*.arb "$b/mila/app/lib/l10n/"
+  cp ${root}/localization/catalogs/*.arb "$b/mila/localization/catalogs/"
   cat > "$b/flake.nix" <<'EOT'
   { outputs = _: { }; }
   EOT

@@ -35,7 +35,9 @@ defmodule MilaFlutterDeletionGate do
         "if-no-files-found: error"
       ]
       missing = Enum.reject(required_workflow, &String.contains?(workflow_text, &1))
-      native_markers = ["com.android.application", "cargo-ndk", "mila-ffi"]
+      # The Gradle task invokes the cargo-ndk subcommand as two argv entries;
+      # inspect both tokens rather than requiring a non-existent literal.
+      native_markers = ["com.android.application", "cargo", "ndk", "mila-ffi"]
       missing_build = Enum.reject(native_markers, &String.contains?(build_text, &1))
       forbidden = Regex.scan(~r/flutter|dart|pubspec/i, build_text) |> length()
       ok = missing == [] and missing_build == [] and forbidden == 0

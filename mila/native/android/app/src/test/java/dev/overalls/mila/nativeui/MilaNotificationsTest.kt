@@ -81,3 +81,12 @@ class MilaNotificationRegistrationTest {
         assertEquals("token", MilaNotificationProviderId.parse("token")?.value)
     }
 }
+
+class MilaNotificationChannelValidationTest {
+    @Test fun channelIdsRejectInjectionAndBounds() {
+        assertTrue(milaValidNotificationChannelId("mila-events"))
+        assertFalse(milaValidNotificationChannelId("mila/events"))
+        assertFalse(milaValidNotificationChannelId("mila events"))
+        assertFalse(milaValidNotificationChannelId("x".repeat(101)))
+    }
+}

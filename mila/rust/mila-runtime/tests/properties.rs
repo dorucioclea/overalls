@@ -5,6 +5,8 @@ use mila_runtime::{
 };
 use mila_runtime::{AttachOutcome, AttachPhase, TerminalAttach};
 use mila_runtime::{PokeEnvelope, RuntimeError, SnapshotStore};
+use mila_runtime::{MutationPhase, MutationTracker, NextAction};
+use mila_model::RequestId;
 use mila_runtime::{PushEnvironment, PushProvider, PushRegistrationRequest};
 
 #[hegel::test(test_cases = 64)]
@@ -18,6 +20,21 @@ fn terminal_output_never_advances_before_connection(tc: TestCase) {
     assert!(state.connected(state.generation(), 0));
     assert_eq!(state.output(state.generation(), bytes as usize), bytes > 0);
     assert!(state.ended(state.generation(), AttachOutcome::Closed));
+}
+
+#[hegel::test(test_cases = 128)]
+fn mutation_uncertainty_never_allocates_a_second_request(tc: TestCase) {
+    let suffix = tc.draw(gs::default::<u64>());
+    let id = RequestId::parse(&format!("porsche-{suffix:032x}")).expect("request id");
+    let mut tracker = MutationTracker::submitted(id.clone());
+    tracker.uncertain();
+    let polls = tc.draw(gs::default::<u8>()) as usize;
+    for _ in 0..polls {
+        tracker.polled().expect("poll");
+    }
+    assert_eq!(tracker.request_id, id);
+    assert_eq!(tracker.phase, MutationPhase::Uncertain);
+    assert_eq!(tracker.next_action(), NextAction::Poll);
 }
 
 #[hegel::test(test_cases = 128)]

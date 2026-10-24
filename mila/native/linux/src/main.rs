@@ -1066,7 +1066,13 @@ impl NativeState {
         let open_web = Button::with_label("Open web endpoint");
         let open_web_status = content.clone();
         let endpoint_state = web_endpoint.clone();
+        let open_web_session = self.session.clone();
         open_web.connect_clicked(move |_| {
+            if open_web_session.borrow().session().is_none() {
+                endpoint_state.borrow_mut().take();
+                open_web_status.set_label("Web controls require sign-in.");
+                return;
+            }
             let Some(endpoint) = endpoint_state.borrow().as_ref().cloned() else {
                 open_web_status.set_label("Load a web endpoint before opening it.");
                 return;

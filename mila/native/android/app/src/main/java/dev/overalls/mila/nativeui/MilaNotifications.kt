@@ -21,6 +21,9 @@ interface MilaNotificationProvider {
     fun registrationId(): MilaNotificationProviderId?
 }
 
+fun milaValidNotificationChannelId(value: String): Boolean =
+    value.length in 1..100 && value.all { it.isLetterOrDigit() || it in "._-" }
+
 interface MilaNotificationOs {
     fun notificationsEnabled(): Boolean
     fun ensureChannel(channelId: String, name: String)
@@ -32,11 +35,13 @@ class MilaAndroidNotificationOs(context: Context) : MilaNotificationOs {
     private val manager = context.getSystemService(NotificationManager::class.java)
     override fun notificationsEnabled(): Boolean = Build.VERSION.SDK_INT < 24 || manager.areNotificationsEnabled()
     override fun ensureChannel(channelId: String, name: String) {
+        if (!milaValidNotificationChannelId(channelId) || name.isBlank() || name.length > 128) return
         if (Build.VERSION.SDK_INT >= 26) manager.createNotificationChannel(
             NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_DEFAULT),
         )
     }
     override fun removeChannel(channelId: String) {
+        if (!milaValidNotificationChannelId(channelId)) return
         if (Build.VERSION.SDK_INT >= 26) manager.deleteNotificationChannel(channelId)
     }
 }

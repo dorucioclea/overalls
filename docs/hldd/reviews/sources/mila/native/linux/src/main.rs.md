@@ -1,5 +1,5 @@
 ---
-digest: 6f0684b5c19625221db7d66a636ce63d3f065dd215884c9f48eae553203ded96
+digest: aad15b19f87028050d0098c32643c8e5742479d10a7f536306001a2195330ab6
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux activation decisions remain typed and add centralized authentication fence
+Linux web launch now rechecks authenticated session and clears stale endpoint

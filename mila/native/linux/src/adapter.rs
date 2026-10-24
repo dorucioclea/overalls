@@ -1153,7 +1153,8 @@ mod tests {
 
     #[test]
     fn listing_uses_shared_bounded_decoder() {
-        let bytes = br#"{"items":[],"next_cursor":null}"#;
+        let bytes =
+            br#"{"version":1,"status":"succeeded","result":{"items":[],"next_cursor":null}}"#;
         let listing = super::decode_listing(bytes).unwrap();
         assert!(listing.machines().is_empty());
         assert!(!listing.has_more());
@@ -1177,7 +1178,8 @@ mod tests {
         let adapter = InProcessRuntimeAdapter::new("fleet.example", None).unwrap();
         let first = adapter.begin_generation();
         let second = adapter.begin_generation();
-        let payload = br#"{"items":[],"next_cursor":null}"#;
+        let payload =
+            br#"{"version":1,"host":"fleet.example","port":null,"saved_at":1,"machines":[]}"#;
         assert!(adapter.refresh_generation(first, payload).is_err());
         assert!(adapter.refresh_generation(second, payload).is_ok());
         assert!(adapter.snapshot().unwrap().is_some());

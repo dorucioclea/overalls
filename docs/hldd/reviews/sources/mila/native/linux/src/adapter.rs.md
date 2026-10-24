@@ -1,5 +1,5 @@
 ---
-digest: 70a28d540b44675f7c11fac7c64e3cd6ff21a29b9d255aef6b6026f9d76ca746
+digest: 145cd233cef236871f96d6b2c6563c4c5be2eaeea2da86050e8890490e7ff36a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native session and routing validation preserves documented behavior
+Linux adapter test fixtures align bounded route and snapshot contracts

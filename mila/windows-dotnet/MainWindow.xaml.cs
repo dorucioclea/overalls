@@ -43,13 +43,31 @@ public sealed partial class MainWindow : Window
         };
         ApplyStrings();
         LoadSettings();
-        if (MilaDeploymentStore.Load() is { } deployment)
-        {
-            DeploymentHost.Text = deployment.Host;
-            _deploymentPort = deployment.Port;
-        }
+        LoadDeployments();
         Navigation.SelectedItem = Navigation.MenuItems[0];
         if (!string.IsNullOrWhiteSpace(activation)) HandleExternalActivation(activation);
+    }
+    private void LoadDeployments()
+    {
+        DeploymentRows.ItemsSource = MilaDeploymentStore.LoadAll();
+        if (MilaDeploymentStore.Load() is not { } deployment) return;
+        DeploymentHost.Text = deployment.Host;
+        _deploymentPort = deployment.Port;
+    }
+    private void OnDeploymentSelected(object sender, SelectionChangedEventArgs args)
+    {
+        if (DeploymentRows.SelectedItem is not MilaDeployment deployment) return;
+        DeploymentHost.Text = deployment.Host;
+        _deploymentPort = deployment.Port;
+    }
+    private void ForgetDeploymentClicked(object sender, RoutedEventArgs args)
+    {
+        if (DeploymentRows.SelectedItem is not MilaDeployment deployment) return;
+        if (MilaDeploymentStore.Forget(deployment))
+        {
+            LoadDeployments();
+            StatusText.Text = S("deploymentForgotten", "Deployment forgotten");
+        }
     }
     internal void HandleExternalActivation(string activation)
     {
@@ -101,6 +119,7 @@ public sealed partial class MainWindow : Window
         DeploymentHostLabel.Text = S("deploymentHostLabel", "Deployment host");
         DeploymentHost.PlaceholderText = S("deploymentHostHint", "overalls.example");
         ConnectDeployment.Content = S("signInStart", "Sign in in browser");
+        ForgetDeployment.Content = S("forgetDeployment", "Forget deployment");
         ApprovalFingerprint.Header = S("signInFingerprint", "Key fingerprint");
         OpenApproval.Content = S("signInOpenBrowser", "Open approval page");
         MachineCommandsTitle.Text = S("machineMore", "Machine commands");

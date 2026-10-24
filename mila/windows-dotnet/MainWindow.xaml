@@ -20,6 +20,8 @@
         <StackPanel Spacing="6">
           <TextBlock x:Name="DeploymentHostLabel" />
           <TextBox x:Name="DeploymentHost" PlaceholderText="overalls.example" />
+          <ListView x:Name="DeploymentRows" DisplayMemberPath="Host" MinHeight="48" SelectionChanged="OnDeploymentSelected" />
+          <Button x:Name="ForgetDeployment" Click="ForgetDeploymentClicked" HorizontalAlignment="Left" />
           <Button x:Name="ConnectDeployment" Click="ConnectToDeployment" HorizontalAlignment="Left" />
           <TextBox x:Name="ApprovalUrl" PlaceholderText="https://overalls.example/approve" Visibility="Collapsed" />
           <TextBox x:Name="ApprovalFingerprint" Visibility="Collapsed" />

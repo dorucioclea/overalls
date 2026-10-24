@@ -79,6 +79,9 @@ public struct MilaWebEndpointProjection: Codable, Equatable, Sendable {
         error = nil
         return true
     }
+    /// Invalidates all web state when the authenticated session ends or changes.
+    /// This prevents a previous deployment endpoint from surviving sign-out.
+    public func invalidateSession() { clear() }
     public func clear() { endpoint = nil; policyRevision = 0; error = nil }
 }
 

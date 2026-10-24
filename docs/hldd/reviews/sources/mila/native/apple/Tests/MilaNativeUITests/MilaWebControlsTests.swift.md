@@ -1,5 +1,5 @@
 ---
-digest: cd4ea2b7c950bcd769c2de4656373fd1c90aaa2bba637bff83205c8c7a76fd0a
+digest: f8d62b30a076b3c5aea1275c44a33600465f22044ef17d2e390851020b5f6c70
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple endpoint host and port bounds preserve web security behavior
+invalidate authenticated web state on session end

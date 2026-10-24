@@ -44,3 +44,14 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertThrowsError(try projection.endpoint(for: UUID()))
     }
 }
+
+
+    @MainActor func testSessionInvalidationClearsPublishedWebState() throws {
+        let controller = MilaWebControlsController()
+        let endpoint = try MilaWebEndpoint("https://console.example.test/")
+        XCTAssertTrue(controller.openAuthenticated(endpoint, sessionActive: true, policyRevision: 3, expectedRevision: 3))
+        controller.invalidateSession()
+        XCTAssertNil(controller.endpoint)
+        XCTAssertEqual(controller.policyRevision, 0)
+        XCTAssertNil(controller.error)
+    }

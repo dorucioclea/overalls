@@ -1,5 +1,5 @@
 ---
-digest: 89301f512dea971bcd6c3397f8fe40fb97afcbd1d922b6e7f9acfbb675ec12da
+digest: 4d492c5b8583a3afe0dd1eb12515edb893e763c533b1494bcfdf551727e6a140
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-WKWebView navigation remains HTTPS and same-origin
+invalidate authenticated web state on session end

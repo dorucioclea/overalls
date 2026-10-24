@@ -1,5 +1,5 @@
 ---
-digest: 5d97e22b743c6211d80540c439a2e3d4d44c8ba2a0ce075f9f001fe2471b47bc
+digest: a85f283ef4f4275f0234edc6dc3067123577f9e845e28d774473c40d04549c7f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Linux persistence payload size
+mila/native/linux/src/persistence.rs

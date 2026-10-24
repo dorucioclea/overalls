@@ -30,4 +30,6 @@ class MilaDeploymentsTest {
  }
  @Test(expected = IllegalArgumentException::class) fun invalidHostRejected() { MilaDeployment("localhost") }
  @Test(expected = IllegalArgumentException::class) fun invalidPortRejected() { MilaDeployment("mila.example", 70000) }
+ @Test(expected = IllegalArgumentException::class) fun unsafeLabelRejected() { MilaDeployment("mila.example", label = "bad\nlabel") }
+ @Test(expected = IllegalArgumentException::class) fun oversizedUtf8LabelRejected() { MilaDeployment("mila.example", label = "é".repeat(65)) }
 }

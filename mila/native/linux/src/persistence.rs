@@ -11,6 +11,15 @@ const FILE_NAME: &str = "deployment.json";
 const SETTINGS_FILE_NAME: &str = "settings.json";
 const MAX_PERSISTED_BYTES: usize = 64 * 1024;
 
+fn restrict_permissions(path: &std::path::Path) -> io::Result<()> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(path, fs::Permissions::from_mode(0o600))?;
+    }
+    Ok(())
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct DeploymentSelection {
     pub(crate) host: String,
@@ -179,6 +188,7 @@ pub(crate) fn save(selection: &DeploymentSelection) -> Result<(), PersistenceErr
     let temporary = path.with_extension("json.tmp");
     let bytes = serde_json::to_vec(&selection).map_err(|_| PersistenceError::InvalidData)?;
     fs::write(&temporary, bytes)?;
+    restrict_permissions(&temporary)?;
     fs::rename(temporary, path)?;
     Ok(())
 }
@@ -229,6 +239,7 @@ pub(crate) fn save_settings(settings: &Settings) -> Result<(), PersistenceError>
         &temporary,
         serde_json::to_vec(&settings).map_err(|_| PersistenceError::InvalidData)?,
     )?;
+    restrict_permissions(&temporary)?;
     fs::rename(temporary, path)?;
     Ok(())
 }
@@ -264,6 +275,11 @@ mod tests {
         let selection = DeploymentSelection::validate("example.com:443").unwrap();
         save(&selection).unwrap();
         assert!(path.exists());
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            assert_eq!(fs::metadata(&path).unwrap().permissions().mode() & 0o777, 0o600);
+        }
         assert_eq!(load().unwrap(), Some(selection.clone()));
         forget().unwrap();
         forget().unwrap();

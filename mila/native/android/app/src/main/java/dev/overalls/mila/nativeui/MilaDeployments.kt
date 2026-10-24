@@ -4,7 +4,12 @@ import java.util.Locale
 
 /** Validated deployment entry shown by the native sign-in selector. */
 data class MilaDeployment(val host: String, val port: Int = 22, val label: String = host) {
-    init { require(host.matches(HOST)) { "invalid deployment host" }; require(port in 1..65535) }
+    init {
+        require(host.matches(HOST)) { "invalid deployment host" }
+        require(port in 1..65535)
+        require(label.isNotBlank() && label.toByteArray(Charsets.UTF_8).size <= 128) { "invalid deployment label" }
+        require(label.none { it.isISOControl() }) { "invalid deployment label" }
+    }
     companion object { private val HOST = Regex("^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$") }
 }
 

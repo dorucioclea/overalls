@@ -1,5 +1,5 @@
 ---
-digest: 782e9141bb8d1dede90895e521563db30e1908c6704a23f54a4f57946e7ee9c9
+digest: 7d5dde7cb841cbc3dfba26d5ebc6acc17876a0930a3ae0cd08b63fd42db643b8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android deployment forget and localized label changes; native parity evidence only.
+mila/native/linux/src/persistence.rs

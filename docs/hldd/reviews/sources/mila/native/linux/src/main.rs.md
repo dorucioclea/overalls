@@ -1,5 +1,5 @@
 ---
-digest: d97a8afde21e40826b90f6700c8404a5074a100423408c27cf8a929bc83d3d7e
+digest: a17748f019970e02edf782f673ec27c69bae1f826510f6d5f1d930371419a147
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux app lock capability is explicitly unavailable and its control is disabled
+bounded Linux thread UI entry fields

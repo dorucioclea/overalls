@@ -820,6 +820,7 @@ impl NativeState {
         root.append(&terminal_actions);
         let thread_id = Entry::builder()
             .placeholder_text(&strings::text(strings::Message::ThreadId))
+            .max_length(128)
             .hexpand(true)
             .build();
         let thread_actions = Box::new(Orientation::Horizontal, 8);
@@ -883,10 +884,12 @@ impl NativeState {
         thread_actions.append(&turns);
         let thread_secondary = Entry::builder()
             .placeholder_text("Turn or question ID")
+            .max_length(128)
             .hexpand(true)
             .build();
         let thread_input = Entry::builder()
             .placeholder_text("Thread input (stdin)")
+            .max_length(64 * 1024)
             .hexpand(true)
             .build();
         for (message, command, needs_secondary) in [

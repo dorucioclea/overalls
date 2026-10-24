@@ -1,5 +1,5 @@
 ---
-digest: 448d9aa7ead6932929a2dc083a533d0e67dc90ae894d91c6efeaf711f3b44bc6
+digest: 48ffe16ca3b5363620a7cfc122e7e9b133764594e8397023447ca776227ed45e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-PTY polling stays inside existing native Android terminal boundary and adds no documented architecture or behavior surface.
+Android terminal read-only reconnect bounds coverage

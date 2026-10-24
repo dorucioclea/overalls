@@ -1,5 +1,5 @@
 ---
-digest: d7fd7fb640517312d0da166b1d43b5a5ddf0051dce1de097f32b2f71d94f295c
+digest: 6cb2cbb24d6d6533b80044cec9fea713e6b66b47370b7b1c5951bb5818bb9ed5
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux activation decisions remain typed and add centralized authentication fence
+Concurrent Linux route parity review remains behavior-preserving

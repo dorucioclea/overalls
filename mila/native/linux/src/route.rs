@@ -539,8 +539,14 @@ mod tests {
             "overalls://other.example/settings",
         ]);
         let decisions = batch.decisions(Some("fleet.example"), false);
-        assert!(matches!(decisions[0], NavigationDecision::SignInRequired { .. }));
-        assert!(matches!(decisions[1], NavigationDecision::UnknownDeployment { .. }));
+        assert!(matches!(
+            decisions[0],
+            NavigationDecision::SignInRequired { .. }
+        ));
+        assert!(matches!(
+            decisions[1],
+            NavigationDecision::UnknownDeployment { .. }
+        ));
     }
 
     fn navigation_requires_the_selected_authenticated_deployment() {

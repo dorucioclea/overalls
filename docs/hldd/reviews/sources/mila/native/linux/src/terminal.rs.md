@@ -1,5 +1,5 @@
 ---
-digest: 94115b730f3ccbfc02b0295bab80f18e641acbdd99f2cf729cdec6e408b9a320
+digest: fca82f5ef6d145c66aa55100b9c6b17e9366a7637701b1e52e30c99d73f496fd
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review concurrent native source updates required by shared hook
+Native session and routing validation preserves documented behavior

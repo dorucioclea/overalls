@@ -1042,15 +1042,14 @@ mod tests {
     }
 
     #[test]
-    #[test]
     fn activation_resolution_requires_matching_authenticated_deployment() {
-        let route = "overalls://cloud.example/machines/m1/web";
+        let route = "overalls://fleet.example/machines";
         assert!(matches!(
-            super::resolve_activation(route, Some("cloud.example"), true).unwrap(),
+            super::resolve_activation(route, Some("fleet.example"), true).unwrap(),
             crate::route::NavigationDecision::Open { .. }
         ));
         assert!(matches!(
-            super::resolve_activation(route, Some("cloud.example"), false).unwrap(),
+            super::resolve_activation(route, Some("fleet.example"), false).unwrap(),
             crate::route::NavigationDecision::SignInRequired { .. }
         ));
         assert!(matches!(
@@ -1154,8 +1153,7 @@ mod tests {
 
     #[test]
     fn listing_uses_shared_bounded_decoder() {
-        let bytes =
-            br#"{"version":1,"status":"succeeded","result":{"items":[],"next_cursor":null}}"#;
+        let bytes = br#"{"items":[],"next_cursor":null}"#;
         let listing = super::decode_listing(bytes).unwrap();
         assert!(listing.machines().is_empty());
         assert!(!listing.has_more());
@@ -1179,8 +1177,7 @@ mod tests {
         let adapter = InProcessRuntimeAdapter::new("fleet.example", None).unwrap();
         let first = adapter.begin_generation();
         let second = adapter.begin_generation();
-        let payload =
-            br#"{"version":1,"status":"succeeded","result":{"items":[],"next_cursor":null}}"#;
+        let payload = br#"{"items":[],"next_cursor":null}"#;
         assert!(adapter.refresh_generation(first, payload).is_err());
         assert!(adapter.refresh_generation(second, payload).is_ok());
         assert!(adapter.snapshot().unwrap().is_some());

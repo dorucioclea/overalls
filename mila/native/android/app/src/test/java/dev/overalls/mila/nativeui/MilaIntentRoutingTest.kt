@@ -17,6 +17,16 @@ class MilaIntentRoutingTest {
         assertEquals(MilaRoute.Threads, controller.target)
     }
 
+    @Test fun authenticatedShareTargetRefusesSignedOutSession() {
+        val controller = MilaDeepLinkController()
+        val generation = controller.beginSession()
+        val share = Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, "overalls://mila/threads")
+        assertFalse(acceptAuthenticatedExternalIntent(controller, share, generation, signedIn = false))
+        assertEquals(MilaRoute.Machines, controller.target)
+        assertTrue(acceptAuthenticatedExternalIntent(controller, share, generation, signedIn = true))
+        assertEquals(MilaRoute.Threads, controller.target)
+    }
+
     @Test fun nonNavigationShareTextIsRejected() {
         val controller = MilaDeepLinkController()
         val generation = controller.beginSession()

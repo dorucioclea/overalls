@@ -28,6 +28,7 @@ public sealed partial class MainWindow : Window
     private long _machineGeneration;
     private readonly MilaSignInFlow _signIn = new();
     private bool _closed;
+    private MilaExternalActivation? _pendingActivation;
     public MainWindow(string? activation = null)
     {
         InitializeComponent();
@@ -88,6 +89,10 @@ public sealed partial class MainWindow : Window
             bool authenticated = _session.Handle is { } handle && handle != 0;
             if (!MilaShareTarget.TryAuthorize(share, authenticated, _activeHost, out _))
             {
+                // Retain a validated share route until the target deployment is
+                // authenticated, then replay it through the same authorization gate.
+                _pendingActivation = share;
+                DeploymentHost.Text = share.Route.Host;
                 StatusText.Text = S("signInFirst", "Sign in first");
                 return;
             }
@@ -574,6 +579,13 @@ public sealed partial class MainWindow : Window
             _machineMutation.SetSession(true, handle);
             UpdateMachineMutationAvailability();
             StatusText.Text = S("connected", MilaStrings.Connected);
+            if (_pendingActivation is { } pending &&
+                string.Equals(pending.Route.Host, host, StringComparison.OrdinalIgnoreCase))
+            {
+                _pendingActivation = null;
+                HandleExternalActivation(pending.IsShareTarget ? "--share " + $"overalls://{pending.Route.Host}{pending.Route.Path}" :
+                    $"overalls://{pending.Route.Host}{pending.Route.Path}");
+            }
             await RefreshSshKeyListAsync();
             await RefreshNotificationDevicesAsync();
             RefreshMachines();

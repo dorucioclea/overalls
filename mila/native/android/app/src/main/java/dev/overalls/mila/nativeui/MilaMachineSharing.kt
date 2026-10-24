@@ -44,9 +44,10 @@ class MilaMachineSharingController(private val adapter: MilaFfiAdapter) {
 
     fun select(machineId: UUID): Boolean {
         if (!authenticated) return false
-        return true.also {
-            // Selection is supplied by the current authenticated listing through setMachine.
-        }
+        val selected = listing?.machines?.firstOrNull { it.id == machineId } ?: return false
+        machine = selected
+        state = MilaMachineSharingState.Ready(selected)
+        return true
     }
 
     fun setMachine(selected: MilaMachineRow): Boolean {

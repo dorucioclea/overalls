@@ -34,6 +34,14 @@ class MilaMachineSharingTest {
         assertTrue((c.state as MilaMachineSharingState.Applied).remove)
     }
 
+    @Test fun selectResolvesOnlyMachinesInAuthenticatedListing() {
+        val c = MilaMachineSharingController(SharingAdapter())
+        c.setSession(true, listing)
+        assertTrue(c.select(id))
+        assertEquals(MilaMachineSharingState.Ready(row), c.state)
+        assertFalse(c.select(UUID.fromString("00000000-0000-0000-0000-000000000002")))
+    }
+
     @Test fun cannotShareMachineOutsideAuthenticatedListing() = runBlocking {
         val c = MilaMachineSharingController(SharingAdapter())
         c.setSession(true, listing)

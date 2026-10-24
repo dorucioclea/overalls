@@ -1,5 +1,5 @@
 ---
-digest: 7fffd35f62492b084c616cac3ace025af5fb3c39b58619e9b12c80984abc640f
+digest: de8a803165c66397c6bceb249ab7491f558e89fab32331459f81f3169faa9724
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android sharing principal validation bounds
+Android sharing selection resolves authenticated listing machines

@@ -1084,9 +1084,12 @@ impl SignInFlow {
                 WhoamiOutcome::Approval { url, fingerprint }
                     if self.phase != SignInPhase::AwaitingApproval =>
                 {
-                    if let Ok(info) = ApprovalInfo::validate(&url, &fingerprint, at) {
-                        self.phase = SignInPhase::AwaitingApproval;
-                        self.approval = Some(info);
+                    match ApprovalInfo::validate(&url, &fingerprint, at) {
+                        Ok(info) => {
+                            self.phase = SignInPhase::AwaitingApproval;
+                            self.approval = Some(info);
+                        }
+                        Err(_) => self.fail(SignInFailure::Protocol),
                     }
                 }
                 WhoamiOutcome::Refused => self.fail(SignInFailure::Refused),
@@ -1633,6 +1636,23 @@ mod tests {
         assert!(ApprovalInfo::validate("https://?approval", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://:443/a", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://example.test/a", "fp", 0).is_ok());
+    }
+
+    #[test]
+    fn invalid_approval_payload_fails_closed_as_protocol_error() {
+        let flow = SignInFlow::default().apply(SignInEvent::Start);
+        let generation = flow.generation;
+        let flow = flow.apply(SignInEvent::Whoami {
+            generation,
+            outcome: WhoamiOutcome::Approval {
+                url: "http://example.test/approval".into(),
+                fingerprint: "fp".into(),
+            },
+            at: 1,
+        });
+        assert_eq!(flow.phase, SignInPhase::Failed);
+        assert_eq!(flow.failure, Some(SignInFailure::Protocol));
+        assert!(flow.approval.is_none());
     }
 
     #[test]

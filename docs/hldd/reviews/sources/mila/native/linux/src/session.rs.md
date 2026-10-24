@@ -1,5 +1,5 @@
 ---
-digest: 2794d37597a0c1f6f3654913d257e8bd9db49177ab871a786461f2d9972fed7e
+digest: 50ba7b27c12f4540e0bcf4b5bd1c01ea27df8f92164a2d879ef9ff801231e66a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux machine lifecycle name whitespace validation
+invalid approval payload fails closed as protocol error

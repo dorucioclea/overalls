@@ -351,6 +351,7 @@ private struct SettingsView: View {
     @State private var deploymentPort = "22"
     @State private var deploymentTrust = ""
     @State private var deploymentStatus = ""
+    @StateObject private var approval = MilaApprovalController()
     var body: some View {
         Form {
             Section("Deployment sign-in") {
@@ -364,6 +365,12 @@ private struct SettingsView: View {
                     Button("Sign out") { session.signOut() }.disabled(session.state == .signedOut)
                 }
                 Text(String(describing: session.state)).font(.caption).foregroundStyle(.secondary)
+                if case .pending(let info) = approval.result {
+                    Link("Open approval in browser", destination: info.url)
+                    Text("Fingerprint: \(info.fingerprint)").font(.caption).foregroundStyle(.secondary)
+                } else if approval.error {
+                    Text("Approval status unavailable").font(.caption).foregroundStyle(.secondary)
+                }
             }
             Section("Deployment") {
                 TextField("Host", text: $deploymentHost)
@@ -459,6 +466,9 @@ private struct SettingsView: View {
             // them at the read boundary before they reach SwiftUI.
             let canonicalLocale = MilaStrings.canonicalLocale(locale)
             if canonicalLocale != locale { locale = canonicalLocale }
+            if case .signedIn = session.state, let active = session.adapter(), let host = session.selectedDeployment?.host {
+                Task { await approval.inspect(active, expectedHost: host) }
+            }
             if !["system", "light", "dark"].contains(appearance) { appearance = "system" }
         }
     }

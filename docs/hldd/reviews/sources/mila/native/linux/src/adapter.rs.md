@@ -1,5 +1,5 @@
 ---
-digest: 0c553719bc48d152eb43e66054da07fe90560fb465e87ba025d08f254d8c2fc0
+digest: 9a76914964f6ed36a0481a6726ffbd33a31252ca1f75230015c59bfc2ed42efc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Linux adapter changes; preserves validated native boundary and has no additional architecture impact.
+SSH key projection rejects whitespace in fingerprints before GTK; preserves existing native boundary and protocol contracts.

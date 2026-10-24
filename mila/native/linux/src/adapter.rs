@@ -65,7 +65,7 @@ pub fn decode_ssh_keys(bytes: &[u8]) -> Result<Vec<SshKey>, RuntimeError> {
                 || key.fingerprint.len() > 256
                 || key.id.chars().any(char::is_control)
                 || key.label.chars().any(char::is_control)
-                || key.fingerprint.chars().any(char::is_control)
+                || key.fingerprint.chars().any(|character| character.is_control() || character.is_whitespace())
         })
     {
         return Err(RuntimeError::InvalidInput);
@@ -1256,6 +1256,10 @@ mod tests {
         .is_err());
         assert!(super::decode_ssh_keys(
             br#"{"keys":[{"id":"k\u0001","label":"x","fingerprint":"y","added_at":1}]}"#
+        )
+        .is_err());
+        assert!(super::decode_ssh_keys(
+            br#"{"keys":[{"id":"k1","label":"x","fingerprint":"SHA256:bad value","added_at":1}]}"#
         )
         .is_err());
     }

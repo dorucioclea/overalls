@@ -4,6 +4,8 @@ import Combine
 import UserNotifications
 #if os(iOS)
 import UIKit
+#elseif os(macOS)
+import AppKit
 #endif
 #endif
 
@@ -93,6 +95,12 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
     public func registerForRemoteNotifications() {
         DispatchQueue.main.async { UIApplication.shared.registerForRemoteNotifications() }
     }
+    #elseif os(macOS)
+    /// macOS APNs registration is explicit as well; requesting authorization
+    /// alone never causes `didRegisterForRemoteNotifications` to fire.
+    public func registerForRemoteNotifications() {
+        DispatchQueue.main.async { NSApplication.shared.registerForRemoteNotifications() }
+    }
     #endif
 
     @MainActor public func requestAuthorizationAndRegister() async -> Bool {
@@ -100,7 +108,7 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
             let granted = try await Self.requestAuthorization()
             guard granted else { return false }
             installAsNotificationDelegate()
-            #if os(iOS)
+            #if os(iOS) || os(macOS)
             registerForRemoteNotifications()
             #endif
             return true

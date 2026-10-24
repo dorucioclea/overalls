@@ -107,6 +107,29 @@ fn arbitrary_registration_inputs_never_panic(tc: TestCase) {
     );
 }
 
+#[hegel::test(test_cases = 128)]
+fn push_replies_never_accept_expired_or_unbounded_values(tc: TestCase) {
+    let raw_key = tc.draw(gs::vecs(gs::default::<u8>()).max_size(900));
+    let push_key = "A".repeat(16 + raw_key.len().min(684));
+    let key_id = String::from_utf8_lossy(
+        &tc.draw(gs::vecs(gs::default::<u8>()).max_size(180)),
+    )
+    .into_owned();
+    let now = tc.draw(gs::default::<u64>());
+    let expires = tc.draw(gs::default::<u64>());
+    if let Ok(reply) = mila_runtime::PushRegistrationReply::new(
+        push_key,
+        key_id,
+        expires,
+        now,
+    ) {
+        assert!(reply.expires_at > now);
+        assert!((16..=700).contains(&reply.push_key.len()));
+        assert!(!reply.key_id.is_empty());
+        assert!(reply.key_id.len() <= 128);
+    }
+}
+
 #[hegel::test(test_cases = 64)]
 fn arbitrary_poke_metadata_never_panics(tc: TestCase) {
     let bytes = tc.draw(gs::vecs(gs::default::<u8>()).max_size(5_000));

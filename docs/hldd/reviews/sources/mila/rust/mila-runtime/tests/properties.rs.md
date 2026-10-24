@@ -1,5 +1,5 @@
 ---
-digest: 71b6a3b324429d8dce00c7f655bb0a24395bc83a396e282e2de67ef3b4321324
+digest: fde077be615fe39634e014fc51077bdd2b21505410ba6c1df791b997470ad7b2
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Hegel property verifies terminal reconnect rejects stale generation output
+Hegel property verifies push replies reject expired and oversized values

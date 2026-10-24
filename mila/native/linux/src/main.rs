@@ -1134,11 +1134,7 @@ impl NativeState {
             .map(|selection| selection.host);
         let authenticated = self.sign_in.borrow().phase == SignInPhase::SignedIn
             && self.session.borrow().is_authenticated();
-        let decisions = batch
-            .routes()
-            .iter()
-            .map(|route| route.navigation(selected_authority.as_deref(), authenticated))
-            .collect::<Vec<_>>();
+        let decisions = batch.decisions(selected_authority.as_deref(), authenticated);
         let rejected = batch.rejected();
         if decisions.is_empty() {
             self.set_status("Mila\nNo supported link could be opened.");

@@ -1,5 +1,5 @@
 ---
-digest: 5ecd160d4a5d8015ec45cb635810c9562dbdd41614902155482ad1ab1a896a50
+digest: 6f0684b5c19625221db7d66a636ce63d3f065dd215884c9f48eae553203ded96
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Applied rustfmt-only changes; runtime behavior and architecture unchanged.
+Linux activation decisions remain typed and add centralized authentication fence

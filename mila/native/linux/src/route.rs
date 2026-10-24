@@ -148,6 +148,20 @@ impl ActivationBatch {
     pub fn canonical_routes(&self) -> Vec<String> {
         self.routes.iter().map(ActivationRoute::canonical).collect()
     }
+
+    /// Resolves every retained route against the active deployment and session.
+    /// Invalid and excess inputs are already discarded by [`Self::parse`], so this
+    /// projection is safe to hand to a native navigation surface.
+    pub fn decisions(
+        &self,
+        selected_authority: Option<&str>,
+        authenticated: bool,
+    ) -> Vec<NavigationDecision> {
+        self.routes
+            .iter()
+            .map(|route| route.navigation(selected_authority, authenticated))
+            .collect()
+    }
 }
 
 impl FromStr for ActivationRoute {
@@ -519,6 +533,16 @@ mod tests {
     }
 
     #[test]
+    fn batch_decisions_preserve_authentication_fence() {
+        let batch = ActivationBatch::parse([
+            "overalls://fleet.example/machines",
+            "overalls://other.example/settings",
+        ]);
+        let decisions = batch.decisions(Some("fleet.example"), false);
+        assert!(matches!(decisions[0], NavigationDecision::SignInRequired { .. }));
+        assert!(matches!(decisions[1], NavigationDecision::UnknownDeployment { .. }));
+    }
+
     fn navigation_requires_the_selected_authenticated_deployment() {
         let route = ActivationRoute::parse(&format!("{HOST}/machines/{ID}/info")).expect("route");
         assert!(matches!(

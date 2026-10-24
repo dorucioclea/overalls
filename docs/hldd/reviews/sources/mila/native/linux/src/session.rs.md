@@ -1,5 +1,5 @@
 ---
-digest: 50ba7b27c12f4540e0bcf4b5bd1c01ea27df8f92164a2d879ef9ff801231e66a
+digest: a690f5f89dd69d34f51134ee5b3eda94547b124aec826cc235906ee24ad43c56
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-invalid approval payload fails closed as protocol error
+Linux sign-in lifecycle fails closed when approval transport becomes unreachable

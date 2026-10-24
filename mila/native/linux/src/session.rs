@@ -1054,7 +1054,11 @@ impl SignInFlow {
                 self.fail(SignInFailure::HostUntrusted)
             }
             SignInEvent::Unreachable(g)
-                if g == self.generation && self.phase == SignInPhase::Connecting =>
+                if g == self.generation
+                    && matches!(
+                        self.phase,
+                        SignInPhase::Connecting | SignInPhase::AwaitingApproval
+                    ) =>
             {
                 self.fail(SignInFailure::Unreachable)
             }
@@ -1652,6 +1656,25 @@ mod tests {
         });
         assert_eq!(flow.phase, SignInPhase::Failed);
         assert_eq!(flow.failure, Some(SignInFailure::Protocol));
+        assert!(flow.approval.is_none());
+    }
+
+    #[test]
+    fn unreachable_during_approval_fails_closed() {
+        let flow = SignInFlow::default().apply(SignInEvent::Start);
+        let generation = flow.generation;
+        let flow = flow.apply(SignInEvent::Whoami {
+            generation,
+            outcome: WhoamiOutcome::Approval {
+                url: "https://example.test/approval".into(),
+                fingerprint: "SHA256:test".into(),
+            },
+            at: 1,
+        });
+        assert_eq!(flow.phase, SignInPhase::AwaitingApproval);
+        let flow = flow.apply(SignInEvent::Unreachable(generation));
+        assert_eq!(flow.phase, SignInPhase::Failed);
+        assert_eq!(flow.failure, Some(SignInFailure::Unreachable));
         assert!(flow.approval.is_none());
     }
 

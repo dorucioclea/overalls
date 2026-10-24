@@ -383,9 +383,13 @@ impl NativeState {
         let sign_in = self.sign_in.clone();
         let sign_in_status = content.clone();
         let session = self.session.clone();
+        let machine_listing_on_sign_out = self.machine_listing.clone();
         let sign_out_button = Button::with_label(&strings::text(strings::Message::SignInSignOut));
         sign_out_button.connect_clicked(move |_| {
             session.borrow_mut().clear();
+            // Never retain authenticated machine projections after sign-out.
+            // A subsequent session must refresh from the server before detail/actions.
+            *machine_listing_on_sign_out.borrow_mut() = None;
             let mut flow = sign_in.borrow_mut();
             *flow = flow.clone().apply(SignInEvent::SignOut);
             sign_in_status.set_label("Signed out; deployment trust and approval remain pinned.");

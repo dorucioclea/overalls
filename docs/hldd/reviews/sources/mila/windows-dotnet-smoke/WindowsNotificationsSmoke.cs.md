@@ -1,5 +1,5 @@
 ---
-digest: 2ad4089a6d114ef191c5116872ca4b557d5ba9ea0753806d3704366cf9105916
+digest: cc63fd26003a0606f90b45babb59e461fce83f17c5e3ed0b8a6d1eef4b1502db
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows notification session fencing and smoke coverage; no chapter architecture change.
+Reviewed concurrent Windows notification smoke changes

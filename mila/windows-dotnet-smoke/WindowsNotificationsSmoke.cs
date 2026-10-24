@@ -33,5 +33,13 @@ internal static class WindowsNotificationsSmoke
         devicesController.LoadAsync(true).GetAwaiter().GetResult();
         devicesController.RemoveAsync(devices[0]).GetAwaiter().GetResult();
         Program.Require(removed && devicesController.Status == MilaWindowsNotificationDevicesStatus.Loaded, "authenticated device removal workflow");
+        string storePath = Path.Combine(Path.GetTempPath(), $"mila-notifications-{Guid.NewGuid():N}.json");
+        try
+        {
+            MilaWindowsNotificationDeviceStore store = new(storePath);
+            store.Save(devices);
+            Program.Require(store.Load().Count == 1 && store.Load()[0].Id == devices[0].Id, "notification device persistence");
+        }
+        finally { if (File.Exists(storePath)) File.Delete(storePath); }
     }
 }

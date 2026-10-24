@@ -106,3 +106,33 @@ internal sealed class MilaWindowsNotificationController
 
     internal void Disable() => State = MilaWindowsNotificationState.Disabled;
 }
+
+internal sealed class MilaWindowsNotificationDeviceStore
+{
+    private readonly string path;
+    internal MilaWindowsNotificationDeviceStore(string? path = null)
+    {
+        this.path = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Mila", "notification-devices.json");
+    }
+
+    internal IReadOnlyList<MilaWindowsNotificationDevice> Load()
+    {
+        try
+        {
+            if (!File.Exists(path)) return Array.Empty<MilaWindowsNotificationDevice>();
+            return MilaWindowsNotificationDevicesController.DecodeListing(File.ReadAllBytes(path));
+        }
+        catch (IOException) { return Array.Empty<MilaWindowsNotificationDevice>(); }
+        catch (JsonException) { return Array.Empty<MilaWindowsNotificationDevice>(); }
+        catch (InvalidDataException) { return Array.Empty<MilaWindowsNotificationDevice>(); }
+    }
+
+    internal void Save(IReadOnlyList<MilaWindowsNotificationDevice> devices)
+    {
+        if (devices.Count > 256) throw new ArgumentOutOfRangeException(nameof(devices));
+        string? directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
+        string json = JsonSerializer.Serialize(new { devices });
+        File.WriteAllText(path, json);
+    }
+}

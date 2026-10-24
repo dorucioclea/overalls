@@ -1,5 +1,5 @@
 ---
-digest: 3007adf3b5475e39686da66418a37a9db1572fe206f450da8a478965079767a7
+digest: 6abf2c4fc178022aabf672d96cc8b29e1bd68f9e357cb2b57989d98443cbefa0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.
+Reviewed concurrent Windows notification interop changes

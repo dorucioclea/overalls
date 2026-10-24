@@ -1,5 +1,5 @@
 ---
-digest: 09c398b782884ac0e6ee2d3aa8f86b3f8d94e154a4d7d30e03d362d947c96ebb
+digest: 855359f191ddc8c1eb2a7dac7da033f1741af4376b08b7f5f8a27b576621c1b5
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reject malformed web authorities before browser launch
+reject duplicate machine sharing grant identifiers before GTK projection

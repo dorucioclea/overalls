@@ -118,6 +118,7 @@ pub fn decode_share_listing(bytes: &[u8]) -> Result<(String, Vec<ShareGrant>), R
     }
     let envelope: Envelope =
         serde_json::from_slice(bytes).map_err(|_| RuntimeError::InvalidInput)?;
+    let mut grant_ids = std::collections::HashSet::with_capacity(envelope.items.len());
     if envelope.owner.email.len() > 320
         || !valid_email(&envelope.owner.email)
         || envelope.items.len() > 512
@@ -131,6 +132,7 @@ pub fn decode_share_listing(bytes: &[u8]) -> Result<(String, Vec<ShareGrant>), R
                 || !valid_email(&grant.email)
                 || grant.role.len() > 32
                 || !matches!(grant.role.as_str(), "viewer" | "operator" | "manager")
+                || !grant_ids.insert(grant.id.clone())
         })
     {
         return Err(RuntimeError::InvalidInput);
@@ -1207,6 +1209,7 @@ mod tests {
         assert_eq!(grants[0].role, "operator");
         assert!(decode_share_listing(br#"{"owner":{"email":"owner@example.test"},"items":[{"id":"g1","user_id":"u1","email":"a@example.test","role":"owner"}]}"#).is_err());
         assert!(decode_share_listing(br#"{"owner":{"email":"owner@example.test"},"items":[{"id":"g1\n","user_id":"u1","email":"a@example.test","role":"viewer"}]}"#).is_err());
+        assert!(decode_share_listing(br#"{"owner":{"email":"owner@example.test"},"items":[{"id":"g1","user_id":"u1","email":"a@example.test","role":"viewer"},{"id":"g1","user_id":"u2","email":"b@example.test","role":"viewer"}]}"#).is_err());
     }
 
     #[test]

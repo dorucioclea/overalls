@@ -785,6 +785,17 @@ impl TerminalStream {
             .ok_or(RuntimeError::InvalidInput)
     }
     pub fn reconnect(&mut self) -> Result<u64, RuntimeError> {
+        // A transport loss leaves the reducer attached until the host reports
+        // the channel ended.  Explicit reconnect must fence that generation
+        // first, otherwise `attach` correctly rejects a second live channel.
+        // The transition is payload-free; terminal bytes never enter state.
+        if self.state.phase() == mila_runtime::AttachPhase::Attached {
+            let generation = self.state.generation();
+            self.state
+                .ended(generation, mila_runtime::AttachOutcome::Transport)
+                .then_some(())
+                .ok_or(RuntimeError::InvalidInput)?;
+        }
         self.attach()
     }
     pub fn kill(&mut self, generation: u64) -> Result<(), RuntimeError> {
@@ -990,6 +1001,18 @@ mod terminal_stream_tests {
         let next = stream.reconnect().expect("reconnect");
         assert_ne!(next, generation);
         assert!(stream.kill(generation).is_err());
+    }
+
+    #[test]
+    fn reconnect_fences_an_attached_generation_after_transport_loss() {
+        let mut stream = TerminalStream::new();
+        let first = stream.attach().expect("attach");
+        stream.connected(first, 0, true).expect("connected");
+
+        let next = stream.reconnect().expect("reconnect");
+        assert_ne!(next, first);
+        assert_eq!(stream.state().phase(), AttachPhase::Attaching);
+        assert!(stream.kill(first).is_err());
     }
 
     #[test]

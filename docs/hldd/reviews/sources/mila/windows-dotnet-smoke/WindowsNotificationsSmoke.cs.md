@@ -1,5 +1,5 @@
 ---
-digest: cc63fd26003a0606f90b45babb59e461fce83f17c5e3ed0b8a6d1eef4b1502db
+digest: f30fd8a7c8ef8bb071ae1c03b4e19705f6bab4eeb618a20c1e40f0ccbdcdc88f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Windows notification smoke changes
+Windows notification invalidation removes stale local device projections

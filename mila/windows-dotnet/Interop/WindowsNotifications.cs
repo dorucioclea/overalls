@@ -30,6 +30,11 @@ internal sealed class MilaWindowsNotificationDevicesController
     { if (Status != MilaWindowsNotificationDevicesStatus.Loaded || device.Id.Length == 0) return; await remove(device.Id, cancellationToken); await LoadAsync(true, cancellationToken); }
     internal async Task SetEnabledAsync(MilaWindowsNotificationDevice device, bool enabled, CancellationToken cancellationToken = default)
     { if (Status != MilaWindowsNotificationDevicesStatus.Loaded || device.Id.Length == 0) return; await preferences(device.Id, enabled, cancellationToken); await LoadAsync(true, cancellationToken); }
+    internal void Invalidate(string deviceId)
+    {
+        if (Status != MilaWindowsNotificationDevicesStatus.Loaded || string.IsNullOrWhiteSpace(deviceId)) return;
+        Devices = Devices.Where(device => !string.Equals(device.Id, deviceId, StringComparison.Ordinal)).ToArray();
+    }
 
     internal static IReadOnlyList<MilaWindowsNotificationDevice> DecodeListing(ReadOnlySpan<byte> bytes)
     {

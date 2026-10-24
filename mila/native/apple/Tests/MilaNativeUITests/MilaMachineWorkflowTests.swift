@@ -31,4 +31,11 @@ final class MilaMachineWorkflowTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1)
     }
+
+    func testResetInvalidatesInFlightMutationGeneration() throws {
+        let workflow = MilaMachineWorkflow(adapter: UnavailableMilaFFIAdapter())
+        workflow.submit(.stop, machine: try machine())
+        workflow.reset()
+        guard case .idle = workflow.state else { return XCTFail("reset must return to idle") }
+    }
 }

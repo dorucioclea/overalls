@@ -390,7 +390,7 @@ impl LiveSession {
                 return Err(SessionError::InvalidInput);
             }
         }
-        validate_thread_plan_input(command, input)?;
+        Self::validate_thread_plan_input(command, input)?;
         if let Some(request_id) = request_id {
             if request_id.len() != 40
                 || !request_id.starts_with("porsche-")

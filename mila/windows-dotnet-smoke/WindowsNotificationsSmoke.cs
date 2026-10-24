@@ -31,6 +31,9 @@ internal static class WindowsNotificationsSmoke
             (device, _) => { removed = device == id.ToString("D"); return Task.CompletedTask; },
             (_, _, _) => Task.CompletedTask);
         devicesController.LoadAsync(true).GetAwaiter().GetResult();
+        devicesController.Invalidate(devices[0].Id);
+        Program.Require(devicesController.Devices.Count == 0, "invalidated device projection removal");
+        devicesController.LoadAsync(true).GetAwaiter().GetResult();
         devicesController.RemoveAsync(devices[0]).GetAwaiter().GetResult();
         Program.Require(removed && devicesController.Status == MilaWindowsNotificationDevicesStatus.Loaded, "authenticated device removal workflow");
         string storePath = Path.Combine(Path.GetTempPath(), $"mila-notifications-{Guid.NewGuid():N}.json");

@@ -1,5 +1,5 @@
 ---
-digest: 4ed918f76ee27ded7faaf6d12b5b5b441ec1682ee3aff6e5456f34947ea7b8cb
+digest: 6f95c2488e09be5f37951fca52d036434b5dd29ec6b64b7cdd3cb7a68a4c7866
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux session validates thread plan input before dispatch
+Concurrent native workflow test and session edits preserve documented behavior

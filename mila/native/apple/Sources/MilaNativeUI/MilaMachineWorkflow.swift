@@ -13,6 +13,7 @@ public final class MilaMachineWorkflow: ObservableObject {
     @Published public private(set) var state: MilaMachineMutationState = .idle
     private let adapter: any MilaFFIAdapter
     private var task: Task<Void, Never>?
+    private var generation = 0
 
     public init(adapter: any MilaFFIAdapter) { self.adapter = adapter }
     deinit { task?.cancel() }
@@ -24,20 +25,21 @@ public final class MilaMachineWorkflow: ObservableObject {
             return
         }
         state = .submitting(requestID: requestID, action: action)
+        let submittedGeneration = generation
         task = Task { [adapter] in
             do {
                 try await adapter.submit(action, machine: machine, requestID: requestID)
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, submittedGeneration == generation else { return }
                 state = .applied(requestID: requestID, action: action)
             } catch let error as MilaFFIError {
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, submittedGeneration == generation else { return }
                 state = .failed(requestID: requestID, action: action, error: error)
             } catch {
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, submittedGeneration == generation else { return }
                 state = .failed(requestID: requestID, action: action, error: .unavailable)
             }
         }
     }
 
-    public func reset() { task?.cancel(); task = nil; state = .idle }
+    public func reset() { generation &+= 1; task?.cancel(); task = nil; state = .idle }
 }

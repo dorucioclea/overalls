@@ -1,5 +1,5 @@
 ---
-digest: 6abf2c4fc178022aabf672d96cc8b29e1bd68f9e357cb2b57989d98443cbefa0
+digest: c29cf0883b4551e45a5d8e7a730601b5ba33bf25302fd4b691535b84d0df3c46
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Windows notification interop changes
+Windows notification invalidation removes stale local device projections

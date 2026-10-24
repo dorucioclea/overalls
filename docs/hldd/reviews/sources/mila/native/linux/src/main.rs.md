@@ -1,5 +1,5 @@
 ---
-digest: a17748f019970e02edf782f673ec27c69bae1f826510f6d5f1d930371419a147
+digest: daf586e6cac2dedd48ba628d45eec01248fc3284dc72081e7101020d5797bd43
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-bounded Linux thread UI entry fields
+Apply persisted locale direction to GTK root layout

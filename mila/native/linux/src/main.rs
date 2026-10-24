@@ -1,6 +1,6 @@
 use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
-use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation};
+use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation, TextDirection};
 use mila_native_linux::adapter::{
     decode_listing, decode_notification_devices, decode_web_endpoint, format_machine_action,
     format_ssh_key_revoke, format_thread_response, format_web_command, TerminalStream,
@@ -70,6 +70,10 @@ impl NativeState {
         root.append(&nav);
 
         let settings = persistence::load_settings().unwrap_or_default();
+        root.set_direction(match settings.direction() {
+            persistence::LocaleDirection::Rtl => TextDirection::Rtl,
+            persistence::LocaleDirection::Ltr => TextDirection::Ltr,
+        });
         let appearance_label = Label::new(Some(&strings::text(strings::Message::Appearance)));
         appearance_label.set_halign(Align::Start);
         root.append(&appearance_label);

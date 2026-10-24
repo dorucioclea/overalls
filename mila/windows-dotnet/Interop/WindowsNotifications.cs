@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 namespace Mila.Windows.Interop;
 
 internal sealed record MilaWindowsNotificationDevice(string Id, string Platform, bool Enabled);
@@ -136,7 +137,10 @@ internal sealed class MilaWindowsNotificationController
         if (!ValidText(channelUri, 2048) || !ValidText(appId, 256) || !ValidText(deployment, 256))
             return false;
         if (!Uri.TryCreate(channelUri, UriKind.Absolute, out Uri? uri) || uri.Scheme != Uri.UriSchemeHttps ||
-            string.IsNullOrEmpty(uri.Host) || !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment))
+            uri.Port != 443 || string.IsNullOrEmpty(uri.AbsolutePath) || uri.AbsolutePath == "/" ||
+            !Regex.IsMatch(uri.Host, "^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\\.notify\\.windows\\.com$", RegexOptions.CultureInvariant) ||
+            !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment) ||
+            channelUri.Contains('\\') || channelUri.Contains(' '))
             return false;
         return true;
     }

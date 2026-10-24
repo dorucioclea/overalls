@@ -16,6 +16,12 @@ internal static class WindowsNotificationsSmoke
             MilaWindowsNotificationState.Registered, "WNS metadata registration");
         Program.Require(controller.Register("https://evil.example/channel", "dev.overalls.mila", "mgmt.example.test") ==
             MilaWindowsNotificationState.Invalid, "foreign WNS channel refusal");
+        Program.Require(controller.Register("https://notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt.example.test") ==
+            MilaWindowsNotificationState.Invalid, "bare WNS host refusal");
+        Program.Require(controller.Register("https://push.notify.windows.com:8443/channel/abc", "dev.overalls.mila", "mgmt.example.test") ==
+            MilaWindowsNotificationState.Invalid, "non-default WNS port refusal");
+        Program.Require(controller.Register("https://push.notify.windows.com", "dev.overalls.mila", "mgmt.example.test") ==
+            MilaWindowsNotificationState.Invalid, "missing WNS channel path refusal");
         Program.Require(controller.Register("http://push.notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt.example.test") ==
             MilaWindowsNotificationState.Invalid, "non-HTTPS WNS channel refusal");
         Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila\n", "mgmt.example.test") ==

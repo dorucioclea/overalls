@@ -1,5 +1,5 @@
 ---
-digest: e98376aa8622fc890955b4b2870e8672f408e312592b729a56c702deb3cfad15
+digest: 365db87564454d6b39fc6240f6f9b1af7db5ad599c26c20813e7f69c369ffa20
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux notification invalidation and identifier bounds preserve local projection safety
+notification validation bounds

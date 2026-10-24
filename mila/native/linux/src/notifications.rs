@@ -59,7 +59,7 @@ impl NotificationState {
     pub fn load_devices(&mut self, bytes: &[u8]) -> Result<(), NotificationUnavailable> {
         let values: Vec<String> =
             serde_json::from_slice(bytes).map_err(|_| NotificationUnavailable::NoPushProvider)?;
-        if values.len() > 32 || values.iter().any(|id| id.is_empty() || id.len() > 128) {
+        if values.len() > 32 || values.iter().any(|id| !Self::valid_device_id(id)) {
             return Err(NotificationUnavailable::NoPushProvider);
         }
         self.devices = values;
@@ -75,10 +75,7 @@ impl NotificationState {
     }
 
     pub fn register_device(&mut self, id: &str) -> Result<(), NotificationUnavailable> {
-        if id.is_empty()
-            || id.len() > 128
-            || id.chars().any(char::is_control)
-            || id.chars().any(char::is_whitespace)
+        if !Self::valid_device_id(id)
             || self.devices.len() >= 32
         {
             return Err(NotificationUnavailable::NoPushProvider);
@@ -87,6 +84,13 @@ impl NotificationState {
             self.devices.push(id.to_owned());
         }
         Ok(())
+    }
+
+    fn valid_device_id(id: &str) -> bool {
+        !id.is_empty()
+            && id.len() <= 128
+            && !id.chars().any(char::is_control)
+            && !id.chars().any(char::is_whitespace)
     }
 
     pub fn remove_device(&mut self, id: &str) {
@@ -199,5 +203,9 @@ mod tests {
         assert!(!state.invalidate_device("desktop-a"));
         assert!(state.register_device("bad id").is_err());
         assert!(state.register_device("bad\nvalue").is_err());
+        let invalid = serde_json::to_vec(&["bad id"]).expect("json");
+        assert!(state.load_devices(&invalid).is_err());
+        let multibyte = "é".repeat(65);
+        assert!(state.register_device(&multibyte).is_err());
     }
 }

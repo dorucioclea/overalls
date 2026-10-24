@@ -53,7 +53,7 @@ public struct MilaNativeRootView: View {
             if !signedIn { machines = []; selection = .machines; status = MilaStrings.text(.ready) }
         }.onChange(of: scenePhase) { _, phase in
             switch phase {
-            case .background: appLock.sceneDidEnterBackground()
+            case .inactive, .background: appLock.sceneDidEnterBackground()
             case .active: Task { await appLock.sceneWillEnterForeground() }
             default: break
             }

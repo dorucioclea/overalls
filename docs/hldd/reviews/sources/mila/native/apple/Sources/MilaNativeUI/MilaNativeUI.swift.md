@@ -1,5 +1,5 @@
 ---
-digest: 96a1580a68fc76342af84754c1df8d979189f11c9541ac68620f4fdd5d4154b4
+digest: 885d7a7c9c6928484f6a56452cd07339870f1aa04c92eddd5cbe53b257f5b2ba
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-normalize persisted Apple settings at read boundary
+lock on inactive scene phase

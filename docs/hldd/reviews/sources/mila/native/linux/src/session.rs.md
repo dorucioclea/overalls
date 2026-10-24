@@ -1,5 +1,5 @@
 ---
-digest: 953a6094e1c0a765af64c446071d3f75660fdb83e96282c204e9f08f28887db0
+digest: a034ee71bdb1fc5b0aeace2db3de82cd52830a12d47d725f28468c823300b148
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Restrict Linux thread commands to reviewed closed command set
+Bound Android thread projections and tests

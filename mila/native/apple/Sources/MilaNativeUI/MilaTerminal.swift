@@ -101,12 +101,14 @@ public final class MilaTerminalController: ObservableObject {
     private var lastAttach: (from: UInt64, columns: UInt16, rows: UInt16, readWrite: Bool)?
     private var receiveTask: Task<Void, Never>?
     private var generation: UInt64 = 0
+    private var submittedAttachIDs = Set<UUID>()
 
     public init(transport: any MilaTerminalTransport = MilaNoopTerminalTransport()) {
         self.transport = transport
     }
 
-    public func attach(from: UInt64 = 0, columns: UInt16 = 80, rows: UInt16 = 24, readWrite: Bool = true) async {
+    public func attach(from: UInt64 = 0, columns: UInt16 = 80, rows: UInt16 = 24, readWrite: Bool = true, requestID: UUID = UUID()) async {
+        guard submittedAttachIDs.insert(requestID).inserted else { state = .failed; return }
         guard validateAttach(from: from, columns: columns, rows: rows, readWrite: readWrite) else {
             state = .failed; return
         }

@@ -5,6 +5,7 @@
 //! authority for an authenticated deployment connection.
 
 use crate::adapter::RuntimeError;
+use std::collections::HashSet;
 use mila_ffi::{MilaFfiStatus, MilaRouteOutput};
 use p256::ecdsa::{signature::Signer, Signature, SigningKey};
 
@@ -145,6 +146,7 @@ impl From<mila_ffi::session::SessionStatus> for SessionError {
 /// One owned FFI session. Closing removes the remote authority exactly once.
 pub struct LiveSession {
     handle: Option<u64>,
+    submitted_mutations: HashSet<String>,
 }
 
 impl LiveSession {
@@ -180,6 +182,7 @@ impl LiveSession {
         }
         Ok(Self {
             handle: Some(handle),
+            submitted_mutations: HashSet::new(),
         })
     }
 
@@ -234,6 +237,9 @@ impl LiveSession {
             || !request_id[8..].bytes().all(|byte| byte.is_ascii_hexdigit())
         {
             return Err(SessionError::InvalidInput);
+        }
+        if !self.submitted_mutations.insert(request_id.to_owned()) {
+            return Err(SessionError::Busy);
         }
         let handle = self.handle()?;
         let status = unsafe {
@@ -1304,7 +1310,7 @@ mod tests {
     #[test]
     #[test]
     fn web_set_requires_positive_policy_revision() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         assert_eq!(
             session.web_set(
                 "01234567-89ab-cdef-0123-456789abcdef",
@@ -1319,7 +1325,7 @@ mod tests {
 
     #[test]
     fn web_controls_require_an_authenticated_handle_and_bounded_request() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         assert_eq!(
             session.web_show("bad machine"),
             Err(SessionError::InvalidInput)
@@ -1348,7 +1354,7 @@ mod tests {
 
     #[test]
     fn notification_device_controls_require_authenticated_session() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         assert_eq!(session.device_list(), Err(SessionError::StaleHandle));
         assert_eq!(
             session.device_remove("bad device"),
@@ -1362,7 +1368,7 @@ mod tests {
 
     #[test]
     fn machine_actions_require_authenticated_session_and_canonical_request() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         assert_eq!(
             session.machine_action(
                 "01234567-89ab-cdef-0123-456789abcdef",
@@ -1370,6 +1376,14 @@ mod tests {
                 "porsche-00000000000000000000000000000000"
             ),
             Err(SessionError::StaleHandle)
+        );
+        assert_eq!(
+            session.machine_action(
+                "01234567-89ab-cdef-0123-456789abcdef",
+                "start",
+                "porsche-00000000000000000000000000000000"
+            ),
+            Err(SessionError::Busy)
         );
         assert_eq!(
             session.machine_action(
@@ -1383,7 +1397,7 @@ mod tests {
 
     #[test]
     fn sharing_requires_authenticated_session_and_typed_role() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         let request = "porsche-00000000000000000000000000000000";
         assert_eq!(
             session.share_mutation(
@@ -1409,7 +1423,7 @@ mod tests {
 
     #[test]
     fn thread_actions_require_authenticated_session_and_bounded_input() {
-        let mut session = LiveSession { handle: None };
+        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
         assert_eq!(
             session.thread_action(None, "thread ls", None, None, None),
             Err(SessionError::StaleHandle)

@@ -1,5 +1,5 @@
 ---
-digest: e3dbdda7ad038299630de88410185a9cbae908d3ce8a78d454be70e81b1f8c33
+digest: 9795c7f302fa750914e0be1c688586d6178c54bd180297c80a6a240564ac5944
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple terminal receive generation fencing rejects stale PTY output after reconnect
+Apple terminal duplicate attach request guard and regression

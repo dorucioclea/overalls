@@ -14,7 +14,11 @@ data class MilaThreadListing(val threads: List<MilaThreadRow>, val hasMore: Bool
     val threads = buildList {
         for (index in 0 until rows.length()) {
             val row = rows.getJSONObject(index)
-            add(MilaThreadRow(UUID.fromString(row.getString("id")), row.optString("title"), row.optString("status")))
+            val title = row.optString("title")
+            val status = row.optString("status")
+            require(title.toByteArray(Charsets.UTF_8).size <= 256)
+            require(status.toByteArray(Charsets.UTF_8).size <= 64)
+            add(MilaThreadRow(UUID.fromString(row.getString("id")), title, status))
         }
     }
     return MilaThreadListing(threads, result.optBoolean("has_more", false))

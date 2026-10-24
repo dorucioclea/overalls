@@ -1,5 +1,5 @@
 ---
-digest: 7819c2ae2e7ee2a40cfcf98948e259f3a0d134d97280729b6dfaf790867cc5ad
+digest: a133970a4838a2de2d4142e4a7fc82628fe9d0d764ff422036ec2d7b68c30307
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Thread commands are session-gated in native UI
+Bound Android thread projections and tests

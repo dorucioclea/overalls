@@ -75,7 +75,12 @@ impl NotificationState {
     }
 
     pub fn register_device(&mut self, id: &str) -> Result<(), NotificationUnavailable> {
-        if id.is_empty() || id.len() > 128 || self.devices.len() >= 32 {
+        if id.is_empty()
+            || id.len() > 128
+            || id.chars().any(char::is_control)
+            || id.chars().any(char::is_whitespace)
+            || self.devices.len() >= 32
+        {
             return Err(NotificationUnavailable::NoPushProvider);
         }
         if !self.devices.iter().any(|existing| existing == id) {
@@ -86,6 +91,15 @@ impl NotificationState {
 
     pub fn remove_device(&mut self, id: &str) {
         self.devices.retain(|existing| existing != id);
+    }
+
+    /// Removes a provider-invalidated device from the local projection.
+    /// Returns whether an entry was removed, allowing callers to distinguish
+    /// idempotent invalidation from an unknown device.
+    pub fn invalidate_device(&mut self, id: &str) -> bool {
+        let before = self.devices.len();
+        self.remove_device(id);
+        self.devices.len() != before
     }
 
     /// Attempts to register this host with the platform push provider.
@@ -175,5 +189,15 @@ mod tests {
         assert_eq!(restored.devices(), &["desktop-a"]);
         restored.remove_device("desktop-a");
         assert!(restored.devices().is_empty());
+    }
+
+    #[test]
+    fn invalidation_is_idempotent_and_identifiers_are_bounded() {
+        let mut state = NotificationState::desktop();
+        assert!(state.register_device("desktop-a").is_ok());
+        assert!(state.invalidate_device("desktop-a"));
+        assert!(!state.invalidate_device("desktop-a"));
+        assert!(state.register_device("bad id").is_err());
+        assert!(state.register_device("bad\nvalue").is_err());
     }
 }

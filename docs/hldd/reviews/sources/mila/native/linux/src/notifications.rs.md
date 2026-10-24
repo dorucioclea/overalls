@@ -1,5 +1,5 @@
 ---
-digest: c8bdfec1cf93c56cc89bf7a70317da1a43eb3b169127242190dc4d1966a44489
+digest: e98376aa8622fc890955b4b2870e8672f408e312592b729a56c702deb3cfad15
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review concurrent native source updates required by shared hook
+Linux notification invalidation and identifier bounds preserve local projection safety

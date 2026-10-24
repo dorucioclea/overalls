@@ -136,10 +136,10 @@ internal static class Program
         Require(key.Id == keyId && key.Algorithm == "ed25519", "SSH key listing projection");
         Require(MilaSshKeysController.Fingerprint("ssh-ed25519 !!!") is null,
             "invalid SSH base64 fingerprint refusal");
-        bool revoked = false;
-        var keys = new MilaSshKeysController(_ => Task.FromResult<IReadOnlyList<MilaSshKey>>(new[] { key }), (id, _) => { revoked = id == keyId; return Task.CompletedTask; });
-        keys.LoadAsync(true).GetAwaiter().GetResult(); keys.RevokeAsync(key).GetAwaiter().GetResult();
-        Require(revoked && keys.Status == MilaSshKeysStatus.Loaded, "SSH key revoke workflow");
+        int revokeCount = 0;
+        var keys = new MilaSshKeysController(_ => Task.FromResult<IReadOnlyList<MilaSshKey>>(new[] { key }), (id, _) => { if (id == keyId) revokeCount++; return Task.CompletedTask; });
+        keys.LoadAsync(true).GetAwaiter().GetResult(); keys.RevokeAsync(key).GetAwaiter().GetResult(); keys.RevokeAsync(key).GetAwaiter().GetResult();
+        Require(revokeCount == 1 && keys.Status == MilaSshKeysStatus.Loaded, "SSH key revoke at-most-once workflow");
         MilaSshKey current = key with { IsCurrentDevice = true };
         bool currentRevoked = false;
         var currentKeys = new MilaSshKeysController(_ => Task.FromResult<IReadOnlyList<MilaSshKey>>(new[] { current }), (id, _) => { currentRevoked = true; return Task.CompletedTask; });

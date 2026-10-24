@@ -11,6 +11,12 @@ final class MilaRouteTests: XCTestCase {
         XCTAssertEqual(MilaRouteParser.parse("overalls://overalls.example/settings"), .settings)
     }
 
+    func testRejectsOversizedAndControlCharacterRoutes() {
+        XCTAssertNil(MilaRouteParser.parse("overalls://overalls.example/" + String(repeating: "a", count: 2049)))
+        XCTAssertNil(MilaRouteParser.parse("overalls://overalls.example/machines\u{0000}"))
+        XCTAssertNil(MilaRouteParser.parse("overalls:///machines"))
+    }
+
     func testRejectsRoutesContainingSensitiveOrAmbiguousComponents() {
         let machineID = "11111111-1111-1111-1111-111111111111"
         let invalid = [

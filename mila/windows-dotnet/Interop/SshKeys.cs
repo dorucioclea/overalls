@@ -13,6 +13,7 @@ internal sealed class MilaSshKeysController
     private readonly Func<Guid, CancellationToken, Task> revoker;
     private long loadGeneration;
     private int signedIn;
+    private readonly HashSet<Guid> revokedIds = new();
     internal MilaSshKeysStatus Status { get; private set; } = MilaSshKeysStatus.SignedOut;
     internal IReadOnlyList<MilaSshKey> Keys { get; private set; } = Array.Empty<MilaSshKey>();
 
@@ -54,6 +55,10 @@ internal sealed class MilaSshKeysController
     internal async Task RevokeAsync(MilaSshKey key, CancellationToken cancellationToken = default)
     {
         if (Status != MilaSshKeysStatus.Loaded || key.IsCurrentDevice) return;
+        lock (revokedIds)
+        {
+            if (!revokedIds.Add(key.Id)) return;
+        }
         long generation = Volatile.Read(ref loadGeneration);
         try
         {

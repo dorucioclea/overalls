@@ -1,5 +1,5 @@
 ---
-digest: 6478ab870e05c4efc2affdb9cb524adc4b22b301c71c75a679a55ae175b2000e
+digest: 2cec3b2246cea42c3a1ff1fdd41826b549c91fa2a9f1d0aa9628e92fc10ef55d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Windows native compile validation fix; preserves typed authenticated boundaries.
+Windows SSH revocation duplicate fencing and bounded projection validation

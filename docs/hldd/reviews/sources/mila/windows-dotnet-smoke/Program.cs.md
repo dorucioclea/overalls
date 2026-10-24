@@ -1,5 +1,5 @@
 ---
-digest: 09ef6f609ac280259c4b07d96e05bfa4d42a45aab2968a04bdbeb04e9fcdce14
+digest: 87f5d816bc1dae4cfa43c3d97b2e7697786be248508b332c3f7bf2888cf377d4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows terminal input bounds and smoke coverage preserve documented behavior
+Windows SSH revocation duplicate fencing and bounded projection validation

@@ -1,5 +1,5 @@
 ---
-digest: 9fc56a55578bd53cd33c48922c339a8899ac2870368ecb2efcc3d82296819507
+digest: 5d97e22b743c6211d80540c439a2e3d4d44c8ba2a0ce075f9f001fe2471b47bc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux locale canonicalization preserves settings policy
+Bound Linux persistence payload size

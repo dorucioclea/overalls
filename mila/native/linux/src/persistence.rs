@@ -9,6 +9,7 @@ use std::{fs, io, path::PathBuf};
 
 const FILE_NAME: &str = "deployment.json";
 const SETTINGS_FILE_NAME: &str = "settings.json";
+const MAX_PERSISTED_BYTES: usize = 64 * 1024;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct DeploymentSelection {
@@ -155,6 +156,9 @@ pub(crate) fn load() -> Result<Option<DeploymentSelection>, PersistenceError> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error.into()),
     };
+    if bytes.len() > MAX_PERSISTED_BYTES {
+        return Err(PersistenceError::InvalidData);
+    }
     let selection: DeploymentSelection =
         serde_json::from_slice(&bytes).map_err(|_| PersistenceError::InvalidData)?;
     DeploymentSelection::validate(&selection.host).map(Some)
@@ -200,6 +204,9 @@ pub(crate) fn load_settings() -> Result<Settings, PersistenceError> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Settings::default()),
         Err(error) => return Err(error.into()),
     };
+    if bytes.len() > MAX_PERSISTED_BYTES {
+        return Err(PersistenceError::InvalidData);
+    }
     let settings: Settings =
         serde_json::from_slice(&bytes).map_err(|_| PersistenceError::InvalidData)?;
     Settings::validate(settings.appearance, &settings.locale)

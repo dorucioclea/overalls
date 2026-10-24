@@ -22,6 +22,7 @@
     <Compile Include="../windows-dotnet/Interop/MachineMutation.cs" Link="Interop/MachineMutation.cs" />
     <Compile Include="../windows-dotnet/Interop/ExternalActivation.cs" Link="Interop/ExternalActivation.cs" />
     <Compile Include="../windows-dotnet/Interop/WebEndpoint.cs" Link="Interop/WebEndpoint.cs" />
+    <Compile Include="../windows-dotnet/Interop/WebOrigin.cs" Link="Interop/WebOrigin.cs" />
     <Compile Include="../windows-dotnet/Interop/TerminalSession.cs" Link="Interop/TerminalSession.cs" />
   </ItemGroup>
   <Target Name="StageMilaNative" AfterTargets="Build">

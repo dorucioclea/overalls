@@ -253,6 +253,11 @@ mod tests {
         assert!(Settings::validate(Appearance::System, "not a locale").is_err());
         assert!(Settings::validate(Appearance::System, "").is_err());
         assert_eq!(settings.direction(), LocaleDirection::Ltr);
-        assert_eq!(Settings::validate(Appearance::System, "ar_SA").unwrap().direction(), LocaleDirection::Rtl);
+        assert_eq!(
+            Settings::validate(Appearance::System, "ar_SA")
+                .unwrap()
+                .direction(),
+            LocaleDirection::Rtl
+        );
     }
 }

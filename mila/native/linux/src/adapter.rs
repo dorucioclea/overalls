@@ -2,7 +2,10 @@
 
 use serde::Deserialize;
 use std::ffi::{c_char, CString};
-use std::sync::{Arc, Mutex};
+use std::sync::{
+    atomic::{AtomicU64, Ordering},
+    Arc, Mutex,
+};
 
 /// A server-managed SSH key shown by the Linux settings UI. Private key
 /// material never appears in this representation or crosses the boundary.
@@ -153,8 +156,8 @@ pub fn resolve_activation(
     selected_authority: Option<&str>,
     authenticated: bool,
 ) -> Result<crate::route::NavigationDecision, RuntimeError> {
-    let route = crate::route::ActivationRoute::parse(value)
-        .map_err(|_| RuntimeError::InvalidInput)?;
+    let route =
+        crate::route::ActivationRoute::parse(value).map_err(|_| RuntimeError::InvalidInput)?;
     Ok(route.navigation(selected_authority, authenticated))
 }
 
@@ -910,6 +913,7 @@ pub struct InProcessRuntimeAdapter {
     host: CString,
     port: Option<u16>,
     snapshot: Arc<Mutex<Option<Vec<u8>>>>,
+    generation: Arc<AtomicU64>,
 }
 
 impl InProcessRuntimeAdapter {
@@ -919,7 +923,32 @@ impl InProcessRuntimeAdapter {
             host,
             port,
             snapshot: Arc::new(Mutex::new(None)),
+            generation: Arc::new(AtomicU64::new(0)),
         })
+    }
+
+    /// Starts a new authenticated presentation generation and clears any
+    /// machine projection belonging to the previous session.
+    pub fn begin_generation(&self) -> u64 {
+        let generation = self.generation.fetch_add(1, Ordering::AcqRel) + 1;
+        if let Ok(mut snapshot) = self.snapshot.lock() {
+            snapshot.take();
+        }
+        generation
+    }
+
+    /// Store a machine snapshot only when it belongs to the current session.
+    /// Late responses from a signed-out or reconnected session are rejected.
+    pub fn refresh_generation(
+        &self,
+        generation: u64,
+        payload: &[u8],
+    ) -> Result<Vec<u8>, RuntimeError> {
+        if self.generation.load(Ordering::Acquire) != generation {
+            return Err(RuntimeError::Unavailable);
+        }
+        let response = self.call(RuntimeRequest::new(RuntimeOperation::Refresh, payload))?;
+        Ok(response.payload().to_vec())
     }
 
     pub fn snapshot(&self) -> Result<Option<Vec<u8>>, RuntimeError> {
@@ -1143,6 +1172,18 @@ mod tests {
         assert_eq!(adapter.call(invalid_mode), Err(RuntimeError::InvalidInput));
         let malformed = RuntimeRequest::new(RuntimeOperation::ValidateTerminal, [120, 0]);
         assert_eq!(adapter.call(malformed), Err(RuntimeError::InvalidInput));
+    }
+
+    #[test]
+    fn stale_machine_refresh_is_rejected_after_new_generation() {
+        let adapter = InProcessRuntimeAdapter::new("fleet.example", None).unwrap();
+        let first = adapter.begin_generation();
+        let second = adapter.begin_generation();
+        let payload =
+            br#"{"version":1,"status":"succeeded","result":{"items":[],"next_cursor":null}}"#;
+        assert!(adapter.refresh_generation(first, payload).is_err());
+        assert!(adapter.refresh_generation(second, payload).is_ok());
+        assert!(adapter.snapshot().unwrap().is_some());
     }
 
     #[test]

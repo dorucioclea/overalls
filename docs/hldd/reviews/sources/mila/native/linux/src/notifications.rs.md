@@ -1,5 +1,5 @@
 ---
-digest: 2ea5f81644d8538dc0b6fccf647b646abd1be95bca3cfe5c961c73add870371e
+digest: c8bdfec1cf93c56cc89bf7a70317da1a43eb3b169127242190dc4d1966a44489
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux notification device persistence remains local bounded state
+Review concurrent native source updates required by shared hook

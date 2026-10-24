@@ -1,5 +1,5 @@
 ---
-digest: 648b59051c87b3b57ea73029dfee3340978c3891c10f636f28d31f7286444cf7
+digest: 823ace42a21067ca5555b99b97d005c9182e8247d26abb1c3214b10d73d5ff13
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Activation route resolution only adds typed auth decision boundary
+Review concurrent native source updates required by shared hook

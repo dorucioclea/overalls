@@ -127,4 +127,23 @@ class MilaNotificationChannelValidationTest {
         assertFalse(milaValidNotificationChannelId("mila events"))
         assertFalse(milaValidNotificationChannelId("x".repeat(101)))
     }
+    @Test fun fcmInvalidationRemovesOnlyValidatedProviderRegistration() {
+        val backing = object : MilaNotificationRegistrationStore {
+            val values = mutableListOf(MilaNotificationDevice("old-token", true), MilaNotificationDevice("keep", true))
+            override fun list() = values.toList()
+            override fun setEnabled(id: String, enabled: Boolean) = false
+            override fun remove(id: String): Boolean = values.removeIf { it.id == id }
+            override fun register(id: String, enabled: Boolean) = values.add(MilaNotificationDevice(id, enabled))
+        }
+        val adapter = object : MilaFfiAdapter {
+            override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
+            override fun validatePushRegistration(token: String, appId: String, deployment: String, endpoint: String?) = Result.success(Unit)
+        }
+        val controller = MilaAuthenticatedNotificationController(adapter, backing, "mila", "host")
+        val fcm = MilaFcmRegistration(controller)
+        assertTrue(fcm.onTokenInvalidated("old-token"))
+        assertEquals(listOf(MilaNotificationDevice("keep", true)), controller.devices)
+        assertFalse(fcm.onTokenInvalidated("bad\n"))
+    }
+
 }

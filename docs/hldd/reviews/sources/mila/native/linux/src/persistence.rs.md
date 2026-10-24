@@ -1,5 +1,5 @@
 ---
-digest: e5759629f4cdb03f40a5250bc4ad1d71cb9bf9926dd202cc2328593e90f7160e
+digest: 9a7b0f40cde0bc33e94b80fcce6426aff8d1ecb7a3b5b84fbcbd4dfca9dd2c2f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux settings now expose typed locale direction for native RTL presentation
+Review concurrent native source updates required by shared hook

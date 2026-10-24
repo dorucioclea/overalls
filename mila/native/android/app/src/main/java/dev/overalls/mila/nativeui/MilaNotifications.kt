@@ -152,4 +152,10 @@ class MilaFcmRegistration(private val controller: MilaAuthenticatedNotificationC
             override fun registrationId(): MilaNotificationProviderId = provider
         }, os)
     }
+
+    /** Removes a provider registration after FCM reports token invalidation. */
+    fun onTokenInvalidated(token: String?): Boolean {
+        val provider = token?.let(MilaNotificationProviderId::parse) ?: return false
+        return controller.remove(provider.value)
+    }
 }

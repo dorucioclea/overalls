@@ -57,8 +57,8 @@ impl NotificationState {
 
     /// Restores bounded local device identifiers from a JSON array.
     pub fn load_devices(&mut self, bytes: &[u8]) -> Result<(), NotificationUnavailable> {
-        let values: Vec<String> = serde_json::from_slice(bytes)
-            .map_err(|_| NotificationUnavailable::NoPushProvider)?;
+        let values: Vec<String> =
+            serde_json::from_slice(bytes).map_err(|_| NotificationUnavailable::NoPushProvider)?;
         if values.len() > 32 || values.iter().any(|id| id.is_empty() || id.len() > 128) {
             return Err(NotificationUnavailable::NoPushProvider);
         }
@@ -66,7 +66,9 @@ impl NotificationState {
         Ok(())
     }
 
-    pub fn devices(&self) -> &[String] { &self.devices }
+    pub fn devices(&self) -> &[String] {
+        &self.devices
+    }
 
     pub fn persist_devices(&self) -> Result<Vec<u8>, NotificationUnavailable> {
         serde_json::to_vec(&self.devices).map_err(|_| NotificationUnavailable::NoPushProvider)
@@ -82,7 +84,9 @@ impl NotificationState {
         Ok(())
     }
 
-    pub fn remove_device(&mut self, id: &str) { self.devices.retain(|existing| existing != id); }
+    pub fn remove_device(&mut self, id: &str) {
+        self.devices.retain(|existing| existing != id);
+    }
 
     /// Attempts to register this host with the platform push provider.
     ///

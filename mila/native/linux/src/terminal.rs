@@ -523,10 +523,16 @@ mod transport_tests {
         let mut pty = AuthenticatedPty::new(&authority, FakeTransport::default(), 80, 24).unwrap();
         let generation = pty.attach(request()).unwrap();
         assert_eq!(pty.send_input(generation, 0), Err(PtyError::InvalidRequest));
-        assert_eq!(pty.send_input(generation, 64 * 1024 + 1), Err(PtyError::InvalidRequest));
+        assert_eq!(
+            pty.send_input(generation, 64 * 1024 + 1),
+            Err(PtyError::InvalidRequest)
+        );
         assert_eq!(pty.resize(generation, 0, 24), Err(PtyError::InvalidRequest));
         assert_eq!(pty.resize(generation, 80, 0), Err(PtyError::InvalidRequest));
-        assert_eq!(pty.resize(generation, u16::MAX, 24), Err(PtyError::InvalidRequest));
+        assert_eq!(
+            pty.resize(generation, u16::MAX, 24),
+            Err(PtyError::InvalidRequest)
+        );
     }
 
     #[test]

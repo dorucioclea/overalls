@@ -1,5 +1,5 @@
 ---
-digest: 024d39cebff39bc658b8ad0c42159405b1ff8051dc30db25c3d1322a3756016e
+digest: d0409ed9371637a72c8c5359840d6144ac9f946e91652333eb51131438e6c81e
 disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
@@ -14,4 +14,4 @@ state: present
 version: 2
 ---
 
-ADR index: ADR-0190 status text notes the later a96f291b OmniOS promotion with 45983bb7 retained; adds the ADR-0259 deployment-revision telemetry row; no decision change
+Architecture review records native release/source-bundle migration evidence and preserves accepted decisions; no handbook behavior changed.

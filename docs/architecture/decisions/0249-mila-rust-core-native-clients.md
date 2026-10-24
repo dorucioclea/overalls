@@ -88,6 +88,13 @@ retry exhaustion and server/user permission gates. Hegel action sequences in
 [`terminal.rs`](../../../mila/rust/mila-runtime/tests/terminal.rs) exercise the
 pure reducer; native PTY transport and renderer integration remain unverified.
 
+The [release readiness review](../reviews/2026-10-24-mila-native-release-readiness.md)
+records that Linux/Android release outputs and source-bundle consumers still
+depend on Flutter. Shared catalogs now live outside the Flutter tree, but this
+does not establish gettext conversion or native release acceptance. The native
+release replacement is authorized implementation work under this decision;
+platform journeys and release artifacts still require execution evidence.
+
 ## Open questions
 
 None blocking the direction; platform key-storage and release-signing details

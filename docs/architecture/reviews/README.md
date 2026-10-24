@@ -1,5 +1,7 @@
 # Architecture reviews
 
+- [Mila native release readiness (2026-10-24)](2026-10-24-mila-native-release-readiness.md): native release/source-bundle replacement obligations, centralized catalog evidence and incomplete platform acceptance under ADR-0249.
+
 - [Mila Windows authenticated SSH keys (2026-10-22)](2026-10-22-mila-windows-ssh-keys.md): typed Rust FFI list/revoke wiring and stale-response fencing in the WinUI client; live Windows/Porsche execution remains open.
 
 - [Mila native Apple custody](2026-10-21-mila-apple-custody.md): deployment-scoped Secure Enclave adapter; signed hardware evidence remains open.

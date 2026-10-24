@@ -1,5 +1,5 @@
 ---
-digest: ebdf9cfb1457ee3a4ff59573335ed524f9beeefa84e138bf821b3c418b6107cf
+digest: 423e173a98b03fddac6dcebc907eebffa717186103db344f50260b1a396d9eb5
 disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
@@ -14,4 +14,4 @@ state: present
 version: 2
 ---
 
-Reviewed 17, 19-22: the new ADR-0259 and incident review add no new coverage claim, security boundary, domain or topology element; reader-visible facts they describe are in 02-control-plane and 15-monitoring, which link the review.
+Architecture review records native release/source-bundle migration evidence and preserves accepted decisions; no handbook behavior changed.

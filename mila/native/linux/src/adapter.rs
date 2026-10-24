@@ -1053,6 +1053,16 @@ mod terminal_stream_tests {
         assert!(stream.validate_input(1).is_err());
         assert!(stream.validate_resize(80, 24).is_err());
     }
+
+    #[test]
+    fn rendered_output_is_generation_scoped_and_keeps_terminal_state_typed() {
+        let mut stream = TerminalStream::new();
+        let generation = stream.attach().expect("attach");
+        stream.connected(generation, 0, true).expect("connected");
+        stream.render_output(generation, "hello\n").expect("output");
+        assert!(stream.rendered_text().contains("hello"));
+        assert!(stream.render_output(generation + 1, "late").is_err());
+    }
 }
 
 pub trait RuntimeAdapter {

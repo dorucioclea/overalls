@@ -307,5 +307,8 @@ let
   android = import ./android.nix { inherit pkgs app; };
 in
 {
+  # Native GTK4 Linux client. Keep this as a first-class tool target so CI can
+  # exercise the release implementation without pulling in Flutter.
+  linuxNative = nativeLinux;
   inherit app linuxDev linuxRelease sourceBundle demo integration probe coreCheck transportCheck toolCheck appCheck lockSync android;
 }

@@ -43,7 +43,7 @@ jobs:
         with:
           cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
           install-devenv: "false"
-      - name: Mila checks and Linux dev/release targets
+      - name: Mila checks and native Linux release targets
         run: |
           cachix watch-exec overalls -- nix build -L --no-link \
             .#checks.x86_64-linux.mila-core \
@@ -52,7 +52,7 @@ jobs:
             .#checks.x86_64-linux.mila-test \
             .#checks.x86_64-linux.mila-lock-sync \
             .#checks.x86_64-linux.mila-rust \
-            .#tool-mila-linux-dev \
+            .#tool-mila-linux-native \
             .#tool-mila-linux-release \
             .#tool-mila-rust
 
@@ -280,6 +280,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Verify native client is independent of Flutter
+        shell: pwsh
+        run: |
+          $matches = Get-ChildItem -Path mila/windows-dotnet -Recurse -File |
+            Select-String -Pattern 'flutter' -CaseSensitive:$false
+          if ($matches) {
+            $matches | ForEach-Object { $_.ToString() }
+            throw 'Windows native client must remain independent of Flutter'
+          }
       - name: Install the pinned Rust toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Build Rust Windows FFI

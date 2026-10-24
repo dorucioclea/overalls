@@ -86,7 +86,7 @@ def parse_po(path: Path) -> list[Message]:
 
 
 def parse_arb(path: Path) -> list[Message]:
-    """Read a Mila ARB bundle while Flutter is being retired.
+    """Read a Mila ARB bundle for native localization generation.
 
     ARB message ids remain the stable source identity; metadata entries are
     ignored. ICU placeholders are preserved for the native generators.

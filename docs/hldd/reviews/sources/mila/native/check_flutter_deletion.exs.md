@@ -1,5 +1,5 @@
 ---
-digest: a5575739e87b9fa7dc23e2226f44799247f1e87f0383d0534c7d2a8a348c222d
+digest: ef911038fb1ae057554c32bc128b9c822ec9b1d8848ecc4cec3c641524df0f34
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-add Flutter deletion readiness gate
+fix deletion gate repository root

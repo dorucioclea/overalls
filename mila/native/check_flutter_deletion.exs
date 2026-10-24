@@ -45,7 +45,7 @@ defmodule MilaFlutterDeletionGate do
   end
 end
 
-root = Path.expand("..", __DIR__)
+root = Path.expand("../..", __DIR__)
 checks = MilaFlutterDeletionGate.run(root)
 Enum.each(checks, fn check -> IO.puts("#{if check.ok, do: "PASS", else: "FAIL"} #{check.name}: #{check.detail}") end)
 if Enum.any?(checks, &(not &1.ok)), do: System.halt(1)

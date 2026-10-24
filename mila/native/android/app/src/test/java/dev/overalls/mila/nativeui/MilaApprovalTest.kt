@@ -3,9 +3,14 @@ package dev.overalls.mila.nativeui
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 private const val FINGERPRINT = "SHA256:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU"
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class MilaApprovalTest {
     @Test fun decodesPendingApprovalWithoutPersistingSecrets() {
         val reply = """{"version":1,"status":"approval_required","fingerprint":"$FINGERPRINT","approval_url":"https://overalls.example/ssh/approve/abc"}"""

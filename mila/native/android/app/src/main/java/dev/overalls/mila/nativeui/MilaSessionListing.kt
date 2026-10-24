@@ -11,6 +11,9 @@ data class MilaSessionListing(val machines: List<MilaMachineRow>, val hasMore: B
             val candidate = if (value.isEmpty()) fallback else value
             require(candidate.toByteArray(Charsets.UTF_8).size <= MAX_DISPLAY_BYTES) { "display text exceeds bound" }
             require(candidate.none { it.isISOControl() }) { "display text contains control character" }
+            require(!candidate.contains("\\n") && !candidate.contains("\\r") && !candidate.contains("\\t")) {
+                "display text contains escaped control character"
+            }
             return candidate
         }
 

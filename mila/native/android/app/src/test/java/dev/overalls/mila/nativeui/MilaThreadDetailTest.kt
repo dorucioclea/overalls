@@ -3,6 +3,9 @@ package dev.overalls.mila.nativeui
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import java.util.UUID
 
 private class ThreadAdapter(private val accepted: Boolean = true) : MilaFfiAdapter {
@@ -11,6 +14,8 @@ private class ThreadAdapter(private val accepted: Boolean = true) : MilaFfiAdapt
         if (accepted) Result.success(Unit) else Result.failure(IllegalStateException("rejected"))
 }
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class MilaThreadDetailTest {
     @Test fun decodesBoundedThreadListing() {
         val id = "00000000-0000-0000-0000-000000000001"

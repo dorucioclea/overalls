@@ -3,7 +3,12 @@ package dev.overalls.mila.nativeui
 import kotlinx.coroutines.launch
 import org.junit.Assert.*
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [35])
 class MilaWebTest {
  @Test fun webViewStaysOnEndpointOrigin() {
   assertTrue(isAllowedMilaWebTarget("https://box.example.test/app", "https://box.example.test/next"))

@@ -79,11 +79,14 @@ public final class MilaAppLockController: ObservableObject {
         state = .locked
     }
 
-    /// Called when the scene leaves the foreground. Locking is synchronous so no protected
-    /// content remains visible while an authentication request is pending.
+    /// Called when the scene leaves the foreground. Locking is synchronous for
+    /// ordinary lifecycle transitions; a system authentication scene keeps its
+    /// in-flight attempt alive.
     public func sceneDidEnterBackground() {
         guard defaults.bool(forKey: enabledKey) else { return }
-        lock()
+        // LocalAuthentication presents its own system scene. Leaving the app's
+        // scene while that prompt is visible must not cancel the current attempt.
+        if state == .unlocked { lock() }
     }
 
     /// Called when the scene returns to the foreground. Authentication is explicit and remains

@@ -403,6 +403,33 @@ mod tests {
     }
 
     #[test]
+    fn invalid_share_roster_refuses_before_authenticated_mutation_boundary() {
+        // The HTTPS roster is the authenticated machine-sharing input.  A
+        // malformed or conflicting share update must stop before either the
+        // durable journal or the native account adapter is touched.
+        let mut fake = Fake::default();
+        let mut store = Fake::default();
+        let invalid = Roster {
+            version: 1,
+            accounts: vec![
+                Account {
+                    username: "u200000".into(),
+                    uid: 200_000,
+                },
+                Account {
+                    username: "u200000".into(),
+                    uid: 200_001,
+                },
+            ],
+        };
+
+        assert!(reconcile(invalid, &mut store, &mut fake).is_err());
+        assert!(store.state.is_none());
+        assert!(fake.active.is_empty());
+        assert!(fake.disabled.is_empty());
+    }
+
+    #[test]
     fn editor_identity_requires_the_exact_roster_pair() {
         let current = roster(7, &[200_001, 200_002]);
         assert!(require_identity(&current, "u200001", 200_001).is_ok());

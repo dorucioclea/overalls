@@ -31,13 +31,13 @@ class MilaAppLockTest {
         assertEquals(MilaLockPhase.Unlocked, state.phase)
     }
 
-    @Test fun backgroundingAuthenticationInvalidatesPromptResult() {
+    @Test fun promptBackgroundingKeepsAttemptForPlatformResult() {
         var state = MilaAppLockState(true, MilaLockDelay.Immediate, MilaLockAvailability.Available, MilaLockPhase.Locked)
         val token = state.requestUnlock().attempt
         state = state.backgrounded(100)
-        assertEquals(MilaLockPhase.Locked, state.phase)
+        assertEquals(MilaLockPhase.Authenticating, state.phase)
         state = state.finishUnlock(token, true)
-        assertEquals(MilaLockPhase.Locked, state.phase)
+        assertEquals(MilaLockPhase.Unlocked, state.phase)
     }
     @Test fun unavailableAuthenticatorCannotEnableOrUnlock() {
         val store = object : MilaAppLockStore {

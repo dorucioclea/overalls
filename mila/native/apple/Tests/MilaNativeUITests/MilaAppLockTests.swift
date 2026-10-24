@@ -77,11 +77,11 @@ final class MilaAppLockTests: XCTestCase {
         XCTAssertEqual(controller.state, .unlocked)
     }
 
-    func testBackgroundInvalidatesInFlightAuthentication() async {
+    func testPromptBackgroundingKeepsInFlightAuthentication() async {
         let controller = MilaAppLockController(enabled: true, evaluator: DelayedEvaluator())
         let attempt = Task { await controller.unlock() }
         controller.sceneDidEnterBackground()
         await attempt.value
-        XCTAssertEqual(controller.state, .locked)
+        XCTAssertEqual(controller.state, .unlocked)
     }
 }

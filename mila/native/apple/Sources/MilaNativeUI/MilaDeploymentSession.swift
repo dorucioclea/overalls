@@ -36,8 +36,12 @@ public final class MilaDeploymentSessionCoordinator: @unchecked Sendable {
     }
     public func select(_ deployment: MilaDeployment) -> Bool {
         guard store.list().contains(where: { $0.id == deployment.id }) else { return false }
+        // Read the prior selection before taking `lock`. `selectedDeployment` also
+        // acquires this non-reentrant lock; calling it while holding the lock would
+        // deadlock every deployment switch (including the initial selection).
+        let previousID = selectedDeployment?.id
         lock.lock(); defer { lock.unlock() }
-        let changed = selectedDeployment?.id != deployment.id
+        let changed = previousID != deployment.id
         defaults.set(deployment.id.uuidString, forKey: selectionKey)
         if changed {
             generation &+= 1

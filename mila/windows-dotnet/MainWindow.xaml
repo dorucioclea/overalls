@@ -101,6 +101,7 @@
             <Button x:Name="TerminalKill" Click="KillTerminal" />
           </StackPanel>
           <TextBox x:Name="TerminalOutput" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="80" FontFamily="Consolas" />
+          <TextBox x:Name="TerminalInputText" PlaceholderText="Input (max 64 KiB)" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="52" />
           <TextBlock x:Name="TerminalStatus" Opacity="0.7" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8">

@@ -1,5 +1,5 @@
 ---
-digest: 84f2e092924ae548450d4c4bc26616e2fb77bb2269cae059307cd31241cc092d
+digest: 473c0241be088ee96041ef31fae3b81f5e8a2edf8c4b6af4f79646d13af3959e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows terminal kill control preserves authenticated generation fencing
+Windows terminal input now uses bounded Rust validation and session fencing

@@ -392,8 +392,11 @@ public sealed partial class MainWindow : Window
             TerminalStatus.Text = S("signInFirst", "Sign in first");
             return;
         }
-        MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput(0, true);
-        TerminalStatus.Text = result.IsValid ? S("terminalLive", "Terminal live") : S("terminalReadOnly", "Terminal is read only");
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(TerminalInputText.Text);
+        MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput((ulong)input.Length, true);
+        bool sent = result.IsValid && _terminal.SendInput(_terminalGeneration, input);
+        TerminalStatus.Text = sent ? S("terminalLive", "Terminal live") : S("terminalReadOnly", "Terminal is read only");
+        if (sent) TerminalInputText.Text = string.Empty;
     }
     private void KillTerminal(object sender, RoutedEventArgs args)
     {

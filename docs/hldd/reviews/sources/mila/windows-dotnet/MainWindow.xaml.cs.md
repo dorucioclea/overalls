@@ -1,5 +1,5 @@
 ---
-digest: 2fee4eab5b1fc92f64acf8ad8058e14341253088825526caa93f6b42b55b0374
+digest: dab3c8724d4ac1fb4b7e619361065ddde0572cba531bf143e7f9f31f12261967
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows locale settings apply RTL flow direction and expose RTL locales.
+Windows terminal input now uses bounded Rust validation and session fencing

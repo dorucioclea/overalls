@@ -13,6 +13,7 @@ defmodule MilaFlutterDeletionGate do
       path_absence_check(root, "mila/tool"),
       release_check(root),
       android_release_check(root),
+      apple_release_check(root),
       source_bundle_check(root),
       windows_source_bundle_check(root),
       compatibility_milestone_check(root)

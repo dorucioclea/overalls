@@ -268,6 +268,9 @@ impl<'a, A: SessionAuthority, T: PtyTransport> AuthenticatedPty<'a, A, T> {
     }
 
     pub fn send_input(&mut self, generation: u64, length: usize) -> Result<(), PtyError> {
+        if generation != self.stream.state().generation() {
+            return Err(PtyError::InvalidRequest);
+        }
         self.stream
             .validate_input(length)
             .map_err(|_| PtyError::InvalidRequest)?;
@@ -275,6 +278,9 @@ impl<'a, A: SessionAuthority, T: PtyTransport> AuthenticatedPty<'a, A, T> {
     }
 
     pub fn resize(&mut self, generation: u64, columns: u16, rows: u16) -> Result<(), PtyError> {
+        if generation != self.stream.state().generation() {
+            return Err(PtyError::InvalidRequest);
+        }
         self.stream
             .validate_resize(columns, rows)
             .map_err(|_| PtyError::InvalidRequest)?;
@@ -568,6 +574,8 @@ mod transport_tests {
         let second = pty.attach(request()).unwrap();
         assert_ne!(first, second);
         assert_eq!(pty.read_output(first), Err(PtyError::InvalidRequest));
+        assert_eq!(pty.send_input(first, 1), Err(PtyError::InvalidRequest));
+        assert_eq!(pty.resize(first, 80, 24), Err(PtyError::InvalidRequest));
         assert_eq!(pty.read_output(second).unwrap(), "ready");
     }
 

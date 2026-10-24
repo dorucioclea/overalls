@@ -1,5 +1,5 @@
 ---
-digest: 68dc8e442cc1494de7effd13e146338b5a897af2963757eb91819ea90ea3d0df
+digest: 6fae05c87612f2b629a7ec74fa282d66f61d6f1db5ab3442e997bb7ad85a0148
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux terminal clean EOF fences lifecycle
+Linux terminal stale generation input and resize fencing

@@ -105,7 +105,7 @@ class MilaWebTest {
   }
   val controller = MilaWebController(adapter)
   controller.setSession(true)
-  val job = kotlinx.coroutines.launch { assertFalse(controller.show(id)) }
+  val job = launch { assertFalse(controller.show(id)) }
   kotlinx.coroutines.yield()
   controller.setSession(false)
   gate.complete("{\"machine_id\":\"$id\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2}")

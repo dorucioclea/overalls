@@ -78,7 +78,7 @@ jobs:
             --source marshall/priv/gettext \
             --output "$RUNNER_TEMP/mila-localization"
           python3 mila/localization/generate_catalogs.py \
-            --source mila/app/lib/l10n \
+            --source mila/localization/catalogs \
             --output "$RUNNER_TEMP/mila-localization-app"
       - name: Build the source bundle
         run: |

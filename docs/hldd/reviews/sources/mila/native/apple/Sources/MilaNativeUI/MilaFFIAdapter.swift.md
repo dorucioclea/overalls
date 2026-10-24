@@ -1,5 +1,5 @@
 ---
-digest: 3123ac6826817263e292b3bca9dd763cb8722617d4d77e9ba4dbc31596c04669
+digest: bc5982a81478a6d88984ad1e51b302a18d7ef6c3e963c2b93a675ee44e658e4a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-concurrent native validation changes reviewed for commit gate
+Apple machine detail display bounds enforced before SwiftUI projection

@@ -385,6 +385,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         let metadata = try validateSnapshot(data, host: host, port: port)
         let machines = try decodeSnapshot(data, host: host, port: port)
         let projected = try machines.enumerated().map { index, machine in
+            try validateMachineDisplay(machine)
             MilaMachinePresentation(machine: machine, actions: try machineActions(data, host: host, port: port, index: UInt32(index)))
         }
         return MilaValidatedSnapshot(machines: projected, metadata: metadata)
@@ -421,6 +422,7 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         guard envelope.machines.count <= 256 else { throw MilaFFIError.outputTooSmall }
         let metadata = MilaSnapshotMetadata(machineCount: UInt32(envelope.machines.count), savedAt: 0, hasMore: envelope.hasMore)
         let machines = try envelope.machines.enumerated().map { index, machine in
+            try validateMachineDisplay(machine)
             let actions: MilaMachineActions
             if let actionBits = machine.actionBits {
                 actions = MilaMachineActions(bits: actionBits)
@@ -430,6 +432,13 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
             return MilaMachinePresentation(machine: machine, actions: actions)
         }
         return MilaValidatedSnapshot(machines: machines, metadata: metadata)
+    }
+
+    private func validateMachineDisplay(_ machine: MilaSnapshotMachine) throws {
+        guard machine.name.utf8.count <= 128,
+              !machine.name.unicodeScalars.contains(where: { $0.properties.isControl }) else {
+            throw MilaFFIError.outputTooSmall
+        }
     }
 
     private func machineActionsFromListing(_ data: Data, index: UInt32) throws -> MilaMachineActions {

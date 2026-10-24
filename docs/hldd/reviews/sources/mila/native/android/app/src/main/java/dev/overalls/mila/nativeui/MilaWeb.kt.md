@@ -1,5 +1,5 @@
 ---
-digest: 6d5c159fa7e3dafe33577f3f5843d6ad18c2e79185f75c3efa454b2800d9ecd0
+digest: 6a63ce95f993372c523f9a50397cc18f904a4e32adaa15afb8ec016368eb4e04
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android WebView endpoint state is cleared across authentication generations
+Android WebView disposal clears stale page state on URL/session lifecycle changes

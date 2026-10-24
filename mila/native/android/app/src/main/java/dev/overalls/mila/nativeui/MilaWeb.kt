@@ -98,6 +98,18 @@ class MilaWebController(private val adapter: MilaFfiAdapter) {
 
 @Composable
 fun MilaWebView(url: String, modifier: Modifier = Modifier) {
+    var webViewRef by remember { mutableStateOf<WebView?>(null) }
+    DisposableEffect(url) {
+        onDispose {
+            webViewRef?.apply {
+                stopLoading()
+                loadUrl("about:blank")
+                clearHistory()
+                clearCache(true)
+            }
+            webViewRef = null
+        }
+    }
     AndroidView(modifier = modifier, factory = { context ->
         WebView(context).apply {
             settings.javaScriptEnabled = true
@@ -106,6 +118,7 @@ fun MilaWebView(url: String, modifier: Modifier = Modifier) {
                     !isAllowedMilaWebTarget(url, target)
             }
             loadUrl(url)
+            webViewRef = this
         }
     }, update = { if (it.url != url) it.loadUrl(url) })
 }

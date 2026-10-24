@@ -22,6 +22,12 @@ class MilaThreadDetailTest {
     private val listing = MilaThreadListing(listOf(MilaThreadRow(id, "deploy", "active")), false)
 
 
+    @Test fun rejectsZeroThreadIdentifier() {
+        assertThrows(IllegalArgumentException::class.java) {
+            MilaThreadListing.decode("""{"result":{"threads":[{"id":"00000000-0000-0000-0000-000000000000","title":"Build","status":"open"}]}}""".toByteArray())
+        }
+    }
+
     @Test fun rejectsOversizedThreadProjectionFields() {
         val id = "00000000-0000-0000-0000-000000000003"
         val title = "x".repeat(257)

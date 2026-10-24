@@ -18,7 +18,9 @@ data class MilaThreadListing(val threads: List<MilaThreadRow>, val hasMore: Bool
             val status = row.optString("status")
             require(title.toByteArray(Charsets.UTF_8).size <= 256)
             require(status.toByteArray(Charsets.UTF_8).size <= 64)
-            add(MilaThreadRow(UUID.fromString(row.getString("id")), title, status))
+            val id = UUID.fromString(row.getString("id"))
+            require(id != UUID(0L, 0L))
+            add(MilaThreadRow(id, title, status))
         }
     }
     return MilaThreadListing(threads, result.optBoolean("has_more", false))

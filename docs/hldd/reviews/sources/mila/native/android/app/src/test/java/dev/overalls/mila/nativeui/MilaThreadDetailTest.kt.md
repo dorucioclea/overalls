@@ -1,5 +1,5 @@
 ---
-digest: 309f6c8a604d98fb0274bc5ba063b79e28062a5e73b5ec7546af5bf58f47bf39
+digest: 477876d616eeff8edd33ab4bb024fbd592b5f4acd548ef1427eacf5fcf3d9ca7
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-bound Android thread input by UTF-8 bytes
+reject zero thread identifiers in Android projection

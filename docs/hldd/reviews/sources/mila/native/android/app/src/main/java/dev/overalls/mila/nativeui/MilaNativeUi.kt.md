@@ -1,5 +1,5 @@
 ---
-digest: 13047e2c73d29849cff73b6090c1298b1e9a07ad82290103c08c8db0624219a8
+digest: 0b603ccf30fa8e60304bdfb193bbd95cc832d4ae62bef1cad9c9871f61e88829
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review native session security changes preserve documented boundaries
+Authenticated Android share chooser boundary preserves route and session policy

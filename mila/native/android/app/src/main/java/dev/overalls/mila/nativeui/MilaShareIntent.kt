@@ -12,6 +12,10 @@ internal object MilaShareIntentFactory {
     /** Wraps the route payload in the platform chooser without exposing arbitrary text. */
     fun chooser(route: MilaRoute): Intent = Intent.createChooser(create(route), null)
 
+    /** Returns a chooser only for an authenticated session; signed-out callers cannot share routes. */
+    fun authenticatedChooser(route: MilaRoute, signedIn: Boolean): Intent? =
+        if (signedIn) chooser(route) else null
+
     private fun MilaRoute.toCanonicalUri(): String = when (this) {
         MilaRoute.Machines -> "overalls://mila/machines"
         MilaRoute.Threads -> "overalls://mila/threads"

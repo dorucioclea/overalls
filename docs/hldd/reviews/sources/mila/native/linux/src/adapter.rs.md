@@ -1,5 +1,5 @@
 ---
-digest: 299babc84a5084f4a6d78fb77857e571ea0573dc468825e9bb401a26c184c89b
+digest: 648b59051c87b3b57ea73029dfee3340978c3891c10f636f28d31f7286444cf7
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux web projection now requires public endpoints to carry HTTPS URL
+Activation route resolution only adds typed auth decision boundary

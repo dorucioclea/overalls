@@ -257,5 +257,7 @@ final class MilaThreadActionTests: XCTestCase {
         // adapters and cannot be confused with an answer payload.
         XCTAssertEqual(MilaThreadAction.planApprove("").secondary, "")
         XCTAssertNil(MilaThreadAction.planApprove("").input)
+        XCTAssertFalse(MilaThreadAction.planApprove("   ").isWellFormed)
+        XCTAssertFalse(MilaThreadAction.answer(String(repeating: "x", count: 64 * 1024 + 1)).isWellFormed)
     }
 }

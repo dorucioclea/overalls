@@ -145,6 +145,19 @@ pub fn format_share_command(
 
 /// Canonicalizes an activation route through the same Rust FFI entry point used by
 /// the other native clients. This keeps Linux from maintaining a second route grammar.
+/// Resolves a desktop activation route against the active deployment and session.
+/// Signed-out or cross-deployment routes are returned as typed decisions so GTK can
+/// route them to sign-in without ever opening a target or invoking a command.
+pub fn resolve_activation(
+    value: &str,
+    selected_authority: Option<&str>,
+    authenticated: bool,
+) -> Result<crate::route::NavigationDecision, RuntimeError> {
+    let route = crate::route::ActivationRoute::parse(value)
+        .map_err(|_| RuntimeError::InvalidInput)?;
+    Ok(route.navigation(selected_authority, authenticated))
+}
+
 pub fn canonical_route(value: &str) -> Result<String, RuntimeError> {
     let input = CString::new(value).map_err(|_| RuntimeError::InvalidInput)?;
     let mut bytes = vec![0_u8; 2048];
@@ -1000,6 +1013,23 @@ mod tests {
     }
 
     #[test]
+    #[test]
+    fn activation_resolution_requires_matching_authenticated_deployment() {
+        let route = "overalls://cloud.example/machines/m1/web";
+        assert!(matches!(
+            super::resolve_activation(route, Some("cloud.example"), true).unwrap(),
+            crate::route::NavigationDecision::Open { .. }
+        ));
+        assert!(matches!(
+            super::resolve_activation(route, Some("cloud.example"), false).unwrap(),
+            crate::route::NavigationDecision::SignInRequired { .. }
+        ));
+        assert!(matches!(
+            super::resolve_activation(route, Some("other.example"), true).unwrap(),
+            crate::route::NavigationDecision::UnknownDeployment { .. }
+        ));
+    }
+
     fn canonical_route_uses_shared_core_grammar() {
         assert_eq!(
             canonical_route("overalls://fleet.example/machines").unwrap(),

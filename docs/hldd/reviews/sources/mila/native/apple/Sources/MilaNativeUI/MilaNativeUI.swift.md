@@ -1,5 +1,5 @@
 ---
-digest: 77cd7e1fb6bb623b4d5062345ed7eaa5465bfa56fd02affba8506854a68389dd
+digest: 8363f53c5845cf82c4a38e375a1886a36ad7a8988f5789c3e2dd5a4a7e3b883b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple root clears stale machine projections on sign-out and fences refresh generations
+Concurrent Apple route adapter changes preserve native routing contracts

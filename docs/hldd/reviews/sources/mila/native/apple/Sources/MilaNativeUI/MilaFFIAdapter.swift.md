@@ -1,5 +1,5 @@
 ---
-digest: 9f0aa2b0dda2acf712d3b2891cc49a959b5326d99b923a14a897491c94cfefce
+digest: 1364117bbf0e104f45fb1ad01d3000e85139abfacff951e5c9c5ee6dc5b68ef5
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Replaced Swift throwing fallback expression with explicit typed branching; behavior and architecture unchanged.
+Concurrent Apple route adapter changes preserve native routing contracts

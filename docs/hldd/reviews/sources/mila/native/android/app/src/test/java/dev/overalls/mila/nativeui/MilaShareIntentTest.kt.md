@@ -1,5 +1,5 @@
 ---
-digest: f1e8e33d42e7022808d2e3eccf4130ef88e8271d597ed0195ec7c10e07f4fd0c
+digest: 4d0cf821c6f896c640b2b12a2fbd3f25db608b46cb7099aad7626a0eeb62ba88
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Unit test verifies canonical Android share intent action, MIME type, and route payload.
+Authenticated Android share chooser boundary preserves route and session policy

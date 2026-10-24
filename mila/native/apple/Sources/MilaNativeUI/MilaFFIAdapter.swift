@@ -157,6 +157,14 @@ public enum MilaThreadAction: Sendable, Equatable {
     case planApprove(String)
     case planRevise(String)
 
+    public var isWellFormed: Bool {
+        switch self {
+        case .list, .read: return true
+        case .answer(let value): return !value.isEmpty && value.utf8.count <= 64 * 1024
+        case .planApprove(let value), .planRevise(let value): return !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && value.utf8.count <= 256
+        }
+    }
+
     public var command: String {
         switch self {
         case .list: return "thread list"

@@ -1,5 +1,5 @@
 ---
-digest: bb65a8adbb80becac096208c5d9dc85fc2b4778156113b9d5a4105cf396970a9
+digest: 2c906804e1676b2ee23c35f40e165736911c3c93bdff07d9cb92eb2a80271282
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple terminal invalid resize and input fail-closed regression test
+Concurrent Apple route adapter changes preserve native routing contracts

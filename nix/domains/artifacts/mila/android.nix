@@ -82,6 +82,7 @@ app.multiShell.overrideAttrs (finalAttrs: old: {
     cp -r ../localization/catalogs "$localization_dir"
     chmod -R u+w "$localization_dir"
     sed -i "s#../localization/catalogs#$localization_dir#" l10n.yaml
+    flutter gen-l10n
     flutter build apk --config-only --release --no-pub
     # Gradle writes into an included build's directory, so Flutter's Gradle
     # plugin cannot be built in place in the store: give it a writable copy

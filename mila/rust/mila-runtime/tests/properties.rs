@@ -4,8 +4,8 @@ use mila_runtime::{
     AppLock, LockAvailability, LockDelay, LockEvent, LockPhase, MachineSnapshot, SnapshotMachine,
     MAX_SNAPSHOT_BYTES,
 };
-use mila_runtime::{AttachOutcome, AttachPhase, TerminalAttach};
 use mila_runtime::{AttachHeader, AttachMode};
+use mila_runtime::{AttachOutcome, AttachPhase, TerminalAttach};
 use mila_runtime::{MutationPhase, MutationTracker, NextAction};
 use mila_runtime::{PokeEnvelope, RuntimeError, SnapshotStore};
 use mila_runtime::{PushEnvironment, PushProvider, PushRegistrationRequest};
@@ -72,14 +72,14 @@ fn terminal_write_capability_tracks_current_grant_and_user_restriction(tc: TestC
     assert!(!state.can_resize());
     assert!(state.request());
     let generation = state.generation();
-    assert!(state.header(
-        generation,
-        Some(AttachHeader::Attached { from: 0, mode }),
-    ));
+    assert!(state.header(generation, Some(AttachHeader::Attached { from: 0, mode }),));
     let expected_write = mode == AttachMode::ReadWrite && !requested_read_only;
     assert_eq!(state.can_send_input(), expected_write);
     assert_eq!(state.can_resize(), expected_write);
-    assert_eq!(state.read_only(), requested_read_only || mode == AttachMode::ReadOnly);
+    assert_eq!(
+        state.read_only(),
+        requested_read_only || mode == AttachMode::ReadOnly
+    );
 }
 
 #[derive(Default)]

@@ -1,5 +1,5 @@
 ---
-digest: 4a33e5c16a41684c1eb0371530f4b118e82f673b54a1079bd771222588743c63
+digest: 769a42253c7e44904801ab8721a0e92b2b6d598b7a78f5473cc097f0db191d84
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux browser launch revalidates canonical HTTPS destination at the GTK launch boundary
+reject duplicate SSH key identifiers before Linux UI projection

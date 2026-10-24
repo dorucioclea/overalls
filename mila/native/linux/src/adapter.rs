@@ -57,8 +57,12 @@ pub fn decode_ssh_keys(bytes: &[u8]) -> Result<Vec<SshKey>, RuntimeError> {
     }
     let envelope: Envelope =
         serde_json::from_slice(bytes).map_err(|_| RuntimeError::InvalidInput)?;
+    let mut ids = std::collections::HashSet::with_capacity(envelope.keys.len());
     if envelope.keys.len() > 256
         || envelope.keys.iter().any(|key| {
+            if !ids.insert(key.id.as_str()) {
+                return true;
+            }
             key.id.is_empty()
                 || key.id.len() > 128
                 || key.label.len() > 256
@@ -1301,6 +1305,10 @@ mod tests {
         .is_err());
         assert!(super::decode_ssh_keys(
             br#"{"keys":[{"id":"k1","label":"x","fingerprint":"SHA256:bad value","added_at":1}]}"#
+        )
+        .is_err());
+        assert!(super::decode_ssh_keys(
+            br#"{"keys":[{"id":"k1","label":"x","fingerprint":"SHA256:x","added_at":1},{"id":"k1","label":"y","fingerprint":"SHA256:y","added_at":2}]}"#
         )
         .is_err());
     }

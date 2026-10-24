@@ -39,6 +39,21 @@ class MilaSshKeysTest {
   assertTrue(controller.keys.isEmpty())
  }
 
+ @Test fun utf8DisplayBoundIsStableAcrossMultibyteInputs() {
+  // Exercise the byte bound with several Unicode widths; every generated
+  // value over 256 bytes must fail closed regardless of code-point count.
+  listOf("é", "中", "🙂").forEach { unit ->
+   val label = unit.repeat(257)
+   val bindings = object : AndroidKeysRustBindings() {
+    override fun sessionSshKeys(handle: Long): ByteArray = ("{\"keys\":[{" +
+     "\"id\":\"00000000-0000-0000-0000-000000000005\"," +
+     "\"fingerprint\":\"SHA256:test\",\"algorithm\":\"ssh-ed25519\"," +
+     "\"label\":\"" + label + "\"}]}").toByteArray()
+   }
+   assertTrue(MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(10, bindings))).keys.isEmpty())
+  }
+ }
+
  @Test fun unbindingSessionClearsKeysAndRefusesRevoke() {
   val store = Keys()
   val controller = MilaSshKeyController(store)

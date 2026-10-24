@@ -14,6 +14,17 @@ import XCTest
         XCTAssertNil(MilaSSHKey.validated(id: UUID(), fingerprint: "SHA256:x", algorithm: "ssh-ed25519", label: "device\u{0000}"))
     }
 
+    func testValidatedRejectsEveryAsciiControlAndWhitespaceSeparator() {
+        let separators = [" ", "\t", "\n", "\r"]
+        for separator in separators {
+            XCTAssertNil(MilaSSHKey.validated(id: UUID(), fingerprint: "SHA256:x\(separator)y", algorithm: "ssh-ed25519"))
+        }
+        for scalar in 0...31 {
+            let control = String(UnicodeScalar(scalar)!)
+            XCTAssertNil(MilaSSHKey.validated(id: UUID(), fingerprint: "SHA256:x\(control)y", algorithm: "ssh-ed25519"))
+        }
+    }
+
     func testLoadAndRevokeRefreshesOpaqueKeyIdentity() async {
         let id = UUID(); let key = MilaSSHKey(id: id, fingerprint: "SHA256:test", algorithm: "ssh-ed25519")
         var revoked: [UUID] = []; var loads = 0

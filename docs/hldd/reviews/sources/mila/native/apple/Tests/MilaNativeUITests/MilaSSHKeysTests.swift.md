@@ -1,5 +1,5 @@
 ---
-digest: b471b1554560f1c83146b926671e178ca339b3f6cd0e914f3af712a031b32977
+digest: 3c40074328b717d8ca61caa61618210b6677987e564110913476c73fcdeb5815
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH revocation reservations clear on sign-out
+Apple SSH validation property coverage

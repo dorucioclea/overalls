@@ -31,7 +31,14 @@ final class MilaNotificationsTests: XCTestCase {
     private final class Store: MilaNotificationDeviceStore {
         var values: [MilaNotificationDevice] = []
         func list() -> [MilaNotificationDevice] { values }
-        func upsert(_ device: MilaNotificationDevice) -> Bool { values.removeAll { $0.id == device.id }; values.append(device); return true }
+        func upsert(_ device: MilaNotificationDevice) -> Bool {
+            guard !device.id.isEmpty, device.id.utf8.count <= 256,
+                  !device.deployment.isEmpty, device.deployment.utf8.count <= 256 else { return false }
+            values.removeAll { $0.id == device.id }
+            values.append(device)
+            if values.count > 128 { values.removeFirst(values.count - 128) }
+            return true
+        }
         func remove(id: String) -> Bool { let old = values.count; values.removeAll { $0.id == id }; return values.count != old }
     }
 

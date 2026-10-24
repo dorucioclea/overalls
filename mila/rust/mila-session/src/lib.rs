@@ -334,10 +334,12 @@ impl ApplicationSession {
         let machine = Identifier::parse(machine).map_err(|_| SessionError::InvalidListing)?;
         let line = format!("web show {machine} --json");
         let output = self.ssh.exec(&line, &[]).await?;
-        if output.exit_status == 0 {
-            Ok(output.stdout)
-        } else {
+        if output.exit_status != 0 || output.stdout.len() > 256 * 1024 {
             Err(SessionError::MutationRefused)
+        } else {
+            serde_json::from_slice::<serde_json::Value>(&output.stdout)
+                .map_err(|_| SessionError::Refused)?;
+            Ok(output.stdout)
         }
     }
 
@@ -366,10 +368,12 @@ impl ApplicationSession {
     /// Read the caller's push notification devices through Porsche.
     pub async fn device_ls(&mut self) -> Result<Vec<u8>, SessionError> {
         let output = self.ssh.exec("device ls", &[]).await?;
-        if output.exit_status == 0 {
-            Ok(output.stdout)
-        } else {
+        if output.exit_status != 0 || output.stdout.len() > 256 * 1024 {
             Err(SessionError::MutationRefused)
+        } else {
+            serde_json::from_slice::<serde_json::Value>(&output.stdout)
+                .map_err(|_| SessionError::Refused)?;
+            Ok(output.stdout)
         }
     }
 

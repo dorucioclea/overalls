@@ -1,5 +1,5 @@
 ---
-digest: f4dd4634d28bbad7188f01d854e3534587811ef195c46fb8373e9d3602e76d4b
+digest: 3582cc1a30bd4ac68bf11e862b08d8413e7b834c87a33c31543c95f9533af36b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed formatting and native test changes; no handbook behavior or architecture change.
+Bound web and device JSON session projections before native use

@@ -1,5 +1,5 @@
 ---
-digest: 4d2e4f364eb6ead7c5e3e64068ba08f30ae3691cb2a5b55318bb905f08bf2348
+digest: d03983f27ffb89f78651f69555715c206676b947148255ee2a49f01fb6abb658
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple app lock unavailable authenticator coverage
+Invalidate stale biometric results after background lock

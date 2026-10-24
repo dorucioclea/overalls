@@ -38,6 +38,7 @@ public final class MilaAppLockController: ObservableObject {
     private let reason: String
     private let defaults: UserDefaults
     private let enabledKey = "mila.appLockEnabled"
+    private var authenticationGeneration: UInt64 = 0
 
     /// The controller is the single lifecycle boundary for app locking. The enabled preference
     /// is durable, while an unlocked state is deliberately process-scoped and never persisted.
@@ -66,10 +67,14 @@ public final class MilaAppLockController: ObservableObject {
 
     public func unlock() async {
         guard state == .locked || state == .failed else { return }
-        state = await evaluator.authenticate(reason: reason) ? .unlocked : .failed
+        let generation = authenticationGeneration
+        let authenticated = await evaluator.authenticate(reason: reason)
+        guard generation == authenticationGeneration, state == .locked || state == .failed else { return }
+        state = authenticated ? .unlocked : .failed
     }
 
     public func lock() {
+        authenticationGeneration &+= 1
         guard canEnable else { state = .unavailable; return }
         state = .locked
     }

@@ -9,6 +9,14 @@ private struct FakeEvaluator: MilaBiometricEvaluator, Sendable {
     nonisolated func authenticate(reason: String) async -> Bool { result }
 }
 
+private struct DelayedEvaluator: MilaBiometricEvaluator, Sendable {
+    nonisolated func availability() -> Bool { true }
+    nonisolated func authenticate(reason: String) async -> Bool {
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        return true
+    }
+}
+
 @MainActor
 final class MilaAppLockTests: XCTestCase {
     func testDisabledStartsUnlocked() {
@@ -67,5 +75,13 @@ final class MilaAppLockTests: XCTestCase {
         await controller.setEnabled(false)
         XCTAssertFalse(defaults.bool(forKey: "mila.appLockEnabled"))
         XCTAssertEqual(controller.state, .unlocked)
+    }
+
+    func testBackgroundInvalidatesInFlightAuthentication() async {
+        let controller = MilaAppLockController(enabled: true, evaluator: DelayedEvaluator())
+        let attempt = Task { await controller.unlock() }
+        controller.sceneDidEnterBackground()
+        await attempt.value
+        XCTAssertEqual(controller.state, .locked)
     }
 }

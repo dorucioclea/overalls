@@ -3,8 +3,8 @@ use adw::{Application, ApplicationWindow};
 use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation, TextDirection};
 use mila_native_linux::adapter::{
     decode_listing, decode_notification_devices, decode_web_endpoint, format_machine_action,
-    format_ssh_key_revoke, format_thread_response, format_web_command, TerminalStream,
-    valid_https_endpoint_url,
+    format_ssh_key_revoke, format_thread_response, format_web_command, valid_https_endpoint_url,
+    TerminalStream,
 };
 use mila_native_linux::machine_view::{project_detail, project_listing};
 use mila_native_linux::notifications::NotificationState;
@@ -116,6 +116,7 @@ impl NativeState {
         let locale = Entry::builder()
             .placeholder_text(&strings::text(strings::Message::Locale))
             .text(&settings.locale)
+            .max_length(35)
             .hexpand(true)
             .build();
         let save_settings = Button::with_label(&strings::text(strings::Message::SaveSettings));

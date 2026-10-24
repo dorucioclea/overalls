@@ -1,5 +1,5 @@
 ---
-digest: de94896968d6bbe7e316ce674a2d6cac776457fdac4d0395f294908607daa72f
+digest: 176558c8a59dd173f0b27558cda3794b715cce9888dd47b1e9044c68e3ba2953
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux browser launch revalidates canonical HTTPS destination at the GTK launch boundary
+Bound GTK locale entry to Rust locale policy limit

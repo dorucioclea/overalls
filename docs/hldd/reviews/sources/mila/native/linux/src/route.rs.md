@@ -1,5 +1,5 @@
 ---
-digest: 22f5a3165671d831d3a4c6c70abeb6b5f5604ca423fde07bd852171cb3016dfe
+digest: 94006385611c26dcc0696681e649893c6cca3be2a81461b8eb5fcd26aaa5181b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux activation batch decision test preserves route authentication and rejection fencing
+deduplicate repeated Linux activation routes before GTK projection

@@ -125,11 +125,16 @@ impl ActivationBatch {
     pub fn parse<'a>(uris: impl IntoIterator<Item = &'a str>) -> Self {
         let mut routes = Vec::new();
         let mut rejected = 0;
+        let mut seen = std::collections::HashSet::new();
         for result in uris.into_iter().map(ActivationRoute::parse) {
             if routes.len() >= MAX_OPEN_ROUTES {
                 rejected += 1;
             } else if let Ok(route) = result {
-                routes.push(route);
+                if seen.insert(route.canonical()) {
+                    routes.push(route);
+                } else {
+                    rejected += 1;
+                }
             } else {
                 rejected += 1;
             }
@@ -520,8 +525,8 @@ mod tests {
         ];
         values.extend(std::iter::repeat("overalls://fleet.example/settings").take(65));
         let batch = ActivationBatch::parse(values);
-        assert_eq!(batch.routes().len(), 64);
-        assert_eq!(batch.rejected(), 3);
+        assert_eq!(batch.routes().len(), 2);
+        assert_eq!(batch.rejected(), 65);
         assert_eq!(
             batch.canonical_routes()[0],
             "overalls://fleet.example/machines"

@@ -448,7 +448,15 @@ private struct SettingsView: View {
                 )
             }
             Text(MilaStrings.text(.runtimeUnavailable)).foregroundStyle(.secondary)
-        }.navigationTitle(MilaStrings.text(.settings))
+        }
+        .navigationTitle(MilaStrings.text(.settings))
+        .onAppear {
+            // Defaults may contain values written by an older build. Normalize
+            // them at the read boundary before they reach SwiftUI.
+            let canonicalLocale = MilaStrings.canonicalLocale(locale)
+            if canonicalLocale != locale { locale = canonicalLocale }
+            if !["system", "light", "dark"].contains(appearance) { appearance = "system" }
+        }
     }
 }
 

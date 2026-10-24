@@ -1,5 +1,5 @@
 ---
-digest: 7635091658e3c11d495622b94ee73572d1e9565aa5d3df47ee4d76b4f4260eea
+digest: 96a1580a68fc76342af84754c1df8d979189f11c9541ac68620f4fdd5d4154b4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale catalog and RTL direction remain within existing native settings boundary.
+normalize persisted Apple settings at read boundary

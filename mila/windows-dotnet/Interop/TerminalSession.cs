@@ -51,7 +51,7 @@ internal sealed class MilaTerminalSession
     }
     internal bool SendInput(long generation, ReadOnlySpan<byte> input)
     {
-        if (generation != _generation || !_readWrite || input.Length > MaxInputBytes || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed) return false;
+        if (generation != _generation || !_readWrite || input.Length > MaxInputBytes || State is not MilaTerminalState.Live) return false;
         return true;
     }
     internal bool Reconnect(long generation) => generation == _generation &&

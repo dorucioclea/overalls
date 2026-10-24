@@ -390,6 +390,7 @@ impl LiveSession {
                 return Err(SessionError::InvalidInput);
             }
         }
+        validate_thread_plan_input(command, input)?;
         if let Some(request_id) = request_id {
             if request_id.len() != 40
                 || !request_id.starts_with("porsche-")
@@ -433,6 +434,17 @@ impl LiveSession {
                 written,
             )
         })
+    }
+
+    /// Enforce the closed input contract for plan approval commands before FFI.
+    fn validate_thread_plan_input(command: &str, input: Option<&str>) -> Result<(), SessionError> {
+        match command {
+            "thread plan approve" if input.is_some() => Err(SessionError::InvalidInput),
+            "thread plan revise" if input.is_none() || input.is_some_and(str::is_empty) => {
+                Err(SessionError::InvalidInput)
+            }
+            _ => Ok(()),
+        }
     }
 
     /// Read a machine-bound web endpoint through the authenticated session.
@@ -1399,6 +1411,26 @@ mod tests {
                 None,
                 None,
             ),
+            Err(SessionError::InvalidInput)
+        );
+    }
+
+    #[test]
+    fn plan_commands_have_explicit_input_contract() {
+        assert_eq!(
+            LiveSession::validate_thread_plan_input("thread plan approve", None),
+            Ok(())
+        );
+        assert_eq!(
+            LiveSession::validate_thread_plan_input("thread plan approve", Some("unexpected")),
+            Err(SessionError::InvalidInput)
+        );
+        assert_eq!(
+            LiveSession::validate_thread_plan_input("thread plan revise", Some("updated plan")),
+            Ok(())
+        );
+        assert_eq!(
+            LiveSession::validate_thread_plan_input("thread plan revise", Some("")),
             Err(SessionError::InvalidInput)
         );
     }

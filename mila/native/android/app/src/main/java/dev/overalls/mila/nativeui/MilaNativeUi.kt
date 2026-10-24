@@ -465,10 +465,13 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
         machineCommandChoices.filter { it.command in setOf("start", "stop", "pause", "resume", "rm", "resize") }.chunked(3).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 row.forEach { choice ->
-                    Button({
-                        controller.select(id)
-                        controllerSelect(controller, choice.command, scope) { state = controller.state }
-                    }) { Text(choice.label) }
+                    Button(
+                        enabled = signedIn,
+                        onClick = {
+                            controller.select(id)
+                            controllerSelect(controller, choice.command, scope) { state = controller.state }
+                        },
+                    ) { Text(choice.label) }
                 }
             }
         }

@@ -27,6 +27,12 @@ internal static class SignInFlowSmoke
         long reconnectGeneration = flow.Start();
         Program.Require(reconnectGeneration == generation + 1 && flow.State.Phase == MilaSignInPhase.Connecting,
             "reconnect starts fresh generation");
+        Program.Require(!flow.Authenticated(generation, "stale@example.test"),
+            "stale reconnect authentication refusal");
+        Program.Require(!flow.Disconnected(generation), "stale disconnect refusal");
+        Program.Require(flow.AwaitApproval(reconnectGeneration), "reconnect approval phase");
+        Program.Require(flow.SetApproval(reconnectGeneration, "https://example.test/reconnect", "SHA256:reconnect", 100),
+            "reconnect approval metadata");
         flow.SignOut();
         Program.Require(flow.State is { Phase: MilaSignInPhase.SignedOut, Approval: null }, "sign-out clears approval");
     }

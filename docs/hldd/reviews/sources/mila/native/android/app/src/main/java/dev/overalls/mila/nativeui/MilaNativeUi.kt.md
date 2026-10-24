@@ -1,5 +1,5 @@
 ---
-digest: 81de76587b459f90397b1a8467d669d1fbc766d9b93b8ced6794177b69f26a5e
+digest: 065d927f3e2243d4975a071242c3ca7925127c811b841edd1d1d781c3efecc60
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android web controls now fence authenticated session state
+Android machine controls now require authentication

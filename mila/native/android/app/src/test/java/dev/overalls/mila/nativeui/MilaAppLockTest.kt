@@ -26,7 +26,8 @@ class MilaAppLockTest {
 
     @Test fun staleUnlockResultCannotUnlockNewAttempt() {
         var state = MilaAppLockState(true, MilaLockDelay.Immediate, MilaLockAvailability.Available, MilaLockPhase.Locked)
-        val token = state.requestUnlock().attempt
+        state = state.requestUnlock()
+        val token = state.attempt
         state = state.finishUnlock(token + 1u, true)
         assertEquals(MilaLockPhase.Authenticating, state.phase)
         state = state.finishUnlock(token, true)
@@ -35,7 +36,8 @@ class MilaAppLockTest {
 
     @Test fun promptBackgroundingKeepsAttemptForPlatformResult() {
         var state = MilaAppLockState(true, MilaLockDelay.Immediate, MilaLockAvailability.Available, MilaLockPhase.Locked)
-        val token = state.requestUnlock().attempt
+        state = state.requestUnlock()
+        val token = state.attempt
         state = state.backgrounded(100)
         assertEquals(MilaLockPhase.Authenticating, state.phase)
         state = state.finishUnlock(token, true)

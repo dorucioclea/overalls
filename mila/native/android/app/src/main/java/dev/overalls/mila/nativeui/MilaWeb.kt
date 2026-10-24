@@ -28,7 +28,10 @@ fun parseMilaWebEndpoint(json: String): Result<MilaWebEndpoint> = runCatching {
     val revision = o.getLong("policy_revision").also { require(it > 0) }
     val url = if (o.isNull("url")) null else o.getString("url").also {
         validateHttps(it)
-        require(effectivePort(URI(it)) == port)
+        // Porsche may return a public proxy URL without the machine's port in
+        // its authority. Only an explicitly supplied URI port must match.
+        val parsed = URI(it)
+        require(parsed.port == -1 || parsed.port == port)
     }
     MilaWebEndpoint(id, port, visibility == "public", revision, url)
 }

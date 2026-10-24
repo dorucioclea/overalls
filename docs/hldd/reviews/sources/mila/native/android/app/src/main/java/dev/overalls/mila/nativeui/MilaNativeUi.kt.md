@@ -1,5 +1,5 @@
 ---
-digest: 684a653e4d7e9e11d5752cfa5be408de12d1c006dd589930e8cb75fbfbd2f97f
+digest: 3ca1cc4b44c28143494834dd67ed3d577f4d5fac8c02fb274515dd9c639ad315
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android native share chooser preserves canonical route boundaries
+Android share action is gated by authenticated session state

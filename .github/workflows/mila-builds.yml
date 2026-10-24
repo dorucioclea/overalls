@@ -335,6 +335,7 @@ jobs:
             echo 'KVM unavailable; emulator runner will use software acceleration'
           fi
       - uses: android-actions/setup-android@v3
+        continue-on-error: true
         timeout-minutes: 10
         with:
           # Preinstall the emulator and image so reactivecircus does not
@@ -344,6 +345,17 @@ jobs:
             emulator
             platforms;android-35
             system-images;android-35;google_apis;x86_64
+      - name: Ensure Android SDK packages
+        timeout-minutes: 15
+        run: |
+          : "${ANDROID_HOME:=/usr/local/lib/android/sdk}"
+          export ANDROID_HOME
+          export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+          test -x "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" || test -x "$(command -v sdkmanager)"
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "emulator" "platforms;android-35" "system-images;android-35;google_apis;x86_64"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "PATH=$PATH" >> "$GITHUB_ENV"
       - name: Install Android SDK platform
         timeout-minutes: 10
         run: |

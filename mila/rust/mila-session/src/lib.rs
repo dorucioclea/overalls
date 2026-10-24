@@ -167,7 +167,7 @@ impl ApplicationSession {
         {
             return Err(SessionError::InvalidThreadAction);
         }
-        if stdin.len() > 64 * 1024 || stdin.iter().any(|b| *b == 0) {
+        if stdin.len() > 64 * 1024 || stdin.contains(&0) {
             return Err(SessionError::Bounds);
         }
         let line = mila_protocol::Command::parse(&line)

@@ -419,6 +419,9 @@ impl NativeState {
         // presenting a control that cannot be honored by the native platform.
         let lock_title = strings::text(strings::Message::LockTitle);
         let lock_button = Button::with_label(&lock_title);
+        // The capability is explicitly unavailable on Linux; keep the control
+        // visible for discoverability but prevent it from implying an action.
+        lock_button.set_sensitive(false);
         let lock_status = content.clone();
         lock_button.connect_clicked(move |_| {
             let explanation = strings::text(strings::Message::LockExplain);

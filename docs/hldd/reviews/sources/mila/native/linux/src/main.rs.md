@@ -1,5 +1,5 @@
 ---
-digest: 61c87e70806ed816586a99a58c60d54d853a94c20cf449c6418a16b10f2eea30
+digest: d97a8afde21e40826b90f6700c8404a5074a100423408c27cf8a929bc83d3d7e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux SSH revoke UI now requires live authenticated session
+Linux app lock capability is explicitly unavailable and its control is disabled

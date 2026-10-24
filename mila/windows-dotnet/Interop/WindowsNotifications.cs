@@ -14,6 +14,7 @@ internal sealed class MilaWindowsNotificationDevicesController
     private readonly Func<string, CancellationToken, Task> remove;
     private readonly Func<string, bool, CancellationToken, Task> preferences;
     private long generation;
+    private bool signedIn;
     internal MilaWindowsNotificationDevicesStatus Status { get; private set; } = MilaWindowsNotificationDevicesStatus.SignedOut;
     internal IReadOnlyList<MilaWindowsNotificationDevice> Devices { get; private set; } = Array.Empty<MilaWindowsNotificationDevice>();
     internal MilaWindowsNotificationDevicesController(
@@ -24,15 +25,26 @@ internal sealed class MilaWindowsNotificationDevicesController
     internal async Task LoadAsync(bool signedIn, CancellationToken cancellationToken = default)
     {
         long current = Interlocked.Increment(ref generation);
+        this.signedIn = signedIn;
         if (!signedIn) { Devices = Array.Empty<MilaWindowsNotificationDevice>(); Status = MilaWindowsNotificationDevicesStatus.SignedOut; return; }
         Status = MilaWindowsNotificationDevicesStatus.Loading;
         try { IReadOnlyList<MilaWindowsNotificationDevice> result = await load(cancellationToken); if (current == Volatile.Read(ref generation)) { Devices = result; Status = MilaWindowsNotificationDevicesStatus.Loaded; } }
         catch { if (current == Volatile.Read(ref generation)) Status = MilaWindowsNotificationDevicesStatus.Failed; }
     }
     internal async Task RemoveAsync(MilaWindowsNotificationDevice device, CancellationToken cancellationToken = default)
-    { if (Status != MilaWindowsNotificationDevicesStatus.Loaded || device.Id.Length == 0) return; await remove(device.Id, cancellationToken); await LoadAsync(true, cancellationToken); }
+    {
+        long current = Volatile.Read(ref generation);
+        if (Status != MilaWindowsNotificationDevicesStatus.Loaded || !signedIn || device.Id.Length == 0) return;
+        await remove(device.Id, cancellationToken);
+        if (current == Volatile.Read(ref generation) && signedIn) await LoadAsync(true, cancellationToken);
+    }
     internal async Task SetEnabledAsync(MilaWindowsNotificationDevice device, bool enabled, CancellationToken cancellationToken = default)
-    { if (Status != MilaWindowsNotificationDevicesStatus.Loaded || device.Id.Length == 0) return; await preferences(device.Id, enabled, cancellationToken); await LoadAsync(true, cancellationToken); }
+    {
+        long current = Volatile.Read(ref generation);
+        if (Status != MilaWindowsNotificationDevicesStatus.Loaded || !signedIn || device.Id.Length == 0) return;
+        await preferences(device.Id, enabled, cancellationToken);
+        if (current == Volatile.Read(ref generation) && signedIn) await LoadAsync(true, cancellationToken);
+    }
     internal void Invalidate(string deviceId)
     {
         if (Status != MilaWindowsNotificationDevicesStatus.Loaded || string.IsNullOrWhiteSpace(deviceId)) return;

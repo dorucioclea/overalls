@@ -1,5 +1,5 @@
 ---
-digest: 808b6fc77e20f6ac271791aa9fe5f109dfd27bbf47a8786e9346942456a063f7
+digest: a72b1b234a5075f34e5e5170f56f9ba0641e8525a1f19e69e9a4fdb368a0bdf1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-FCM invalidation removes provider registration through authenticated controller
+Android notification invalidation refusal test preserves signed-out device state

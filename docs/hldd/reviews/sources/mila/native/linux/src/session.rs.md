@@ -1,5 +1,5 @@
 ---
-digest: 6f95c2488e09be5f37951fca52d036434b5dd29ec6b64b7cdd3cb7a68a4c7866
+digest: 0e7beb396773d8e164118ee34b78c3e14228d3da3494a5100b4b65232dd1b0bf
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent native workflow test and session edits preserve documented behavior
+Concurrent Linux session validation edit reviewed while Android notification test changes are isolated

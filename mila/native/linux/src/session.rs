@@ -475,6 +475,7 @@ impl LiveSession {
     ) -> Result<(), SessionError> {
         validate_session_identifier(machine_id)?;
         if port == 0
+            || revision == 0
             || request_id.len() != 40
             || !request_id.starts_with("porsche-")
             || !request_id[8..].bytes().all(|byte| byte.is_ascii_hexdigit())
@@ -1294,6 +1295,22 @@ mod tests {
         assert_eq!(*fetch_calls.borrow(), 0);
         assert!(writes.borrow().is_empty());
         assert_eq!(signer_calls.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    #[test]
+    fn web_set_requires_positive_policy_revision() {
+        let mut session = LiveSession { handle: None };
+        assert_eq!(
+            session.web_set(
+                "01234567-89ab-cdef-0123-456789abcdef",
+                8080,
+                true,
+                0,
+                "porsche-0123456789abcdef0123456789abcdef",
+            ),
+            Err(SessionError::InvalidInput)
+        );
     }
 
     #[test]

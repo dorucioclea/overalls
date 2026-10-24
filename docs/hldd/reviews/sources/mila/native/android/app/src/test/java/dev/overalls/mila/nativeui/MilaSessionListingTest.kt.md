@@ -1,5 +1,5 @@
 ---
-digest: 517c28aaaa3e5280ecc3305e30b712473661c09f6416394d239fdb801cffe4f7
+digest: 38a0b5d8bb9f7c1575b881a242e7a3f32ff7304665dee7763306d5bec4515ff3
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Linux SSH projection fields and reject control characters before GTK
+Bound Android machine display projections to validated UTF-8 text.

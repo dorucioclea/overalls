@@ -5,6 +5,15 @@ import java.util.UUID
 data class MilaMachineRow(val id: UUID, val name: String, val status: String)
 data class MilaSessionListing(val machines: List<MilaMachineRow>, val hasMore: Boolean) {
     companion object {
+        private const val MAX_DISPLAY_BYTES = 128
+
+        private fun boundedDisplay(value: String, fallback: String): String {
+            val candidate = if (value.isEmpty()) fallback else value
+            require(candidate.toByteArray(Charsets.UTF_8).size <= MAX_DISPLAY_BYTES) { "display text exceeds bound" }
+            require(candidate.none { it.isISOControl() }) { "display text contains control character" }
+            return candidate
+        }
+
         fun decode(bytes: ByteArray): MilaSessionListing {
             require(bytes.size <= 8 * 1024 * 1024) { "listing exceeds bound" }
             val source = bytes.toString(Charsets.UTF_8)
@@ -19,7 +28,9 @@ data class MilaSessionListing(val machines: List<MilaMachineRow>, val hasMore: B
                 val row = raw.trim('{', '}')
                 fun field(name: String): String? = Regex("\\\"$name\\\":\\\"([^\\\"]*)\\\"").find(row)?.groupValues?.get(1)
                 val id = runCatching { UUID.fromString(field("id") ?: throw IllegalArgumentException("invalid machine id")) }.getOrElse { throw IllegalArgumentException("invalid machine id", it) }
-                MilaMachineRow(id, field("name") ?: id.toString(), field("status") ?: "unknown")
+                val name = boundedDisplay(field("name") ?: id.toString(), id.toString())
+                val status = boundedDisplay(field("status") ?: "unknown", "unknown")
+                MilaMachineRow(id, name, status)
             }
             val truncated = machines.size > 256
             return MilaSessionListing(machines.take(256), source.contains("\"has_more\":true") || truncated)

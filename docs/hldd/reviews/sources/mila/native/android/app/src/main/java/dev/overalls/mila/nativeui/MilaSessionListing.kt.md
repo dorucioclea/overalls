@@ -1,5 +1,5 @@
 ---
-digest: 9f2863efefa810e0b59ff0fc251ac1a25c9ecdeaa042a927dab40474b5cd97ef
+digest: 94b9750151b664663f3bb608982b5b32d8a5f6cdbc32389cc097027f79332a1a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android machine listing caps native projections and marks pagination
+Bound Android machine display projections to validated UTF-8 text.

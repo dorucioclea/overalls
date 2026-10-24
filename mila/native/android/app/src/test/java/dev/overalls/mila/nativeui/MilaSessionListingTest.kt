@@ -18,4 +18,11 @@ class MilaSessionListingTest {
     @Test(expected = IllegalArgumentException::class) fun rejectsMalformedRows() {
         MilaSessionListing.decode("{\"machines\":[{\"id\":\"bad\"}]}".toByteArray())
     }
+    @Test(expected = IllegalArgumentException::class) fun rejectsUnsafeDisplayText() {
+        MilaSessionListing.decode("{\"machines\":[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"bad\\nname\"}]}".toByteArray())
+    }
+    @Test(expected = IllegalArgumentException::class) fun rejectsOversizedDisplayText() {
+        val name = "x".repeat(129)
+        MilaSessionListing.decode("{\"machines\":[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"$name\"}]}".toByteArray())
+    }
 }

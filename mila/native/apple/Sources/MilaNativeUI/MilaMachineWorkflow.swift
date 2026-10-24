@@ -14,12 +14,17 @@ public final class MilaMachineWorkflow: ObservableObject {
     private let adapter: any MilaFFIAdapter
     private var task: Task<Void, Never>?
     private var generation = 0
+    private var submittedRequestIDs = Set<UUID>()
 
     public init(adapter: any MilaFFIAdapter) { self.adapter = adapter }
     deinit { task?.cancel() }
 
     public func submit(_ action: MilaMachineAction, machine: MilaMachinePresentation, requestID: UUID = UUID()) {
         guard case .idle = state else { return }
+        guard submittedRequestIDs.insert(requestID).inserted else {
+            state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
+            return
+        }
         guard machine.actions.values.contains(action) else {
             state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
             return

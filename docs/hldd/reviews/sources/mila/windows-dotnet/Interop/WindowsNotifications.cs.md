@@ -1,5 +1,5 @@
 ---
-digest: c29cf0883b4551e45a5d8e7a730601b5ba33bf25302fd4b691535b84d0df3c46
+digest: 8a2e7b95289098b8a6f514475d058de15477a138203096b5ab75685d79194aa4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows notification invalidation removes stale local device projections
+Windows notification registration validation preserves documented provider boundary

@@ -17,6 +17,34 @@ pub struct SshKey {
     pub added_at: u64,
 }
 
+/// Session-fenced SSH-key projection. Late responses from a prior sign-in or
+/// reconnect generation are discarded before reaching GTK.
+#[derive(Default)]
+pub struct SshKeyProjection {
+    generation: u64,
+    keys: Vec<SshKey>,
+}
+
+impl SshKeyProjection {
+    pub fn begin_generation(&mut self) -> u64 {
+        self.generation = self.generation.saturating_add(1);
+        self.keys.clear();
+        self.generation
+    }
+
+    pub fn refresh(&mut self, generation: u64, bytes: &[u8]) -> Result<(), RuntimeError> {
+        if generation != self.generation {
+            return Err(RuntimeError::Unavailable);
+        }
+        self.keys = decode_ssh_keys(bytes)?;
+        Ok(())
+    }
+
+    pub fn keys(&self) -> &[SshKey] {
+        &self.keys
+    }
+}
+
 /// Decode a bounded `ssh-key ls --json` response. Unknown fields are ignored,
 /// while missing fields and oversized lists fail closed before reaching GTK.
 pub fn decode_ssh_keys(bytes: &[u8]) -> Result<Vec<SshKey>, RuntimeError> {
@@ -1209,6 +1237,17 @@ mod tests {
             br#"{"keys":[{"id":"k\u0001","label":"x","fingerprint":"y","added_at":1}]}"#
         )
         .is_err());
+    }
+
+    #[test]
+    fn ssh_key_refresh_rejects_stale_generation_after_reconnect() {
+        let payload = br#"{"keys":[{"id":"k1","label":"laptop","fingerprint":"SHA256:x","added_at":1}]}"#;
+        let mut projection = super::SshKeyProjection::default();
+        let first = projection.begin_generation();
+        let second = projection.begin_generation();
+        assert!(projection.refresh(first, payload).is_err());
+        projection.refresh(second, payload).expect("current generation");
+        assert_eq!(projection.keys().len(), 1);
     }
 
     #[test]

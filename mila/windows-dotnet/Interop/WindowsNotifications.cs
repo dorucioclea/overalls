@@ -93,6 +93,11 @@ internal sealed class MilaWindowsNotificationController
             State = MilaWindowsNotificationState.Invalid;
             return State;
         }
+        if (!ValidRegistrationMetadata(channelUri, appId, deployment))
+        {
+            State = MilaWindowsNotificationState.Invalid;
+            return State;
+        }
         long current = generation;
         MilaNativeStatus status = _validate(channelUri, appId, deployment);
         if (current != generation || !signedIn)
@@ -110,6 +115,18 @@ internal sealed class MilaWindowsNotificationController
     }
 
     internal void Disable() => State = MilaWindowsNotificationState.Disabled;
+
+    private static bool ValidRegistrationMetadata(string channelUri, string appId, string deployment)
+    {
+        if (channelUri.Length is 0 or > 2048 || appId.Length is 0 or > 256 || deployment.Length is 0 or > 256)
+            return false;
+        if (channelUri.Any(char.IsControl) || appId.Any(char.IsControl) || deployment.Any(char.IsControl))
+            return false;
+        if (!Uri.TryCreate(channelUri, UriKind.Absolute, out Uri? uri) || uri.Scheme != Uri.UriSchemeHttps ||
+            string.IsNullOrEmpty(uri.Host) || !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment))
+            return false;
+        return true;
+    }
 }
 
 internal sealed class MilaWindowsNotificationDeviceStore

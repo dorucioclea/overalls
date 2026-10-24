@@ -1,5 +1,5 @@
 ---
-digest: 6fa9d0cd66623390c51e6d50bcdc4a220c07697135bc26aa2b8e2c815240fc01
+digest: f445a8ae2c88f674a6e5d4114103cdc4dd0e5405f2aa7478af083f29a8b39b38
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Linux SSH projection fields and reject control characters before GTK
+Linux SSH projections clear and reject late reconnect generation responses

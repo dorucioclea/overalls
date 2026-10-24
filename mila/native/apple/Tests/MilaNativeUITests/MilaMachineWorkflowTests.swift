@@ -38,4 +38,15 @@ final class MilaMachineWorkflowTests: XCTestCase {
         workflow.reset()
         guard case .idle = workflow.state else { return XCTFail("reset must return to idle") }
     }
+
+    func testRequestIDCannotBeReusedAfterReset() throws {
+        let workflow = MilaMachineWorkflow(adapter: UnavailableMilaFFIAdapter())
+        let id = UUID()
+        let value = try machine()
+        workflow.submit(.stop, machine: value, requestID: id)
+        workflow.reset()
+        workflow.submit(.stop, machine: value, requestID: id)
+        guard case .failed(let requestID, .stop, .actionNotAllowed) = workflow.state,
+              requestID == id else { return XCTFail("request IDs must be at-most-once") }
+    }
 }

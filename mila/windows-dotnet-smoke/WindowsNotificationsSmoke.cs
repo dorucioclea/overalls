@@ -16,6 +16,10 @@ internal static class WindowsNotificationsSmoke
             MilaWindowsNotificationState.Registered, "WNS metadata registration");
         Program.Require(controller.Register("https://evil.example/channel", "dev.overalls.mila", "mgmt.example.test") ==
             MilaWindowsNotificationState.Invalid, "foreign WNS channel refusal");
+        Program.Require(controller.Register("http://push.notify.windows.com/channel/abc", "dev.overalls.mila", "mgmt.example.test") ==
+            MilaWindowsNotificationState.Invalid, "non-HTTPS WNS channel refusal");
+        Program.Require(controller.Register("https://push.notify.windows.com/channel/abc", "dev.overalls.mila\n", "mgmt.example.test") ==
+            MilaWindowsNotificationState.Invalid, "control-character metadata refusal");
         controller.Disable();
         Program.Require(controller.State == MilaWindowsNotificationState.Disabled, "notification disable");
         controller.SetSession(false);

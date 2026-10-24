@@ -1,5 +1,5 @@
 ---
-digest: 0e7beb396773d8e164118ee34b78c3e14228d3da3494a5100b4b65232dd1b0bf
+digest: 953a6094e1c0a765af64c446071d3f75660fdb83e96282c204e9f08f28887db0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Linux session validation edit reviewed while Android notification test changes are isolated
+Restrict Linux thread commands to reviewed closed command set

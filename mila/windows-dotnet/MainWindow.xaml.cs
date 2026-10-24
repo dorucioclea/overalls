@@ -24,6 +24,7 @@ public sealed partial class MainWindow : Window
     private Uri? _webUrl;
     private bool _webNavigationBound;
     private long _webGeneration;
+    private long _machineGeneration;
     private readonly MilaSignInFlow _signIn = new();
     private bool _closed;
     public MainWindow(string? activation = null)
@@ -432,6 +433,7 @@ public sealed partial class MainWindow : Window
         // approval generation. This prevents stale endpoint navigation or a
         // previous PTY stream from surviving a deployment switch.
         _webGeneration++;
+        _machineGeneration++;
         _webUrl = null;
         _webRevision = 0;
         WebBrowser.Source = null;
@@ -591,6 +593,7 @@ public sealed partial class MainWindow : Window
 
     private async void RefreshMachines()
     {
+        long generation = ++_machineGeneration;
         _selectedMachine = null;
         _machineMutation.SetSession(_session.Handle is { } handle, _session.Handle ?? 0);
         UpdateMachineMutationAvailability();
@@ -598,6 +601,8 @@ public sealed partial class MainWindow : Window
         if (_activeHost is not { } host || _session.Handle is not { } sessionHandle)
             return;
         MilaNativeSessionBytesResult result = await Task.Run(() => RustNative.TrySessionListing(sessionHandle));
+        if (generation != _machineGeneration || _session.Handle != sessionHandle || _activeHost is null)
+            return;
         if (result.Succeeded && result.Data is { } bytes)
         {
             try

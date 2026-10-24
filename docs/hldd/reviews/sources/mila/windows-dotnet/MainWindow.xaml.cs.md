@@ -1,5 +1,5 @@
 ---
-digest: 9f542d3848e5094e17fc19d9b0097c08b472c6e1e4b68107a0e08fa51fe12f86
+digest: 71c202b4ddd3a8dc30d1452adfc6de8bce1650fc230b9badf5c7c2a0bac36adb
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Windows source review preserves existing activation behavior
+Windows machine refresh generation fence preserves documented session behavior

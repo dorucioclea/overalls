@@ -377,7 +377,11 @@ impl LiveSession {
         input: Option<&str>,
         request_id: Option<&str>,
     ) -> Result<Vec<u8>, SessionError> {
-        if command.is_empty() || command.len() > 64 {
+        const ALLOWED_THREAD_COMMANDS: &[&str] = &[
+            "thread ls", "thread show", "thread turns", "thread prompt",
+            "thread answer", "thread plan approve", "thread plan revise",
+        ];
+        if !ALLOWED_THREAD_COMMANDS.contains(&command) {
             return Err(SessionError::InvalidInput);
         }
         for value in [thread, secondary] {
@@ -1409,6 +1413,10 @@ mod tests {
         assert_eq!(
             session.thread_action(None, "thread ls", None, None, None),
             Err(SessionError::StaleHandle)
+        );
+        assert_eq!(
+            session.thread_action(None, "thread arbitrary", None, None, None),
+            Err(SessionError::InvalidInput)
         );
         assert_eq!(
             session.thread_action(

@@ -1,5 +1,5 @@
 ---
-digest: 50a14746b8dcf3d78da9850d7a1035869af0d14b7e59bfde5e42d70b321d64ed
+digest: 4f7bf8290e6d93e5a5dc1ebfeb30af6b3d493c2a21c8de926972cd5ac1989223
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple sharing request ID validation
+generation fencing for Apple machine sharing requests

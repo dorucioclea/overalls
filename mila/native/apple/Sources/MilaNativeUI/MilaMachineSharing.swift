@@ -42,11 +42,15 @@ public final class MilaMachineSharingController: ObservableObject {
     private var machine: MilaMachinePresentation?
     private var authenticated = false
     private var task: Task<Void, Never>?
+    private var generation: UInt64 = 0
 
     public init(adapter: any MilaFFIAdapter) { self.adapter = adapter }
     deinit { task?.cancel() }
 
     public func setSession(signedIn: Bool, machine: MilaMachinePresentation?) {
+        generation &+= 1
+        task?.cancel()
+        task = nil
         authenticated = signedIn
         self.machine = signedIn ? machine : nil
         state = signedIn ? (machine == nil ? .idle : .idle) : .signedOut
@@ -54,6 +58,9 @@ public final class MilaMachineSharingController: ObservableObject {
 
     public func select(machine: MilaMachinePresentation?) {
         guard authenticated else { return }
+        generation &+= 1
+        task?.cancel()
+        task = nil
         self.machine = machine
         state = .idle
     }
@@ -66,13 +73,14 @@ public final class MilaMachineSharingController: ObservableObject {
         do { principal = try MilaSharePrincipal(raw) }
         catch { state = .failed(machineID: machine.id, principal: nil, remove: remove, error: .invalidPrincipal); return }
         state = .submitting(machineID: machine.id, principal: principal, remove: remove)
+        let requestGeneration = generation
         task = Task { [adapter] in
             do {
                 try await adapter.submitShare(principal, role: remove ? nil : role, machine: machine, remove: remove, requestID: requestID)
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, requestGeneration == generation, authenticated else { return }
                 state = .applied(machineID: machine.id, principal: principal, remove: remove)
             } catch {
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, requestGeneration == generation, authenticated else { return }
                 state = .failed(machineID: machine.id, principal: principal, remove: remove, error: (error as? MilaMachineSharingError) ?? .unavailable)
             }
         }

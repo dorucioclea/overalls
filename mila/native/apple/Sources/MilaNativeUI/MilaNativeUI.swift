@@ -12,6 +12,8 @@ public struct MilaNativeRootView: View {
     @State private var showCreate = false
     @StateObject private var appLock = MilaAppLockController()
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("mila.appearance") private var appearance = "system"
+    @AppStorage("mila.locale") private var locale = "en"
 
     public init(adapter: any MilaFFIAdapter = LinkedMilaFFIAdapter(), snapshot: MilaValidatedSnapshot? = nil) {
         self.adapter = adapter
@@ -47,7 +49,11 @@ public struct MilaNativeRootView: View {
                 status = result ? MilaStrings.text(.actionSubmitted) : MilaStrings.text(.actionNotSubmitted)
                 if result { Task { await refresh() } }
             }
-        }.milaDesignSystem().onChange(of: session.state) { _, state in
+        }
+        .milaDesignSystem()
+        .preferredColorScheme(appearance == "light" ? .light : appearance == "dark" ? .dark : nil)
+        .environment(\.locale, Locale(identifier: MilaStrings.canonicalLocale(locale)))
+        .onChange(of: session.state) { _, state in
             let signedIn: Bool
             if case .signedIn(_, _) = state { signedIn = true } else { signedIn = false }
             deepLinkRouter.setSession(signedIn: signedIn)

@@ -98,7 +98,7 @@ class MilaThreadDetailTest {
 
     @Test fun planApprovalRequiresPlanIdentity() = runBlocking {
         val controller = MilaThreadDetailController(ThreadAdapter())
-        controller.setSession(true, listing)
+        controller.setSession(true, MilaThreadListing(listOf(MilaThreadRow(id, "deploy", "active")), false))
         controller.select(id)
         assertFalse(controller.submit(MilaThreadCommand.PlanApprove))
         assertTrue(controller.state is MilaThreadActionState.Failed)

@@ -62,7 +62,7 @@ internal static class MilaExternalActivationParser
     /// </remarks>
     internal static MilaExternalActivation? ParseArguments(string? arguments)
     {
-        if (string.IsNullOrWhiteSpace(arguments) || arguments.Length > MaxActivationText) return null;
+        if (string.IsNullOrWhiteSpace(arguments) || arguments.Length > MaxActivationText || arguments.Any(char.IsControl)) return null;
         string value = arguments.Trim();
         const string marker = "--share";
         if (value.StartsWith(marker, StringComparison.Ordinal))

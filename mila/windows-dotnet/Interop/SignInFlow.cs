@@ -22,7 +22,9 @@ internal sealed record MilaApprovalInfo(string Url, string Fingerprint, ulong Is
             url.Any(char.IsControl) || fingerprint.Any(char.IsControl) ||
             !Uri.TryCreate(url, UriKind.Absolute, out Uri? parsed) ||
             parsed.Scheme != Uri.UriSchemeHttps || parsed.Host.Length == 0 ||
-            parsed.UserInfo.Length != 0 || parsed.Port is not (-1 or 443))
+            Uri.CheckHostName(parsed.Host) is UriHostNameType.Unknown ||
+            parsed.UserInfo.Length != 0 || parsed.Port is not (-1 or 443) ||
+            parsed.Fragment.Length != 0)
             return null;
         return new(url, fingerprint, issuedAt);
     }
@@ -106,6 +108,19 @@ internal sealed class MilaSignInFlow
             if (generation != _state.Generation || _state.Phase != MilaSignInPhase.SignedIn) return false;
             _state = _state with { Phase = MilaSignInPhase.Disconnected };
             return true;
+        }
+    }
+
+    /// Starts a fresh transport generation after an established connection is
+    /// lost. The prior approval is discarded and cannot authenticate it.
+    internal long? Reconnect()
+    {
+        lock (_gate)
+        {
+            if (_state.Phase != MilaSignInPhase.Disconnected) return null;
+            long generation = checked(_state.Generation + 1);
+            _state = new(MilaSignInPhase.Connecting, generation, null, _state.Account, null);
+            return generation;
         }
     }
 

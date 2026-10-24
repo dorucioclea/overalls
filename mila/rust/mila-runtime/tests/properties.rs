@@ -5,6 +5,7 @@ use mila_runtime::{
     MAX_SNAPSHOT_BYTES,
 };
 use mila_runtime::{AttachOutcome, AttachPhase, TerminalAttach};
+use mila_runtime::{AttachHeader, AttachMode};
 use mila_runtime::{MutationPhase, MutationTracker, NextAction};
 use mila_runtime::{PokeEnvelope, RuntimeError, SnapshotStore};
 use mila_runtime::{PushEnvironment, PushProvider, PushRegistrationRequest};
@@ -55,6 +56,30 @@ fn terminal_reconnect_rejects_stale_generation_output(tc: TestCase) {
     assert!(!state.output(first, bytes));
     assert_eq!(state.cursor(), cursor_before_stale);
     assert!(state.output(second, bytes));
+}
+
+#[hegel::test(test_cases = 128)]
+fn terminal_write_capability_tracks_current_grant_and_user_restriction(tc: TestCase) {
+    let requested_read_only = tc.draw(gs::default::<bool>());
+    let mode = if tc.draw(gs::default::<bool>()) {
+        AttachMode::ReadWrite
+    } else {
+        AttachMode::ReadOnly
+    };
+    let mut state = TerminalAttach::initial();
+    state.set_read_only(requested_read_only);
+    assert!(!state.can_send_input());
+    assert!(!state.can_resize());
+    assert!(state.request());
+    let generation = state.generation();
+    assert!(state.header(
+        generation,
+        Some(AttachHeader::Attached { from: 0, mode }),
+    ));
+    let expected_write = mode == AttachMode::ReadWrite && !requested_read_only;
+    assert_eq!(state.can_send_input(), expected_write);
+    assert_eq!(state.can_resize(), expected_write);
+    assert_eq!(state.read_only(), requested_read_only || mode == AttachMode::ReadOnly);
 }
 
 #[derive(Default)]

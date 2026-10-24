@@ -27,6 +27,7 @@ final class MilaRouteTests: XCTestCase {
             "overalls://overalls.example/machines/not-a-uuid",
             "overalls://overalls.example/machines/%2F\(machineID)",
             "overalls://user@machines",
+            "overalls://overalls.example:8443/machines",
         ]
         for value in invalid {
             XCTAssertNil(MilaRouteParser.parse(value), "unexpectedly accepted \(value)")

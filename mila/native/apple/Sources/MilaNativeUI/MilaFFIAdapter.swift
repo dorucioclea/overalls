@@ -22,7 +22,7 @@ public enum MilaRouteParser {
         guard !value.isEmpty, bytes.count <= 2048,
               !value.unicodeScalars.contains(where: { $0.value < 0x20 || $0.value == 0x7f }),
               let url = URL(string: value), url.scheme == "overalls",
-              url.user == nil, url.fragment == nil, url.query == nil,
+              url.user == nil, url.port == nil, url.fragment == nil, url.query == nil,
               !value.contains("%") else { return nil }
         guard let host = url.host, !host.isEmpty, host.utf8.count <= 253,
               !host.unicodeScalars.contains(where: { $0.value < 0x21 || $0.value == 0x7f }) else { return nil }

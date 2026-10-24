@@ -355,6 +355,7 @@ private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean, appLo
             }
         }
         MilaSshKeysPanel(adapter, signedIn)
+        MilaNotificationsPanel(adapter, signedIn)
     }
 }
 
@@ -636,3 +637,35 @@ private fun controllerSelect(controller: MilaMachineDetailController, command: S
     }
 }
 @Composable private fun Detail(title: String, value: String) { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) { Text(title, style = MaterialTheme.typography.titleLarge); Text(value, style = MaterialTheme.typography.bodyMedium) } }
+
+@Composable
+private fun MilaNotificationsPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
+    val context = LocalContext.current
+    val store = remember { MilaPreferencesNotificationStore(context.getSharedPreferences("mila.notifications", 0)) }
+    val controller = remember(store) { MilaAuthenticatedNotificationController(adapter, store, "mila", "selected") }
+    var devices by remember(controller) { mutableStateOf(controller.devices) }
+    LaunchedEffect(signedIn) {
+        if (signedIn) controller.signIn() else controller.signOut()
+        devices = controller.devices
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(MilaStrings.text(MilaMessage.NotificationsTitle), style = MaterialTheme.typography.titleMedium)
+        if (!signedIn) {
+            Text(MilaStrings.text(MilaMessage.RuntimeUnavailable), style = MaterialTheme.typography.labelSmall)
+        } else if (devices.isEmpty()) {
+            Text(MilaStrings.text(MilaMessage.NoAction), style = MaterialTheme.typography.labelSmall)
+        } else {
+            devices.forEach { device ->
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(device.id, modifier = Modifier.width(160.dp))
+                    Button(onClick = { controller.setEnabled(device.id, !device.enabled); devices = controller.devices }) {
+                        Text("${MilaStrings.text(MilaMessage.NotificationEnabled)}: ${device.enabled}")
+                    }
+                    Button(onClick = { controller.remove(device.id); devices = controller.devices }) {
+                        Text(MilaStrings.text(MilaMessage.NotificationRemove))
+                    }
+                }
+            }
+        }
+    }
+}

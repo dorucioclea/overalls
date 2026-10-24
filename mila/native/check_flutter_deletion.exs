@@ -40,7 +40,7 @@ defmodule MilaFlutterDeletionGate do
   @spec flutter_reference_check(Path.t()) :: [check()]
   defp flutter_reference_check(root) do
     {output, status} = System.cmd("rg", ["-l", "(flutter|dart|buildFlutterApplication)", root, "--glob", "!.git/**", "--glob", "!mila/native/check_flutter_deletion.exs"], stderr_to_stdout: true)
-    files = output |> String.split("\\n", trim: true)
+    files = output |> String.split("\n", trim: true)
     [%{name: "Flutter references", ok: status == 1 and files == [], detail: if(files == [], do: "none", else: Enum.join(files, ", "))}]
   end
 end

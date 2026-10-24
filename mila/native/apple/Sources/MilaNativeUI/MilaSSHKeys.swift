@@ -15,7 +15,10 @@ public struct MilaSSHKey: Identifiable, Equatable, Sendable {
     public static func validated(id: UUID, fingerprint: String, algorithm: String, label: String? = nil, isCurrentDevice: Bool = false) -> MilaSSHKey? {
         guard !fingerprint.isEmpty, fingerprint.utf8.count <= 256,
               !algorithm.isEmpty, algorithm.utf8.count <= 128,
-              label?.utf8.count ?? 0 <= 256 else { return nil }
+              label?.utf8.count ?? 0 <= 256,
+              !fingerprint.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.properties.generalCategory == .control }),
+              !algorithm.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.properties.generalCategory == .control }),
+              !(label ?? "").unicodeScalars.contains(where: { $0.properties.generalCategory == .control }) else { return nil }
         return MilaSSHKey(id: id, fingerprint: fingerprint, algorithm: algorithm, label: label, isCurrentDevice: isCurrentDevice)
     }
 }

@@ -1,5 +1,5 @@
 ---
-digest: 9a72ca7e63d2514d78bc6b2c97a89b5c82ec88867e193e94e9e1d7e87c964f9c
+digest: bb9cef0064ae7b9fe08c865a5bcfd55eb86a0db3298c671a68bdf6e8509e7f98
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Apple SSH key validation changes; no architecture impact.
+native_ssh_projection_validation

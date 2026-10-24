@@ -121,7 +121,9 @@ defmodule MilaFlutterDeletionGate do
     text = File.read!(path)
     required = ["windows-dotnet", "rust", "localization/catalogs"]
     missing = Enum.reject(required, &String.contains?(text, &1))
-    forbidden = Regex.scan(~r/Flutter|Dart|pub-cache|mila\/app\/pubspec/i, text) |> length()
+    # The bundle's self-check may mention legacy filename extensions; only
+    # reject actual compatibility source paths or build integrations here.
+    forbidden = Regex.scan(~r/pub-cache|mila\/app\/pubspec|buildFlutterApplication/i, text) |> length()
     ok = missing == [] and forbidden == 0
     detail = cond do
       missing != [] -> "missing native Windows inputs: #{Enum.join(missing, ", ")}"

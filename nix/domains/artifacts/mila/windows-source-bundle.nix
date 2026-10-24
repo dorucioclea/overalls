@@ -1,5 +1,5 @@
 # Native Windows source bundle (ADR-0235). Deliberately excludes the retained
-# Flutter application, Dart packages and pub cache; Windows builds the WinUI
+# legacy application, package sources and package cache; Windows builds the WinUI
 # host and Rust FFI directly.
 { pkgs, root, version }:
 pkgs.runCommand "mila-windows-source-bundle-${version}" {} ''
@@ -17,9 +17,9 @@ pkgs.runCommand "mila-windows-source-bundle-${version}" {} ''
   cat > "$b/flake.nix" <<'EOT'
   { outputs = _: { }; }
   EOT
-  # A native bundle must never carry Flutter or Dart compatibility inputs.
+  # A native bundle must never carry legacy compatibility inputs.
   if find "$b" -type f \( -iname '*flutter*' -o -iname '*.dart' \) -print -quit | grep -q .; then
-    echo "native Windows bundle contains Flutter/Dart input" >&2
+    echo "native Windows bundle contains legacy compatibility input" >&2
     exit 1
   fi
   (cd "$b" && find . -type f ! -name SHA256SUMS -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS)

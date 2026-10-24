@@ -17,6 +17,18 @@ final class MilaDeepLinkRouterTests: XCTestCase {
         XCTAssertFalse(router.accepts(decision, generation: generation))
     }
 
+    func testSignedOutDecisionCannotBeAcceptedAfterSessionReset() {
+        var router = MilaDeepLinkRouter()
+        router.setSession(signedIn: true)
+        let authenticated = router.decide("overalls://fleet.example/machines")
+        guard case .open(_, let generation) = authenticated else { return XCTFail("expected open") }
+        router.setSession(signedIn: false)
+        let signedOut = router.decide("overalls://fleet.example/machines")
+        XCTAssertEqual(signedOut, .signedOut(.machines))
+        XCTAssertFalse(router.accepts(signedOut, generation: generation))
+        XCTAssertFalse(router.accepts(authenticated, generation: generation))
+    }
+
     func testMalformedLinksAreUnknown() {
         var router = MilaDeepLinkRouter()
         router.setSession(signedIn: true)

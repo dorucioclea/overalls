@@ -18,7 +18,7 @@ internal enum class MilaMessage(val catalogId: String) {
 
 internal object MilaStrings {
     /** Locale bundles shipped by the native Android artifact. Keep this list bounded and typed. */
-    val supportedLocales: List<String> = listOf("en", "fr-FR", "de", "es", "ja", "ar")
+    val supportedLocales: List<String> = listOf("en", "fr-FR", "de", "es", "ja", "ar", "he")
     private var catalog: Map<String, String> = emptyMap()
     private val english = mapOf(
         MilaMessage.AppName to "Mila", MilaMessage.Machines to "Machines", MilaMessage.Threads to "Threads",

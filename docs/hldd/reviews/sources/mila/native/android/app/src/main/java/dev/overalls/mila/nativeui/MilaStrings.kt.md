@@ -1,5 +1,5 @@
 ---
-digest: abf55ede590d93bc31d84cdb1fb311a4070b6f3ee51cefba8bd33e9986e5ea5e
+digest: a0ac0049700ee0fda0c6e2d13cb1541aae0a18177ba9679b9c98c0e3b4b2c1d2
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android deployment forget and localized label changes; native parity evidence only.
+Android shared locale catalog includes Hebrew RTL option

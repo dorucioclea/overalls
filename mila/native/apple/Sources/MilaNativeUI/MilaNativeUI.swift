@@ -228,8 +228,11 @@ private struct MachineDetailView: View {
         Task {
             defer { webLoading = false }
             do {
-                let endpoint = try await adapter.webEndpoint(machine: machineID)
-                guard webControls.openAuthenticated(endpoint, sessionActive: signedIn) else { return }
+                let projection = try await adapter.webEndpointProjection(machine: machineID)
+                let endpoint = try projection.endpoint(for: machineID)
+                guard webControls.openAuthenticated(endpoint, sessionActive: signedIn,
+                                                    policyRevision: projection.policyRevision,
+                                                    expectedRevision: projection.policyRevision) else { return }
                 showWeb = true
             } catch {
                 webControls.clear()

@@ -33,6 +33,7 @@ defmodule ZFSGuestFixture do
     id = "dddddddd-dddd-4ddd-8ddd-" <> String.pad_leading(to_string(number), 12, "0")
 
     action = System.fetch_env!("ZFS_ACTION")
+    generation = System.fetch_env!("ZFS_GENERATION") |> String.to_integer()
     downsized? = String.starts_with?(action, "downsized-")
     resized? = String.starts_with?(action, "resized-") or downsized?
 
@@ -58,6 +59,13 @@ defmodule ZFSGuestFixture do
 
     spec =
       if resized?,
+        do: %{spec | vcpu: 2, memory_bytes: grown_memory_bytes, disk_bytes: grown_disk_bytes},
+        else: spec
+
+    # Android lifecycle probes restart the resized shape after the explicit
+    # resize step; keep the persisted descriptor and launch spec identical.
+    spec =
+      if System.get_env("ZFS_GUEST_ANDROID") == "1" and generation >= 4,
         do: %{spec | vcpu: 2, memory_bytes: grown_memory_bytes, disk_bytes: grown_disk_bytes},
         else: spec
 
@@ -98,8 +106,6 @@ defmodule ZFSGuestFixture do
         jailer: tools["jailer"],
         unshare: tools["unshare"]
       })
-
-    generation = System.fetch_env!("ZFS_GENERATION") |> String.to_integer()
 
     case action do
       recovery when recovery in ["actor-recovery", "beam-crash", "beam-recover"] ->
@@ -477,6 +483,23 @@ defmodule ZFSGuestFixture do
 
       "android-stop" ->
         :ok = Driver.stop(config, pool, spec, generation: generation)
+
+      "android-resize" ->
+        # Exercise the same stopped-unit resize path used by production Android
+        # machines.  The target grows CPU, memory and disk while preserving the
+        # image, pool and guest network identity.
+        target = %{
+          spec
+          | vcpu: 2,
+            memory_bytes: spec.memory_bytes + 268_435_456,
+            disk_bytes: spec.disk_bytes + 1_073_741_824
+        }
+
+        :ok =
+          Driver.resize(config, pool, spec, target,
+            request_id: "android-resize-#{generation}",
+            revision: generation
+          )
 
       "android-delete" ->
         :ok = Driver.delete(config, pool, spec, generation: generation)

@@ -18,10 +18,11 @@ final class MilaDeploymentSessionTests: XCTestCase {
     func testFailedReconnectFencesPriorAuthenticatedGeneration() {
         let suite = "mila.session.\(UUID().uuidString)"; let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
         let store = MilaDeploymentStore(defaults: defaults); let value = deployment(); XCTAssertTrue(store.upsert(value))
-        var attempts = 0
+        final class AttemptCounter: @unchecked Sendable { nonisolated(unsafe) var value = 0 }
+        let attempts = AttemptCounter()
         let coordinator = MilaDeploymentSessionCoordinator(store: store, defaults: defaults) { _ in
-            attempts += 1
-            if attempts == 1 { return UnavailableMilaFFIAdapter() }
+            attempts.value += 1
+            if attempts.value == 1 { return UnavailableMilaFFIAdapter() }
             throw NSError(domain: "test", code: 1)
         }
         XCTAssertTrue(coordinator.signIn(value)); let oldGeneration = coordinator.currentGeneration()

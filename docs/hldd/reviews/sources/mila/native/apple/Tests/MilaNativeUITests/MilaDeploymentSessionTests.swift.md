@@ -1,5 +1,5 @@
 ---
-digest: 3fedfc480804e77c19d5b51b587641b395b92b89b91f4812058cf6001d9ec242
+digest: b6af32ac8ac5cfdcefe17663201c6b6d09f008c401a0b6c70d1ea8237912741f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple reconnect failure fences prior authenticated generation
+Reviewed concurrency-safe Apple reconnect test counter; verification scope unchanged.

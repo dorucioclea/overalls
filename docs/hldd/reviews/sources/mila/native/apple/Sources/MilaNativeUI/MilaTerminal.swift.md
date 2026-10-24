@@ -1,5 +1,5 @@
 ---
-digest: 99b5bb51887acd39aba82435f53aac7b19f6cd72f4e5aecd3392b6e54ab147f7
+digest: e3dbdda7ad038299630de88410185a9cbae908d3ce8a78d454be70e81b1f8c33
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android PTY polling stays inside existing native terminal boundary and adds no documented architecture or behavior surface.
+Apple terminal receive generation fencing rejects stale PTY output after reconnect

@@ -100,6 +100,7 @@ public final class MilaTerminalController: ObservableObject {
     private let transport: any MilaTerminalTransport
     private var lastAttach: (from: UInt64, columns: UInt16, rows: UInt16, readWrite: Bool)?
     private var receiveTask: Task<Void, Never>?
+    private var generation: UInt64 = 0
 
     public init(transport: any MilaTerminalTransport = MilaNoopTerminalTransport()) {
         self.transport = transport
@@ -109,6 +110,7 @@ public final class MilaTerminalController: ObservableObject {
         guard validateAttach(from: from, columns: columns, rows: rows, readWrite: readWrite) else {
             state = .failed; return
         }
+        generation &+= 1
         state = .attaching
         do {
             try await transport.attach(from: from, columns: columns, rows: rows, readWrite: readWrite)
@@ -122,6 +124,7 @@ public final class MilaTerminalController: ObservableObject {
     public func reconnect() async {
         guard let request = lastAttach else { state = .failed; return }
         state = .reconnecting
+        generation &+= 1
         receiveTask?.cancel()
         await transport.close()
         do {
@@ -155,25 +158,27 @@ public final class MilaTerminalController: ObservableObject {
 
     public func close() async {
         receiveTask?.cancel(); receiveTask = nil
+        generation &+= 1
         await transport.close(); state = .detached; lastAttach = nil; output.removeAll(keepingCapacity: true)
     }
 
     private func startReceiving() {
         receiveTask?.cancel()
         let transport = self.transport
+        let generation = self.generation
         receiveTask = Task { [weak self] in
             do {
                 while !Task.isCancelled {
                     guard let bytes = try await transport.receiveOutput() else { break }
                     guard !bytes.isEmpty else { continue }
                     await MainActor.run { [weak self] in
-                        guard let self, self.state == .attached else { return }
+                        guard let self, self.state == .attached, self.generation == generation else { return }
                         self.appendOutput(bytes)
                     }
                 }
             } catch {
                 await MainActor.run { [weak self] in
-                    guard let self, self.state == .attached else { return }
+                    guard let self, self.state == .attached, self.generation == generation else { return }
                     self.state = .failed
                 }
             }

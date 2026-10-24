@@ -1,5 +1,5 @@
 ---
-digest: a85f283ef4f4275f0234edc6dc3067123577f9e845e28d774473c40d04549c7f
+digest: d88eebe90f17b6c7594f104823abec6bddf9ea221bfdea486db98dcbd623673f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/linux/src/persistence.rs
+Linux persistence settings reads enforce owner-only permissions

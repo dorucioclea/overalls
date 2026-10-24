@@ -20,6 +20,18 @@ fn restrict_permissions(path: &std::path::Path) -> io::Result<()> {
     Ok(())
 }
 
+fn require_owner_only(path: &std::path::Path) -> Result<(), PersistenceError> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let metadata = fs::metadata(path)?;
+        if metadata.permissions().mode() & 0o077 != 0 {
+            return Err(PersistenceError::InvalidData);
+        }
+    }
+    Ok(())
+}
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub(crate) struct DeploymentSelection {
     pub(crate) host: String,
@@ -160,11 +172,12 @@ fn settings_path() -> Option<PathBuf> {
 
 pub(crate) fn load() -> Result<Option<DeploymentSelection>, PersistenceError> {
     let Some(path) = path() else { return Ok(None) };
-    let bytes = match fs::read(path) {
+    let bytes = match fs::read(&path) {
         Ok(bytes) => bytes,
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error.into()),
     };
+    require_owner_only(&path)?;
     if bytes.len() > MAX_PERSISTED_BYTES {
         return Err(PersistenceError::InvalidData);
     }
@@ -209,11 +222,12 @@ pub(crate) fn load_settings() -> Result<Settings, PersistenceError> {
     let Some(path) = settings_path() else {
         return Ok(Settings::default());
     };
-    let bytes = match fs::read(path) {
+    let bytes = match fs::read(&path) {
         Ok(bytes) => bytes,
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Settings::default()),
         Err(error) => return Err(error.into()),
     };
+    require_owner_only(&path)?;
     if bytes.len() > MAX_PERSISTED_BYTES {
         return Err(PersistenceError::InvalidData);
     }
@@ -307,5 +321,18 @@ mod tests {
                 .direction(),
             LocaleDirection::Rtl
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn settings_load_rejects_group_accessible_file() {
+        use std::os::unix::fs::PermissionsExt;
+        let path = std::env::temp_dir().join(format!("mila-settings-{}.json", std::process::id()));
+        std::env::set_var("MILA_SETTINGS_PATH", &path);
+        fs::write(&path, br#"{"appearance":"System","locale":"en"}"#).unwrap();
+        fs::set_permissions(&path, fs::Permissions::from_mode(0o640)).unwrap();
+        assert!(matches!(load_settings(), Err(PersistenceError::InvalidData)));
+        let _ = fs::remove_file(&path);
+        std::env::remove_var("MILA_SETTINGS_PATH");
     }
 }

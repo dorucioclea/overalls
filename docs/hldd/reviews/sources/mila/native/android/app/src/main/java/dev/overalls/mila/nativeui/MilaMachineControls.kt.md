@@ -1,5 +1,5 @@
 ---
-digest: 5b79b3f38fa0d595b55f147a951909ba29b196791a4ca6a8a11ed24a9eeeaaf0
+digest: d69b1e00b7e68af9ccacc2b05e7024e55d47c516e300c7b3393836407a75ed4d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-PTY polling stays inside existing native Android terminal boundary and adds no documented architecture or behavior surface.
+Concurrent Android machine control test review preserves behavior

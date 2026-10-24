@@ -53,7 +53,11 @@ class MilaTerminalController(private val adapter: MilaFfiAdapter, private val so
  val renderer = MilaTerminalRenderer()
  fun attach(readWrite: Boolean): Boolean = adapter.terminalAttach(0, state.columns, state.rows, readWrite).isSuccess.also { if (it) state = state.copy(phase = if (readWrite) MilaTerminalPhase.Attached else MilaTerminalPhase.ReadOnly) }
  fun reconnect(readWrite: Boolean = state.phase == MilaTerminalPhase.Attached): Boolean { if (state.phase == MilaTerminalPhase.Closed) state = state.copy(phase = MilaTerminalPhase.Idle); return attach(readWrite) }
- fun input(length: Int): Boolean = state.phase == MilaTerminalPhase.Attached && adapter.terminalInput(length, true).isSuccess
+ /** Send a bounded input payload only while attached read/write. */
+ fun input(length: Int): Boolean =
+  length in 0..MAX_READ_BYTES &&
+   state.phase == MilaTerminalPhase.Attached &&
+   adapter.terminalInput(length, true).isSuccess
  fun receive(bytes: ByteArray): Boolean {
   if (state.phase != MilaTerminalPhase.Attached && state.phase != MilaTerminalPhase.ReadOnly) return false
   if (bytes.size > MAX_READ_BYTES) return false

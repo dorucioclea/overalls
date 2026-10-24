@@ -30,8 +30,6 @@ class MilaAppLockTest {
         state = state.finishUnlock(token, true)
         assertEquals(MilaLockPhase.Unlocked, state.phase)
     }
-}
-
     @Test fun unavailableAuthenticatorCannotEnableOrUnlock() {
         val store = object : MilaAppLockStore {
             var value: MilaAppLockState? = null

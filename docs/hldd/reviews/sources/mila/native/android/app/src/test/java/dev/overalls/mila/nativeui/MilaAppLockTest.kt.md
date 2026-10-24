@@ -1,5 +1,5 @@
 ---
-digest: 287d78346d7ff0a29e7dbf642c9701407ee46b5d8777b1dc103315a62e2ab7be
+digest: d279b60314ca3a11c28040f0a98474f2b73a4e2daee8c1fddd7b5a0f3f73e618
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed Android unit test compatibility correction; no architecture change.
+Android app lock test syntax correction preserves documented behavior

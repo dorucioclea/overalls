@@ -1131,7 +1131,12 @@ impl NativeState {
                         return;
                     }
                     match live.web_set(&machine_id, port, public, revision, request_id) {
-                        Ok(()) => status.set_label("Web endpoint change submitted."),
+                        Ok(()) => {
+                            // A mutation invalidates the previously decoded URL;
+                            // require a fresh authenticated `web show` before launch.
+                            endpoint_state.borrow_mut().take();
+                            status.set_label("Web endpoint change submitted.");
+                        }
                         Err(_) => status.set_label("Web endpoint change rejected."),
                     }
                 }

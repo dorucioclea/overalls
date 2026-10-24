@@ -81,6 +81,11 @@ impl NotificationState {
         }
     }
 
+    /// Disables local notification presentation without changing capability.
+    pub const fn disable(&mut self) {
+        self.enabled = false;
+    }
+
     /// Returns whether this host can display a local desktop notification.
     pub const fn can_display_locally(&self) -> bool {
         matches!(self.capability, NotificationCapability::LocalDesktop)
@@ -114,6 +119,8 @@ mod tests {
         assert!(state.can_display_locally());
         assert_eq!(state.enable(), Ok(()));
         assert!(state.enabled());
+        state.disable();
+        assert!(!state.enabled());
         assert_eq!(
             state.register(),
             Err(NotificationUnavailable::NoPushProvider)

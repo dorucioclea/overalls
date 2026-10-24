@@ -1,5 +1,5 @@
 ---
-digest: 8b918d63ca35501c5f1597c9e48089b9880ec040311d51aed53f6e19995aac9e
+digest: 2b9110d14f0b0d04799c401921780dd451ec3886ee7b85260995279bd757f262
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Linux native changes; accepted architecture and behavior unchanged.
+Linux notification disable lifecycle preserves capability and fail-closed state

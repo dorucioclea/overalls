@@ -1,5 +1,5 @@
 ---
-digest: 71c202b4ddd3a8dc30d1452adfc6de8bce1650fc230b9badf5c7c2a0bac36adb
+digest: 2fee4eab5b1fc92f64acf8ad8058e14341253088825526caa93f6b42b55b0374
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows machine refresh generation fence preserves documented session behavior
+Windows locale settings apply RTL flow direction and expose RTL locales.

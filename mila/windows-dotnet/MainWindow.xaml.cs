@@ -118,7 +118,7 @@ public sealed partial class MainWindow : Window
         LockButton.Content = S("lockTitle", "Lock app");
         LockStatus.Text = S("lockUnavailable", "App lock is unavailable until Windows Hello is configured.");
         SettingsHelp.Text = S("settingsOffline", "Runtime settings are managed by the core library.");
-        LocalePicker.ItemsSource = new[] { "en", "en-GB", "fr", "de", "es", "ja" };
+        LocalePicker.ItemsSource = new[] { "en", "en-GB", "fr", "de", "es", "ja", "ar", "he" };
         SaveSettings.Content = S("settingsSave", "Save settings");
         SettingsStatus.Text = S("ready", "Ready");
         _ = RefreshLockAvailabilityAsync();
@@ -556,6 +556,9 @@ public sealed partial class MainWindow : Window
         LocalePicker.SelectedItem = settings.Locale;
         if (LocalePicker.SelectedItem is null) LocalePicker.SelectedItem = "en";
         DarkModeToggle.IsOn = settings.DarkMode;
+        Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
+            ? FlowDirection.RightToLeft
+            : FlowDirection.LeftToRight;
     }
 
     private void SaveSettingsClicked(object sender, RoutedEventArgs args)
@@ -563,7 +566,11 @@ public sealed partial class MainWindow : Window
         string locale = LocalePicker.SelectedItem?.ToString() ?? "en";
         try
         {
-            MilaSettingsStore.Save(new MilaSettings(locale, DarkModeToggle.IsOn));
+            MilaSettings settings = new(locale, DarkModeToggle.IsOn).Normalize();
+            MilaSettingsStore.Save(settings);
+            Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
+                ? FlowDirection.RightToLeft
+                : FlowDirection.LeftToRight;
             SettingsStatus.Text = S("settingsSaved", "Settings saved");
         }
         catch (ArgumentException) { SettingsStatus.Text = S("settingsInvalid", "Locale rejected by core policy."); }

@@ -52,6 +52,7 @@ final class MilaDeploymentSessionTests: XCTestCase {
     func testDeploymentStoreRejectsUnsafeHostAndOversizedTrust() {
         let suite = "mila.session.\(UUID().uuidString)"; let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
         let store = MilaDeploymentStore(defaults: defaults)
+        XCTAssertFalse(store.upsert(MilaDeployment(id: .zero, host: "mila.example", port: 22, trust: Data([1]))))
         XCTAssertFalse(store.upsert(deployment("bad host.example")))
         XCTAssertFalse(store.upsert(MilaDeployment(host: "-bad.example", port: 22, trust: Data([1]))))
         XCTAssertFalse(store.upsert(MilaDeployment(host: "mila.example", port: 22, trust: Data(repeating: 1, count: 65_537))))

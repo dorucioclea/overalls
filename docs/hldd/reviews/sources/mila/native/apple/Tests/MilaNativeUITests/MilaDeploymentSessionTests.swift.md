@@ -1,5 +1,5 @@
 ---
-digest: 2a1558461667c074468d65f001983c51572474c2870ad65c6bb1bb80e765dfc9
+digest: d9ff733f07908377c919f330d2f6e35e4cc0a4a8cfdeef4f58e38a7db53d1002
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fence authenticated session when switching deployments
+bound deployment persistence and reject zero identifiers

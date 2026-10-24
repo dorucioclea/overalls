@@ -1,5 +1,7 @@
 import Foundation
 
+public extension UUID { static let zero = UUID(uuid: (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)) }
+
 public struct MilaDeployment: Codable, Identifiable, Equatable, Sendable {
     public let id: UUID
     public var host: String
@@ -19,7 +21,7 @@ public final class MilaDeploymentStore: @unchecked Sendable {
     public init(defaults: UserDefaults = .standard) { self.defaults = defaults }
     public func list() -> [MilaDeployment] {
         guard let data = defaults.data(forKey: key), let values = try? JSONDecoder().decode([MilaDeployment].self, from: data) else { return [] }
-        return values.filter(Self.valid)
+        return Array(values.filter(Self.valid).prefix(128))
     }
     @discardableResult public func upsert(_ deployment: MilaDeployment) -> Bool {
         guard Self.valid(deployment) else { return false }
@@ -32,7 +34,7 @@ public final class MilaDeploymentStore: @unchecked Sendable {
         else if let data = try? JSONEncoder().encode(remaining) { defaults.set(data, forKey: key) }
     }
     private static func valid(_ value: MilaDeployment) -> Bool {
-        guard !value.host.isEmpty, value.host.utf8.count <= 253, value.port > 0,
+        guard value.id != UUID.zero, !value.host.isEmpty, value.host.utf8.count <= 253, value.port > 0,
               !value.trust.isEmpty, value.trust.count <= 64 * 1024 else { return false }
         let labels = value.host.split(separator: ".", omittingEmptySubsequences: false)
         return !labels.contains(where: { label in

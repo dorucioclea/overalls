@@ -1,5 +1,5 @@
 ---
-digest: 33a70bd92cfa1ffd678445c13496c6caf85015dcbdad0c4354c99e77ab322111
+digest: 2f1e9a14bdac5f4ee9501a62cf363f5fed4a058d8d09b77b21177f3770ea1de8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/linux/src/persistence.rs
+bound deployment persistence and reject zero identifiers

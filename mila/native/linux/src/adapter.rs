@@ -441,7 +441,10 @@ pub fn decode_web_endpoint(bytes: &[u8]) -> Result<WebEndpoint, RuntimeError> {
         || !route_matches_machine
         || (endpoint.visibility == "public" && endpoint.url.is_none())
         || endpoint.url.as_deref().is_some_and(|url| {
+            let host = url.strip_prefix("https://").unwrap_or("");
             url.len() > 2_048
+                || host.is_empty()
+                || host.starts_with(['/', ':'])
                 || !url.starts_with("https://")
                 || url.contains(['@', '#', ' ', '\t', '\n', '\r'])
         })

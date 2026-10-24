@@ -1,5 +1,5 @@
 ---
-digest: 3076317ba0b8a7999b1143a8b019079aab6a2b7416ee19ddb40774b7e0a0f649
+digest: e8b6ef600bde9f0d746d18a416a48040ac6637edf793c3698532282a351f49e1
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Windows activation payloads and preserve Linux adapter route validation
+Reject empty web endpoint hosts at Linux projection boundary

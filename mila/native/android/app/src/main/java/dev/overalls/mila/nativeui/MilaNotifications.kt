@@ -117,6 +117,9 @@ class MilaAuthenticatedNotificationController(
     private val delegate = MilaNotificationController(store)
     val devices: List<MilaNotificationDevice> get() = delegate.devices
 
+    /** Refreshes the projection after a provider callback or account change. */
+    fun refresh() = delegate.refresh()
+
     fun register(provider: MilaNotificationProvider, os: MilaNotificationOs): Boolean {
         if (!os.notificationsEnabled()) return false
         val id = provider.registrationId() ?: return false

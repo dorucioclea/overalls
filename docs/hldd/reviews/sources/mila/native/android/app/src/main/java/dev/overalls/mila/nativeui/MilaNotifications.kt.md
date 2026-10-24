@@ -1,5 +1,5 @@
 ---
-digest: 224976af8b3704830607aa9127305540fa80ad317ef0e2700bd59a6792b1888a
+digest: e03e65ea5f995ba8cd9d88de0d9898256d1a6f150ee1fa06da47b73a3cc81b91
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound notification channel identifiers before Android OS registration
+Android notification projection refresh keeps native device state current

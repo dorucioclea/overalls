@@ -1,5 +1,5 @@
 ---
-digest: 812571bf8fd3fd6704e5b14304d99fae4771bc72b1f80a787c90ff4994fbcee2
+digest: c3d79b398a64be39fdb98fc7548a6f1d8fd734f5a272e97ac9e2a3e347022269
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Removed duplicate Android resize adapter overload; no architecture change.
+Bound Android machine mutation request and web revision inputs before Rust FFI

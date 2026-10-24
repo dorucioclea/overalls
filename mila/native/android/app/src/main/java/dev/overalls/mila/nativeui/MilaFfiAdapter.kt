@@ -341,6 +341,7 @@ class MilaSessionHandle internal constructor(
     @Synchronized fun snapshot(): ByteArray { check(!closed); return bindings.sessionSnapshot(nativeHandle) ?: error("snapshot unavailable") }
     @Synchronized fun machineAction(machine: UUID, command: MilaMachineCommand, requestId: String): Result<Unit> = runCatching {
         check(!closed)
+        require(requestId.matches(Regex("^porsche-[0-9a-f]{32}$")))
         val action = when (command) { MilaMachineCommand.Start -> "start"; MilaMachineCommand.Stop -> "stop"; MilaMachineCommand.Pause -> "pause"; MilaMachineCommand.Resume -> "resume"; MilaMachineCommand.Delete -> "rm"; else -> throw IllegalArgumentException("command is not a mutation") }
         val status = bindings.sessionMachineAction(nativeHandle, machine.toString(), action, requestId)
         if (status != 0) error("machine action rejected")
@@ -355,6 +356,9 @@ class MilaSessionHandle internal constructor(
     }
     @Synchronized fun webSet(machine: UUID, port: Int, public: Boolean, revision: Long, requestId: String): Result<Unit> = runCatching {
         check(!closed)
+        require(port in 1..65_535)
+        require(revision > 0)
+        require(requestId.matches(Regex("^porsche-[0-9a-f]{32}$")))
         check(bindings.sessionWebSet(nativeHandle, machine.toString(), port, public, revision, requestId) == 0)
     }
     @Synchronized fun threadAction(thread: UUID, command: MilaThreadCommand, secondary: UUID? = null, input: String? = null, requestId: String? = null): Result<ByteArray> = runCatching {

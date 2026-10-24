@@ -1,5 +1,5 @@
 ---
-digest: c58b7eddbfd7fe89d6ad1f88ecd17df4e796a225e34f37dcf7b890f1e17903ee
+digest: 89301f512dea971bcd6c3397f8fe40fb97afcbd1d922b6e7f9acfbb675ec12da
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple endpoint host and port bounds preserve web security behavior
+WKWebView navigation remains HTTPS and same-origin

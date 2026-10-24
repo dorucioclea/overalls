@@ -95,14 +95,58 @@ public struct MilaWebView: View {
 #if os(iOS)
 struct MilaWebViewRepresentable: UIViewRepresentable {
     let url: URL
-    func makeUIView(context: Context) -> WKWebView { WKWebView(frame: .zero) }
-    func updateUIView(_ view: WKWebView, context: Context) { view.load(URLRequest(url: url)) }
+    func makeCoordinator() -> Coordinator { Coordinator(origin: url) }
+    func makeUIView(context: Context) -> WKWebView {
+        let view = WKWebView(frame: .zero)
+        view.navigationDelegate = context.coordinator
+        view.load(URLRequest(url: url))
+        return view
+    }
+    func updateUIView(_ view: WKWebView, context: Context) {
+        guard view.url != url else { return }
+        view.load(URLRequest(url: url))
+    }
+    final class Coordinator: NSObject, WKNavigationDelegate {
+        let origin: URL
+        init(origin: URL) { self.origin = origin }
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            guard let candidate = navigationAction.request.url,
+                  candidate.scheme?.lowercased() == "https",
+                  candidate.user == nil, candidate.password == nil,
+                  candidate.host?.lowercased() == origin.host?.lowercased(),
+                  candidate.port == origin.port else { decisionHandler(.cancel); return }
+            decisionHandler(.allow)
+        }
+    }
 }
 #elseif os(macOS)
 struct MilaWebViewRepresentable: NSViewRepresentable {
     let url: URL
-    func makeNSView(context: Context) -> WKWebView { WKWebView(frame: .zero) }
-    func updateNSView(_ view: WKWebView, context: Context) { view.load(URLRequest(url: url)) }
+    func makeCoordinator() -> Coordinator { Coordinator(origin: url) }
+    func makeNSView(context: Context) -> WKWebView {
+        let view = WKWebView(frame: .zero)
+        view.navigationDelegate = context.coordinator
+        view.load(URLRequest(url: url))
+        return view
+    }
+    func updateNSView(_ view: WKWebView, context: Context) {
+        guard view.url != url else { return }
+        view.load(URLRequest(url: url))
+    }
+    final class Coordinator: NSObject, WKNavigationDelegate {
+        let origin: URL
+        init(origin: URL) { self.origin = origin }
+        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+            guard let candidate = navigationAction.request.url,
+                  candidate.scheme?.lowercased() == "https",
+                  candidate.user == nil, candidate.password == nil,
+                  candidate.host?.lowercased() == origin.host?.lowercased(),
+                  candidate.port == origin.port else { decisionHandler(.cancel); return }
+            decisionHandler(.allow)
+        }
+    }
 }
 #endif
 #endif

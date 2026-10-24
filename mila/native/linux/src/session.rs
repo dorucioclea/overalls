@@ -1431,6 +1431,23 @@ mod tests {
         );
     }
     #[test]
+    fn sign_out_fences_late_approval_from_previous_generation() {
+        let flow = SignInFlow::default().apply(SignInEvent::Start);
+        let generation = flow.generation;
+        let signed_out = flow.apply(SignInEvent::SignOut);
+        let late = signed_out.apply(SignInEvent::Whoami {
+            generation,
+            outcome: WhoamiOutcome::Authenticated {
+                account: "late@example.test".into(),
+            },
+            at: 1,
+        });
+        assert_eq!(late.phase, SignInPhase::SignedOut);
+        assert_eq!(late.account, None);
+        assert_eq!(late.generation, generation + 1);
+    }
+
+    #[test]
     fn reconnect_after_disconnect_starts_fresh_generation() {
         let flow = SignInFlow::default().apply(SignInEvent::Start);
         let generation = flow.generation;

@@ -1,5 +1,5 @@
 ---
-digest: 266a009f06fdde91a225b2064e54e704b5eedc5d78fd4406d07e22e329b9873c
+digest: 4f0f632448e3f3bb9c050b5302285ffc44721881a6cc2d493cf44bf1ff4213ee
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Linux native changes; accepted architecture and behavior unchanged.
+Linux sign-out generation fence regression test preserves documented lifecycle

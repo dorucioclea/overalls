@@ -15,7 +15,7 @@ credentials, key material, authentication tokens, and terminal bytes out of this
 UI state.
 
 The `preBuild` task also runs the shared catalog generator against
-`mila/app/lib/l10n` and packages the deterministic 28-locale JSON bundles as
+`mila/localization/catalogs` and packages the deterministic 30-locale JSON bundles as
 APK assets. Native message identities use English only as a safe fallback when
 a translated resource is unavailable.
 

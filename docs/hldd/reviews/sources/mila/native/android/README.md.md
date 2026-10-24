@@ -1,5 +1,5 @@
 ---
-digest: 853a1a6e688b35e9c03ebb6c3cbdaf915b84a43d987d8326aa49e449a393dc11
+digest: d3ba4cab93805c1c0f02982d3de1675db94aac57265bf5894059b9412f1096ce
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Documentation and FFI wording now describe native platform bridges
+centralize native localization catalogs outside Flutter tree

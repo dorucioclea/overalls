@@ -13,7 +13,7 @@ Future<void> main(List<String> arguments) async {
   }
   final root = _repositoryRoot();
   final texts = <NotificationText>[];
-  final catalogs = io.Directory('$root/mila/app/lib/l10n').listSync().whereType<io.File>();
+  final catalogs = io.Directory('$root/mila/localization/catalogs').listSync().whereType<io.File>();
   try {
     for (final file in catalogs) {
       final locale = localeOf(file.uri.pathSegments.last);

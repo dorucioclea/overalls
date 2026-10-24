@@ -32,7 +32,7 @@ and [CONTRACTS](CONTRACTS) before changing it.
 - Presentation follows The Monospace Web (ADR-0226): colour literals only in
   `app/lib/ui/tokens.dart`, text glyphs only from `Glyph`, state as text.
   Use the [monospace-web skill](../.agents/skills/monospace-web/SKILL.md).
-- User-facing text lives in `app/lib/l10n/app_en.arb` with every locale
+- User-facing text lives in `localization/catalogs/app_en.arb` with every locale
   translated; follow the [localization skill](../.agents/skills/localization/SKILL.md).
 - Property tests use pub.dev `hegel`; its engine comes from Nix
   (`nix/verification/hegel/libhegel-dart.nix`) in sandboxed builds.

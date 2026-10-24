@@ -1,5 +1,5 @@
 ---
-digest: abee4b78b90eac31e7ec86dfd0e51a3a654ebe04d32c59605f391f25e9a1172f
+digest: d320bdabcb05a88d5c92133ef7d84b8f82a6949ca8fc240ff77b52445f47add4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Added packaged Android intent smoke coverage and test dependency; native verification scope is expanded without architecture change.
+centralize native localization catalogs outside Flutter tree

@@ -54,7 +54,7 @@ android {
 
 // Generated libraries stay under build/ and enter APKs through the JNI source set.
 val rustRoot = rootProject.file("../../rust")
-val localizationSource = rootProject.file("../../app/lib/l10n")
+val localizationSource = rootProject.file("../../localization/catalogs")
 val localizationOutput = layout.buildDirectory.dir("generated/mila-locales")
 val generateMilaLocalization = tasks.register<Exec>("generateMilaLocalization") {
     inputs.dir(localizationSource)

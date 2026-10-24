@@ -29,14 +29,7 @@ data class MilaAppLockState(
     fun disable(): MilaAppLockState = if (phase == MilaLockPhase.Unlocked) copy(enabled = false) else this
     fun delay(value: MilaLockDelay): MilaAppLockState = if (phase == MilaLockPhase.Unlocked) copy(delay = value) else this
 
-    fun backgrounded(at: Long): MilaAppLockState = if (phase == MilaLockPhase.Authenticating) copy(
-        // A prompt result delivered after the activity leaves the foreground must not
-        // unlock the next foreground session. Invalidate the in-flight attempt.
-        phase = MilaLockPhase.Locked,
-        attempt = attempt + 1u,
-        backgroundedAt = at,
-        lastFailed = false,
-    ) else copy(
+    fun backgrounded(at: Long): MilaAppLockState = if (phase == MilaLockPhase.Authenticating) this else copy(
         backgroundedAt = at,
         phase = if (effective && delay == MilaLockDelay.Immediate) MilaLockPhase.Locked else phase,
     )

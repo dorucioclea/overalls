@@ -50,7 +50,9 @@ class MainActivity : FragmentActivity() {
                     Text(MilaStrings.text(MilaMessage.LockExplain))
                     Button(onClick = ::authenticate) { Text(MilaStrings.text(MilaMessage.LockUnlock)) }
                     if (state.lastFailed) Text(MilaStrings.text(MilaMessage.LockFailed))
-                } else MilaNativeRoot(adapter = nativeAdapter, routeState = routeState, appLockController = lockController)
+                } else MilaNativeRoot(adapter = nativeAdapter, routeState = routeState, appLockController = lockController, onAuthenticatedRoute = {
+                    if (deepLinks.acceptPending(deepLinkGeneration)) routeState.value = deepLinks.target
+                })
             }
         }
     }

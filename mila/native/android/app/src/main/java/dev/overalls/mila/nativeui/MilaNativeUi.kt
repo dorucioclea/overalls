@@ -78,6 +78,7 @@ fun MilaNativeRoot(
     initialRoute: MilaRoute? = null,
     routeState: State<MilaRoute>? = null,
     appLockController: MilaAppLockController? = null,
+    onAuthenticatedRoute: (() -> Unit)? = null,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -91,6 +92,9 @@ fun MilaNativeRoot(
     var route by remember { mutableStateOf(initialRoute ?: MilaRoute.Machines) }
     LaunchedEffect(routeState?.value) { routeState?.value?.let { route = it } }
     LaunchedEffect(initialRoute) { initialRoute?.let { route = it } }
+    LaunchedEffect(signInState) {
+        if (signInState is MilaSignInState.SignedIn) onAuthenticatedRoute?.invoke()
+    }
     var connection by remember { mutableStateOf<MilaSessionConnection>(MilaSessionConnection.Idle) }
     val localContext = LocalContext.current
     val deploymentStore = remember(localContext) { MilaSharedPreferencesDeploymentStore(localContext.getSharedPreferences("mila.deployment", 0)) }

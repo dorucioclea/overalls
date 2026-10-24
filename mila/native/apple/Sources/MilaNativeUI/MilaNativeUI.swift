@@ -158,6 +158,8 @@ private struct MachineDetailView: View {
     @State private var resizeMemory = "2048"
     @State private var resizeDisk = "20"
     @State private var resizeStatus = ""
+    @State private var refreshedState: String?
+    @State private var refreshing = false
     @StateObject private var sharing: MilaMachineSharingController
     init(machine: MilaMachinePresentation?, adapter: any MilaFFIAdapter, signedIn: Bool = false) {
         self.machine = machine
@@ -171,7 +173,9 @@ private struct MachineDetailView: View {
             if let machine {
                 Text(machine.machine.name).font(.title)
                 Text(machine.id.uuidString).font(.caption)
-                Text(machine.machine.observedState ?? "unknown").foregroundStyle(.secondary)
+                Text(refreshedState ?? machine.machine.observedState ?? "unknown").foregroundStyle(.secondary)
+                Button("Refresh machine") { refreshMachine(machine.id) }
+                    .disabled(!signedIn || refreshing)
                 HStack {
                     TextField("CPU", text: $resizeCPU).frame(width: 60)
                     TextField("Memory MiB", text: $resizeMemory).frame(width: 110)
@@ -266,6 +270,16 @@ private struct MachineDetailView: View {
         case .submitting: return MilaStrings.text(.connecting)
         case .applied: return MilaStrings.text(.actionSubmitted)
         case .failed: return MilaStrings.text(.actionNotSubmitted)
+        }
+    }
+
+    private func refreshMachine(_ machineID: UUID) {
+        refreshing = true
+        Task {
+            defer { refreshing = false }
+            guard let snapshot = try? await adapter.refreshSnapshot(),
+                  let current = snapshot.machines.first(where: { $0.id == machineID }) else { return }
+            refreshedState = current.machine.observedState
         }
     }
 

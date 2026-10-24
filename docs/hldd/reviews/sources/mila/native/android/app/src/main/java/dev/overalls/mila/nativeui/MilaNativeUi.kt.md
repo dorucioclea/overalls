@@ -1,5 +1,5 @@
 ---
-digest: 344744299ae59d522c7ee105d8bde9fa4df4e72ca9e3d7740b83b680bf04c5ae
+digest: 1862e79656fbd77bf893b6ef4e56e73db88d83314b03376fbd78b6b75e3fa9c2
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fix out-of-scope deployment picker locale reference
+remove extra Android Compose brace found by native CI

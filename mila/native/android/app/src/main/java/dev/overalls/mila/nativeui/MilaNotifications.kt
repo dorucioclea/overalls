@@ -57,6 +57,7 @@ interface MilaNotificationRegistrationStore : MilaNotificationStore {
  * deliberately never persisted here; only the provider registration id and user toggle remain. */
 class MilaPreferencesNotificationStore(private val preferences: SharedPreferences) : MilaNotificationRegistrationStore {
     private val key = "registered_devices"
+    private val maxDevices = 128
     override fun list(): List<MilaNotificationDevice> = preferences.getStringSet(key, emptySet()).orEmpty()
         .mapNotNull { encoded ->
             val parts = encoded.split("|", limit = 2)
@@ -71,7 +72,9 @@ class MilaPreferencesNotificationStore(private val preferences: SharedPreference
 
     override fun register(id: String, enabled: Boolean): Boolean {
         if (!validId(id)) return false
-        val next = list().filterNot { it.id == id } + MilaNotificationDevice(id, enabled)
+        val existing = list().filterNot { it.id == id }
+        if (existing.size >= maxDevices) return false
+        val next = existing + MilaNotificationDevice(id, enabled)
         persist(next); return true
     }
 

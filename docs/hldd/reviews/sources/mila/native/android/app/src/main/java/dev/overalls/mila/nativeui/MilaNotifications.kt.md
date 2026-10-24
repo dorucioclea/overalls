@@ -1,5 +1,5 @@
 ---
-digest: ea2c529287ebb41a559c2d5ac5730f171e49d125f3cf342835bf9225c8b11739
+digest: d49674d7198871afed8b159c2d1ed3b842cd8aea127d1f7a2aaec13cd5375d18
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-FCM invalidation removes provider registration through authenticated controller
+Bound persisted Android notification registrations to finite device projection.

@@ -28,7 +28,9 @@ public enum MilaSSHKeysState: Equatable, Sendable { case signedOut, loading, loa
     private let revoker: (UUID) async throws -> Void
     private var generation: UInt64 = 0
     private var sessionActive = false
-    private var inFlightRequestIDs: Set<UUID> = []
+    /// Opaque key identities currently being revoked. Keeping this keyed by the
+    /// target prevents duplicate taps from issuing duplicate destructive calls.
+    private var inFlightKeyIDs: Set<UUID> = []
 
     public init(loader: @escaping () async throws -> [MilaSSHKey], revoker: @escaping (UUID) async throws -> Void) {
         self.loader = loader; self.revoker = revoker
@@ -63,10 +65,9 @@ public enum MilaSSHKeysState: Equatable, Sendable { case signedOut, loading, loa
         // The signer currently in use cannot be revoked from this session: doing
         // so would strand the authenticated device and differs across platforms.
         guard !key.isCurrentDevice else { return }
-        let requestID = UUID()
-        guard inFlightRequestIDs.insert(requestID).inserted else { return }
+        guard inFlightKeyIDs.insert(key.id).inserted else { return }
         let requestGeneration = generation
-        defer { inFlightRequestIDs.remove(requestID) }
+        defer { inFlightKeyIDs.remove(key.id) }
         do {
             try await revoker(key.id)
             guard sessionActive, requestGeneration == generation else { return }

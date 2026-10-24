@@ -1,5 +1,5 @@
 ---
-digest: a7fe5b8d099f2583dccdb83321becc9d7c20cdb5a79723de0104dc9916b29906
+digest: 9a72ca7e63d2514d78bc6b2c97a89b5c82ec88867e193e94e9e1d7e87c964f9c
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH revoke request generations fence stale completions
+Reviewed concurrent Apple SSH key validation changes; no architecture impact.

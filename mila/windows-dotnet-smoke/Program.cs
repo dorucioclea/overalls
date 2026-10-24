@@ -89,6 +89,8 @@ internal static class Program
         Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("http://web.example.test/path")), "http web origin refusal");
         Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://other.example.test/path")), "foreign web origin refusal");
         Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://web.example.test/path#fragment")), "fragment web origin refusal");
+        Require(!MilaWebOrigin.IsAllowed(new Uri("https://user:pass@web.example.test"), new Uri("https://web.example.test/path")), "credentialed origin refusal");
+        Require(!MilaWebOrigin.IsAllowed(webOrigin, new Uri("https://user:pass@web.example.test/path")), "credentialed target refusal");
         MilaNativeSessionBytesResult invalidKeys = RustNative.TrySessionSshKeys(0);
         Require(invalidKeys.Status == MilaNativeStatus.InvalidRequest && invalidKeys.Data is null, "missing authenticated SSH key listing refusal");
         MilaNativeSessionBytesResult invalidListing = RustNative.TrySessionListing(0);

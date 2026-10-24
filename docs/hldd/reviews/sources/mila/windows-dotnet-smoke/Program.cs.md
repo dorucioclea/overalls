@@ -1,5 +1,5 @@
 ---
-digest: 87f5d816bc1dae4cfa43c3d97b2e7697786be248508b332c3f7bf2888cf377d4
+digest: 3d8370e88898eba614707a284d35db2120aef6abb40ecacb9643d3f4442c57aa
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows SSH revocation duplicate fencing and bounded projection validation
+WebView navigation origin validation remains within existing architecture

@@ -1,5 +1,5 @@
 ---
-digest: 6ecf0a1ef91cad4b091bf022c7186e3799687c3352b98a33748702be7bfd3f4a
+digest: c82b774b97bd8e654ee599cc8e5b640eb8c42e4adeed073d44afefb8eaeb9efc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review native session security changes preserve documented boundaries
+WebView navigation origin validation remains within existing architecture

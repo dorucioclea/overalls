@@ -94,6 +94,20 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
         DispatchQueue.main.async { UIApplication.shared.registerForRemoteNotifications() }
     }
     #endif
+
+    @MainActor public func requestAuthorizationAndRegister() async -> Bool {
+        do {
+            let granted = try await requestAuthorization()
+            guard granted else { return false }
+            installAsNotificationDelegate()
+            #if os(iOS)
+            registerForRemoteNotifications()
+            #endif
+            return true
+        } catch {
+            return false
+        }
+    }
 }
 #endif
 

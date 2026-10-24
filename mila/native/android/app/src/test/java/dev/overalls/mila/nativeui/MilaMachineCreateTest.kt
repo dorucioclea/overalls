@@ -2,6 +2,7 @@ package dev.overalls.mila.nativeui
 
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertThrows
 import org.junit.Test
 
@@ -26,4 +27,12 @@ class MilaMachineCreateTest {
         assertThrows(IllegalArgumentException::class.java) { MilaMachineCreateRequest("", 1, 256, 1) }
         assertThrows(IllegalArgumentException::class.java) { MilaMachineCreateRequest("x", 0, 256, 1) }
     }
+
+@Test fun resizeInputsRequirePositiveBoundedValues() {
+    assertTrue(validResize("1", "2", "3"))
+    assertFalse(validResize("0", "2", "3"))
+    assertFalse(validResize("1", "", "3"))
+    assertFalse(validResize("1", "2", "1000001"))
+}
+
 }

@@ -572,6 +572,7 @@ public sealed partial class MainWindow : Window
         LocalePicker.SelectedItem = settings.Locale;
         if (LocalePicker.SelectedItem is null) LocalePicker.SelectedItem = "en";
         DarkModeToggle.IsOn = settings.DarkMode;
+        ApplyTheme(settings.DarkMode);
         Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
             ? FlowDirection.RightToLeft
             : FlowDirection.LeftToRight;
@@ -584,12 +585,19 @@ public sealed partial class MainWindow : Window
         {
             MilaSettings settings = new MilaSettings(locale, DarkModeToggle.IsOn).Normalize();
             MilaSettingsStore.Save(settings);
+            ApplyTheme(settings.DarkMode);
             Navigation.FlowDirection = settings.Direction() == LocaleDirection.Rtl
                 ? FlowDirection.RightToLeft
                 : FlowDirection.LeftToRight;
             SettingsStatus.Text = S("settingsSaved", "Settings saved");
         }
         catch (ArgumentException) { SettingsStatus.Text = S("settingsInvalid", "Locale rejected by core policy."); }
+    }
+
+    /// <summary>Apply the persisted appearance at the native WinUI root.</summary>
+    private void ApplyTheme(bool darkMode)
+    {
+        Navigation.RequestedTheme = darkMode ? ElementTheme.Dark : ElementTheme.Light;
     }
 
     private void OnNavigationChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

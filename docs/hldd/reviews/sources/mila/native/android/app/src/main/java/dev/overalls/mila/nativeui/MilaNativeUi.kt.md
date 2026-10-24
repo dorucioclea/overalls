@@ -1,11 +1,11 @@
 ---
-digest: 382394dac26ff15ac576e5d521d8efd59e62e7d8e6968772461077c817055413
+digest: 3c621dfcb02a83bef63185ce7ccae7c7ce2929b0ae10fc0bd3a480884da6be0e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaNativeUi.kt
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: cdaff43aaa5120a613089eff8ad072d43498399e96fe9a70db5e0284afd662db
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-fix extra native UI brace from CI
+Android resize UI now validates bounded positive resources before dispatch

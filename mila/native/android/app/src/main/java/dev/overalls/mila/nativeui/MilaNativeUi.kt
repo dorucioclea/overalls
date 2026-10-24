@@ -459,6 +459,8 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
     }
 }
 
+private fun validResize(cpu: String, memory: String, disk: String): Boolean = listOf(cpu, memory, disk).all { it.toIntOrNull() in 1..1_000_000 }
+
 @Composable private fun MachineDetail(controller: MilaMachineDetailController, id: java.util.UUID, adapter: MilaFfiAdapter, signedIn: Boolean, listing: MilaSessionListing?) {
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf(controller.state) }
@@ -497,7 +499,12 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
                 OutlinedTextField(resizeCpu, { resizeCpu = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineCpu)) }, singleLine = true, modifier = Modifier.width(120.dp))
                 OutlinedTextField(resizeMemory, { resizeMemory = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineMemory)) }, singleLine = true, modifier = Modifier.width(120.dp))
                 OutlinedTextField(resizeDisk, { resizeDisk = it.filter(Char::isDigit) }, label = { Text(MilaStrings.text(MilaMessage.MachineDisk)) }, singleLine = true, modifier = Modifier.width(120.dp))
-                Button(enabled = signedIn, onClick = { scope.launch { resizeResult = adapter.machineResize(id, resizeCpu.toIntOrNull() ?: 0, resizeMemory.toIntOrNull() ?: 0, resizeDisk.toIntOrNull() ?: 0).fold({ "Resize submitted" }, { "Resize rejected" }) } }) { Text(MilaStrings.text(MilaMessage.Resize)) }
+                Button(enabled = signedIn && validResize(resizeCpu, resizeMemory, resizeDisk), onClick = { scope.launch {
+                    val cpu = resizeCpu.toIntOrNull()!!
+                    val memory = resizeMemory.toIntOrNull()!!
+                    val disk = resizeDisk.toIntOrNull()!!
+                    resizeResult = adapter.machineResize(id, cpu, memory, disk).fold({ "Resize submitted" }, { "Resize rejected" })
+                } }) { Text(MilaStrings.text(MilaMessage.Resize)) }
             }
             if (resizeResult.isNotEmpty()) Text(resizeResult, style = MaterialTheme.typography.labelSmall)
         }

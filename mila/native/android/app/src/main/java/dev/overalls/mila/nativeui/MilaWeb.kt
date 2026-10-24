@@ -26,7 +26,10 @@ fun parseMilaWebEndpoint(json: String): Result<MilaWebEndpoint> = runCatching {
     val port = o.getInt("port").also { require(it in 1..65535) }
     val visibility = o.getString("visibility").also { require(it == "public" || it == "private") }
     val revision = o.getLong("policy_revision").also { require(it > 0) }
-    val url = if (o.isNull("url")) null else o.getString("url").also(::validateHttps)
+    val url = if (o.isNull("url")) null else o.getString("url").also {
+        validateHttps(it)
+        require(effectivePort(URI(it)) == port)
+    }
     MilaWebEndpoint(id, port, visibility == "public", revision, url)
 }
 

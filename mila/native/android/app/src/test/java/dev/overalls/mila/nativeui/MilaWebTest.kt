@@ -31,6 +31,10 @@ class MilaWebTest {
   val result = parseMilaWebEndpoint("{\"machine_id\":\"00000000-0000-0000-0000-000000000001\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2,\"url\":\"javascript:alert(1)\"}")
   assertTrue(result.isFailure)
  }
+ @Test fun rejectsUrlWhosePortDoesNotMatchEndpoint() {
+  val result = parseMilaWebEndpoint("{\"machine_id\":\"00000000-0000-0000-0000-000000000001\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":2,\"url\":\"https://box.example.test:8443\"}")
+  assertTrue(result.isFailure)
+ }
  @Test fun rejectsInvalidPortAndVisibility() {
   val result = parseMilaWebEndpoint("{\"machine_id\":\"00000000-0000-0000-0000-000000000001\",\"port\":0,\"visibility\":\"public\",\"policy_revision\":2}")
   assertTrue(result.isFailure)

@@ -1,5 +1,5 @@
 ---
-digest: 43d48774e69c3af0cb555afcad16152b97479870559ccd2d8a1e6123fd6f8d74
+digest: fe4f995aa580186054b446fdc4b8b33b73fb5e0d87a0c087c385f26316ada46a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android web revision conflicts preserve authenticated optimistic mutation behavior
+mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaWeb.kt

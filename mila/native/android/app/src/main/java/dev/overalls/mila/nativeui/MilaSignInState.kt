@@ -113,6 +113,9 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
  suspend fun signIn(deployment: MilaDeployment) {
   store?.write(deployment)
   store?.writeApproval(MilaApprovalState.NotRequired)
+  // Legacy bootstrap reconnects must release any approval session before rebinding.
+  pendingSession?.close()
+  pendingSession = null
   (adapter as? MilaSessionConnector)?.bindSession(null)
   state = MilaSignInState.Connecting(deployment)
   state = when (val result = adapter.call(MilaFfiRequest(MilaFfiOperation.Bootstrap))) {

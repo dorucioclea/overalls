@@ -1,5 +1,5 @@
 ---
-digest: 361bc17ba6e62a90700cbc6bd935b95f1e50e3942f97ee394c6d158ba4310d68
+digest: 1b419692b68515fcf641372b6805383a64a67fd7be26f5f0d06b0fdad9edca32
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-close pending Android session before reconnect
+Android legacy bootstrap reconnect now closes pending approval session before rebinding

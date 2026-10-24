@@ -808,18 +808,10 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private void ClassifyThreadList(object sender, RoutedEventArgs args) => ClassifyThread("thread ls");
-    private void ClassifyThreadShow(object sender, RoutedEventArgs args) => ClassifyThread("thread show");
-    private void ClassifyThreadTurns(object sender, RoutedEventArgs args) => ClassifyThread("thread turns");
-    private void ClassifyThreadRead(object sender, RoutedEventArgs args) => ClassifyThread("thread read");
-
-    private void ClassifyThread(string command)
-    {
-        MilaNativeThreadCommandResult result = RustNative.TryClassifyThreadCommand(command);
-        ThreadCommandStatus.Text = result.Status == MilaNativeStatus.Ok && result.Kind is { } kind
-            ? $"{command}: {kind} (Rust)"
-            : $"{command}: unavailable ({result.Status})";
-    }
+    private void ClassifyThreadList(object sender, RoutedEventArgs args) => RefreshThreads();
+    private void ClassifyThreadShow(object sender, RoutedEventArgs args) => SubmitThread(MilaThreadAction.Show);
+    private void ClassifyThreadTurns(object sender, RoutedEventArgs args) => SubmitThread(MilaThreadAction.Turns);
+    private void ClassifyThreadRead(object sender, RoutedEventArgs args) => SubmitThread(MilaThreadAction.Read);
 
     private void ClassifyMachineList(object sender, RoutedEventArgs args) => ClassifyMachine("ls");
     private const string SampleMachine = "00000000-0000-0000-0000-000000000000";

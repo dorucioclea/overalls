@@ -29,7 +29,9 @@
   </ItemGroup>
 
   <Target Name="GenerateMilaLocalization" BeforeTargets="Build">
-    <Exec Command="python &quot;$(MSBuildProjectDirectory)\..\localization\generate_catalogs.py&quot; --source &quot;$(MSBuildProjectDirectory)\..\app\lib\l10n&quot; --output &quot;$(IntermediateOutputPath)mila-locales&quot;" />
+    <!-- Native clients consume the canonical ARB catalog; the Flutter tree is
+         intentionally not part of the native build inputs. -->
+    <Exec Command="python &quot;$(MSBuildProjectDirectory)\..\localization\generate_catalogs.py&quot; --source &quot;$(MSBuildProjectDirectory)\..\localization\catalogs&quot; --output &quot;$(IntermediateOutputPath)mila-locales&quot;" />
     <ItemGroup>
       <MilaLocaleFiles Include="$(IntermediateOutputPath)mila-locales\**\*.json" />
     </ItemGroup>

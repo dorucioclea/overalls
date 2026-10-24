@@ -1,5 +1,5 @@
 ---
-digest: b6e949f4212d29e169eeb0cc867bb2770b7247af136e176712df0967cdf4d679
+digest: 02515cd47146d3ba7f95db95896097f6ba988e5ab10c64cedf559980c07ffe2a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple terminal duplicate attach request guard and regression
+Apple terminal EOF now fails closed

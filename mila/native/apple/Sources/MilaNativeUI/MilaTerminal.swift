@@ -178,6 +178,12 @@ public final class MilaTerminalController: ObservableObject {
                         self.appendOutput(bytes)
                     }
                 }
+                await MainActor.run { [weak self] in
+                    guard let self, self.state == .attached, self.generation == generation else { return }
+                    // A clean PTY EOF is still a disconnected session. Keep the UI from
+                    // accepting input against a transport that has already ended.
+                    self.state = .failed
+                }
             } catch {
                 await MainActor.run { [weak self] in
                     guard let self, self.state == .attached, self.generation == generation else { return }

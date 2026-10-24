@@ -418,6 +418,7 @@ public sealed partial class MainWindow : Window
         _deviceFingerprint = null;
         _selectedMachine = null;
         MachineRows.ItemsSource = Array.Empty<MilaMachineRow>();
+        UpdateMachineMutationAvailability();
         _threadController.SetSession(false, null);
         _machineMutation.SetSession(false);
         long generation = _signIn.Start();
@@ -470,6 +471,7 @@ public sealed partial class MainWindow : Window
                 _activeHost = null;
                 _signIn.Fail(MilaSignInFailure.Unreachable, generation);
                 _machineMutation.SetSession(false);
+                UpdateMachineMutationAvailability();
                 StatusText.Text = S("signInFailedUnreachable", "Unable to connect to deployment.");
                 return;
             }
@@ -482,6 +484,7 @@ public sealed partial class MainWindow : Window
             OpenApproval.Visibility = Visibility.Collapsed;
             MilaDeploymentStore.Save(new MilaDeployment(host, _deploymentPort));
             _machineMutation.SetSession(true, handle);
+            UpdateMachineMutationAvailability();
             StatusText.Text = S("connected", MilaStrings.Connected);
             await RefreshSshKeyListAsync();
             RefreshMachines();
@@ -500,6 +503,7 @@ public sealed partial class MainWindow : Window
             _session.SignOut();
             _signIn.Fail(MilaSignInFailure.Unreachable, generation);
             _machineMutation.SetSession(false);
+            UpdateMachineMutationAvailability();
             if (!_closed && _signIn.State.Generation == generation)
                 StatusText.Text = S("signInFailedUnreachable", "Unable to connect to deployment.");
         }
@@ -585,6 +589,7 @@ public sealed partial class MainWindow : Window
     {
         _selectedMachine = null;
         _machineMutation.SetSession(_session.Handle is { } handle, _session.Handle ?? 0);
+        UpdateMachineMutationAvailability();
         MachineRows.ItemsSource = Array.Empty<MilaMachineRow>();
         if (_activeHost is not { } host || _session.Handle is not { } sessionHandle)
             return;
@@ -606,8 +611,24 @@ public sealed partial class MainWindow : Window
     {
         if (MachineRows.SelectedItem is not MilaMachineRow machine) return;
         _selectedMachine = machine;
+        UpdateMachineMutationAvailability();
         string access = machine.CanManage ? S("machineAccessOwner", "Manage") : machine.CanWrite ? S("machineAccessShared", "Write") : S("terminalReadOnly", "Read only");
         MachineCommandStatus.Text = $"{machine.Name} ({machine.DesiredState}) — {access}";
+    }
+
+    private void UpdateMachineMutationAvailability()
+    {
+        bool enabled = _session.Handle is not null && _selectedMachine is not null;
+        MachineResize.IsEnabled = enabled;
+        MachineStart.IsEnabled = enabled;
+        MachineStop.IsEnabled = enabled;
+        MachinePause.IsEnabled = enabled;
+        MachineResume.IsEnabled = enabled;
+        MachineDelete.IsEnabled = enabled;
+        MachineShareAdd.IsEnabled = enabled;
+        MachineShareRemove.IsEnabled = enabled;
+        MachineWebShow.IsEnabled = enabled;
+        MachineWebSet.IsEnabled = enabled;
     }
 
     private async void RefreshThreads()

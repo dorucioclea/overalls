@@ -91,6 +91,14 @@ internal static class Program
             "SSH key revoke request-id validation");
         MilaNativeThreadCommandResult thread = RustNative.TryClassifyThreadCommand("thread ls");
         Require(thread.Status == MilaNativeStatus.Ok && thread.Kind == MilaThreadCommandKind.List, "thread command projection");
+        Require(RustNative.TryClassifyThreadCommand("thread plan approve").Kind == MilaThreadCommandKind.PlanApprove,
+            "thread plan approval projection");
+        Require(RustNative.TryClassifyThreadCommand("thread plan revise").Kind == MilaThreadCommandKind.PlanRevise,
+            "thread plan revision projection");
+        Require(RustNative.TryClassifyThreadCommand("thread plan approve extra").Kind is null,
+            "thread plan approval input refusal");
+        Require(RustNative.TryClassifyThreadCommand("thread plan revise\0ignored").Kind is null,
+            "thread plan revision truncation refusal");
         Require(RustNative.TryClassifyThreadCommand("thread delete abc").Kind is null, "unknown thread command refusal");
         Require(RustNative.TryClassifyThreadCommand("thread ls\0ignored").Kind is null, "thread command truncation refusal");
         Require(RustNative.TryValidateTerminalAttach(0, 120, 40, true).IsValid, "terminal attach validation");

@@ -4,6 +4,16 @@ import Foundation
 public enum MilaMessage: String, Sendable { case appName, sharePrincipal, shareAdd, shareRemove, shareAdded, shareRemoved, machines, threads, settings, ready, refresh, connecting, connected, runtimeUnavailable, noAction, snapshotLoaded, noSnapshotLoaded, machinesEmpty, machinesHint, openTerminal, actionSubmitted, actionNotSubmitted, rejectedByRust, machineUnavailable, commandsRust, noThreads, threadsHint, unavailable, terminal, input, send, reconnect, appearance, appearanceSystem, appearanceLight, appearanceDark, lockTitle, lockExplain, lockUnavailable, lockUnlock, lockFailed, notificationsTitle, notificationsExplain, notificationsTurnOn, notificationsTurnOff, pushUnsupported, sshKeysTitle, sshKeysExplain, sshKeysEmpty, sshKeyRevoke, sshKeyAlgorithm, sshKeyThisDevice, webOpen, webInvalid, webPlaceholder }
 
 public enum MilaStrings {
+    /// Canonicalize a user-selected BCP-47 locale to one of the bundled catalogs.
+    public static func canonicalLocale(_ raw: String) -> String {
+        let normalized = raw.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "_", with: "-")
+        let parts = normalized.split(separator: "-").map(String.init)
+        guard let language = parts.first?.lowercased(), !language.isEmpty else { return "en" }
+        let script = parts.dropFirst().first(where: { $0.count == 4 })?.capitalized
+        let region = parts.dropFirst().first(where: { $0.count == 2 || $0.count == 3 && $0.allSatisfy(\.isNumber) })?.uppercased()
+        let candidate = [language, script, region].compactMap { $0 }.joined(separator: "-")
+        return ["en", "fr-FR", "de", "es", "ja", "ar"].contains(candidate) ? candidate : "en"
+    }
     private static let ids: [MilaMessage: String] = [
         .appName: "appTitle", .sharePrincipal: "sharePrincipal", .shareAdd: "shareAdd", .shareRemove: "shareRemove", .shareAdded: "shareAdded", .shareRemoved: "shareRemoved", .machines: "machinesTitle", .threads: "tabThreads", .settings: "settingsTitle",
         .ready: "ready", .refresh: "refresh", .connecting: "signInConnecting", .connected: "connected",

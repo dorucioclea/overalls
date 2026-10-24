@@ -372,7 +372,8 @@ private struct SettingsView: View {
                     Text("العربية").tag("ar")
                 }
                 .onChange(of: locale) { _, value in
-                    if !["en", "fr-FR", "de", "es", "ja", "ar"].contains(value) { locale = "en" }
+                    let canonical = MilaStrings.canonicalLocale(value)
+                    if canonical != value { locale = canonical }
                 }
             }
             Section(MilaStrings.text(.lockTitle)) {

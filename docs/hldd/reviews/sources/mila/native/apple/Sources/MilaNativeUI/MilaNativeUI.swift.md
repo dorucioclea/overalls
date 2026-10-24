@@ -1,5 +1,5 @@
 ---
-digest: 3edf5749e7d0192e2dee09a15eaf004944fb877a6fc9e5232a76fbd3ef86ccd9
+digest: 9e1685ffa5900a80b3fdd18aa2a270b756e48ce064489720d8270bf4b8c882f6
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple web endpoint commit is fenced by live auth
+Apple locale settings normalization preserves native behavior

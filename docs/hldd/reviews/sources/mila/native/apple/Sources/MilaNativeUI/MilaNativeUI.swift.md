@@ -1,5 +1,5 @@
 ---
-digest: 9e1685ffa5900a80b3fdd18aa2a270b756e48ce064489720d8270bf4b8c882f6
+digest: 77cd7e1fb6bb623b4d5062345ed7eaa5465bfa56fd02affba8506854a68389dd
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale settings normalization preserves native behavior
+Apple root clears stale machine projections on sign-out and fences refresh generations

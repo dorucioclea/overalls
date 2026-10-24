@@ -11,6 +11,13 @@ class MilaWebTest {
   assertFalse(isAllowedMilaWebTarget("https://box.example.test/app", "https://box.example.test:444/next"))
  }
 
+ @Test fun webViewRequiresExactNonDefaultPort() {
+  assertTrue(isAllowedMilaWebTarget("https://box.example.test:8443/app", "https://box.example.test:8443/next"))
+  assertFalse(isAllowedMilaWebTarget("https://box.example.test:8443/app", "https://box.example.test/next"))
+  // An explicit default port is the same HTTPS origin as an omitted port.
+  assertTrue(isAllowedMilaWebTarget("https://box.example.test/app", "https://box.example.test:443/next"))
+ }
+
  @Test fun webViewRejectsCredentialAndFragmentTargets() {
   assertFalse(isAllowedMilaWebTarget("https://box.example.test/app", "https://user:pass@box.example.test/next"))
   assertFalse(isAllowedMilaWebTarget("https://box.example.test/app", "https://box.example.test/next#secret"))

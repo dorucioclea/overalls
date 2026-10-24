@@ -45,7 +45,9 @@ public struct MilaNativeRootView: View {
                 status = result ? MilaStrings.text(.actionSubmitted) : MilaStrings.text(.actionNotSubmitted)
                 if result { Task { await refresh() } }
             }
-        }.milaDesignSystem().onChange(of: scenePhase) { _, phase in
+        }.milaDesignSystem().onChange(of: session.state) { _, state in
+            if case .signedOut = state { machines = []; selection = .machines; status = MilaStrings.text(.ready) }
+        }.onChange(of: scenePhase) { _, phase in
             switch phase {
             case .background: appLock.sceneDidEnterBackground()
             case .active: Task { await appLock.sceneWillEnterForeground() }
@@ -58,8 +60,17 @@ public struct MilaNativeRootView: View {
     }
 
     private func refresh() async {
-        do { let active = session.adapter() ?? adapter; let snapshot = try await active.refreshSnapshot(); machines = snapshot.machines; status = MilaStrings.text(.snapshotLoaded) }
-        catch { status = MilaStrings.text(.noSnapshotLoaded); machines = [] }
+        let requestedGeneration = session.generation
+        guard let active = session.adapter() ?? (session.state == .signedOut ? adapter : nil) else { machines = []; return }
+        do {
+            let snapshot = try await active.refreshSnapshot()
+            guard session.generation == requestedGeneration, session.adapter() != nil || session.state == .signedOut else { return }
+            machines = snapshot.machines; status = MilaStrings.text(.snapshotLoaded)
+        }
+        catch {
+            guard session.generation == requestedGeneration else { return }
+            status = MilaStrings.text(.noSnapshotLoaded); machines = []
+        }
     }
 }
 

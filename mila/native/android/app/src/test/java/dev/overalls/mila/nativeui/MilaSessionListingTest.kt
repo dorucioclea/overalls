@@ -9,6 +9,12 @@ class MilaSessionListingTest {
         assertEquals("build", listing.machines.single().name)
         assertEquals(true, listing.hasMore)
     }
+    @Test fun capsMachineProjectionAndMarksMore() {
+        val rows = (1..257).joinToString(",") { i -> "{\"id\":\"00000000-0000-0000-0000-${i.toString().padStart(12, '0')}\",\"name\":\"m$i\",\"status\":\"running\"}" }
+        val listing = MilaSessionListing.decode("{\"machines\":[$rows]}".toByteArray())
+        assertEquals(256, listing.machines.size)
+        assertEquals(true, listing.hasMore)
+    }
     @Test(expected = IllegalArgumentException::class) fun rejectsMalformedRows() {
         MilaSessionListing.decode("{\"machines\":[{\"id\":\"bad\"}]}".toByteArray())
     }

@@ -21,7 +21,8 @@ data class MilaSessionListing(val machines: List<MilaMachineRow>, val hasMore: B
                 val id = runCatching { UUID.fromString(field("id") ?: throw IllegalArgumentException("invalid machine id")) }.getOrElse { throw IllegalArgumentException("invalid machine id", it) }
                 MilaMachineRow(id, field("name") ?: id.toString(), field("status") ?: "unknown")
             }
-            return MilaSessionListing(machines, source.contains("\"has_more\":true"))
+            val truncated = machines.size > 256
+            return MilaSessionListing(machines.take(256), source.contains("\"has_more\":true") || truncated)
         }
     }
 }

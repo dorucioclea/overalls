@@ -477,11 +477,13 @@ public sealed partial class MainWindow : Window
     }
     private void KillTerminal(object sender, RoutedEventArgs args)
     {
-        if (_session.Handle is not { } sessionHandle || sessionHandle == 0 || !_terminal.Reconnect(_terminalGeneration))
+        if (_session.Handle is not { } sessionHandle || sessionHandle == 0)
         {
             TerminalStatus.Text = S("signInFirst", "Sign in first");
             return;
         }
+        // Kill is valid while an authenticated attach is still negotiating;
+        // requiring Reconnect here left an attaching PTY impossible to cancel.
         _terminal.Kill(_terminalGeneration);
         TerminalStatus.Text = S("terminalEnded", "Terminal ended");
     }

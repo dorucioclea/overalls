@@ -62,10 +62,16 @@ internal sealed class MilaWindowsNotificationDevicesController
         List<MilaWindowsNotificationDevice> result = new(devices.GetArrayLength());
         foreach (JsonElement item in devices.EnumerateArray())
         {
-            string id = item.GetProperty("id").GetString() ?? throw new InvalidDataException("Missing device id");
-            string platform = item.GetProperty("platform").GetString() ?? throw new InvalidDataException("Missing device platform");
+            if (!item.TryGetProperty("id", out JsonElement idValue) ||
+                !item.TryGetProperty("platform", out JsonElement platformValue) ||
+                !item.TryGetProperty("enabled", out JsonElement enabledValue))
+                throw new InvalidDataException("Incomplete notification device");
+            string id = idValue.GetString() ?? throw new InvalidDataException("Missing device id");
+            string platform = platformValue.GetString() ?? throw new InvalidDataException("Missing device platform");
             if (!ValidText(id, 128) || !ValidText(platform, 32)) throw new InvalidDataException("Invalid device metadata");
-            result.Add(new(id, platform, item.GetProperty("enabled").GetBoolean()));
+            if (enabledValue.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
+                throw new InvalidDataException("Invalid device enabled state");
+            result.Add(new(id, platform, enabledValue.GetBoolean()));
         }
         return result;
     }

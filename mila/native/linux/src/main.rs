@@ -2,9 +2,9 @@ use adw::prelude::*;
 use adw::{Application, ApplicationWindow};
 use gtk::{gio, glib, Align, Box, Button, Entry, Label, Orientation, TextDirection};
 use mila_native_linux::adapter::{
-    browser_endpoint_url, decode_listing, decode_notification_devices, decode_web_endpoint,
-    format_machine_action, format_ssh_key_revoke, format_thread_response, format_web_command,
-    TerminalStream,
+    browser_endpoint_url, decode_listing, decode_notification_devices, decode_ssh_keys,
+    decode_web_endpoint, format_machine_action, format_ssh_key_revoke, format_thread_response,
+    format_web_command, TerminalStream,
 };
 use mila_native_linux::machine_view::{project_detail, project_listing};
 use mila_native_linux::notifications::NotificationState;
@@ -1178,6 +1178,7 @@ impl NativeState {
             .hexpand(true)
             .build();
         let revoke = Button::with_label(&strings::text(strings::Message::RevokeKey));
+        let list_keys = Button::with_label("List SSH keys");
         let key_id_for_action = key_id.clone();
         let key_request_for_action = key_request.clone();
         let label_for_action = content.clone();
@@ -1195,9 +1196,27 @@ impl NativeState {
                 Err(_) => label_for_action.set_label("SSH key request rejected by Rust policy."),
             }
         });
+        let list_keys_status = content.clone();
+        let list_keys_session = self.session.clone();
+        list_keys.connect_clicked(move |_| {
+            let mut binding = list_keys_session.borrow_mut();
+            let Some(live) = binding.session_mut() else {
+                list_keys_status.set_label("SSH key controls require sign-in.");
+                return;
+            };
+            match live.ssh_keys().and_then(|bytes| {
+                decode_ssh_keys(&bytes)
+                    .map(|keys| format!("{} SSH keys", keys.len()))
+                    .map_err(|_| mila_native_linux::session::SessionError::InvalidInput)
+            }) {
+                Ok(summary) => list_keys_status.set_label(&summary),
+                Err(_) => list_keys_status.set_label("SSH key listing rejected."),
+            }
+        });
         root.append(&key_id);
         root.append(&key_request);
         root.append(&revoke);
+        root.append(&list_keys);
         root.append(&content);
         ApplicationWindow::builder()
             .application(app)

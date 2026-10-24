@@ -6,7 +6,7 @@ public enum MilaMessage: String, Sendable { case appName, sharePrincipal, shareA
 public enum MilaStrings {
     /// Canonicalize a user-selected BCP-47 locale to one of the bundled catalogs.
     public static func canonicalLocale(_ raw: String) -> String {
-        let normalized = raw.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "_", with: "-")
+        let normalized = String(raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(64)).replacingOccurrences(of: "_", with: "-")
         let parts = normalized.split(separator: "-").map(String.init)
         guard let language = parts.first?.lowercased(), !language.isEmpty else { return "en" }
         let script = parts.dropFirst().first(where: { $0.count == 4 })?.capitalized

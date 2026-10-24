@@ -58,3 +58,4 @@ class MilaMachineDetailTest {
         assertEquals(MilaMachineMutationState.SignedOut, controller.state)
     }
 }
+

@@ -35,6 +35,9 @@ pub fn decode_ssh_keys(bytes: &[u8]) -> Result<Vec<SshKey>, RuntimeError> {
                 || key.id.len() > 128
                 || key.label.len() > 256
                 || key.fingerprint.len() > 256
+                || key.id.chars().any(char::is_control)
+                || key.label.chars().any(char::is_control)
+                || key.fingerprint.chars().any(char::is_control)
         })
     {
         return Err(RuntimeError::InvalidInput);
@@ -51,8 +54,8 @@ pub fn format_ssh_key_revoke(key_id: &str, request_id: &str) -> Result<String, R
         || !request_id.starts_with("porsche-")
         || !request_id[8..].bytes().all(|byte| byte.is_ascii_hexdigit())
         || key_id
-            .bytes()
-            .any(|byte| byte.is_ascii_whitespace() || byte == b'\0')
+            .chars()
+            .any(|character| character.is_control() || character.is_whitespace())
     {
         return Err(RuntimeError::InvalidInput);
     }
@@ -1202,6 +1205,10 @@ mod tests {
             br#"{"keys":[{"id":"","label":"x","fingerprint":"y","added_at":1}]}"#
         )
         .is_err());
+        assert!(super::decode_ssh_keys(
+            br#"{"keys":[{"id":"k\u0001","label":"x","fingerprint":"y","added_at":1}]}"#
+        )
+        .is_err());
     }
 
     #[test]
@@ -1212,6 +1219,7 @@ mod tests {
             format!("ssh-key remove --json --request-id={request} key-1")
         );
         assert!(super::format_ssh_key_revoke("key 1", request).is_err());
+        assert!(super::format_ssh_key_revoke("key\n1", request).is_err());
         assert!(super::format_ssh_key_revoke("key-1", "bad").is_err());
     }
 }

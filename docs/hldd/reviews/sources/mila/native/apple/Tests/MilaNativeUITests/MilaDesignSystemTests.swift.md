@@ -1,5 +1,5 @@
 ---
-digest: e5971a8bfae155d1c024faa576567b14b36354f8b1fee2319658f43702282d58
+digest: 4817a979cf21d56b1afab6e71d5078913755a315c671b592a75bd6d3daeb9c9e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple locale settings normalization preserves native behavior
+Apple locale persistence bounds canonicalization only

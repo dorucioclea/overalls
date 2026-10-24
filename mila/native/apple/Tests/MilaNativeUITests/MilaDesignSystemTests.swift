@@ -22,5 +22,6 @@ final class MilaDesignSystemTests: XCTestCase {
         XCTAssertEqual(MilaStrings.canonicalLocale("AR"), "ar")
         XCTAssertEqual(MilaStrings.canonicalLocale("de-Latn-DE"), "en")
         XCTAssertEqual(MilaStrings.canonicalLocale("xx_YY"), "en")
+        XCTAssertEqual(MilaStrings.canonicalLocale(String(repeating: "x", count: 65)), "en")
     }
 }

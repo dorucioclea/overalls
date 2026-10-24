@@ -1,5 +1,5 @@
 ---
-digest: e8b6ef600bde9f0d746d18a416a48040ac6637edf793c3698532282a351f49e1
+digest: 6fa9d0cd66623390c51e6d50bcdc4a220c07697135bc26aa2b8e2c815240fc01
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reject empty web endpoint hosts at Linux projection boundary
+Bound Linux SSH projection fields and reject control characters before GTK

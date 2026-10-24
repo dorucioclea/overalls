@@ -269,6 +269,12 @@ let
       cp -r ${../../../../marshall/lib/marshall_web/components} /build/core_components_source
       mkdir -p ../../marshall/lib/marshall_web
       ln -s /build/core_components_source ../../marshall/lib/marshall_web/components
+      # Flutter gen-l10n writes generated metadata beside the ARB inputs.
+      # The source tree is read-only in Nix, so provide a writable copy.
+      localization_dir="$NIX_BUILD_TOP/mila-localization-catalogs"
+      cp -r ../localization/catalogs "$localization_dir"
+      chmod -R u+w "$localization_dir"
+      sed -i "s#../localization/catalogs#$localization_dir#" l10n.yaml
       # The localization test checks Mila's locales against Porsche's catalogs.
       mkdir -p ../../porsche/priv
       ln -s ${../../../../porsche/priv/gettext} ../../porsche/priv/gettext

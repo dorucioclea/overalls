@@ -81,7 +81,7 @@ app.multiShell.overrideAttrs (finalAttrs: old: {
     # The multiShell source root is app/, while the catalogs live beside it.
     cp -r ../localization/catalogs "$localization_dir"
     chmod -R u+w "$localization_dir"
-    sed -i "s#../localization/catalogs#$localization_dir#" app/l10n.yaml
+    sed -i "s#../localization/catalogs#$localization_dir#" l10n.yaml
     flutter build apk --config-only --release --no-pub
     # Gradle writes into an included build's directory, so Flutter's Gradle
     # plugin cannot be built in place in the store: give it a writable copy

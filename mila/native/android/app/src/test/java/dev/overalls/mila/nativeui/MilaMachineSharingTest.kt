@@ -42,6 +42,15 @@ class MilaMachineSharingTest {
         assertFalse(c.submit("person@example.test"))
     }
 
+    @Test fun principalRejectsWhitespaceAndUtf8Overflow() = runBlocking {
+        val c = MilaMachineSharingController(SharingAdapter())
+        c.setSession(true, listing)
+        c.setMachine(row)
+        assertFalse(c.submit("person @example.test"))
+        assertFalse(c.submit("é".repeat(130)))
+        assertTrue(c.state is MilaMachineSharingState.Failed)
+    }
+
     @Test fun malformedPrincipalIsRejectedBeforeRustCall() = runBlocking {
         val c = MilaMachineSharingController(SharingAdapter())
         c.setSession(true, listing)

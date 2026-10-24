@@ -1,5 +1,5 @@
 ---
-digest: 9a76914964f6ed36a0481a6726ffbd33a31252ca1f75230015c59bfc2ed42efc
+digest: 5c8a332c80fa563bf947d497daaf224b38860d3736a6b0b2e41763cdfc2da517
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-SSH key projection rejects whitespace in fingerprints before GTK; preserves existing native boundary and protocol contracts.
+bounded Linux sharing grant text

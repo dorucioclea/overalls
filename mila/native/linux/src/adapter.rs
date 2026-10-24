@@ -124,8 +124,10 @@ pub fn decode_share_listing(bytes: &[u8]) -> Result<(String, Vec<ShareGrant>), R
         || envelope.items.iter().any(|grant| {
             grant.id.is_empty()
                 || grant.id.len() > 128
+                || !valid_share_text(&grant.id, 128)
                 || grant.user_id.is_empty()
                 || grant.user_id.len() > 128
+                || !valid_share_text(&grant.user_id, 128)
                 || !valid_email(&grant.email)
                 || grant.role.len() > 32
                 || !matches!(grant.role.as_str(), "viewer" | "operator" | "manager")
@@ -141,6 +143,14 @@ fn valid_email(email: &str) -> bool {
         && email.len() >= 3
         && email.contains('@')
         && !email.bytes().any(|b| b.is_ascii_whitespace() || b == 0)
+}
+
+fn valid_share_text(value: &str, max_bytes: usize) -> bool {
+    !value.is_empty()
+        && value.len() <= max_bytes
+        && !value
+            .bytes()
+            .any(|byte| byte.is_ascii_control() || byte.is_ascii_whitespace())
 }
 
 /// Format a sharing mutation through the shared Porsche command grammar.
@@ -1171,6 +1181,7 @@ mod tests {
         assert_eq!(owner, "owner@example.test");
         assert_eq!(grants[0].role, "operator");
         assert!(decode_share_listing(br#"{"owner":{"email":"owner@example.test"},"items":[{"id":"g1","user_id":"u1","email":"a@example.test","role":"owner"}]}"#).is_err());
+        assert!(decode_share_listing(br#"{"owner":{"email":"owner@example.test"},"items":[{"id":"g1\n","user_id":"u1","email":"a@example.test","role":"viewer"}]}"#).is_err());
     }
 
     #[test]

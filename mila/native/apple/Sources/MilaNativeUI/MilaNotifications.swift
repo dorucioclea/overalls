@@ -118,7 +118,15 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
     @discardableResult public func removeDevice(id: String) -> Bool { guard sessionActive else { return false }; let ok = store.remove(id: id); refreshDevices(); return ok }
     /// @cc [owner:ghuntley,label:security] mila-apple-push-token-boundary
     public func register(token: String, endpoint: String, environment: MilaPushEnvironment = .production) {
-        guard sessionActive, !token.isEmpty else { state = .failed; return }; state = .registering
+        guard sessionActive,
+              (32...200).contains(token.utf8.count),
+              let url = URL(string: endpoint),
+              url.scheme?.lowercased() == "https",
+              url.host != nil,
+              url.user == nil,
+              url.fragment == nil
+        else { state = .failed; return }
+        state = .registering
         do { try adapter.validatePushRegistration(provider: MilaPushProvider.apple.rawValue, environment: environment.rawValue, token: token, appID: appID, deployment: deployment, endpoint: endpoint); _ = store.upsert(MilaNotificationDevice(id: appID, deployment: deployment, enabled: true)); refreshDevices(); state = .on } catch { state = .failed }
     }
 

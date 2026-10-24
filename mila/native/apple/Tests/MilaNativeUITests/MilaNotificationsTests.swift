@@ -77,6 +77,19 @@ final class MilaNotificationsTests: XCTestCase {
         XCTAssertEqual(controller.devices.count, 1)
     }
 
+
+    func testRegistrationRejectsInvalidTokenAndEndpointBeforeBoundary() {
+        let adapter = Adapter()
+        let controller = MilaNotificationController(adapter: adapter, appID: "com.example.mila", deployment: "mila.example.test", store: Store())
+        controller.register(token: String(repeating: "a", count: 31), endpoint: "https://mila.example.test/push")
+        XCTAssertEqual(controller.state, .failed)
+        controller.register(token: String(repeating: "a", count: 32), endpoint: "http://mila.example.test/push")
+        XCTAssertEqual(controller.state, .failed)
+        controller.register(token: String(repeating: "a", count: 32), endpoint: "https://user@mila.example.test/push#fragment")
+        XCTAssertEqual(controller.state, .failed)
+        XCTAssertTrue(adapter.calls.isEmpty)
+    }
+
     func testEmptyTokenFailsBeforeCrossingBoundary() {
         let adapter = Adapter()
         let controller = MilaNotificationController(adapter: adapter, appID: "com.example.mila", deployment: "mila.example.test")

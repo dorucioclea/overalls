@@ -1,5 +1,5 @@
 ---
-digest: 630985cebf44813670c6dd7cbd05fe6859a7b97ee38eef499d3fece4470c4efa
+digest: 3f92dc52b6e5d1ca64c45ebc61bb0a603f5ad52bf17f2cae3ad89ca401117369
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Apple notification metadata persistence and projection size
+Apple push registration validates token bounds and HTTPS endpoint before Rust boundary

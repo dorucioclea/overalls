@@ -103,6 +103,8 @@ interface MilaFfiAdapter {
             is MilaFfiResult.Failure -> Result.failure(IllegalStateException("thread action unavailable"))
         }
 
+    suspend fun threadAction(threadId: UUID, command: MilaThreadCommand, input: String?, secondary: UUID?): Result<Unit> = threadAction(threadId, command, input)
+
     /** Authenticated thread mutation with an optional bounded prompt/answer payload. */
     suspend fun threadAction(threadId: UUID, command: MilaThreadCommand, input: String?): Result<Unit> {
         if (input == null) return threadAction(threadId, command)
@@ -456,9 +458,9 @@ class LinkedMilaFfiAdapter(
         val session = authenticatedSession ?: return Result.failure(IllegalStateException("session unavailable"))
         return session.webSet(machineId, port, public, revision, "porsche-" + UUID.randomUUID().toString().replace("-", ""))
     }
-    override suspend fun threadAction(threadId: UUID, command: MilaThreadCommand, input: String?): Result<Unit> {
+    override suspend fun threadAction(threadId: UUID, command: MilaThreadCommand, input: String?, secondary: UUID?): Result<Unit> {
         val session = authenticatedSession ?: return Result.failure(IllegalStateException("session unavailable"))
-        val payload = session.threadAction(threadId, command, input = input, requestId = if (command == MilaThreadCommand.Prompt || command == MilaThreadCommand.Answer || command == MilaThreadCommand.PlanApprove || command == MilaThreadCommand.PlanRevise) "porsche-" + UUID.randomUUID().toString().replace("-", "") else null)
+        val payload = session.threadAction(threadId, command, secondary = secondary, input = input, requestId = if (command == MilaThreadCommand.Prompt || command == MilaThreadCommand.Answer || command == MilaThreadCommand.PlanApprove || command == MilaThreadCommand.PlanRevise) "porsche-" + UUID.randomUUID().toString().replace("-", "") else null)
         return payload.map { Unit }
     }
     override suspend fun threadListing(): Result<MilaThreadListing> {

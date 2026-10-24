@@ -3,7 +3,7 @@ package dev.overalls.mila.nativeui
 import java.util.UUID
 import org.json.JSONObject
 
-data class MilaThreadRow(val id: UUID, val title: String, val status: String)
+data class MilaThreadRow(val id: UUID, val title: String, val status: String, val planId: UUID? = null)
 data class MilaThreadListing(val threads: List<MilaThreadRow>, val hasMore: Boolean) {
  companion object {
   fun decode(bytes: ByteArray): MilaThreadListing {
@@ -20,7 +20,8 @@ data class MilaThreadListing(val threads: List<MilaThreadRow>, val hasMore: Bool
             require(status.toByteArray(Charsets.UTF_8).size <= 64)
             val id = UUID.fromString(row.getString("id"))
             require(id != UUID(0L, 0L))
-            add(MilaThreadRow(id, title, status))
+            val planId = row.optJSONObject("latest_plan")?.optString("id")?.takeIf { it.isNotBlank() }?.let { UUID.fromString(it) }
+            add(MilaThreadRow(id, title, status, planId))
         }
     }
     return MilaThreadListing(threads, result.optBoolean("has_more", false))
@@ -81,7 +82,12 @@ class MilaThreadDetailController(private val adapter: MilaFfiAdapter) {
             return false
         }
         state = MilaThreadActionState.Submitting(thread, command)
-        return adapter.threadAction(thread.id, command, input).fold(
+        val planId = if (command == MilaThreadCommand.PlanApprove || command == MilaThreadCommand.PlanRevise) thread.planId else null
+        if ((command == MilaThreadCommand.PlanApprove || command == MilaThreadCommand.PlanRevise) && planId == null) {
+            state = MilaThreadActionState.Failed(thread, command, "plan is unavailable")
+            return false
+        }
+        return adapter.threadAction(thread.id, command, input, planId).fold(
             { state = MilaThreadActionState.Applied(thread, command); true },
             { error -> state = MilaThreadActionState.Failed(thread, command, error.message ?: "command rejected"); false },
         )

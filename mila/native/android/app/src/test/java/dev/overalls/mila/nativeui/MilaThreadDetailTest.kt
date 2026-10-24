@@ -89,4 +89,19 @@ class MilaThreadDetailTest {
         assertFalse(controller.submit(MilaThreadCommand.Answer))
         assertTrue(controller.state is MilaThreadActionState.Failed)
     }
+    @Test fun decodesLatestPlanIdForApproval() {
+        val id = "00000000-0000-0000-0000-000000000004"
+        val plan = "00000000-0000-0000-0000-000000000005"
+        val decoded = MilaThreadListing.decode("""{"result":{"threads":[{"id":"$id","title":"Build","status":"open","latest_plan":{"id":"$plan"}}]}}""".toByteArray())
+        assertEquals(UUID.fromString(plan), decoded.threads.single().planId)
+    }
+
+    @Test fun planApprovalRequiresPlanIdentity() = runBlocking {
+        val controller = MilaThreadDetailController(ThreadAdapter())
+        controller.setSession(true, listing)
+        controller.select(id)
+        assertFalse(controller.submit(MilaThreadCommand.PlanApprove))
+        assertTrue(controller.state is MilaThreadActionState.Failed)
+    }
+
 }

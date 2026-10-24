@@ -20,6 +20,26 @@ fn terminal_output_never_advances_before_connection(tc: TestCase) {
     assert!(state.ended(state.generation(), AttachOutcome::Closed));
 }
 
+#[hegel::test(test_cases = 128)]
+fn terminal_reconnect_rejects_stale_generation_output(tc: TestCase) {
+    let bytes = tc.draw(gs::default::<u8>()).max(1) as usize;
+    let mut state = TerminalAttach::initial();
+    assert!(state.request());
+    let first = state.generation();
+    assert!(state.connected(first, 0));
+    assert!(state.output(first, bytes));
+    let cursor_before_reconnect = state.cursor();
+    assert!(state.ended(first, AttachOutcome::Transport));
+    assert!(state.request());
+    let second = state.generation();
+    assert_ne!(first, second);
+    assert!(state.connected(second, cursor_before_reconnect));
+    let cursor_before_stale = state.cursor();
+    assert!(!state.output(first, bytes));
+    assert_eq!(state.cursor(), cursor_before_stale);
+    assert!(state.output(second, bytes));
+}
+
 #[derive(Default)]
 struct MemoryStore {
     bytes: std::cell::RefCell<Option<Vec<u8>>>,

@@ -17,7 +17,7 @@ public enum MilaStrings {
         // Region/script-qualified requests should fall back to the bundled
         // language catalog when no qualified catalog exists (for example,
         // `he-IL` uses the Hebrew catalog `he`).
-        return supported.contains(language) ? language : "en"
+        return script == nil && supported.contains(language) ? language : "en"
     }
     /// Stable display names for the locale picker, independent of the host locale.
     public static func localeDisplayName(_ raw: String) -> String {

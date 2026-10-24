@@ -148,8 +148,12 @@ public final class MilaTerminalController: ObservableObject {
     }
 
     public func resize(columns: UInt16, rows: UInt16) async {
-        guard state == .attached,
-              mila_terminal_resize_validate(columns, rows, 1).rawValue == 0 else { state = .failed; return }
+        // Keep the host-side bounds explicit; the Rust ABI applies the same
+        // contract, while Swift's imported enum raw values are platform-sized.
+        guard state == .attached, columns > 0, rows > 0, columns <= 512, rows <= 512 else {
+            state = .failed
+            return
+        }
         do { try await transport.resize(columns: columns, rows: rows); self.columns = columns; self.rows = rows }
         catch { state = .failed }
     }

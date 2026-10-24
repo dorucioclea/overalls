@@ -403,13 +403,16 @@ private struct SettingsView: View {
                 Text(notificationStatus).font(.caption).foregroundStyle(.secondary)
             }
             NavigationLink(MilaStrings.text(.sshKeysTitle)) {
-                MilaSSHKeysView(controller: MilaSSHKeysController(
-                    loader: { try await adapter.listSSHKeys() },
-                    revoker: { keyID in
-                        let key = MilaSSHKey(id: keyID, fingerprint: "", algorithm: "")
-                        try await adapter.revokeSSHKey(key, requestID: UUID())
-                    }
-                ))
+                MilaSSHKeysView(
+                    controller: MilaSSHKeysController(
+                        loader: { try await adapter.listSSHKeys() },
+                        revoker: { keyID in
+                            let key = MilaSSHKey(id: keyID, fingerprint: "", algorithm: "")
+                            try await adapter.revokeSSHKey(key, requestID: UUID())
+                        }
+                    ),
+                    signedIn: session.state != .signedOut
+                )
             }
             Text(MilaStrings.text(.runtimeUnavailable)).foregroundStyle(.secondary)
         }.navigationTitle(MilaStrings.text(.settings))
@@ -418,7 +421,11 @@ private struct SettingsView: View {
 
 public struct MilaSSHKeysView: View {
     @StateObject private var controller: MilaSSHKeysController
-    public init(controller: MilaSSHKeysController) { _controller = StateObject(wrappedValue: controller) }
+    private let signedIn: Bool
+    public init(controller: MilaSSHKeysController, signedIn: Bool = false) {
+        _controller = StateObject(wrappedValue: controller)
+        self.signedIn = signedIn
+    }
     public var body: some View {
         List {
             Text(MilaStrings.text(.sshKeysExplain)).font(.caption)
@@ -437,7 +444,7 @@ public struct MilaSSHKeysView: View {
                     }
                 }
             }
-        }.navigationTitle(MilaStrings.text(.sshKeysTitle)).task { await controller.load(signedIn: true) }
+        }.navigationTitle(MilaStrings.text(.sshKeysTitle)).task { await controller.load(signedIn: signedIn) }
     }
 }
 

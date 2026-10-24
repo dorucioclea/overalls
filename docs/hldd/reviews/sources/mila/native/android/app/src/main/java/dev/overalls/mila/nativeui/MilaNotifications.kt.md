@@ -1,5 +1,5 @@
 ---
-digest: e03e65ea5f995ba8cd9d88de0d9898256d1a6f150ee1fa06da47b73a3cc81b91
+digest: 2e284917b2d7e7416ddb8fe36d8fb4097faf5c8511c7a5111c97dc045c25f0ab
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android notification projection refresh keeps native device state current
+Android notification session lifecycle hides device projection and gates mutations

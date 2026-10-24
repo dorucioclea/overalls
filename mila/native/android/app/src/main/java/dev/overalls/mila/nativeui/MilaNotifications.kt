@@ -115,7 +115,14 @@ class MilaAuthenticatedNotificationController(
     private val deployment: String,
 ) {
     private val delegate = MilaNotificationController(store)
-    val devices: List<MilaNotificationDevice> get() = delegate.devices
+    private var sessionActive = true
+    val devices: List<MilaNotificationDevice> get() = if (sessionActive) delegate.devices else emptyList()
+
+    /** Ends the authenticated device session and hides the local projection. */
+    fun signOut() { sessionActive = false }
+
+    /** Re-enables the projection after the host establishes an authenticated session. */
+    fun signIn() { sessionActive = true; delegate.refresh() }
 
     /** Refreshes the projection after a provider callback or account change. */
     fun refresh() = delegate.refresh()
@@ -124,11 +131,13 @@ class MilaAuthenticatedNotificationController(
         if (!os.notificationsEnabled()) return false
         val id = provider.registrationId() ?: return false
         if (adapter.validatePushRegistration(id.value, appId, deployment, null).isFailure) return false
-        return delegate.register(object : MilaNotificationProvider { override fun registrationId() = id }, os)
+        val registered = delegate.register(object : MilaNotificationProvider { override fun registrationId() = id }, os)
+        if (registered) sessionActive = true
+        return registered
     }
 
-    fun remove(id: String): Boolean = delegate.remove(id)
-    fun setEnabled(id: String, enabled: Boolean): Boolean = delegate.setEnabled(id, enabled)
+    fun remove(id: String): Boolean = sessionActive && delegate.remove(id)
+    fun setEnabled(id: String, enabled: Boolean): Boolean = sessionActive && delegate.setEnabled(id, enabled)
 }
 
 /**

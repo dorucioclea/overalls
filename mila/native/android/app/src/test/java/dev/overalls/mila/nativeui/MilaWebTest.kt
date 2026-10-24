@@ -75,6 +75,22 @@ class MilaWebTest {
   assertTrue(controller.set(id, 8081, false))
   assertEquals(7L, seenRevision)
  }
+
+ @Test fun setReportsRevisionConflictWithoutLosingLoadedEndpoint() = kotlinx.coroutines.runBlocking {
+  val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
+  val adapter = object : MilaFfiAdapter {
+   override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
+   override suspend fun webShow(machineId: java.util.UUID) = Result.success("{\"machine_id\":\"$id\",\"port\":8080,\"visibility\":\"public\",\"policy_revision\":7}")
+   override suspend fun webSet(machineId: java.util.UUID, port: Int, public: Boolean, revision: Long): Result<Unit> =
+    Result.failure(IllegalStateException("policy revision mismatch"))
+  }
+  val controller = MilaWebController(adapter)
+  controller.setSession(true)
+  assertTrue(controller.show(id))
+  assertFalse(controller.set(id, 8081, false))
+  assertEquals("web policy revision conflict", controller.error)
+  assertEquals(7L, controller.endpoint?.revision)
+ }
 }
 
  @Test fun staleShowAfterSignOutCannotRestoreEndpoint() = kotlinx.coroutines.runBlocking {

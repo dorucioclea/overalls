@@ -1,5 +1,5 @@
 ---
-digest: 6cb2cbb24d6d6533b80044cec9fea713e6b66b47370b7b1c5951bb5818bb9ed5
+digest: 22f5a3165671d831d3a4c6c70abeb6b5f5604ca423fde07bd852171cb3016dfe
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Linux route parity review remains behavior-preserving
+Linux activation batch decision test preserves route authentication and rejection fencing

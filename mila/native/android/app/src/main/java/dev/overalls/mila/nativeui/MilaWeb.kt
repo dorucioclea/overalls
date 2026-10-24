@@ -76,7 +76,18 @@ class MilaWebController(private val adapter: MilaFfiAdapter) {
         require(port in 1..65535)
         val current = endpoint?.also { require(it.machineId == machine) }
             ?: error("load endpoint before changing it")
-        adapter.webSet(machine, port, public, current.revision).getOrThrow()
+        adapter.webSet(machine, port, public, current.revision).getOrElse { failure ->
+            // Preserve the endpoint revision on conflicts so the UI can reload it
+            // and retry with the server's current optimistic-concurrency token.
+            throw IllegalStateException(
+                if (failure.message?.contains("revision", ignoreCase = true) == true) {
+                    "web policy revision conflict"
+                } else {
+                    failure.message ?: "web endpoint rejected"
+                },
+                failure,
+            )
+        }
         show(machine)
     }.onFailure { error = it.message ?: "web endpoint rejected" }.isSuccess
 }

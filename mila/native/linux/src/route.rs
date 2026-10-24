@@ -549,6 +549,23 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn batch_decisions_never_include_rejected_or_cross_deployment_open() {
+        let batch = ActivationBatch::parse([
+            "overalls://fleet.example/machines",
+            "https://fleet.example/machines",
+            "overalls://other.example/settings",
+        ]);
+        assert_eq!(batch.rejected(), 1);
+        let decisions = batch.decisions(Some("fleet.example"), true);
+        assert_eq!(decisions.len(), 2);
+        assert!(matches!(decisions[0], NavigationDecision::Open { .. }));
+        assert!(matches!(
+            decisions[1],
+            NavigationDecision::UnknownDeployment { .. }
+        ));
+    }
+
     fn navigation_requires_the_selected_authenticated_deployment() {
         let route = ActivationRoute::parse(&format!("{HOST}/machines/{ID}/info")).expect("route");
         assert!(matches!(

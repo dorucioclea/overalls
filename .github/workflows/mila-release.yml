@@ -80,51 +80,41 @@ jobs:
           if-no-files-found: error
 
   android:
-    # flutter build appbundle runs outside Nix (ADR-0227) against the
-    # runner's Android SDK, with the pinned Flutter from the devenv shell.
+    # The release artifact is assembled by the native Jetpack Compose client.
+    # Keep this job independent of Flutter so native release regressions cannot
+    # be hidden by the legacy runner.
     runs-on: ubuntu-24.04
     environment: mila-release
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Nix
-        uses: cachix/install-nix-action@9aaadd8b85853f67fcdf488e6a4e9efa94ee96e2
-      - name: Setup Cachix
-        uses: cachix/cachix-action@ee79db531bfb851a7cf47035057b7cca88d26449
+      - uses: actions/setup-java@v4
         with:
-          name: overalls
-          extraPullNames: devenv
-          useDaemon: false
-      - name: Install devenv
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK and Rust targets
         run: |
-          rev=$(jq -r '.nodes.devenv.locked.rev' devenv.lock)
-          nix profile install "github:cachix/devenv/$rev"
-      - name: Write the upload keystore
-        env:
-          KEYSTORE: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
+      - name: Install cargo-ndk
+        run: cargo install cargo-ndk --locked
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
+      - name: Assemble native Android release APK
+        working-directory: mila/native/android
         run: |
-          umask 077
-          printf '%s' "$KEYSTORE" | base64 -d > "$RUNNER_TEMP/upload.jks"
-          echo "MILA_ANDROID_UPLOAD_STORE_FILE=$RUNNER_TEMP/upload.jks" >> "$GITHUB_ENV"
-      - name: Android release (app bundle)
-        env:
-          MILA_ANDROID_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
-          MILA_ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
-          MILA_ANDROID_UPLOAD_KEY_ALIAS: ${{ vars.MILA_ANDROID_UPLOAD_KEY_ALIAS }}
-          MILA_FCM_PROJECT_ID: ${{ vars.MILA_FCM_PROJECT_ID }}
-          MILA_FCM_APPLICATION_ID: ${{ vars.MILA_FCM_APPLICATION_ID }}
-          MILA_FCM_API_KEY: ${{ vars.MILA_FCM_API_KEY }}
-          MILA_FCM_SENDER_ID: ${{ vars.MILA_FCM_SENDER_ID }}
-        run: devenv shell -- mila-build android release
-      - name: Remove the upload keystore
-        if: always()
-        run: rm -f "$RUNNER_TEMP/upload.jks"
+          gradle --no-daemon --stacktrace assembleRelease
+          sha256sum app/build/outputs/apk/release/app-release-unsigned.apk > app/build/outputs/apk/release/SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: release-android
           path: |
-            mila/build/android-release/*.aab
-            mila/build/android-release/SHA256SUMS
+            mila/native/android/app/build/outputs/apk/release/app-release-unsigned.apk
+            mila/native/android/app/build/outputs/apk/release/SHA256SUMS
           if-no-files-found: error
 
   apple:

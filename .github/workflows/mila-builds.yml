@@ -136,6 +136,18 @@ jobs:
         run: |
           swift build
           swift test
+      - name: Swift native package release evidence
+        working-directory: mila/native/apple
+        env:
+          MILA_FFI_LIB_DIR: ${{ github.workspace }}/mila/rust/target/release
+        run: |
+          set -euo pipefail
+          if rg -n -i 'flutter' Package.swift Sources Tests; then
+            echo 'Apple native package must remain independent of Flutter' >&2
+            exit 1
+          fi
+          swift build -c release
+          swift test -c release
       - name: macOS and iOS dev targets
         run: |
           devenv shell -- mila-build macos dev

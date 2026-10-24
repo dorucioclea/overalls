@@ -1,5 +1,12 @@
-@cc [owner:ghuntley,label:security] mila-windows-native-abi
-The managed Windows native boundary MUST expose fixed-layout value types and an explicit status; raw pointers, untyped payloads, credentials, tokens and terminal bytes MUST NOT cross into the managed client.
+@cc [owner:ghuntley,label:build;security] native-windows-dotnet-release
+The native Windows Mila release MUST be built from `Mila.Windows.csproj` with the
+pinned .NET/Windows App SDK toolchain and the staged `mila_native.dll`. Its
+published output MUST NOT contain Flutter engine/runtime files, Dart snapshots,
+`.dart_tool` metadata, or Flutter-generated Windows runner assets. The release
+MUST remain runnable without a Flutter SDK or `flutter` executable on PATH.
 
-@cc [owner:ghuntley,label:reliability] mila-windows-native-placeholder
-Until the Rust library is staged beside the executable, every native probe MUST return `MilaNativeStatus.Unavailable` without terminating the managed client.
+@cc [owner:ghuntley,label:verification] native-windows-dotnet-release-audit
+`verify-release.ps1` MUST inspect a publish directory, require the managed
+executable and native library, and reject any Flutter/Dart artifacts. This is a
+packaging boundary check; native Windows execution and signing remain covered by
+Windows CI evidence.

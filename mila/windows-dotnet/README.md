@@ -47,3 +47,13 @@ locked/unlocked state, and verification outcomes to the UI; biometric data,
 passcodes, and Windows API objects never cross that boundary. The app disables
 navigation while locked and requires a successful Windows Hello verification to
 unlock.
+
+## Release boundary
+
+The .NET release is independent of the Flutter application. Publish it with
+`dotnet publish Mila.Windows.csproj -c Release -r win-x64 --self-contained true`
+and stage the production `mila_native.dll`; do not run `flutter build windows`.
+Before signing or archiving, run `powershell -File .\verify-release.ps1
+-PublishDirectory .\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish`.
+The verifier requires both release binaries and rejects Flutter/Dart engine,
+snapshot, and generated-runner files.

@@ -30,3 +30,13 @@ gradle --project-dir mila/native/android :app:assembleDebug
 The repository's Linux checks do not install a native Android SDK for this standalone scaffold. If
 Gradle or the SDK is unavailable, inspect the Kotlin and Gradle metadata and run the contract syntax
 check from the repository root.
+
+## Release evidence
+
+The `android` job in `.github/workflows/mila-release.yml` assembles this project
+with pinned JDK 17, Gradle 9.3.1, Android API 36/NDK 28.2.13676358, and locked
+Rust dependencies (`cargo-ndk ... build --locked`). It publishes
+`app-release-unsigned.apk` and a SHA-256 manifest as the native release
+candidate. Signing remains a distribution concern while the native parity
+matrix is open; the artifact is installable for QA and provides repeatable
+build evidence.

@@ -205,6 +205,35 @@ impl NativeState {
         });
         root.append(&forget);
 
+        // Deep links can also be entered from assistive launchers and clipboard
+        // integrations. Keep the same typed activation classifier as desktop
+        // `open` events so the UI never navigates on untrusted text directly.
+        let route_input = Entry::builder()
+            .placeholder_text("Open Mila link (overalls://...)")
+            .hexpand(true)
+            .build();
+        let route_button = Button::with_label("Open link");
+        let route_status = content.clone();
+        let route_entry = route_input.clone();
+        let route_session = self.session.clone();
+        let route_button_deployment = deployment.clone();
+        route_button.connect_clicked(move |_| {
+            let batch = ActivationBatch::parse([route_entry.text().as_str()]);
+            let selected = route_button_deployment.text().trim().to_owned();
+            let authenticated = route_session.borrow().is_authenticated();
+            let decisions = batch.decisions(Some(selected.as_str()), authenticated);
+            let message = decisions.first().map(|decision| match decision {
+                NavigationDecision::UnknownDeployment { .. } =>
+                    format!("Add deployment before opening {}", decision.canonical()),
+                NavigationDecision::SignInRequired { .. } =>
+                    format!("Sign in before opening {}", decision.canonical()),
+                NavigationDecision::Open { .. } => format!("Open {}", decision.canonical()),
+            });
+            route_status.set_label(message.as_deref().unwrap_or("Link rejected by Rust policy."));
+        });
+        root.append(&route_input);
+        root.append(&route_button);
+
         let machine_detail_id = Entry::builder()
             .placeholder_text("Machine UUID for detail")
             .hexpand(true)

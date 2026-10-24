@@ -101,7 +101,14 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
      true
     }
    }
-   is MilaWhoami.Pending -> true
+   is MilaWhoami.Pending -> {
+    // The control plane may rotate a short-lived approval URL while the same
+    // certificate session remains pending. Publish the newest validated
+    // envelope so the browser action and expiry timer never use stale data.
+    state = MilaSignInState.AwaitingApproval(awaiting.deployment, whoami.approval)
+    store?.writeApproval(MilaApprovalState.Pending)
+    true
+   }
    MilaWhoami.Refused, MilaWhoami.Invalid -> {
     session.close()
     pendingSession = null

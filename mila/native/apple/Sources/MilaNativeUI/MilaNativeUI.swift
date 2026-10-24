@@ -347,6 +347,7 @@ private struct SettingsView: View {
     @State private var notificationEndpoint = ""
     @State private var notificationStatus = ""
     @State private var notificationsEnabled = false
+    @State private var notificationDevices: [MilaNotificationDevice] = []
     @State private var deploymentHost = ""
     @State private var deploymentPort = "22"
     @State private var deploymentTrust = ""
@@ -451,6 +452,23 @@ private struct SettingsView: View {
                     Text(notificationsEnabled ? "[on]" : "[off]").font(.caption)
                 }
                 Text(notificationStatus).font(.caption).foregroundStyle(.secondary)
+                if session.state != .signedOut {
+                    ForEach(notificationDevices) { device in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(device.deployment)
+                                Text(device.enabled ? "Enabled" : "Disabled").font(.caption).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button("Remove") {
+                                let store = MilaUserDefaultsNotificationStore()
+                                _ = store.remove(id: device.id)
+                                notificationDevices = store.list()
+                            }
+                        }
+                    }
+                    Button("Refresh devices") { notificationDevices = MilaUserDefaultsNotificationStore().list() }
+                }
             }
             NavigationLink(MilaStrings.text(.sshKeysTitle)) {
                 MilaSSHKeysView(
@@ -468,6 +486,7 @@ private struct SettingsView: View {
         }
         .navigationTitle(MilaStrings.text(.settings))
         .onAppear {
+            notificationDevices = session.state == .signedOut ? [] : MilaUserDefaultsNotificationStore().list()
             // Defaults may contain values written by an older build. Normalize
             // them at the read boundary before they reach SwiftUI.
             let canonicalLocale = MilaStrings.canonicalLocale(locale)

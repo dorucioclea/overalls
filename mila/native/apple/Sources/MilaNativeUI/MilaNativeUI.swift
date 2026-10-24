@@ -172,7 +172,7 @@ private struct MachineDetailView: View {
                     Button(action.title) {
                         workflow.submit(action, machine: machine)
                     }
-                    .disabled(!isIdle)
+                    .disabled(!signedIn || !isIdle)
                 }
                 HStack {
                     ForEach(["show", "resize", "share show", "web show"], id: \.self) { command in

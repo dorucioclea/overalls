@@ -1,5 +1,5 @@
 ---
-digest: 1dca51f32ee2809a4235498424673ec5fcad260b320e2af500486fddf0ba28e8
+digest: d9986742b8c41732555b668d61ae9eae25b37543b70a18ecf17e90e3357929af
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple web and terminal controls now require live authenticated deployment session
+Apple machine lifecycle actions require live authentication

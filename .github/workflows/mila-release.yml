@@ -32,10 +32,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  FLUTTER_VERSION: 3.47.0
-  FLUTTER_WINDOWS_SHA256: 9f96d393cdfad05bea0b4b42c603ffda027af11adadc8e4cf3ac87e49110c1ca
-
 jobs:
   source-bundle:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
@@ -227,6 +223,11 @@ jobs:
     runs-on: windows-2025
     environment: mila-release
     timeout-minutes: 120
+    env:
+      # Flutter remains a Windows-only compatibility build input while the
+      # signed release jobs use native clients.
+      FLUTTER_VERSION: 3.47.0
+      FLUTTER_WINDOWS_SHA256: 9f96d393cdfad05bea0b4b42c603ffda027af11adadc8e4cf3ac87e49110c1ca
     defaults:
       run:
         shell: pwsh

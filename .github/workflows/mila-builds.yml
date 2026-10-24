@@ -33,12 +33,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  # The pinned Flutter (ADR-0227) for hosts without Nix, from
-  # storage.googleapis.com/flutter_infra_release/releases/releases_windows.json.
-  FLUTTER_VERSION: 3.47.0
-  FLUTTER_WINDOWS_SHA256: 9f96d393cdfad05bea0b4b42c603ffda027af11adadc8e4cf3ac87e49110c1ca
-
 jobs:
   linux:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
@@ -187,6 +181,11 @@ jobs:
     needs: source-bundle
     runs-on: windows-2025
     timeout-minutes: 120
+    env:
+      # The pinned Flutter (ADR-0227) is needed only by the Windows bundle
+      # consumer; native jobs remain independent of the legacy SDK.
+      FLUTTER_VERSION: 3.47.0
+      FLUTTER_WINDOWS_SHA256: 9f96d393cdfad05bea0b4b42c603ffda027af11adadc8e4cf3ac87e49110c1ca
     defaults:
       run:
         shell: pwsh

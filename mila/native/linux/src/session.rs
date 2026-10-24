@@ -1022,6 +1022,28 @@ impl ApprovalInfo {
             issued_at,
         })
     }
+
+    /// Validate that a browser approval remains on the selected deployment
+    /// authority.  The URL is untrusted input even after the envelope parser
+    /// accepts it; opening a different HTTPS origin would let a copied link
+    /// steer the native client to another deployment.
+    pub fn validate_for_host(
+        url: &str,
+        fingerprint: &str,
+        issued_at: u64,
+        expected_host: &str,
+    ) -> Result<Self, RuntimeError> {
+        let info = Self::validate(url, fingerprint, issued_at)?;
+        let authority = info
+            .url
+            .strip_prefix("https://")
+            .and_then(|rest| rest.split(['/', '?']).next())
+            .ok_or(RuntimeError::InvalidInput)?;
+        if authority != expected_host {
+            return Err(RuntimeError::InvalidInput);
+        }
+        Ok(info)
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -1689,6 +1711,22 @@ mod tests {
         assert!(ApprovalInfo::validate("https://?approval", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://:443/a", "fp", 0).is_err());
         assert!(ApprovalInfo::validate("https://example.test/a", "fp", 0).is_ok());
+    }
+
+    #[test]
+    fn approval_url_must_remain_on_selected_deployment() {
+        assert!(ApprovalInfo::validate_for_host(
+            "https://example.test/ssh/approve/a", "fp", 0, "example.test"
+        )
+        .is_ok());
+        assert!(ApprovalInfo::validate_for_host(
+            "https://evil.example/ssh/approve/a", "fp", 0, "example.test"
+        )
+        .is_err());
+        assert!(ApprovalInfo::validate_for_host(
+            "https://example.test.evil/ssh/approve/a", "fp", 0, "example.test"
+        )
+        .is_err());
     }
 
     #[test]

@@ -363,6 +363,7 @@ impl NativeState {
 
         let sign_in = self.sign_in.clone();
         let sign_in_status = content.clone();
+        let approval_deployment = deployment.clone();
         let open_approval = Button::with_label(&strings::text(strings::Message::SignInOpenBrowser));
         open_approval.connect_clicked(move |_| {
             let flow = sign_in.borrow();
@@ -370,8 +371,14 @@ impl NativeState {
                 sign_in_status.set_label("No live approval link is available.");
                 return;
             };
-            if ApprovalInfo::validate(&approval.url, &approval.fingerprint, approval.issued_at)
-                .is_err()
+            let expected_host = approval_deployment.text().trim().to_owned();
+            if ApprovalInfo::validate_for_host(
+                &approval.url,
+                &approval.fingerprint,
+                approval.issued_at,
+                &expected_host,
+            )
+            .is_err()
             {
                 sign_in_status.set_label("Approval URL rejected by Rust policy.");
                 return;

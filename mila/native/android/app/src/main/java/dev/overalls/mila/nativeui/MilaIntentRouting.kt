@@ -11,7 +11,7 @@ internal fun externalMilaUri(intent: Intent): String? = when (intent.action) {
         if (mime != null && mime != "text/plain") null else intent.getStringExtra(Intent.EXTRA_TEXT)
     }
     else -> null
-}
+}?.takeIf { it.length <= 2048 }
 
 /** A share target is accepted only when its text is itself a canonical Mila route. */
 internal fun acceptExternalIntent(controller: MilaDeepLinkController, intent: Intent, generation: Long): Boolean =

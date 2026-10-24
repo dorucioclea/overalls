@@ -52,5 +52,13 @@ class MilaIntentRoutingTest {
         assertFalse(acceptExternalIntent(controller, share, generation))
         assertEquals(MilaRoute.Machines, controller.target)
     }
+
+    @Test fun oversizedShareTextIsRejected() {
+        val controller = MilaDeepLinkController()
+        val generation = controller.beginSession()
+        val share = Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, "overalls://mila/threads" + "x".repeat(2048))
+        assertFalse(acceptExternalIntent(controller, share, generation))
+        assertEquals(MilaRoute.Machines, controller.target)
+    }
 }
 

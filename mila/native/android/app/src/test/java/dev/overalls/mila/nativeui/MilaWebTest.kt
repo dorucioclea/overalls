@@ -1,5 +1,6 @@
 package dev.overalls.mila.nativeui
 
+import kotlinx.coroutines.launch
 import org.junit.Assert.*
 import org.junit.Test
 

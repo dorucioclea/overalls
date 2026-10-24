@@ -459,7 +459,7 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
     }
 }
 
-private fun validResize(cpu: String, memory: String, disk: String): Boolean = listOf(cpu, memory, disk).all { it.toIntOrNull() in 1..1_000_000 }
+internal fun validResize(cpu: String, memory: String, disk: String): Boolean = listOf(cpu, memory, disk).all { it.toIntOrNull() in 1..1_000_000 }
 
 @Composable private fun MachineDetail(controller: MilaMachineDetailController, id: java.util.UUID, adapter: MilaFfiAdapter, signedIn: Boolean, listing: MilaSessionListing?) {
     val scope = rememberCoroutineScope()

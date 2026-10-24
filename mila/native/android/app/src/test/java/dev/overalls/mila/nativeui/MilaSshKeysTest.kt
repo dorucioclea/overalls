@@ -29,6 +29,18 @@ class MilaSshKeysTest {
   assertFalse(controller.revoke("fp1"))
  }
 
+ @Test fun refreshClearsProjectionWhenSessionStoreCloses() {
+  val store = object : MilaSshKeyStore {
+   override fun list(): List<MilaSshKey> = error("closed session")
+   override fun revoke(fingerprint: String): Boolean = error("closed session")
+  }
+  val controller = MilaSshKeyController(Keys())
+  assertFalse(controller.keys.isEmpty())
+  controller.bindStore(store)
+  assertTrue(controller.keys.isEmpty())
+  assertFalse(controller.revoke("fp1"))
+ }
+
  @Test fun currentDeviceCannotBeRevoked() {
   val id = UUID.fromString("00000000-0000-0000-0000-000000000002")
   val store = object : MilaSshKeyStore {

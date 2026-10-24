@@ -52,7 +52,9 @@ class MilaSshKeyController(initialStore: MilaSshKeyStore? = null) {
     }
 
     fun refresh() {
-        keys = readKeys()
+        // A reconnect may close the previous Rust handle while a refresh is in flight.
+        // Fail closed and clear the projection rather than retaining stale keys.
+        keys = runCatching { readKeys() }.getOrElse { emptyList() }
     }
 
     fun revoke(fingerprint: String): Boolean {

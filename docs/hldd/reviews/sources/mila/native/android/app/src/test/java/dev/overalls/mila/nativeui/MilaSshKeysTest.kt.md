@@ -1,5 +1,5 @@
 ---
-digest: bcc9437d10d3209ba8b74255d53ef1ea324a93166dad3ba9ba24c56f9a68e2f2
+digest: 1f6eeecceb70147c2b18601f856b9788e910cbfbbdfe042810e177ec9f850fdd
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review native session security changes preserve documented boundaries
+Android SSH refresh clears stale projection when reconnect closes session

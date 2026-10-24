@@ -78,7 +78,9 @@ class MilaSshKeyController(initialStore: MilaSshKeyStore? = null) {
         return ok
     }
 
-    private fun readKeys(): List<MilaSshKey> = store?.list()?.filter { it.fingerprint.isNotBlank() }.orEmpty()
+    private fun readKeys(): List<MilaSshKey> = runCatching {
+        store?.list()?.filter { it.fingerprint.isNotBlank() }.orEmpty()
+    }.getOrElse { emptyList() }
 }
 
 /** Typed store backed by one certificate-authenticated Rust session handle. */

@@ -12,6 +12,8 @@ private class ThreadAdapter(private val accepted: Boolean = true) : MilaFfiAdapt
     override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
     override suspend fun threadAction(threadId: UUID, command: MilaThreadCommand): Result<Unit> =
         if (accepted) Result.success(Unit) else Result.failure(IllegalStateException("rejected"))
+    override suspend fun threadAction(threadId: UUID, command: MilaThreadCommand, input: String?): Result<Unit> =
+        if (accepted) Result.success(Unit) else Result.failure(IllegalStateException("rejected"))
 }
 
 @RunWith(RobolectricTestRunner::class)

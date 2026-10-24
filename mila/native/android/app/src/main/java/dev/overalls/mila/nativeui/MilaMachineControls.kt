@@ -87,7 +87,10 @@ class MilaTerminalController(private val adapter: MilaFfiAdapter, private val so
   return true
  }
  /** Drain one bounded host read. A null result means the PTY currently has no output. */
- fun pollOutput(): Boolean = source?.read(MAX_READ_BYTES)?.let(::receive) ?: false
+ fun pollOutput(): Boolean {
+  if (state.phase != MilaTerminalPhase.Attached && state.phase != MilaTerminalPhase.ReadOnly) return false
+  return source?.read(MAX_READ_BYTES)?.let(::receive) ?: false
+ }
  fun resize(columns: Int, rows: Int): Boolean { if (columns !in 1..500 || rows !in 1..500) return false; return adapter.terminalResize(columns, rows, state.phase == MilaTerminalPhase.Attached).isSuccess.also { if (it) state = state.copy(columns=columns, rows=rows) } }
  fun close() { state = state.copy(phase = MilaTerminalPhase.Closed) }
 }

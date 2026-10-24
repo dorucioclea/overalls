@@ -74,6 +74,13 @@ app.multiShell.overrideAttrs (finalAttrs: old: {
   # running Gradle or pub. The update script runs Gradle from here too.
   preBuild = (old.preBuild or "") + ''
     flutter config --no-analytics --android-sdk "${sdkRoot}" --jdk-dir "${jdk.home}" >/dev/null
+    # Flutter's localization generator writes generated metadata alongside the
+    # ARB inputs. The Nix source tree is read-only, so provide a writable copy
+    # for the Android build and point l10n.yaml at it.
+    localization_dir="$NIX_BUILD_TOP/mila-localization-catalogs"
+    cp -r localization/catalogs "$localization_dir"
+    chmod -R u+w "$localization_dir"
+    sed -i "s#../localization/catalogs#$localization_dir#" app/l10n.yaml
     flutter build apk --config-only --release --no-pub
     # Gradle writes into an included build's directory, so Flutter's Gradle
     # plugin cannot be built in place in the store: give it a writable copy

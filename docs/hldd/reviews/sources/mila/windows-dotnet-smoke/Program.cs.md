@@ -1,5 +1,5 @@
 ---
-digest: 3ea28cd5689107c91f80375e6348b78a1898ae79c6ba055adc9c98a980c5e7ff
+digest: cdff03a89a9b02b6767b100e234de6baa7c4959a264a9c92f9a43d5744fc8f35
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native activation smoke fence preserves documented behavior
+Windows settings persistence bounds and atomic replacement preserve documented behavior

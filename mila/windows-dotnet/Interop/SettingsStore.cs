@@ -46,6 +46,8 @@ internal static class MilaSettingsStore
         try
         {
             if (!File.Exists(FilePath)) return MilaSettings.Defaults;
+            FileInfo file = new(FilePath);
+            if (file.Length > 64 * 1024) return MilaSettings.Defaults;
             MilaSettings? value = JsonSerializer.Deserialize<MilaSettings>(File.ReadAllText(FilePath));
             return value is not null && MilaSettings.IsValidLocale(value.Locale) ? value.Normalize() : MilaSettings.Defaults;
         }
@@ -57,6 +59,8 @@ internal static class MilaSettingsStore
         MilaSettings normalized = settings.Normalize();
         if (!MilaSettings.IsValidLocale(normalized.Locale)) throw new ArgumentException("Invalid locale", nameof(settings));
         Directory.CreateDirectory(Path.GetDirectoryName(FilePath)!);
-        File.WriteAllText(FilePath, JsonSerializer.Serialize(normalized));
+        string temporary = FilePath + ".tmp";
+        File.WriteAllText(temporary, JsonSerializer.Serialize(normalized));
+        File.Move(temporary, FilePath, true);
     }
 }

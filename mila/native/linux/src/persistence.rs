@@ -53,7 +53,26 @@ impl Settings {
     }
 
     pub(crate) fn validate(appearance: Appearance, locale: &str) -> Result<Self, PersistenceError> {
-        let locale = locale.trim().replace('_', "-");
+        let raw = locale.trim().replace('_', "-");
+        let mut parts = raw.split('-');
+        let Some(language) = parts.next() else {
+            return Err(PersistenceError::InvalidLocale);
+        };
+        let mut canonical = language.to_ascii_lowercase();
+        for part in parts {
+            if part.len() == 4 && part.bytes().all(|b| b.is_ascii_alphabetic()) {
+                let mut chars = part.chars();
+                if let Some(first) = chars.next() {
+                    canonical.push('-');
+                    canonical.push(first.to_ascii_uppercase());
+                    canonical.extend(chars.map(|c| c.to_ascii_lowercase()));
+                }
+            } else {
+                canonical.push('-');
+                canonical.push_str(&part.to_ascii_uppercase());
+            }
+        }
+        let locale = canonical;
         let valid = locale.len() >= 2
             && locale.len() <= 35
             && locale.split('-').all(|part| {
@@ -249,6 +268,12 @@ mod tests {
     fn settings_validate_and_normalize_locale() {
         let settings = Settings::validate(Appearance::Dark, "fr_FR").unwrap();
         assert_eq!(settings.locale, "fr-FR");
+        assert_eq!(
+            Settings::validate(Appearance::System, "ZH_hant_tw")
+                .unwrap()
+                .locale,
+            "zh-Hant-TW"
+        );
         assert_eq!(settings.appearance, Appearance::Dark);
         assert!(Settings::validate(Appearance::System, "not a locale").is_err());
         assert!(Settings::validate(Appearance::System, "").is_err());

@@ -1,5 +1,5 @@
 ---
-digest: 7e6e81c09ea5845aadf0c578af453271e788e49483017fa5019a49df068a789d
+digest: 3bb851a4097ca578c4c9e64a428fb2ee4678fe42519e57b4f2eaa99b0c61aaf4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows locale direction presentation parity test
+Windows settings persistence bounds and atomic replacement preserve documented behavior

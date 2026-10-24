@@ -1,5 +1,5 @@
 ---
-digest: 9a7b0f40cde0bc33e94b80fcce6426aff8d1ecb7a3b5b84fbcbd4dfca9dd2c2f
+digest: 9fc56a55578bd53cd33c48922c339a8899ac2870368ecb2efcc3d82296819507
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Review concurrent native source updates required by shared hook
+Linux locale canonicalization preserves settings policy

@@ -61,7 +61,8 @@ class MilaWebController(private val adapter: MilaFfiAdapter) {
     fun setSession(authenticated: Boolean) {
         sessionGeneration += 1
         signedIn = authenticated
-        if (!authenticated) clear()
+        // Never carry a web endpoint across authentication generations.
+        clear()
     }
     var endpoint by mutableStateOf<MilaWebEndpoint?>(null); private set
     var error by mutableStateOf<String?>(null); private set

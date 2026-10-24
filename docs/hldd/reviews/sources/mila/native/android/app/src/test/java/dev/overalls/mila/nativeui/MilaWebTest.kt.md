@@ -1,5 +1,5 @@
 ---
-digest: fe4f995aa580186054b446fdc4b8b33b73fb5e0d87a0c087c385f26316ada46a
+digest: 82aa943243d44e14fe399254a9aee73d2fcd16efd3124952e7cad302778d1d2e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaWeb.kt
+Android WebView endpoint state is cleared across authentication generations

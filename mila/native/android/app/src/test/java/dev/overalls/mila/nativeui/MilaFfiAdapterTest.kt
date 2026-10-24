@@ -153,6 +153,7 @@ class MilaLinkedFfiAdapterTest {
             }
         }
         val adapter = LinkedMilaFfiAdapter(bindings)
+        adapter.bindSession(MilaSessionHandle(1, bindings))
         assertTrue(adapter.validatePushRegistration("provider-token", "com.example.mila", "mila.example", null).isSuccess)
         assertEquals("provider-token", bindings.seen)
         assertTrue(adapter.validatePushRegistration("", "com.example.mila", "mila.example", null).isFailure)

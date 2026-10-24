@@ -10,7 +10,7 @@ class MilaSshKeysTest {
   val id = UUID.fromString("00000000-0000-0000-0000-000000000001")
   val bindings = object : AndroidKeysRustBindings() {
    var revoked: Pair<String, String>? = null
-   override fun sessionSshKeys(handle: Long): ByteArray = "{\"keys\":[{\"id\":\"$id\",\"label\":\"phone\",\"algorithm\":\"ssh-ed25519\",\"fingerprint\":\"SHA256:test\"}]}".toByteArray()
+   override fun sessionSshKeys(handle: Long): ByteArray? = "{\"keys\":[{\"id\":\"$id\",\"label\":\"phone\",\"algorithm\":\"ssh-ed25519\",\"fingerprint\":\"SHA256:test\"}]}".toByteArray()
    override fun sessionSshKeyRevoke(handle: Long, key: String, requestId: String): Int { revoked = key to requestId; return 0 }
   }
   val controller = MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(7, bindings)))
@@ -22,7 +22,7 @@ class MilaSshKeysTest {
 
  @Test fun malformedWhitespaceProjectionFailsClosed() {
   val bindings = object : AndroidKeysRustBindings() {
-   override fun sessionSshKeys(handle: Long): ByteArray = "{\"keys\":[{\"id\":\"00000000-0000-0000-0000-000000000003\",\"fingerprint\":\"SHA256: bad\",\"algorithm\":\"ssh-ed25519\",\"label\":\"phone\"}]}".toByteArray()
+   override fun sessionSshKeys(handle: Long): ByteArray? = "{\"keys\":[{\"id\":\"00000000-0000-0000-0000-000000000003\",\"fingerprint\":\"SHA256: bad\",\"algorithm\":\"ssh-ed25519\",\"label\":\"phone\"}]}".toByteArray()
   }
   val controller = MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(8, bindings)))
   assertTrue(controller.keys.isEmpty())
@@ -30,10 +30,10 @@ class MilaSshKeysTest {
 
  @Test fun oversizedUtf8DisplayValuesFailClosed() {
   val bindings = object : AndroidKeysRustBindings() {
-   override fun sessionSshKeys(handle: Long): ByteArray = ("{\"keys\":[{" +
+   override fun sessionSshKeys(handle: Long): ByteArray? = ("{\"keys\":[{" +
     "\"id\":\"00000000-0000-0000-0000-000000000004\"," +
     "\"fingerprint\":\"SHA256:test\",\"algorithm\":\"ssh-ed25519\"," +
-    "\"label\":\"" + "é".repeat(200) + "\"}]}\").toByteArray()
+    "\"label\":\"" + "é".repeat(200) + "\"}]}" ).toByteArray()
   }
   val controller = MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(9, bindings)))
   assertTrue(controller.keys.isEmpty())
@@ -45,7 +45,7 @@ class MilaSshKeysTest {
   listOf("é", "中", "🙂").forEach { unit ->
    val label = unit.repeat(257)
    val bindings = object : AndroidKeysRustBindings() {
-    override fun sessionSshKeys(handle: Long): ByteArray = ("{\"keys\":[{" +
+    override fun sessionSshKeys(handle: Long): ByteArray? = ("{\"keys\":[{" +
      "\"id\":\"00000000-0000-0000-0000-000000000005\"," +
      "\"fingerprint\":\"SHA256:test\",\"algorithm\":\"ssh-ed25519\"," +
      "\"label\":\"" + label + "\"}]}").toByteArray()

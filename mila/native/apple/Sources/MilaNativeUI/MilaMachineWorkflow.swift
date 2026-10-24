@@ -25,6 +25,17 @@ public final class MilaMachineWorkflow: ObservableObject {
             state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
             return
         }
+        // Keep malformed presentation/request data out of the native bridge.  These
+        // bounds mirror the Rust projection limits and ensure a response can always
+        // be represented by the bounded UI state machine.
+        let zeroUUID = "00000000-0000-0000-0000-000000000000"
+        guard requestID.uuidString.lowercased() != zeroUUID,
+              machine.id.uuidString.lowercased() != zeroUUID,
+              !machine.machine.name.isEmpty,
+              machine.machine.name.utf8.count <= 128 else {
+            state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
+            return
+        }
         guard machine.actions.values.contains(action) else {
             state = .failed(requestID: requestID, action: action, error: .actionNotAllowed)
             return

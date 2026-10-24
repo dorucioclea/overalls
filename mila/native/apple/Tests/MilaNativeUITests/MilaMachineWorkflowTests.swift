@@ -49,4 +49,12 @@ final class MilaMachineWorkflowTests: XCTestCase {
         guard case .failed(let requestID, .stop, .actionNotAllowed) = workflow.state,
               requestID == id else { return XCTFail("request IDs must be at-most-once") }
     }
+
+    func testZeroRequestIDIsRejectedBeforeBridgeSubmission() throws {
+        let workflow = MilaMachineWorkflow(adapter: UnavailableMilaFFIAdapter())
+        let zero = UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        workflow.submit(.stop, machine: try machine(), requestID: zero)
+        guard case .failed(let requestID, .stop, .actionNotAllowed) = workflow.state,
+              requestID == zero else { return XCTFail("zero request IDs must be rejected") }
+    }
 }

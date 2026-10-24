@@ -21,12 +21,18 @@ pub struct MachineRow {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum MachineViewError {
     UnsafeDisplayText,
+    TooManyMachines,
     NotFound,
 }
+
+const MAX_UI_MACHINES: usize = 256;
 
 /// @cc [owner:ghuntley,label=security;desktop] linux-machine-view-bounded
 /// GTK rows MUST derive from validated session listings and reject unsafe display text.
 pub fn project_listing(listing: &MachineListing) -> Result<Vec<MachineRow>, MachineViewError> {
+    if listing.machines().len() > MAX_UI_MACHINES {
+        return Err(MachineViewError::TooManyMachines);
+    }
     listing.machines().iter().map(project_machine).collect()
 }
 
@@ -110,5 +116,13 @@ mod tests {
             project_listing(&listing),
             Err(MachineViewError::UnsafeDisplayText)
         );
+    }
+
+    #[test]
+    fn rejects_listing_larger_than_ui_bound() {
+        let items = (0..257).map(|index| format!(r#"{{"id":"01234567-89ab-cdef-0123-{index:012x}","name":"Builder","desired_state":"running","observed_state":null,"pinned":false,"owner":false,"permissions":{{"read":true,"write":false,"manage":false}}}}"#)).collect::<Vec<_>>().join(",");
+        let payload = format!(r#"{{"version":1,"status":"succeeded","result":{{"items":[{items}],"next_cursor":null}}}}"#);
+        let listing = decode_listing(payload.as_bytes()).expect("protocol listing");
+        assert_eq!(project_listing(&listing), Err(MachineViewError::TooManyMachines));
     }
 }

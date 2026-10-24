@@ -1,5 +1,5 @@
 ---
-digest: 6342b137d8d7b6079cd86b42e71628131c59eea0fd646fc1d633969530ff265c
+digest: 539d89748761a7b53574f739421aa9cdd66d6983f3a2329d23b964b158dfbab5
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native workflow and Windows notification validation preserve reviewed behavior
+Apple machine workflow validates bounded mutation requests before native submission.

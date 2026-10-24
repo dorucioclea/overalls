@@ -2,6 +2,7 @@ package dev.overalls.mila.nativeui
 
 import android.os.Bundle
 import android.os.SystemClock
+import java.util.Locale
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.activity.ComponentActivity
@@ -28,7 +29,10 @@ class MainActivity : FragmentActivity() {
         deepLinkGeneration = deepLinks.beginSession()
         acceptExternalIntent(deepLinks, intent, deepLinkGeneration)
         routeState.value = deepLinks.target
-        MilaStrings.configure(this)
+        val persisted = MilaSettingsController(
+            MilaSharedPreferencesStore(getSharedPreferences("mila.settings", MODE_PRIVATE)),
+        ).load()
+        MilaStrings.configure(this, Locale.forLanguageTag(persisted.locale))
         lockController = MilaAppLockController(MilaAppLockPreferencesStore(getSharedPreferences("mila.app-lock", MODE_PRIVATE)))
         val capability = BiometricManager.from(this).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)
         lockController.setAvailability(if (capability == BiometricManager.BIOMETRIC_SUCCESS) MilaLockAvailability.Available else MilaLockAvailability.Unavailable)

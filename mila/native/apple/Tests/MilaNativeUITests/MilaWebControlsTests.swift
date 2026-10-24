@@ -10,6 +10,10 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertNil(controller.endpoint)
         XCTAssertFalse(controller.set("https://user:secret@console.example.test"))
         XCTAssertFalse(controller.set("https://console.example.test/#fragment"))
+        XCTAssertFalse(controller.set("https://console.example.test:0"))
+        XCTAssertFalse(controller.set("https://console.example.test:65536"))
+        XCTAssertFalse(controller.set("https://console example.test"))
+        XCTAssertFalse(controller.set("https://:443/control"))
     }
 
     @MainActor func testAsyncEndpointCommitRejectsSignedOutSession() throws {

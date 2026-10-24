@@ -20,6 +20,14 @@ class MilaSshKeysTest {
   assertTrue(bindings.revoked?.second?.matches(Regex("porsche-[0-9a-f]{32}")) == true)
  }
 
+ @Test fun malformedWhitespaceProjectionFailsClosed() {
+  val bindings = object : AndroidKeysRustBindings() {
+   override fun sessionSshKeys(handle: Long): ByteArray = "{\"keys\":[{\"id\":\"00000000-0000-0000-0000-000000000003\",\"fingerprint\":\"SHA256: bad\",\"algorithm\":\"ssh-ed25519\",\"label\":\"phone\"}]}".toByteArray()
+  }
+  val controller = MilaSshKeyController(MilaSessionSshKeyStore(MilaSessionHandle(8, bindings)))
+  assertTrue(controller.keys.isEmpty())
+ }
+
  @Test fun unbindingSessionClearsKeysAndRefusesRevoke() {
   val store = Keys()
   val controller = MilaSshKeyController(store)

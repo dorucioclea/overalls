@@ -1,5 +1,5 @@
 ---
-digest: dcc2198403e6cfeb06dd16887c01d9d36eab75930b3af64e4e9830947887aaad
+digest: 09ef6f609ac280259c4b07d96e05bfa4d42a45aab2968a04bdbeb04e9fcdce14
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Bound Windows activation payloads and preserve Linux adapter route validation
+Windows terminal input bounds and smoke coverage preserve documented behavior

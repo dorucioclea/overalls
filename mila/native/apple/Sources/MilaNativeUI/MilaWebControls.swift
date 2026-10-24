@@ -5,9 +5,12 @@ import SwiftUI
 public struct MilaWebEndpoint: Equatable, Sendable {
     public let url: URL
     public init(_ value: String) throws {
-        guard let parsed = URL(string: value), parsed.scheme?.lowercased() == "https",
+        guard value.utf8.count <= 2048,
+              let parsed = URL(string: value), parsed.scheme?.lowercased() == "https",
               parsed.user == nil, parsed.password == nil, parsed.fragment == nil,
-              parsed.host != nil else { throw MilaWebEndpointError.invalid }
+              let host = parsed.host, !host.isEmpty,
+              !host.unicodeScalars.contains(where: { $0.properties.isWhitespace || $0.value < 0x20 }),
+              parsed.port.map({ (1...65_535).contains($0) }) ?? true else { throw MilaWebEndpointError.invalid }
         self.url = parsed
     }
 }

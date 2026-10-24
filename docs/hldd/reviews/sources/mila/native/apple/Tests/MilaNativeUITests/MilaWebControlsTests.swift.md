@@ -1,5 +1,5 @@
 ---
-digest: 1ce1384e8e32fdce983edfae2b5fb82ae26eeff21c1ef8134dac7c89e864d68a
+digest: cd4ea2b7c950bcd769c2de4656373fd1c90aaa2bba637bff83205c8c7a76fd0a
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple web revision conflict guard preserves session behavior
+Apple endpoint host and port bounds preserve web security behavior

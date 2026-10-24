@@ -4,6 +4,7 @@ namespace Mila.Windows.Interop;
 internal sealed class MilaTerminalSession
 {
     internal const int MaxOutputCharacters = 1_048_576;
+    internal const int MaxInputBytes = 65_536;
     internal MilaTerminalState State { get; private set; } = MilaTerminalState.SignedOut;
     private long _generation;
     private ulong _sessionHandle;
@@ -50,7 +51,7 @@ internal sealed class MilaTerminalSession
     }
     internal bool SendInput(long generation, ReadOnlySpan<byte> input)
     {
-        if (generation != _generation || !_readWrite || input.Length > MaxOutputCharacters || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed) return false;
+        if (generation != _generation || !_readWrite || input.Length > MaxInputBytes || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed) return false;
         return true;
     }
     internal bool Reconnect(long generation) => generation == _generation &&

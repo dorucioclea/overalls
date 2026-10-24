@@ -1,5 +1,5 @@
 ---
-digest: 1f6eeecceb70147c2b18601f856b9788e910cbfbbdfe042810e177ec9f850fdd
+digest: 89fdf1aa7c3e65f8f246a3d06d874e0382f42ab89b0b94cfb18915635bfbfccc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android SSH refresh clears stale projection when reconnect closes session
+Concurrent Android SSH test review preserves native behavior

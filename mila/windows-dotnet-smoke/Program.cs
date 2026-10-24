@@ -120,6 +120,7 @@ internal static class Program
         Require(terminal.Append(7, "ready\n"), "terminal output append");
         Require(terminal.Resize(7, 120, 40) && terminal.SendInput(7, new byte[] { 13 }), "terminal live controls");
         Require(!terminal.Append(6, "stale"), "stale terminal generation refusal");
+        Require(!terminal.SendInput(7, new byte[65_537]), "terminal input hard bound");
         terminal.Kill(7); Require(!terminal.Reconnect(7), "killed terminal reconnect refusal");
         terminal.BeginAuthenticatedAttach(9, 8, true);
         Require(terminal.Append(8, "reconnected\n"), "terminal reconnect attach");

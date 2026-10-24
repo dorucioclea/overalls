@@ -106,7 +106,11 @@ class MilaSessionSshKeyStore(
                     require(fingerprint.isNotEmpty() && fingerprint.length <= 256)
                     require(algorithm.isNotEmpty() && algorithm.length <= 256)
                     require(label.length <= 256)
-                    require(listOf(fingerprint, algorithm, label).all { text -> text.none { it.code < 0x20 || it.code == 0x7f } })
+                    require(listOf(fingerprint, algorithm, label).all { text ->
+                        text.none { it.code < 0x20 || it.code == 0x7f } &&
+                            text == text.trim()
+                    })
+                    require(fingerprint.none { it.isWhitespace() } && algorithm.none { it.isWhitespace() })
                     add(MilaSshKey(id, fingerprint, algorithm, label, fingerprint == currentFingerprint))
                 }
             }

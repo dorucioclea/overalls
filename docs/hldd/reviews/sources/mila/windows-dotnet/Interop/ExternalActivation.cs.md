@@ -1,5 +1,5 @@
 ---
-digest: 85d5928bdf7ab000a7a7e42d0eba420f00f1f051041d483ffd2a3dbdcd04e82b
+digest: 43a66617633079cfed116fa74cb32a4b0afd2e26a6d053efbe46f3419cec876b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows share activation now requires authenticated same-deployment route authorization
+Native activation smoke fence preserves documented behavior

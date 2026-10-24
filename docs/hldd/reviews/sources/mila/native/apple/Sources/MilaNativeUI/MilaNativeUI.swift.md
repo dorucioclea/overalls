@@ -1,5 +1,5 @@
 ---
-digest: 8363f53c5845cf82c4a38e375a1886a36ad7a8988f5789c3e2dd5a4a7e3b883b
+digest: a27cc5e4687c2d0dcaff12859e0a56a4fd9d346afa4907f18de09c0cca0a91eb
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Apple route adapter changes preserve native routing contracts
+Apple machine projections cap native list size and preserve session fencing

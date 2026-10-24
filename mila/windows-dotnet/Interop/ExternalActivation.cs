@@ -23,6 +23,18 @@ internal static class MilaShareTarget
     }
 }
 
+internal sealed class MilaExternalActivationGate
+{
+    private long _generation;
+    internal long Generation => _generation;
+    internal long Reset() => ++_generation;
+    internal bool TryAuthorize(MilaExternalActivation activation, long activationGeneration, bool authenticated, string? activeHost, out MilaRoute route)
+    {
+        if (activationGeneration != _generation) { route = default; return false; }
+        return MilaShareTarget.TryAuthorize(activation, authenticated, activeHost, out route);
+    }
+}
+
 internal static class MilaExternalActivationParser
 {
     private const int MaxShareText = 4096;

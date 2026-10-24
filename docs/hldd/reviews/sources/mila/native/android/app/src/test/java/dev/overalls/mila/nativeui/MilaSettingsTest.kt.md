@@ -1,5 +1,5 @@
 ---
-digest: d8a7034724681adbcce874d22fe7c31afe6fe598b7ce92b2faed25678fba8fdf
+digest: c5bae6ea67eadc467e81fc14a64a4b8d3db64b533aa52335fe24b42326602dfa
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android locale direction test preserves native settings behavior
+Android locale fallback remains within existing settings contract

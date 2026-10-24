@@ -187,6 +187,11 @@ internal static class Program
         Require(shared is { } wrongHost && !MilaShareTarget.TryAuthorize(
             wrongHost, authenticated: true, "other.example.test", out _),
             "cross-deployment share refusal");
+        var gate = new MilaExternalActivationGate();
+        long activationGeneration = gate.Generation;
+        gate.Reset();
+        Require(shared is { } stale && !gate.TryAuthorize(stale, activationGeneration, true, "mgmt.example.test", out _),
+            "stale generation share refusal");
         foreach (string invalid in new[] { "--share", "--sharex overalls://mgmt.example.test/machines", "--share https://example.test" })
             Require(MilaExternalActivationParser.ParseArguments(invalid) is null,
                 "invalid external activation refusal");

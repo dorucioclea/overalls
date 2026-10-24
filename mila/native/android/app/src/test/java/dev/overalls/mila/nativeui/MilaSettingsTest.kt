@@ -24,6 +24,10 @@ class MilaSettingsTest {
         val store = MemorySettingsStore().also { it.values["mila.appearance"] = "invalid"; it.values["mila.locale"] = "not a locale" }
         assertEquals(MilaSettings(), MilaSettingsController(store).load())
     }
+    @Test fun unsupportedCanonicalLocaleFallsBackToBundledDefault() {
+        val store = MemorySettingsStore().also { it.values["mila.locale"] = "zh-CN" }
+        assertEquals("en", MilaSettingsController(store).load().locale)
+    }
     @Test fun localeDirectionIsTypedAndFailsClosed() {
         assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("ar-EG"))
         assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("fa"))

@@ -39,7 +39,7 @@ class MilaSettingsController(private val store: MilaSettingsStore) {
             "dark" -> MilaAppearance.Dark
             else -> MilaAppearance.System
         }
-        val locale = store.read(KEY_LOCALE)?.let(::canonicalMilaLocale) ?: "en"
+        val locale = store.read(KEY_LOCALE)?.let(::canonicalMilaLocale)?.takeIf { it in MilaStrings.supportedLocales } ?: "en"
         return MilaSettings(appearance, locale)
     }
 

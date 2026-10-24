@@ -1,5 +1,5 @@
 ---
-digest: 311415a759029e0a8a23b24ea132c5ae181dcfd9a3da5909dfcc154b82071385
+digest: 04b9d151ef451eea98728de8db4ae4efacab3c02e2493ad10e18895465d9ecea
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android locale boundary now canonicalizes storage input
+Android locale fallback remains within existing settings contract

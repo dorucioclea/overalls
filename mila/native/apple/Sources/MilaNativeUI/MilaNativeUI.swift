@@ -13,7 +13,7 @@ public struct MilaNativeRootView: View {
 
     public init(adapter: any MilaFFIAdapter = LinkedMilaFFIAdapter(), snapshot: MilaValidatedSnapshot? = nil) {
         self.adapter = adapter
-        _machines = State(initialValue: snapshot?.machines ?? [])
+        _machines = State(initialValue: Array((snapshot?.machines ?? []).prefix(256)))
         _session = StateObject(wrappedValue: MilaDeploymentSessionController { deployment in
             let signer = try MilaDeviceSigner(deploymentHost: deployment.host)
             return try LinkedMilaFFIAdapter(trust: deployment.trust, host: deployment.host, port: deployment.port, signer: signer)
@@ -65,7 +65,7 @@ public struct MilaNativeRootView: View {
         do {
             let snapshot = try await active.refreshSnapshot()
             guard session.generation == requestedGeneration, session.adapter() != nil || session.state == .signedOut else { return }
-            machines = snapshot.machines; status = MilaStrings.text(.snapshotLoaded)
+            machines = Array(snapshot.machines.prefix(256)); status = MilaStrings.text(.snapshotLoaded)
         }
         catch {
             guard session.generation == requestedGeneration else { return }

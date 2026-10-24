@@ -128,6 +128,8 @@ public final class MilaTerminalController: ObservableObject {
         state = .reconnecting
         generation &+= 1
         receiveTask?.cancel()
+        // A reconnect starts a fresh PTY stream; never display bytes from the ended generation.
+        output.removeAll(keepingCapacity: true)
         await transport.close()
         do {
             try await transport.attach(from: request.from, columns: request.columns, rows: request.rows, readWrite: request.readWrite)

@@ -20,6 +20,15 @@ final class MilaTerminalTests: XCTestCase {
         XCTAssertEqual(controller.state, .failed)
     }
 
+    func testReconnectClearsPreviousGenerationOutput() async {
+        let controller = MilaTerminalController(transport: EOFTransport())
+        await controller.attach()
+        controller.appendOutput(Data("stale".utf8))
+        XCTAssertFalse(controller.output.isEmpty)
+        await controller.reconnect()
+        XCTAssertTrue(controller.output.isEmpty)
+    }
+
     func testCleanEOFMarksTransportFailed() async {
         let controller = MilaTerminalController(transport: EOFTransport())
         await controller.attach()

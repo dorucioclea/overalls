@@ -1,5 +1,5 @@
 ---
-digest: 02515cd47146d3ba7f95db95896097f6ba988e5ab10c64cedf559980c07ffe2a
+digest: c0c86b4cea2cbc07fb44a3ad59b323699764e5f94d160e6aecb2171184802179
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple terminal EOF now fails closed
+reconnect clears stale terminal output

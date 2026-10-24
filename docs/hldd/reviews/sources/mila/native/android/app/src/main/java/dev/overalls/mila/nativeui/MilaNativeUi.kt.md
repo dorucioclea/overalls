@@ -1,5 +1,5 @@
 ---
-digest: 344744299ae59d522c7ee105d8bde9fa4df4e72ca9e3d7740b83b680bf04c5ae
+digest: 382394dac26ff15ac576e5d521d8efd59e62e7d8e6968772461077c817055413
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-format native sources for CI
+fix extra native UI brace from CI

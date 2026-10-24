@@ -336,7 +336,6 @@ private fun MilaSettingsScreen(adapter: MilaFfiAdapter, signedIn: Boolean, appLo
         }
         MilaSshKeysPanel(adapter, signedIn)
     }
-    }
 }
 
 @Composable

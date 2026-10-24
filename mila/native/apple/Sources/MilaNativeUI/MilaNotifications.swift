@@ -86,7 +86,7 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
         return deviceToken.map { String(format: "%02x", $0) }.joined()
     }
 
-    public func requestAuthorization() async throws -> Bool {
+    public static func requestAuthorization() async throws -> Bool {
         try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])
     }
     #if os(iOS)
@@ -97,7 +97,7 @@ public final class MilaAppleNotificationService: NSObject, UNUserNotificationCen
 
     @MainActor public func requestAuthorizationAndRegister() async -> Bool {
         do {
-            let granted = try await requestAuthorization()
+            let granted = try await Self.requestAuthorization()
             guard granted else { return false }
             installAsNotificationDelegate()
             #if os(iOS)

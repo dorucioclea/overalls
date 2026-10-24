@@ -25,6 +25,8 @@ internal static class Program
         Require(settings.Locale == "en" && !settings.DarkMode, "settings defaults");
         Require(MilaSettings.IsValidLocale("fr-FR") && MilaSettings.IsValidLocale("zh-Hant-TW"), "locale policy accepts BCP-47");
         Require(!MilaSettings.IsValidLocale("not a locale") && !MilaSettings.IsValidLocale("en/../../x"), "locale policy rejects malformed values");
+        Require(new MilaSettings("ar", false).Direction() == LocaleDirection.Rtl, "Arabic locale is RTL");
+        Require(new MilaSettings("en", false).Direction() == LocaleDirection.Ltr, "English locale is LTR");
         Require(new MilaSettings(" fr_FR ", true).Normalize() == new MilaSettings("fr-FR", true), "locale normalization");
         Require(new MilaSettings("ZH_hant_tw", false).Normalize() == new MilaSettings("zh-Hant-TW", false), "locale casing normalization");
         Require(version.Status == MilaNativeStatus.Ok && version.Version is { Major: 1, Minor: 0 }, "ABI version 1.0");

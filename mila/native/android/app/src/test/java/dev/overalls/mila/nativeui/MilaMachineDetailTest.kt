@@ -1,6 +1,8 @@
 package dev.overalls.mila.nativeui
 
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.async
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -39,5 +41,20 @@ class MilaMachineDetailTest {
         controller.select(id)
         assertFalse(controller.submit(MilaMachineCommand.Delete))
         assertTrue(controller.state is MilaMachineMutationState.Failed)
+    }
+
+    @Test fun staleMutationResultCannotRestoreSignedOutProjection() = runBlocking {
+        val gate = CompletableDeferred<Result<Unit>>()
+        val adapter = object : DetailAdapter() {
+            override suspend fun machineAction(machineId: UUID, command: MilaMachineCommand): Result<Unit> = gate.await()
+        }
+        val controller = MilaMachineDetailController(adapter)
+        controller.setSession(true, listing)
+        controller.select(id)
+        val pending = async { controller.submit(MilaMachineCommand.Start) }
+        controller.setSession(false, null)
+        gate.complete(Result.success(Unit))
+        assertFalse(pending.await())
+        assertEquals(MilaMachineMutationState.SignedOut, controller.state)
     }
 }

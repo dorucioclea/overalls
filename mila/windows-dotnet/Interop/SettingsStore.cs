@@ -28,7 +28,15 @@ internal sealed record MilaSettings(string Locale, bool DarkMode)
         }
         return this with { Locale = string.Join('-', parts) };
     }
+
+    internal LocaleDirection Direction()
+    {
+        string language = Normalize().Locale.Split('-')[0];
+        return language is "ar" or "fa" or "he" or "ur" ? LocaleDirection.Rtl : LocaleDirection.Ltr;
+    }
 }
+
+internal enum LocaleDirection { Ltr, Rtl }
 
 internal static class MilaSettingsStore
 {

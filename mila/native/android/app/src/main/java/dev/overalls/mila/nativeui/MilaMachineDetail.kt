@@ -22,11 +22,13 @@ class MilaMachineDetailController(private val adapter: MilaFfiAdapter) {
 
     private var listing: MilaSessionListing? = null
     private var authenticated: Boolean = false
+    private var generation: Long = 0
 
     fun setSession(signedIn: Boolean, current: MilaSessionListing?) {
         if (authenticated == (signedIn && current != null) && listing == current) return
         authenticated = signedIn && current != null
         listing = if (authenticated) current else null
+        generation += 1
         state = if (!authenticated) MilaMachineMutationState.SignedOut else MilaMachineMutationState.Idle
     }
 
@@ -43,13 +45,16 @@ class MilaMachineDetailController(private val adapter: MilaFfiAdapter) {
             state = MilaMachineMutationState.SignedOut
             return false
         }
+        val submittedGeneration = generation
         state = MilaMachineMutationState.Submitting(machine, command)
         return adapter.machineAction(machine.id, command).fold(
             onSuccess = {
+                if (submittedGeneration != generation || !authenticated) return@fold false
                 state = MilaMachineMutationState.Applied(machine, command)
                 true
             },
             onFailure = { error ->
+                if (submittedGeneration != generation || !authenticated) return@fold false
                 state = MilaMachineMutationState.Failed(machine, command, error.message ?: "action rejected")
                 false
             },

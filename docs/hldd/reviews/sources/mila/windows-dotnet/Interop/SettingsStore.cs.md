@@ -1,5 +1,5 @@
 ---
-digest: 49cb7bca1b1fcb31d4565f116866ffc12210658f9040cb7df9409802494fe45a
+digest: 7e6e81c09ea5845aadf0c578af453271e788e49483017fa5019a49df068a789d
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows locale normalization now canonicalizes BCP-47 casing with smoke coverage
+Windows locale direction presentation parity test

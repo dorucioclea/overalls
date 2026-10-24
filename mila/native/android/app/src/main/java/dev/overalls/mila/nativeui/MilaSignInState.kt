@@ -20,6 +20,9 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
   */
  suspend fun signIn(deployment: MilaDeployment, config: MilaSessionConnectConfig, signer: MilaDeviceKey) {
   store?.write(deployment)
+  // A fresh connection attempt must not inherit approval from a previous session.
+  // Approval is re-established by whoami below, or explicitly marked pending.
+  store?.writeApproval(MilaApprovalState.NotRequired)
   // A new attempt owns the adapter's session. Release a previous attempt before
   // connecting so a refused reconnect cannot leave the old authenticated channel live.
   (adapter as? MilaSessionConnector)?.bindSession(null)
@@ -101,6 +104,7 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
  }
  suspend fun signIn(deployment: MilaDeployment) {
   store?.write(deployment)
+  store?.writeApproval(MilaApprovalState.NotRequired)
   (adapter as? MilaSessionConnector)?.bindSession(null)
   state = MilaSignInState.Connecting(deployment)
   state = when (val result = adapter.call(MilaFfiRequest(MilaFfiOperation.Bootstrap))) {

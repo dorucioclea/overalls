@@ -21,7 +21,9 @@ class MilaIntentRoutingTest {
         assertEquals(MilaRoute.Machine(id), controller.target)
         val share = Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, "overalls://mila/threads")
         assertTrue(acceptExternalIntent(controller, share, generation))
-        assertEquals(MilaRoute.Machines, controller.target)
+        // External intents are queued until authenticated consumption; the
+        // currently displayed machine remains selected while queued.
+        assertEquals(MilaRoute.Machine(id), controller.target)
     }
 
     @Test fun authenticatedShareTargetRefusesSignedOutSession() {

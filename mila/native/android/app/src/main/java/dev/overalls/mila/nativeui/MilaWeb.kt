@@ -70,6 +70,14 @@ class MilaWebController(private val adapter: MilaFfiAdapter) {
     var endpoint by mutableStateOf<MilaWebEndpoint?>(null); private set
     var error by mutableStateOf<String?>(null); private set
     fun clear() { endpoint = null; error = null }
+    suspend fun setFromText(machine: UUID, value: String, public: Boolean): Boolean {
+        val port = value.toIntOrNull()
+        if (port == null) {
+            error = "web port must be a number"
+            return false
+        }
+        return set(machine, port, public)
+    }
     suspend fun show(machine: UUID): Boolean = runCatching {
         check(signedIn) { "web controls require sign-in" }
         val generation = sessionGeneration
@@ -140,7 +148,7 @@ fun MilaWebControls(adapter: MilaFfiAdapter, machine: MilaMachineRow, signedIn: 
         Text(MilaStrings.text(MilaMessage.WebEndpoint))
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             Button(enabled = signedIn, onClick = { scope.launch { controller.show(machine.id) } }) { Text(MilaStrings.text(MilaMessage.WebShow)) }
-            Button(enabled = signedIn, onClick = { scope.launch { port.toIntOrNull()?.let { controller.set(machine.id, it, public) } } }) { Text(MilaStrings.text(MilaMessage.WebSave)) }
+            Button(enabled = signedIn, onClick = { scope.launch { controller.setFromText(machine.id, port, public) } }) { Text(MilaStrings.text(MilaMessage.WebSave)) }
         }
         OutlinedTextField(port, { port = it }, label = { Text(MilaStrings.text(MilaMessage.WebPort)) })
         controller.endpoint?.let { endpoint ->

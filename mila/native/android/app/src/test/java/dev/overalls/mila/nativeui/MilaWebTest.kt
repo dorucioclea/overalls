@@ -139,4 +139,15 @@ class MilaWebTest {
   val controller = MilaWebController(adapter)
   assertFalse(controller.show(id)); assertNull(controller.endpoint)
  }
+
+ @Test fun setFromTextReportsMalformedPort() = kotlinx.coroutines.runBlocking {
+  val id = java.util.UUID.fromString("00000000-0000-0000-0000-000000000001")
+  val adapter = object : MilaFfiAdapter {
+   override suspend fun call(request: MilaFfiRequest) = MilaFfiResult.Failure(MilaFfiError.Unavailable)
+  }
+  val controller = MilaWebController(adapter)
+  controller.setSession(true)
+  assertFalse(controller.setFromText(id, "not-a-port", true))
+  assertEquals("web port must be a number", controller.error)
+ }
 }

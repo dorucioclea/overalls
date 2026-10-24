@@ -176,6 +176,13 @@ final class MilaTerminalControllerTests: XCTestCase {
         var resizes: [(UInt16, UInt16)] = []
         var closed = 0
         func attach(from: UInt64, columns: UInt16, rows: UInt16, readWrite: Bool) async throws { attachments.append((from, columns, rows, readWrite)) }
+        // Keep the receive side open while exercising the controller operations.
+        // An immediate EOF races the attach continuation and marks the controller
+        // failed before input/resize assertions run.
+        func receiveOutput() async throws -> Data? {
+            try await Task.sleep(for: .milliseconds(100))
+            return nil
+        }
         func sendInput(_ input: Data) async throws { inputs.append(input) }
         func resize(columns: UInt16, rows: UInt16) async throws { resizes.append((columns, rows)) }
         func close() async { closed += 1 }

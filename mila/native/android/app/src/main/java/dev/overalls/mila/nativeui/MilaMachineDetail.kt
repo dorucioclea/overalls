@@ -33,6 +33,9 @@ class MilaMachineDetailController(private val adapter: MilaFfiAdapter) {
     }
 
     fun select(machineId: UUID): Boolean {
+        // The zero UUID is a sentinel and can never identify a server machine.
+        // Reject it before projecting a detail row or allowing a mutation.
+        if (machineId == UUID(0L, 0L)) return false
         val machine = listing?.machines?.firstOrNull { it.id == machineId } ?: return false
         state = MilaMachineMutationState.Ready(machine)
         return true

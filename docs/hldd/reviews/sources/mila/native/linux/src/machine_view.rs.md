@@ -1,5 +1,5 @@
 ---
-digest: 3076af19f011f180cb33902b43a27c33f8ca889f33574ee41cdcca864ea43b46
+digest: 662fab92da7d778a48dcd131b9ccf8386abcb6ef7c295b0965fcbd75a8b178e6
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrent Linux machine projection changes; bounded UI projection preserves architecture.
+Bound machine detail identifiers before GTK projection

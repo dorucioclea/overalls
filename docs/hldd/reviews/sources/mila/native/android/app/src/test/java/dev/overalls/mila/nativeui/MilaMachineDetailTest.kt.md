@@ -1,5 +1,5 @@
 ---
-digest: 9b3309e0d26ba366b2cd2ae0195adf5f25bca27875479b802d99237c2caab3e2
+digest: 2b9f240ee767d0fd12f7e1ded4a318fb1b25d809898a359a189ee6153fe45868
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android machine lifecycle commands are restricted to the typed lifecycle catalog
+reject zero machine identifiers in Android detail selection

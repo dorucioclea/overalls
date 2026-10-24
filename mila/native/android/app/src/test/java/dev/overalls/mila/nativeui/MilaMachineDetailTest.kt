@@ -27,6 +27,13 @@ class MilaMachineDetailTest {
         assertEquals(MilaMachineMutationState.SignedOut, controller.state)
     }
 
+    @Test fun zeroMachineIdCannotSelectDetail() = runBlocking {
+        val controller = MilaMachineDetailController(DetailAdapter())
+        controller.setSession(true, listing)
+        assertFalse(controller.select(UUID(0L, 0L)))
+        assertEquals(MilaMachineMutationState.Idle, controller.state)
+    }
+
     @Test fun successfulMutationUsesSelectedMachine() = runBlocking {
         val controller = MilaMachineDetailController(DetailAdapter())
         controller.setSession(true, listing)

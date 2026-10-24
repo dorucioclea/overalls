@@ -23,6 +23,7 @@ pub enum MachineViewError {
     UnsafeDisplayText,
     TooManyMachines,
     NotFound,
+    InvalidIdentifier,
 }
 
 const MAX_UI_MACHINES: usize = 256;
@@ -40,6 +41,9 @@ pub fn project_detail(
     listing: &MachineListing,
     machine_id: &str,
 ) -> Result<MachineRow, MachineViewError> {
+    if machine_id.is_empty() || machine_id.len() > 64 || machine_id.chars().any(char::is_control) {
+        return Err(MachineViewError::InvalidIdentifier);
+    }
     let machine = listing
         .machines()
         .iter()
@@ -100,6 +104,10 @@ mod tests {
         assert_eq!(
             project_detail(&listing, "01234567-89ab-cdef-0123-456789abcdee"),
             Err(MachineViewError::NotFound)
+        );
+        assert_eq!(
+            project_detail(&listing, "bad\n"),
+            Err(MachineViewError::InvalidIdentifier)
         );
     }
 

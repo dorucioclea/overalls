@@ -100,6 +100,12 @@ pkgs.runCommand "mila-source-bundle-${version}" {
   # Native Linux release inputs are source-only and must include their lock.
   test -f "$b/mila/native/linux/Cargo.lock"
   test -f "$b/mila/native/linux/Cargo.toml"
+  # Android release inputs are source-only and must include the Compose project
+  # plus the shared Rust workspace used to build every packaged JNI ABI.
+  test -f "$b/mila/native/android/settings.gradle.kts"
+  test -f "$b/mila/native/android/app/build.gradle.kts"
+  test -f "$b/mila/native/android/gradle/wrapper/gradle-wrapper.properties"
+  test -f "$b/mila/rust/Cargo.toml"
   # Windows release inputs are source-only and must retain the managed host,
   # C ABI and Rust workspace lock used to build mila_native.dll.
   test -f "$b/mila/windows-dotnet/Mila.Windows.csproj"

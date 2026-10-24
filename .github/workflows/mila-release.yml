@@ -80,6 +80,14 @@ jobs:
           mkdir -p out
           cp -L release/*.tar.gz release/SHA256SUMS out/
           (cd out && sha256sum -c SHA256SUMS)
+          archive=$(find out -maxdepth 1 -type f -name '*.tar.gz' -print -quit)
+          tar -tzf "$archive" > release-files.txt
+          if grep -Eiq '(^|/)(flutter|dart)(/|$)|flutter|\.dart$' release-files.txt; then
+            echo 'native Linux release contains Flutter/Dart content' >&2
+            cat release-files.txt >&2
+            exit 1
+          fi
+          grep -Eq '(^|/)bin/mila$' release-files.txt
       - uses: actions/upload-artifact@v4
         with:
           name: release-linux
@@ -152,6 +160,22 @@ jobs:
         run: |
           rev=$(jq -r '.nodes.devenv.locked.rev' devenv.lock)
           nix profile install "github:cachix/devenv/$rev"
+      - name: Build Rust FFI for Apple native verification
+        uses: dtolnay/rust-toolchain@stable
+      - name: Compile typed Apple FFI seam
+        run: cargo build --manifest-path mila/rust/Cargo.toml -p mila-ffi --release
+      - name: Verify Apple native package is Flutter-free
+        working-directory: mila/native/apple
+        env:
+          MILA_FFI_LIB_DIR: ${{ github.workspace }}/mila/rust/target/release
+        run: |
+          set -euo pipefail
+          if rg -n -i 'flutter' Package.swift Sources Tests; then
+            echo 'Apple native package must remain independent of Flutter' >&2
+            exit 1
+          fi
+          swift build -c release
+          swift test -c release
       - name: Import signing identity, profiles and notary credentials
         env:
           CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}

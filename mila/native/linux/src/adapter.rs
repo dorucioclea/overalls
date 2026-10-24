@@ -1018,6 +1018,7 @@ mod tests {
         );
         assert!(format_machine_action("start", "bad", Some(request)).is_err());
         assert!(format_machine_action("start", id, None).is_err());
+        assert!(format_machine_action("rm", id, Some(request)).is_ok());
     }
 
     #[test]

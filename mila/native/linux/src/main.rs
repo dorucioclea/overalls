@@ -496,7 +496,10 @@ impl NativeState {
             .hexpand(true)
             .build();
         let actions = Box::new(Orientation::Horizontal, 8);
-        for action in ["show", "start", "stop", "pause", "resume"] {
+        // `rm` is Porsche's closed-command spelling for deleting a machine.
+        // Keep it in the native action set so GTK exposes the complete lifecycle
+        // supported by the authenticated Rust session.
+        for action in ["show", "start", "stop", "pause", "resume", "rm"] {
             let button = Button::with_label(action);
             let machine = machine_id.clone();
             let request = request_id.clone();

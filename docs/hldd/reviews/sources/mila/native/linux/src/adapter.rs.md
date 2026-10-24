@@ -1,5 +1,5 @@
 ---
-digest: 34a6f8531aa08909d5f683400665cff43948917479c6c616d92c840f2b43ae5e
+digest: 55a1a74a9c65b9a14ff5c387fb33f2dab8b0e19035c68c6d82e4867982a0ed50
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Applied rustfmt-only changes; runtime behavior and architecture unchanged.
+Linux GTK exposes authenticated machine delete action through existing Rust rm command policy

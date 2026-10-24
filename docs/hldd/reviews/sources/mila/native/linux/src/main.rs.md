@@ -1,5 +1,5 @@
 ---
-digest: aad15b19f87028050d0098c32643c8e5742479d10a7f536306001a2195330ab6
+digest: b5bc37d72fe297fef1ba298d0b0d2dd86963fc54b1d16c33251ed312dccd031e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux web launch now rechecks authenticated session and clears stale endpoint
+Linux GTK exposes authenticated machine delete action through existing Rust rm command policy

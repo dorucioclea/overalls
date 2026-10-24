@@ -424,6 +424,17 @@ public sealed partial class MainWindow : Window
         _session.SignOut();
         _notificationController.SetSession(false);
         _notificationsEnabled = false;
+        // Clear authenticated web and terminal state before beginning a new
+        // approval generation. This prevents stale endpoint navigation or a
+        // previous PTY stream from surviving a deployment switch.
+        _webUrl = null;
+        _webRevision = 0;
+        WebBrowser.Source = null;
+        WebBrowser.Visibility = Visibility.Collapsed;
+        WebStatus.Text = S("webNoAddress", "No web address");
+        _terminal.Kill(_terminalGeneration);
+        TerminalOutput.Text = string.Empty;
+        TerminalStatus.Text = S("terminalEnded", "Terminal ended");
         _ = RefreshSshKeyListAsync();
         _ = ConnectDeploymentAsync(host, generation);
     }

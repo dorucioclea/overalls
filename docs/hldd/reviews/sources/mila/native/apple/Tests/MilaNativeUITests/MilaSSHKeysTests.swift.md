@@ -1,5 +1,5 @@
 ---
-digest: 9d5525fe184a6320cd6a1be4413d2644a1e0cc4f1125248d70e07603559a64db
+digest: 9e936aac82dbc8b5bbe31b32448c10c1477f54a2dfac9e7e393e5b54e8d09afc
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Apple SSH projection validation bounds untrusted fields
+Apple SSH revoke request generations fence stale completions

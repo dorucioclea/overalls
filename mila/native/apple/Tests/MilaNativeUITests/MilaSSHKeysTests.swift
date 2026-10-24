@@ -46,6 +46,19 @@ import XCTest
         XCTAssertEqual(controller.state, .signedOut)
     }
 
+    func testLateRevokeAfterSignOutDoesNotRestoreKeysOrFail() async {
+        let key = MilaSSHKey(id: UUID(), fingerprint: "SHA256:late-revoke", algorithm: "ssh-ed25519")
+        let gate = Gate()
+        let controller = MilaSSHKeysController(loader: { [key] }, revoker: { _ in await gate.wait() })
+        await controller.load(signedIn: true)
+        let task = Task { await controller.revoke(key) }
+        await Task.yield()
+        controller.setSessionActive(false)
+        await gate.release()
+        await task.value
+        XCTAssertEqual(controller.state, .signedOut)
+    }
+
     private actor Gate {
         var released = false
         func release() { released = true }

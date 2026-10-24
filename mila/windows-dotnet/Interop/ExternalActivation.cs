@@ -37,7 +37,7 @@ internal sealed class MilaExternalActivationGate
 
 internal static class MilaExternalActivationParser
 {
-    private const int MaxShareText = 4096;
+    private const int MaxActivationText = 4096;
 
     /// <summary>
     /// Parses protocol activation or a share payload. Share payloads are treated
@@ -48,7 +48,7 @@ internal static class MilaExternalActivationParser
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
         string candidate = value.Trim().Trim('"');
-        if (shareTarget && candidate.Length > MaxShareText) return null;
+        if (candidate.Length > MaxActivationText || candidate.Any(char.IsControl)) return null;
         MilaRoute? route = MilaRouteParser.Parse(candidate);
         return route is null ? null : new MilaExternalActivation(route.Value, shareTarget);
     }
@@ -62,7 +62,7 @@ internal static class MilaExternalActivationParser
     /// </remarks>
     internal static MilaExternalActivation? ParseArguments(string? arguments)
     {
-        if (string.IsNullOrWhiteSpace(arguments)) return null;
+        if (string.IsNullOrWhiteSpace(arguments) || arguments.Length > MaxActivationText) return null;
         string value = arguments.Trim();
         const string marker = "--share";
         if (value.StartsWith(marker, StringComparison.Ordinal))

@@ -1,5 +1,5 @@
 ---
-digest: cdff03a89a9b02b6767b100e234de6baa7c4959a264a9c92f9a43d5744fc8f35
+digest: dcc2198403e6cfeb06dd16887c01d9d36eab75930b3af64e4e9830947887aaad
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows settings persistence bounds and atomic replacement preserve documented behavior
+Bound Windows activation payloads and preserve Linux adapter route validation

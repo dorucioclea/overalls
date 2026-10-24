@@ -193,7 +193,7 @@ internal static class Program
         gate.Reset();
         Require(shared is { } stale && !gate.TryAuthorize(stale, activationGeneration, true, "mgmt.example.test", out _),
             "stale generation share refusal");
-        foreach (string invalid in new[] { "--share", "--sharex overalls://mgmt.example.test/machines", "--share https://example.test" })
+        foreach (string invalid in new[] { "--share", "--sharex overalls://mgmt.example.test/machines", "--share https://example.test", "overalls://mgmt.example.test/machines\n", new string('x', 4097) })
             Require(MilaExternalActivationParser.ParseArguments(invalid) is null,
                 "invalid external activation refusal");
     }

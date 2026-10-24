@@ -1,5 +1,5 @@
 ---
-digest: 145cd233cef236871f96d6b2c6563c4c5be2eaeea2da86050e8890490e7ff36a
+digest: 3076317ba0b8a7999b1143a8b019079aab6a2b7416ee19ddb40774b7e0a0f649
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux adapter test fixtures align bounded route and snapshot contracts
+Bound Windows activation payloads and preserve Linux adapter route validation

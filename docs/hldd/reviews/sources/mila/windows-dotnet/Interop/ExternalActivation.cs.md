@@ -1,5 +1,5 @@
 ---
-digest: 43a66617633079cfed116fa74cb32a4b0afd2e26a6d053efbe46f3419cec876b
+digest: 5c2a4e4b2541ed4432bf3425047dd536fb20ed7e52dc71994a8b1708d7123c2b
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native activation smoke fence preserves documented behavior
+Bound Windows activation payloads and preserve Linux adapter route validation

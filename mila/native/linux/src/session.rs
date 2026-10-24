@@ -1686,6 +1686,16 @@ mod tests {
     }
 
     #[test]
+    fn session_identifier_rejects_every_ascii_control_and_whitespace_byte() {
+        for byte in 0_u8..=0x20 {
+            let value = format!("machine{}id", char::from(byte));
+            assert!(validate_session_identifier(&value).is_err(), "byte {byte}");
+        }
+        assert!(validate_session_identifier(&"x".repeat(128)).is_ok());
+        assert!(validate_session_identifier(&"x".repeat(129)).is_err());
+    }
+
+    #[test]
     fn whoami_envelope_is_decoded_with_bounded_approval_fields() {
         let authenticated = parse_whoami(
             br#"{"version":1,"status":"authenticated","account":"alice@example.test"}"#,

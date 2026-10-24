@@ -1,5 +1,5 @@
 ---
-digest: a690f5f89dd69d34f51134ee5b3eda94547b124aec826cc235906ee24ad43c56
+digest: 0eef76dfaab11d1147e480250c69bdccc67b21f65cbbb407faac86d7384da0b8
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux sign-in lifecycle fails closed when approval transport becomes unreachable
+property-style session identifier validation

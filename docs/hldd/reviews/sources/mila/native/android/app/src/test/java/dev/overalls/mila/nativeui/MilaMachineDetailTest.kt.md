@@ -1,5 +1,5 @@
 ---
-digest: 27bf0a02166fba7904c1deb188ad03ad70c45eeb0b7e859598ef858e16791ddd
+digest: 9b3309e0d26ba366b2cd2ae0195adf5f25bca27875479b802d99237c2caab3e2
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent native test edits reviewed with Linux SSH projection validation
+Android machine lifecycle commands are restricted to the typed lifecycle catalog

@@ -45,6 +45,16 @@ class MilaMachineDetailController(private val adapter: MilaFfiAdapter) {
             state = MilaMachineMutationState.SignedOut
             return false
         }
+        // Only lifecycle mutations are valid on this surface. Sharing, resize,
+        // and thread commands have dedicated controllers and must never cross
+        // this FFI boundary.
+        if (command !in setOf(
+                MilaMachineCommand.Start,
+                MilaMachineCommand.Stop,
+                MilaMachineCommand.Pause,
+                MilaMachineCommand.Resume,
+                MilaMachineCommand.Delete,
+            )) return false
         val submittedGeneration = generation
         state = MilaMachineMutationState.Submitting(machine, command)
         return adapter.machineAction(machine.id, command).fold(

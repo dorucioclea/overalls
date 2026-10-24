@@ -1,5 +1,5 @@
 ---
-digest: b4763e7e3217b3f01eac0cc6b5acfcf0e38d8f68b7fb74a35e2cd6dd98c7b327
+digest: 43ff8fccb62b063266b8fbf3822d630236b20dc9b674562e23fb80e19016ee68
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android machine mutation generation fencing preserves session projection
+Android machine lifecycle commands are restricted to the typed lifecycle catalog

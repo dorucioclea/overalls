@@ -35,6 +35,14 @@ class MilaMachineDetailTest {
         assertEquals(MilaMachineMutationState.Applied(listing.machines.single(), MilaMachineCommand.Stop), controller.state)
     }
 
+    @Test fun sharingCommandsAreRejectedByLifecycleController() = runBlocking {
+        val controller = MilaMachineDetailController(DetailAdapter())
+        controller.setSession(true, listing)
+        assertTrue(controller.select(id))
+        assertFalse(controller.submit(MilaMachineCommand.ShareAdd))
+        assertEquals(MilaMachineMutationState.Ready(listing.machines.single()), controller.state)
+    }
+
     @Test fun failedMutationIsVisibleAndTyped() = runBlocking {
         val controller = MilaMachineDetailController(DetailAdapter(accepted = false))
         controller.setSession(true, listing)

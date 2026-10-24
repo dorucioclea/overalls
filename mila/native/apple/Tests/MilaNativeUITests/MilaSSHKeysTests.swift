@@ -65,6 +65,24 @@ import XCTest
         XCTAssertEqual(controller.state, .signedOut)
     }
 
+    func testSignOutClearsRevocationReservationForNextSession() async {
+        let key = MilaSSHKey(id: UUID(), fingerprint: "SHA256:retry", algorithm: "ssh-ed25519")
+        let gate = Gate(); let counter = Counter()
+        let controller = MilaSSHKeysController(loader: { [key] }, revoker: { _ in
+            await counter.increment(); await gate.wait()
+        })
+        await controller.load(signedIn: true)
+        let first = Task { await controller.revoke(key) }
+        await Task.yield()
+        controller.setSessionActive(false)
+        await controller.load(signedIn: true)
+        let second = Task { await controller.revoke(key) }
+        await Task.yield()
+        gate.release()
+        await first.value; await second.value
+        XCTAssertEqual(await counter.value(), 2)
+    }
+
     func testConcurrentRevokesForSameKeyAreAtMostOnce() async {
         let key = MilaSSHKey(id: UUID(), fingerprint: "SHA256:once", algorithm: "ssh-ed25519")
         let gate = Gate(); let counter = Counter()

@@ -1,5 +1,5 @@
 ---
-digest: bb9cef0064ae7b9fe08c865a5bcfd55eb86a0db3298c671a68bdf6e8509e7f98
+digest: ad8200be4d98804331c9fbef99b09e459d8f82706c7ff310004e7037d01342a4
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-native_ssh_projection_validation
+Apple SSH revocation reservations clear on sign-out

@@ -58,7 +58,13 @@ public enum MilaSSHKeysState: Equatable, Sendable { case signedOut, loading, loa
     public func setSessionActive(_ active: Bool) {
         generation &+= 1
         sessionActive = active
-        if !active { state = .signedOut }
+        // Drop revocation reservations when the authenticated generation ends.
+        // A late request is fenced by `generation`; retaining its identity would
+        // otherwise block a legitimate retry after the next sign-in.
+        if !active {
+            inFlightKeyIDs.removeAll()
+            state = .signedOut
+        }
     }
 
     /// @cc [owner:ghuntley,label:security] mila-apple-ssh-revoke

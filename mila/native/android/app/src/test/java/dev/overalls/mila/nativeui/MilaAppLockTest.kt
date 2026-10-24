@@ -16,9 +16,11 @@ class MilaAppLockTest {
         var state = MilaAppLockState(false, MilaLockDelay.OneMinute).availability(MilaLockAvailability.Available)
         state = state.enable().backgrounded(100).foregrounded(101)
         assertEquals(MilaLockPhase.Unlocked, state.phase)
-        state = state.backgrounded(200).foregrounded(260)
+        state = state.backgrounded(200_000).foregrounded(260_000)
         assertEquals(MilaLockPhase.Unlocked, state.phase)
-        state = state.backgrounded(300).foregrounded(361)
+        state = state.backgrounded(300_000).foregrounded(360_000)
+        assertEquals(MilaLockPhase.Unlocked, state.phase)
+        state = state.backgrounded(400_000).foregrounded(460_001)
         assertEquals(MilaLockPhase.Locked, state.phase)
     }
 

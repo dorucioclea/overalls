@@ -3,8 +3,11 @@ package dev.overalls.mila.nativeui
 import android.content.Intent
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import java.util.UUID
 
+@RunWith(RobolectricTestRunner::class)
 class MilaShareIntentTest {
     @Test fun refusesShareChooserWhenSignedOut() {
         assertEquals(null, MilaShareIntentFactory.authenticatedChooser(MilaRoute.Machines, false))

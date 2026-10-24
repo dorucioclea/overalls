@@ -1,5 +1,5 @@
 ---
-digest: c7a6179193716a6299c1bc0244687ade0260ab83f3cc77c13b54c91ec6fbf1f0
+digest: e35cc516b7a8e862ae13995bf90ab09c7c2120d7d9be9a3bc0bbc8cd56d41368
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Android sign-in resets stale approval state before reconnect
+Sign out clears persisted approval state and preserves deployment selection

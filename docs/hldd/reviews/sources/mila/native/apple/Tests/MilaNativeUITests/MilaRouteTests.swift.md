@@ -1,5 +1,5 @@
 ---
-digest: 28579df019a1f48c645d81f23a096df9fa02173df70675b8d06360401cbffdf7
+digest: bb65a8adbb80becac096208c5d9dc85fc2b4778156113b9d5a4105cf396970a9
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Native Apple presentation and typed command tests preserve documented behavior; no HLDD chapter change.
+Apple terminal invalid resize and input fail-closed regression test

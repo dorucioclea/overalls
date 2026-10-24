@@ -142,6 +142,7 @@ class MilaSignInController(private val adapter: MilaFfiAdapter, private val stor
   pendingSession?.close()
   pendingSession = null
   (adapter as? MilaSessionConnector)?.bindSession(null)
+  store?.writeApproval(MilaApprovalState.NotRequired)
   state = MilaSignInState.SignedOut
  }
 

@@ -191,6 +191,17 @@ final class MilaTerminalControllerTests: XCTestCase {
         XCTAssertEqual(controller.state, .detached)
         XCTAssertGreaterThanOrEqual(transport.closed, 2)
     }
+
+    func testInvalidResizeAndInputFailClosedBeforeHostTransport() async {
+        let transport = Transport()
+        let controller = MilaTerminalController(transport: transport)
+        await controller.attach(from: 9, columns: 80, rows: 24)
+        await controller.resize(columns: 0, rows: 24)
+        XCTAssertEqual(controller.state, .failed)
+        XCTAssertEqual(transport.resizes.count, 0)
+        await controller.sendInput(Data(repeating: 65, count: 64 * 1024 + 1))
+        XCTAssertEqual(transport.inputs.count, 0)
+    }
 }
 
 @MainActor

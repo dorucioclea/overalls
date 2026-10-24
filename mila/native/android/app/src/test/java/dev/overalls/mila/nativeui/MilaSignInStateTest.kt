@@ -60,6 +60,7 @@ class MilaSignInStateTest {
   assertEquals(1, adapter.clearedSessions)
   controller.close()
   assertEquals(MilaSignInState.SignedOut, controller.state)
+  assertEquals(MilaApprovalState.NotRequired, store.readApproval())
   assertEquals(2, adapter.clearedSessions)
   assertEquals(d, store.read())
 

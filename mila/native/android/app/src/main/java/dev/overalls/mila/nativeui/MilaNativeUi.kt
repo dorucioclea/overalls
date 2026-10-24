@@ -205,6 +205,13 @@ fun MilaNativeRoot(
                     }
                 }
             }, enabled = selectedDeployment != null) { Text(MilaStrings.text(MilaMessage.SignIn)) }
+            Button({
+                signIn.signOut()
+                signInState = MilaSignInState.SignedOut
+                threadListing = null
+            }, enabled = signInState !is MilaSignInState.SignedOut && signInState !is MilaSignInState.Connecting) {
+                Text(MilaStrings.text(MilaMessage.SignOut))
+            }
             Button({ route = MilaRoute.Machines }) { Text(MilaStrings.text(MilaMessage.Machines)) }
             Button({ route = MilaRoute.Threads }) { Text(MilaStrings.text(MilaMessage.Threads)) }
             Button({ route = MilaRoute.Settings }) { Text(MilaStrings.text(MilaMessage.Settings)) }

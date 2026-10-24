@@ -110,6 +110,11 @@
           <Button x:Name="NotificationsButton" Click="ToggleNotifications" />
           <TextBlock x:Name="NotificationsStatus" Opacity="0.7" />
         </StackPanel>
+        <ListView x:Name="NotificationRows" DisplayMemberPath="Id" MinHeight="60" SelectionChanged="OnNotificationSelected" />
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="RefreshNotifications" Click="RefreshNotificationsClicked" />
+          <Button x:Name="RemoveNotification" Click="RemoveNotificationClicked" IsEnabled="False" />
+        </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="8">
           <Button x:Name="WebOpen" Click="OpenWebControl" />
           <Button x:Name="WebCopy" Click="CopyWebAddress" />

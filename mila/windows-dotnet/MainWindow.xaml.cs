@@ -12,6 +12,7 @@ public sealed partial class MainWindow : Window
     private ushort _deploymentPort = MilaDeployment.DefaultPort;
     private bool _notificationsEnabled;
     private readonly MilaWindowsNotificationController _notificationController = new();
+    private readonly MilaWindowsNotificationDevicesController _notificationDevices;
     private readonly MilaSshKeysController _sshKeys;
     private readonly MilaThreadController _threadController = new();
     private readonly MilaMachineMutationController _machineMutation = new();
@@ -31,6 +32,7 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         _sshKeys = new MilaSshKeysController(LoadSshKeysAsync, RevokeSshKeyAsync);
+        _notificationDevices = new MilaWindowsNotificationDevicesController(LoadNotificationDevicesAsync, RemoveNotificationDeviceAsync, SetNotificationPreferenceAsync);
         Closed += (_, _) => { _closed = true; _signIn.SignOut(); _session.Dispose(); };
         Activated += (_, args) =>
         {
@@ -161,6 +163,8 @@ public sealed partial class MainWindow : Window
         TerminalKill.Content = S("terminalKill", "Kill");
         NotificationsButton.Content = S("notificationsTurnOn", "Turn notifications on");
         NotificationsStatus.Text = S("pushStateOff", "Notifications off");
+        RefreshNotifications.Content = S("refresh", "Refresh");
+        RemoveNotification.Content = S("notificationRemove", "Remove");
         WebOpen.Content = S("webOpen", "Open web");
         WebCopy.Content = S("webCopy", "Copy address");
         WebSet.Content = S("webSave", "Save web settings");
@@ -376,6 +380,47 @@ public sealed partial class MainWindow : Window
             : S("pushUnsupported", "Notifications unavailable");
         NotificationsButton.Content = _notificationsEnabled ? S("notificationsTurnOff", "Turn notifications off") : S("notificationsTurnOn", "Turn notifications on");
     }
+    private async void RefreshNotificationsClicked(object sender, RoutedEventArgs args)
+    {
+        await RefreshNotificationDevicesAsync();
+    }
+    private async void RemoveNotificationClicked(object sender, RoutedEventArgs args)
+    {
+        if (NotificationRows.SelectedItem is not MilaWindowsNotificationDevice device) return;
+        RemoveNotification.IsEnabled = false;
+        await _notificationDevices.RemoveAsync(device);
+        NotificationRows.ItemsSource = _notificationDevices.Devices;
+    }
+    private async Task RefreshNotificationDevicesAsync()
+    {
+        await _notificationDevices.LoadAsync(_session.Handle is { } handle && handle != 0);
+        NotificationRows.ItemsSource = _notificationDevices.Devices;
+        RemoveNotification.IsEnabled = false;
+    }
+    private void OnNotificationSelected(object sender, SelectionChangedEventArgs args)
+        => RemoveNotification.IsEnabled = NotificationRows.SelectedItem is MilaWindowsNotificationDevice &&
+            _notificationDevices.Status == MilaWindowsNotificationDevicesStatus.Loaded;
+    private Task<IReadOnlyList<MilaWindowsNotificationDevice>> LoadNotificationDevicesAsync(CancellationToken cancellationToken)
+    {
+        if (_session.Handle is not { } handle || handle == 0) return Task.FromResult<IReadOnlyList<MilaWindowsNotificationDevice>>(Array.Empty<MilaWindowsNotificationDevice>());
+        MilaNativeSessionBytesResult result = RustNative.TrySessionDevices(handle);
+        if (!result.Succeeded) throw new InvalidDataException("Notification listing unavailable");
+        return Task.FromResult(MilaWindowsNotificationDevicesController.DecodeListing(result.Bytes));
+    }
+    private Task RemoveNotificationDeviceAsync(string deviceId, CancellationToken cancellationToken)
+    {
+        if (_session.Handle is not { } handle || handle == 0) throw new InvalidOperationException("Sign in required");
+        MilaNativeSessionActionResult result = RustNative.TrySessionDeviceRemove(handle, deviceId);
+        if (!result.Succeeded) throw new InvalidOperationException("Notification removal failed");
+        return Task.CompletedTask;
+    }
+    private Task SetNotificationPreferenceAsync(string deviceId, bool enabled, CancellationToken cancellationToken)
+    {
+        if (_session.Handle is not { } handle || handle == 0) throw new InvalidOperationException("Sign in required");
+        MilaNativeSessionActionResult result = RustNative.TrySessionDevicePreferences(handle, deviceId, enabled);
+        if (!result.Succeeded) throw new InvalidOperationException("Notification preference failed");
+        return Task.CompletedTask;
+    }
 
     private async void OpenApprovalPage(object sender, RoutedEventArgs args)
     {
@@ -528,6 +573,7 @@ public sealed partial class MainWindow : Window
             UpdateMachineMutationAvailability();
             StatusText.Text = S("connected", MilaStrings.Connected);
             await RefreshSshKeyListAsync();
+            await RefreshNotificationDevicesAsync();
             RefreshMachines();
         }
         catch (ArgumentException)

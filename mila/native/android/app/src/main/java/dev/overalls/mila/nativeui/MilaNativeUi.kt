@@ -109,6 +109,14 @@ fun MilaNativeRoot(
     val threadDetail = remember(sessionAdapter) { MilaThreadDetailController(sessionAdapter) }
     var signInState by remember { mutableStateOf<MilaSignInState>(MilaSignInState.SignedOut) }
     var threadListing by remember { mutableStateOf<MilaThreadListing?>(null) }
+    // Changing the selected deployment fences the authenticated session immediately. This keeps
+    // machine/thread data from the previous host from remaining actionable while the user edits
+    // or switches deployments.
+    fun resetSessionForDeploymentChange() {
+        signIn.close()
+        signInState = MilaSignInState.SignedOut
+        threadListing = null
+    }
     DisposableEffect(signIn) {
         onDispose { signIn.close() }
     }
@@ -147,6 +155,7 @@ fun MilaNativeRoot(
                 hostInvalid = false
             },
             onSelect = { selected ->
+                if (selectedDeployment != selected) resetSessionForDeploymentChange()
                 deployment.select(selected.host, selected.port)
                 deploymentStore.write(selected)
                 selectedDeployment = selected
@@ -156,6 +165,7 @@ fun MilaNativeRoot(
             onAdd = {
                 parseMilaDeploymentHost(hostInput).fold(
                     onSuccess = { added ->
+                        if (selectedDeployment != added) resetSessionForDeploymentChange()
                         deployment.add(added)
                         deployment.select(added.host, added.port)
                         deploymentStore.write(added)
@@ -174,8 +184,7 @@ fun MilaNativeRoot(
                     selectedDeployment = deployment.selected
                     hostInput = selectedDeployment?.label.orEmpty()
                     hostInvalid = false
-                    signIn.close()
-                    signInState = MilaSignInState.SignedOut
+                    resetSessionForDeploymentChange()
                 }
             },
         )

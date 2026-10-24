@@ -236,3 +236,5 @@ mod policy_tests;
 mod tests;
 #[cfg(test)]
 mod transfer_tests;
+#[cfg(test)]
+mod zfs_policy_tests;

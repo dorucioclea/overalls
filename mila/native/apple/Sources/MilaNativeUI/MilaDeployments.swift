@@ -31,6 +31,19 @@ public final class MilaDeploymentStore: @unchecked Sendable {
         if remaining.isEmpty { defaults.removeObject(forKey: key) }
         else if let data = try? JSONEncoder().encode(remaining) { defaults.set(data, forKey: key) }
     }
-    private static func valid(_ value: MilaDeployment) -> Bool { !value.host.isEmpty && value.host.count <= 253 && value.port > 0 && !value.trust.isEmpty }
+    private static func valid(_ value: MilaDeployment) -> Bool {
+        guard !value.host.isEmpty, value.host.utf8.count <= 253, value.port > 0,
+              !value.trust.isEmpty, value.trust.count <= 64 * 1024 else { return false }
+        let labels = value.host.split(separator: ".", omittingEmptySubsequences: false)
+        return !labels.contains(where: { label in
+            label.isEmpty || label.utf8.count > 63 || label.first == "-" || label.last == "-" ||
+                label.unicodeScalars.contains(where: { scalar in
+                    !(scalar.isASCII && (scalar.value == 45 || scalar.value == 95 ||
+                        (scalar.value >= 48 && scalar.value <= 57) ||
+                        (scalar.value >= 65 && scalar.value <= 90) ||
+                        (scalar.value >= 97 && scalar.value <= 122)))
+                })
+        })
+    }
 }
 

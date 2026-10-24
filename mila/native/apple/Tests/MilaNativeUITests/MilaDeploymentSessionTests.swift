@@ -38,4 +38,12 @@ final class MilaDeploymentSessionTests: XCTestCase {
         XCTAssertTrue(coordinator.signIn(value)); let generation = coordinator.currentGeneration()
         XCTAssertTrue(coordinator.remove(value.id)); XCTAssertNil(coordinator.selectedDeployment); XCTAssertEqual(coordinator.state, .signedOut); XCTAssertNil(coordinator.adapter(for: generation)); XCTAssertTrue(store.list().isEmpty)
     }
+
+    func testDeploymentStoreRejectsUnsafeHostAndOversizedTrust() {
+        let suite = "mila.session.\(UUID().uuidString)"; let defaults = UserDefaults(suiteName: suite)!; defer { defaults.removePersistentDomain(forName: suite) }
+        let store = MilaDeploymentStore(defaults: defaults)
+        XCTAssertFalse(store.upsert(deployment("bad host.example")))
+        XCTAssertFalse(store.upsert(MilaDeployment(host: "-bad.example", port: 22, trust: Data([1]))))
+        XCTAssertFalse(store.upsert(MilaDeployment(host: "mila.example", port: 22, trust: Data(repeating: 1, count: 65_537))))
+    }
 }

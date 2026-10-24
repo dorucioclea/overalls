@@ -1,5 +1,5 @@
 ---
-digest: b6af32ac8ac5cfdcefe17663201c6b6d09f008c401a0b6c70d1ea8237912741f
+digest: 8ae61a0e7098cb50230f3e50baf04895021666fc5620b7264c1699ff2861d5fd
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed concurrency-safe Apple reconnect test counter; verification scope unchanged.
+mila/native/linux/src/persistence.rs

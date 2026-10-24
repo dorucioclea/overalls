@@ -508,9 +508,30 @@ fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
     if authority.ends_with(':') {
         return false;
     }
-    let explicit = authority
-        .rsplit_once(':')
-        .and_then(|(_, p)| p.parse::<u16>().ok());
+    let (host, explicit) = match authority.rsplit_once(':') {
+        Some((host, port)) => {
+            let parsed = port.parse::<u16>().ok();
+            if parsed.is_none() || host.is_empty() {
+                return false;
+            }
+            (host, parsed)
+        }
+        None => (authority, None),
+    };
+    if host.is_empty()
+        || host.len() > 253
+        || host.starts_with('.')
+        || host.ends_with('.')
+        || host.split('.').any(|label| {
+            label.is_empty()
+                || label.len() > 63
+                || label.starts_with('-')
+                || label.ends_with('-')
+                || !label.bytes().all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+        })
+    {
+        return false;
+    }
     explicit.is_none_or(|port| port != 0 && port == expected_port)
 }
 
@@ -876,6 +897,10 @@ mod web_tests {
         assert!(decode_web_endpoint(public_without_url).is_err());
         let wrong_port = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":"https://web-box.example:8443/path","route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
         assert!(decode_web_endpoint(wrong_port).is_err());
+        let malformed_port = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":"https://web-box.example:abc/path","route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
+        assert!(decode_web_endpoint(malformed_port).is_err());
+        let malformed_host = br#"{"machine_id":"01234567-89ab-cdef-0123-456789abcdef","label":"web-box","port":8080,"visibility":"private","policy_revision":4,"url":"https://-web-box.example:8080/path","route":"overalls://fleet.example/machines/01234567-89ab-cdef-0123-456789abcdef/web"}"#;
+        assert!(decode_web_endpoint(malformed_host).is_err());
     }
 
     #[test]

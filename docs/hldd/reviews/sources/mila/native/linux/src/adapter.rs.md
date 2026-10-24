@@ -1,5 +1,5 @@
 ---
-digest: 5c8a332c80fa563bf947d497daaf224b38860d3736a6b0b2e41763cdfc2da517
+digest: 09c398b782884ac0e6ee2d3aa8f86b3f8d94e154a4d7d30e03d362d947c96ebb
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-bounded Linux sharing grant text
+Reject malformed web authorities before browser launch

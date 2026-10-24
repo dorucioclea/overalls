@@ -1,5 +1,5 @@
 ---
-digest: 6c41a3e1312fd201486710cd7a44d35df429c4f243877ef029dd14a96dcbab64
+digest: 61c87e70806ed816586a99a58c60d54d853a94c20cf449c6418a16b10f2eea30
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Clear authenticated machine projection on Linux sign-out
+Linux SSH revoke UI now requires live authenticated session

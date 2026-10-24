@@ -1113,7 +1113,12 @@ impl NativeState {
         let key_id_for_action = key_id.clone();
         let key_request_for_action = key_request.clone();
         let label_for_action = content.clone();
+        let revoke_session = self.session.clone();
         revoke.connect_clicked(move |_| {
+            if revoke_session.borrow().session().is_none() {
+                label_for_action.set_label("SSH key controls require sign-in.");
+                return;
+            }
             match format_ssh_key_revoke(
                 key_id_for_action.text().as_str(),
                 key_request_for_action.text().as_str(),

@@ -410,7 +410,7 @@ public sealed partial class MainWindow : Window
         if (_session.Handle is not { } handle || handle == 0) return Task.FromResult<IReadOnlyList<MilaWindowsNotificationDevice>>(Array.Empty<MilaWindowsNotificationDevice>());
         MilaNativeSessionBytesResult result = RustNative.TrySessionDevices(handle);
         if (!result.Succeeded) throw new InvalidDataException("Notification listing unavailable");
-        return Task.FromResult(MilaWindowsNotificationDevicesController.DecodeListing(result.Bytes));
+        return Task.FromResult(MilaWindowsNotificationDevicesController.DecodeListing(result.Data!));
     }
     private Task RemoveNotificationDeviceAsync(string deviceId, CancellationToken cancellationToken)
     {

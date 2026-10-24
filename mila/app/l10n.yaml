@@ -4,3 +4,4 @@ output-localization-file: app_localizations.dart
 output-class: MilaLocalizations
 nullable-getter: false
 required-resource-attributes: true
+synthetic-package: false

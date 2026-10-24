@@ -482,13 +482,25 @@ pub fn decode_web_endpoint(bytes: &[u8]) -> Result<WebEndpoint, RuntimeError> {
 }
 
 fn valid_https_endpoint_url(url: &str, expected_port: u16) -> bool {
-    let Some(rest) = url.strip_prefix("https://") else { return false; };
-    if url.len() > 2_048 || rest.is_empty() { return false; }
+    let Some(rest) = url.strip_prefix("https://") else {
+        return false;
+    };
+    if url.len() > 2_048 || rest.is_empty() {
+        return false;
+    }
     let authority = rest.split('/').next().unwrap_or("");
-    if authority.is_empty() || authority.starts_with(':')
-        || authority.contains(['@', '#', ' ', '\t', '\n', '\r']) { return false; }
-    if authority.ends_with(':') { return false; }
-    let explicit = authority.rsplit_once(':').and_then(|(_, p)| p.parse::<u16>().ok());
+    if authority.is_empty()
+        || authority.starts_with(':')
+        || authority.contains(['@', '#', ' ', '\t', '\n', '\r'])
+    {
+        return false;
+    }
+    if authority.ends_with(':') {
+        return false;
+    }
+    let explicit = authority
+        .rsplit_once(':')
+        .and_then(|(_, p)| p.parse::<u16>().ok());
     explicit.is_none_or(|port| port != 0 && port == expected_port)
 }
 
@@ -1250,12 +1262,15 @@ mod tests {
 
     #[test]
     fn ssh_key_refresh_rejects_stale_generation_after_reconnect() {
-        let payload = br#"{"keys":[{"id":"k1","label":"laptop","fingerprint":"SHA256:x","added_at":1}]}"#;
+        let payload =
+            br#"{"keys":[{"id":"k1","label":"laptop","fingerprint":"SHA256:x","added_at":1}]}"#;
         let mut projection = super::SshKeyProjection::default();
         let first = projection.begin_generation();
         let second = projection.begin_generation();
         assert!(projection.refresh(first, payload).is_err());
-        projection.refresh(second, payload).expect("current generation");
+        projection
+            .refresh(second, payload)
+            .expect("current generation");
         assert_eq!(projection.keys().len(), 1);
     }
 

@@ -1,5 +1,5 @@
 ---
-digest: fb1eb467e321d7999cef23ce52b51a44dedc7761fb5e27fa59dbc647c00581b8
+digest: 3076af19f011f180cb33902b43a27c33f8ca889f33574ee41cdcca864ea43b46
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Linux machine UI projection now enforces bounded rows before GTK rendering.
+Reviewed concurrent Linux machine projection changes; bounded UI projection preserves architecture.

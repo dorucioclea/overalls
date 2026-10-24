@@ -1,5 +1,5 @@
 ---
-digest: 64623d8b2469740065c9c0716e12339a798a7b4218b4571ce8bd1f8246e232a3
+digest: 01c3e9b8be22a78f6d7050fee22c744c10c94a7181e1fb2a054c75477a0f2e0f
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaSignInState.kt
+Thread action input contracts now require thread and answer identifiers before native prompt/answer/plan dispatch.

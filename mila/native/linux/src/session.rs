@@ -5,9 +5,9 @@
 //! authority for an authenticated deployment connection.
 
 use crate::adapter::RuntimeError;
-use std::collections::HashSet;
 use mila_ffi::{MilaFfiStatus, MilaRouteOutput};
 use p256::ecdsa::{signature::Signer, Signature, SigningKey};
+use std::collections::HashSet;
 
 const MAX_TRUST_BYTES: usize = 8192;
 const MAX_LISTING_BYTES: usize = 1 << 20;
@@ -384,8 +384,13 @@ impl LiveSession {
         request_id: Option<&str>,
     ) -> Result<Vec<u8>, SessionError> {
         const ALLOWED_THREAD_COMMANDS: &[&str] = &[
-            "thread ls", "thread show", "thread turns", "thread prompt",
-            "thread answer", "thread plan approve", "thread plan revise",
+            "thread ls",
+            "thread show",
+            "thread turns",
+            "thread prompt",
+            "thread answer",
+            "thread plan approve",
+            "thread plan revise",
         ];
         if !ALLOWED_THREAD_COMMANDS.contains(&command) {
             return Err(SessionError::InvalidInput);
@@ -401,6 +406,16 @@ impl LiveSession {
             }
         }
         Self::validate_thread_plan_input(command, input)?;
+        if matches!(
+            command,
+            "thread prompt" | "thread answer" | "thread plan approve" | "thread plan revise"
+        ) && thread.is_none()
+        {
+            return Err(SessionError::InvalidInput);
+        }
+        if matches!(command, "thread answer") && secondary.is_none() {
+            return Err(SessionError::InvalidInput);
+        }
         if let Some(request_id) = request_id {
             if request_id.len() != 40
                 || !request_id.starts_with("porsche-")
@@ -961,7 +976,9 @@ impl ApprovalInfo {
         if !valid_url
             || fingerprint.is_empty()
             || fingerprint.len() > 256
-            || fingerprint.bytes().any(|byte| byte.is_ascii_control() || byte.is_ascii_whitespace())
+            || fingerprint
+                .bytes()
+                .any(|byte| byte.is_ascii_control() || byte.is_ascii_whitespace())
         {
             return Err(RuntimeError::InvalidInput);
         }
@@ -1321,7 +1338,10 @@ mod tests {
     #[test]
     #[test]
     fn web_set_requires_positive_policy_revision() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         assert_eq!(
             session.web_set(
                 "01234567-89ab-cdef-0123-456789abcdef",
@@ -1336,7 +1356,10 @@ mod tests {
 
     #[test]
     fn web_controls_require_an_authenticated_handle_and_bounded_request() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         assert_eq!(
             session.web_show("bad machine"),
             Err(SessionError::InvalidInput)
@@ -1365,7 +1388,10 @@ mod tests {
 
     #[test]
     fn notification_device_controls_require_authenticated_session() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         assert_eq!(session.device_list(), Err(SessionError::StaleHandle));
         assert_eq!(
             session.device_remove("bad device"),
@@ -1379,7 +1405,10 @@ mod tests {
 
     #[test]
     fn machine_actions_require_authenticated_session_and_canonical_request() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         assert_eq!(
             session.machine_action(
                 "01234567-89ab-cdef-0123-456789abcdef",
@@ -1408,7 +1437,10 @@ mod tests {
 
     #[test]
     fn sharing_requires_authenticated_session_and_typed_role() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         let request = "porsche-00000000000000000000000000000000";
         assert_eq!(
             session.share_mutation(
@@ -1434,7 +1466,10 @@ mod tests {
 
     #[test]
     fn thread_actions_require_authenticated_session_and_bounded_input() {
-        let mut session = LiveSession { handle: None, submitted_mutations: HashSet::new() };
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
         assert_eq!(
             session.thread_action(None, "thread ls", None, None, None),
             Err(SessionError::StaleHandle)
@@ -1481,6 +1516,29 @@ mod tests {
         );
         assert_eq!(
             LiveSession::validate_thread_plan_input("thread plan revise", Some("")),
+            Err(SessionError::InvalidInput)
+        );
+        let request = "porsche-0123456789abcdef0123456789abcdef";
+        assert_eq!(
+            LiveSession::validate_thread_plan_input("thread plan approve", None),
+            Ok(())
+        );
+        let mut session = LiveSession {
+            handle: None,
+            submitted_mutations: HashSet::new(),
+        };
+        assert_eq!(
+            session.thread_action(None, "thread prompt", None, Some("q"), Some(request)),
+            Err(SessionError::InvalidInput)
+        );
+        assert_eq!(
+            session.thread_action(
+                Some("thread"),
+                "thread answer",
+                None,
+                Some("a"),
+                Some(request)
+            ),
             Err(SessionError::InvalidInput)
         );
     }

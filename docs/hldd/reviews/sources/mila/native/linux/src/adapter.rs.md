@@ -1,5 +1,5 @@
 ---
-digest: bbee1f950e2c6a8c5e86d3e5b90e107e1d8043d578d95b1e049fb1032e40d34f
+digest: 0c553719bc48d152eb43e66054da07fe90560fb465e87ba025d08f254d8c2fc0
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-mila/native/linux/src/adapter.rs
+Reviewed concurrent Linux adapter changes; preserves validated native boundary and has no additional architecture impact.

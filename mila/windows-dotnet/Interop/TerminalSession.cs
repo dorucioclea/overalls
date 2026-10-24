@@ -56,8 +56,16 @@ internal sealed class MilaTerminalSession
     }
     internal bool Reconnect(long generation) => generation == _generation &&
         State is (MilaTerminalState.Live or MilaTerminalState.ReadOnly);
+    /// Marks the authenticated PTY closed by the transport. A clean EOF must
+    /// invalidate reconnect and input until a fresh attach generation starts.
+    internal bool ReceiveEof(long generation)
+    {
+        if (generation != _generation || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed) return false;
+        State = MilaTerminalState.Failed;
+        return true;
+    }
     internal void Kill(long generation) { if (generation == _generation) State = MilaTerminalState.Killed; }
     internal void SignOut() { _generation++; _readWrite = false; State = MilaTerminalState.SignedOut; _output.Clear(); }
 }
 
-internal enum MilaTerminalState { SignedOut, Attaching, ReadOnly, Live, Killed }
+internal enum MilaTerminalState { SignedOut, Attaching, ReadOnly, Live, Failed, Killed }

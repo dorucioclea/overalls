@@ -1,5 +1,5 @@
 ---
-digest: 5f0808519b624ab39e433fedf50167c54abe2062334c2cfc0e0e7983f6f63c33
+digest: cd766780be820c0298d65bbba2461beb8041efaf66b58241b6e50a80e7b83842
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows Hello app-lock lifecycle activation fencing
+Windows terminal clean EOF lifecycle fencing

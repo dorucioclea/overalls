@@ -1,5 +1,5 @@
 ---
-digest: c708fa1f15375c13b5bba1cfebab50db925dc047555a21113897cf898dd41b4e
+digest: a532b2b7342495b1d3d576063eb5dd4db4bc0766dcc30982a0b35104dd9450da
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows terminal input bounds and smoke coverage preserve documented behavior
+Windows terminal clean EOF lifecycle fencing

@@ -1,5 +1,5 @@
 ---
-digest: d69b1e00b7e68af9ccacc2b05e7024e55d47c516e300c7b3393836407a75ed4d
+digest: b4560358b702ed6b835e26398cc61767f3b9c8c30594aa747420dbb563d76d8e
 disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Concurrent Android machine control test review preserves behavior
+Android terminal clean EOF closes the native terminal state

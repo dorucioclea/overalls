@@ -61,6 +61,12 @@ class MilaTerminalController(private val adapter: MilaFfiAdapter, private val so
  fun receive(bytes: ByteArray): Boolean {
   if (state.phase != MilaTerminalPhase.Attached && state.phase != MilaTerminalPhase.ReadOnly) return false
   if (bytes.size > MAX_READ_BYTES) return false
+  if (bytes.isEmpty()) {
+   // An empty read is a clean PTY EOF. Fence subsequent input until an
+   // explicit reconnect establishes a fresh authenticated transport.
+   state = state.copy(phase = MilaTerminalPhase.Closed)
+   return true
+  }
   renderer.append(bytes); return true
  }
  /** Drain one bounded host read. A null result means the PTY currently has no output. */

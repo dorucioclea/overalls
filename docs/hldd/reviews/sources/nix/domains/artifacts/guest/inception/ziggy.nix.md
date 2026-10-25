@@ -1,28 +1,24 @@
 ---
-digest: 2af2d9ef145d7d66f9506bc7fe947510c369e5e1cc4070cd95d6fb8ba60ca58c
-disposition: no-impact
+digest: 3ca179a6fb54f632f3596fa9cb8bc308b42d494ce9625e15518cc2cac9cc4ddd
+disposition: updated
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
-migration:
-  deployment:
-    chapter_digest: 9a9e9255eb86fa91f3418b1c398853a745a51fd15f2f5eca5737439f6caf08c2
-    source_digest: 32939571a328dfb45510183c422eecb46bdb38fa777346f23c0fd9cc2bb9c079
 path: nix/domains/artifacts/guest/inception/ziggy.nix
 reviewed_chapters:
-  marshall/priv/hldd/07-guests.md: 6a5c5b49211308c21cf0a6cc5d1f4666c7adf167e4729336e352aad4e637668f
+  marshall/priv/hldd/07-guests.md: 462bc3e24f2c03fda6dfde639f87247a6f8df1d8891b97c6be314b050d5a8573
   marshall/priv/hldd/12-configuration.md: ff8e45aaf3daef1140ae8d0ff46e7dff0c95781487abc5511a3202ef1dfd2f15
-  marshall/priv/hldd/13-deployment.md: 2f53f560f187e1064b35d11d4b1c9c96dd4244a4f43579bc051298c147ebfb20
+  marshall/priv/hldd/13-deployment.md: 8889dad9eade0462be5799bd6ca3f4536fc421f17adcc5d226cefc5a1733fe3e
   marshall/priv/hldd/14-operations.md: 4d9a416eb0df32a8281f24db06739142db91b637c4ea9416a9f23de49bf73010
   marshall/priv/hldd/15-monitoring.md: cc17c4c6d32d94c24da6483a8164f374cad31c77d0a477850dc6684625a8cee5
   marshall/priv/hldd/16-recovery.md: c11d719cde9562dea123b9fff7630f8750bbf758b4919880a15715b86263d3db
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/18-options.md: b2a334dbac18ef6444fc33ddaba4c9384e0af4b812953bd8550ca39d16159321
-  marshall/priv/hldd/19-coverage.md: 5dc84656f2a81c5674ed8311af44a7f2e9c33262d36f624e11f8ba378a32db61
-  marshall/priv/hldd/20-security.md: ebf5f76bb3b9c45d1bd1dd0c370480f4634f4ad6df267fa706355fb48ed38537
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 7cbeeb5bb6bbbbc170df005edbd41b0b9ea84cc90b0598b4e99b800aa95475b2
+  marshall/priv/hldd/18-options.md: 0f0719f4bf760ff8d76eab63b4da72cf574a54e10cf9a18561d9d5577ddc2354
+  marshall/priv/hldd/19-coverage.md: 3b2b8f95eb588b618add82d5f883f3ed415e707f9f8f6dc54577f4877b5e4b50
+  marshall/priv/hldd/20-security.md: 92ef988a1a8679b0767fad1b355246a4e216ed59e25b0b43ea56ccce0c1e3e8b
+  marshall/priv/hldd/21-domains.md: 30873f1b247f2666ca7eb0f93f5a942394e733fb993ea599cba1392dc7d21bae
+  marshall/priv/hldd/22-topology.md: 03993ebc3b0c89183aa3eafd972187e92b346d929a61f22250e9e1b6774e0b4e
 state: present
 version: 2
 ---
 
-deployment: Reviewed the Android SDK setup correction; it only makes the native CI job install declared API 36 build inputs and does not alter deployment roles or runtime behavior.
+Inception checkout bootstrap, machine evidence and resource documentation were reviewed against the refreshed guest and coverage chapters.

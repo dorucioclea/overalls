@@ -37,12 +37,19 @@ def envelope(body: bytes, boot: Mapping[str, object]) -> object:
     return value["smtp"]
 
 
-def install(bundle: object, config: prepare.Config, restart: Callable[[], None]) -> None:
+def install(
+    bundle: object,
+    config: prepare.Config,
+    restart: Callable[[], None],
+) -> None:
     """@cc [owner:ghuntley,label:security;recovery] inception-smtp-runtime-publication
     SMTP MUST live only in private runtime files. Rotation MUST preserve the
     persisted internal identity and prepare the environment before restarting
-    Marshall. A lost acknowledgment MUST permit an idempotent retry; a failed
-    preparation or restart request MUST NOT mark the bundle as applied.
+    Marshall. The listener accepts the first host delivery while this unit is
+    still activating; readiness is published only after the bundle and
+    environment are valid. A lost acknowledgment MUST permit an idempotent
+    retry; a failed preparation or restart request MUST NOT mark the bundle as
+    applied.
     """
     private_directory(prepare.RUNTIME)
     fd = os.open(prepare.STATE / "bootstrap.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
@@ -104,14 +111,27 @@ def main() -> None:
     config = json.loads(Path(config_path).read_bytes())
 
     def restart() -> None:
-        subprocess.run(
-            [systemctl, "--no-block", "try-restart", "marshall-inception.service"],
-            check=True,
+        # The initial bundle arrives before Marshall can be active: its
+        # environment depends on this receiver. Restart only an already
+        # running instance; the normal systemd dependency chain starts the
+        # inactive instance after this transaction commits.
+        active = subprocess.run(
+            [systemctl, "--quiet", "is-active", "marshall-inception.service"],
+            check=False,
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             timeout=10,
         )
+        if active.returncode == 0:
+            subprocess.run(
+                [systemctl, "--no-block", "restart", "marshall-inception.service"],
+                check=True,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=10,
+            )
 
     def accept(bundle: object) -> None:
         install(bundle, config, restart)

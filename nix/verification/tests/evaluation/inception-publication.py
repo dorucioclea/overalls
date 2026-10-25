@@ -290,6 +290,7 @@ class PublicationTest(unittest.TestCase):
             fixture = {"invalid": True}
             result = publication.collect(self.boot, self.config, Client(), self.root, self.root)
             self.assertEqual(result["records"], [])
+            calls.clear()
             publish(
                 self.root / "control-publication.json",
                 encode(
@@ -307,6 +308,7 @@ class PublicationTest(unittest.TestCase):
             self.assertEqual(
                 result["records"], [{"label": "control", "ready": False, "proofs": [PROOF]}]
             )
+            self.assertEqual(calls, [])
             with self.assertRaises(SetupError):
                 publication.collect(
                     dict(self.boot, execution_epoch=2), self.config, Client(), self.root, self.root

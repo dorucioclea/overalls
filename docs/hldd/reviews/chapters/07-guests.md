@@ -1,5 +1,5 @@
 ---
-digest: 0f73d65e0218aa15612a351af492879d87f78f6e864901c932124fc394334f4e
+digest: 253b9d9a78a7c9edacb11c37991ab70c9247a4a5baf9d216e0f0475fb0b4691e
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Reviewed the one-line NixOS guest package addition of gh. Chapter 07 now identifies Git and GitHub CLI as declared default packages, without claiming image rebuild or fleet deployment acceptance.
+Reviewed proof-first Inception publication: a fresh non-ready control proof is emitted before optional local DNS, Porsche and Audi lookups, preserving its original expiry; the evaluation test asserts optional calls are skipped.

@@ -5,7 +5,7 @@ let
     basicConstraints=critical,CA:FALSE
     keyUsage=critical,digitalSignature,keyEncipherment
     extendedKeyUsage=serverAuth
-    subjectAltName=DNS:localhost,DNS:api.openai.com,DNS:api.anthropic.com,IP:11.0.0.2,IP:127.0.0.1
+    subjectAltName=DNS:localhost,DNS:github.com,DNS:api.openai.com,DNS:api.anthropic.com,IP:11.0.0.2,IP:127.0.0.1
   '';
   configuration = pkgs.writeText "inception-fixture-pebble.json" (builtins.toJSON {
     pebble = {

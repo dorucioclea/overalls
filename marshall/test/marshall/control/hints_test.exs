@@ -23,6 +23,7 @@ defmodule Marshall.Control.HintsTest do
      [:revoke_token, :revoke_jti, :revoke_all_stored_for_subject]},
     {Marshall.Ingress.Endpoint, :vm, [:change_policy]},
     {Marshall.Ingress.EnvironmentPublication, :vm, [:advance]},
+    {Marshall.Ingress.EnvironmentPublication, :dns_snapshot, [:advance]},
     {Marshall.Ingress.Service, :service, [:rotate]},
     {Marshall.Compute.Host, :host, [:configure, :maintenance, :connect, :disconnect]},
     {Marshall.Compute.VirtualMachine, :vm,

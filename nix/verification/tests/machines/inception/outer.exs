@@ -14,6 +14,9 @@ defmodule InceptionOuterFixture do
       "enroll" -> enroll()
       "enroll-gateway" ->
         host = read("lilly.json")["host_id"]
+        {lilly_uid, 0} = System.cmd(System.fetch_env!("INCEPTION_ID_BINARY"), ["-u", "lilly"])
+        lilly_uid = lilly_uid |> String.trim() |> String.to_integer()
+        true = lilly_uid > 0
         {token, _} = Marshall.Ingress.Token.issue()
         {:ok, _service} = Marshall.Ingress.configure_service(
           %{name: "inception-outer-audi", role: :gateway, host_id: host,
@@ -25,7 +28,7 @@ defmodule InceptionOuterFixture do
         write("audi.json", %{
           version: 1, role: "gateway", host_id: host, control_plane: "https://control.example.test:5443",
           credential_file: "/run/audi/gateway.token", cacertfile: "/run/credentials/audi.service/ca.pem",
-          connector_path: "/run/lilly-ingress/audi.sock", connector_uid: 0,
+          connector_path: "/run/lilly-ingress/audi.sock", connector_uid: lilly_uid,
           host_key_dir: "/var/lib/audi/keys", status_socket: "/run/audi/status.sock",
           bind: "11.0.0.5", port: 22,
           tls: %{zone: "apps.inception.test",
@@ -89,12 +92,34 @@ defmodule InceptionOuterFixture do
       version: 4, host_id: host.host_id, control_plane: "https://control.example.test:5443",
       cacertfile: "/run/overalls-test/ca.crt", credential_file: Path.join(@root, "credential.json"),
       state_dir: "/var/lib/lilly/control", cgroup_path: "/sys/fs/cgroup/lilly.slice",
-      images: [image], pools: Enum.map(host.pools, &Map.put(&1, :path, "/pool")),
+      images: [%{"path" => image}],
+      pools:
+        Enum.map(host.pools, fn pool ->
+          # Marshall's descriptor includes the display-only `name` field;
+          # Lilly's closed startup schema accepts only the bound pool identity
+          # and local path, so project the descriptor before JSON encoding.
+          pool |> Map.take([:id, :filesystem_id, :storage]) |> Map.put(:path, "/pool")
+        end),
       ingress: %{path: "/run/lilly-ingress/audi.sock", audi_uid: audi_uid},
       execution: Map.merge(Map.take(tools, ~w(firecracker jailer unshare)), %{
         "state_dir" => "/var/lib/lilly/vms", "network_state_dir" => "/var/lib/lilly/network",
         "egress_interface" => "eth1", "protected_cidrs" => [], "audi_ingress" => true,
+        # The nested image enables the boot-bound private trust receiver. Its
+        # network unit is ordered after that receiver, so this fixture must
+        # publish the outer control CA for Lilly to deliver before readiness.
+        # The nested guest verifies both the outer control plane and the
+        # canonical github.com HTTPS mirror with the current fixture roots.
+        "guest_trust_roots" => [
+          "/run/overalls-test/ca.crt",
+          "/run/inception-public-issuer-ca.pem",
+          "/run/inception-public-roots.pem",
+          System.fetch_env!("INCEPTION_SOURCE_CA")
+        ],
         "inception_smtp_file" => "/run/inception-test/smtp.json",
+        # Keep the bounded native Firecracker collector active for this
+        # production-dispatch fixture so failed nested boots retain a private
+        # diagnostic stream for triage.
+        "firecracker_logging" => true,
         "inception_image_id" => System.fetch_env!("MARSHALL_INCEPTION_IMAGE_ID"),
         "inception_proof_file" => "/run/lilly-inception/proof.json",
         "inception_probe_id" => System.fetch_env!("INCEPTION_PROBE_IMAGE")

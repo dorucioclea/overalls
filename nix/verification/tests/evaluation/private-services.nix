@@ -20,6 +20,7 @@ assert builtins.any (a: a.message == "Guest private services require public CA c
 assert builtins.any (a: a.message == "Guest private services require public CA certificates, never private keys.") (failures private);
 assert guest.services.resolved.enable;
 assert guest.services.resolved.settings.Resolve.Domains == [ "~." ];
+assert guest.services.resolved.settings.Resolve.DNS == [ "1.1.1.1" "9.9.9.9" ];
 assert builtins.elem "lilly-private-dns.service" guest.systemd.services.lilly-readiness.requires;
 assert guest.security.pki.certificateFiles == [];
 assert builtins.elem "overalls-guest-trust.service" guest.systemd.services.lilly-network.requires;

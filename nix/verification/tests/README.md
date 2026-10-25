@@ -370,7 +370,7 @@ nix flake check -L --extra-system-features nested-kvm
 `ci.nix` wraps every exported check with `meta.ci = { enable, machine,
 nestedKvm }`. A check is a machine test when it has a test driver, requires
 `kvm`, or is listed as a machine aggregate; it is excluded from CI only by name
-in `ci.nix` (currently the Inception checks). GitHub Actions derives its
+in `ci.nix` (the exclusion list is currently empty). GitHub Actions derives its
 matrices by evaluation: `publish-cache.yml` builds every enabled non-machine
 check and publishes it to Cachix, and `nixos-machine-tests.yml` fans out one
 job per enabled machine test. Both selections in

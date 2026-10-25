@@ -13,8 +13,10 @@ defmodule InceptionInnerFixture do
     action = System.fetch_env!("INCEPTION_NATIVE_ACTION")
     {actor, vm_id} = if action == "create" do
       actor = Ash.Seed.seed!(Marshall.Accounts.User, %{email: "native-inception@example.test"})
-      # Enrollment selects only the image rebuilt with this instance's trust.
-      # The packaged seed in inception-public.json is not an enrolled image.
+      # Enrollment selects the immutable seed registered by the inner
+      # production enrollment. The instance's private root is delivered at
+      # child boot through Lilly's authenticated trust receiver; no private
+      # key or per-instance image rebuild enters the enrolled image.
       manifest = "/var/lib/inception/guest-image/manifest.json" |> File.read!() |> JSON.decode!()
       {:ok, image} = OverallsProtocol.ImageManifest.validate(manifest)
       {:ok, vm} = Marshall.Compute.provision(%{

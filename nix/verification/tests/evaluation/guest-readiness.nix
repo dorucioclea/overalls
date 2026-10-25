@@ -18,6 +18,9 @@ assert builtins.all (parameter: builtins.elem parameter guest.config.boot.kernel
 assert guest.config.systemd.services.lilly-boot-report.after == [ "lilly-readiness.service" ];
 assert guest.config.systemd.services.lilly-boot-report.requiredBy == [ ];
 assert guest.config.systemd.services.lilly-boot-report.serviceConfig.Type == "exec";
+# A unit wanted by multi-user.target MUST NOT be ordered after that target;
+# doing so leaves the target activating forever and prevents readiness replies.
+assert !(builtins.elem "multi-user.target" guest.config.systemd.services.lilly-console-ready.after);
 # guest-lean-initrd
 assert !guest.config.boot.initrd.includeDefaultModules && !guest.config.console.enable;
 pkgs.runCommand "lilly-guest-readiness-check" { nativeBuildInputs = [ pkgs.python3 ]; } ''

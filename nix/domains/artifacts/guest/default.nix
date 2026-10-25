@@ -4,14 +4,17 @@
   minimumMemoryBytes ? (if vscodeWeb == null then 536870912 else 2147483648),
   minimumDiskBytes ? null,
   privateServiceRoots ? [ ],
-  guestAgents ? null }:
+  guestAgents ? null,
+  gitIdentityVersion ? null }:
 let
   guest = import (pkgs.path + "/nixos/lib/eval-config.nix") {
     system = "x86_64-linux";
     inherit pkgs;
     specialArgs = { inherit codingClis; };
     modules = [ ./configuration.nix ({ config, ... }: {
-      services.openssh.enable = pkgs.lib.mkForce (privateServiceRoots != []);
+      # Profiles such as Inception deliberately disable administrative SSH
+      # while still enabling the boot-bound trust receiver below.
+      services.openssh.enable = pkgs.lib.mkDefault (privateServiceRoots != []);
       environment.systemPackages = [ lyraLinux ];
       services.openssh.generateHostKeys = false;
       services.openssh.hostKeys = [{ type = "ed25519"; path = "/run/overalls-ssh-host/ssh_host_ed25519_key"; }];
@@ -200,6 +203,8 @@ let
 in
 assert pkgs.lib.assertMsg ((vscodeWeb == null) == (vscodeWebBroker == null)) "Guest editor and broker packages must be supplied together";
 assert pkgs.lib.assertMsg (vscodeWeb == null || minimumMemoryBytes >= 2147483648) "Browser editor guests require at least 2 GiB RAM";
+assert pkgs.lib.assertMsg (gitIdentityVersion == null || gitIdentityVersion == 1)
+  "Git identity capability must be version 1";
 # @cc [owner:ghuntley,label:protocol] guest-manifest-exact-artifacts
 # The output manifest MUST describe the exact linked kernel/initrd/rootfs bytes
 # using exact hashes and lengths. Version 4 MUST bind the actual source receiver
@@ -239,8 +244,9 @@ pkgs.runCommand imageName {
     --argjson initrd_bytes "$initrd_bytes" --arg initrd_sha256 "$initrd_sha256" \
     --arg rootfs_sha256 "$rootfs_sha256" \
     --argjson workspace_source_version '${if workspaceSourceEnabled then "2" else "null"}' \
+    --argjson git_identity_version '${if gitIdentityVersion == null then "null" else toString gitIdentityVersion}' \
     --argjson guest_agents '${if guestAgents == null then "null" else builtins.toJSON guestAgents}' \
     --argjson editor '${builtins.toJSON (if vscodeWeb == null then null else { protocol = vscodeWeb.editorProtocol; commit = vscodeWeb.sourceCommit; release = vscodeWeb.releaseId; })}' \
-    '{version: 4, architecture: $architecture, boot_args: $boot_args, minimum_disk_bytes: $minimum_disk_bytes, minimum_memory_bytes: $minimum_memory_bytes, workspace_source_version: $workspace_source_version, kernel: {bytes: $kernel_bytes, sha256: $kernel_sha256}, initrd: {bytes: $initrd_bytes, sha256: $initrd_sha256}, rootfs: {bytes: $rootfs_bytes, sha256: $rootfs_sha256}} + (if $guest_agents == null then {} else {guest_agents:$guest_agents} end) + (if $workspace_source_version == 2 then {git_identity_version:1} else {} end) + (if $editor == null then {} else {editor:$editor} end)' \
+    '{version: 4, architecture: $architecture, boot_args: $boot_args, minimum_disk_bytes: $minimum_disk_bytes, minimum_memory_bytes: $minimum_memory_bytes, workspace_source_version: $workspace_source_version, kernel: {bytes: $kernel_bytes, sha256: $kernel_sha256}, initrd: {bytes: $initrd_bytes, sha256: $initrd_sha256}, rootfs: {bytes: $rootfs_bytes, sha256: $rootfs_sha256}} + (if $guest_agents == null then {} else {guest_agents:$guest_agents} end) + (if $workspace_source_version == 2 or $git_identity_version == 1 then {git_identity_version:1} else {} end) + (if $editor == null then {} else {editor:$editor} end)' \
     > $out/manifest.json
 ''

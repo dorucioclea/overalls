@@ -472,6 +472,24 @@ Its minimum shape is 16 vCPUs, 32 GiB RAM, a 64 GiB root, and a separate sparse
 256 GiB data drive. Both drives count toward admission. The inner deployment
 retains its database, keys, and ZFS identity; initialization must not format an
 already initialized but mismatched disk. It does not offer another Inception layer.
+On first boot, the guest clones `https://github.com/ghuntley/overalls` into
+`/workspace/overalls`; the atomic checkout is retained across restart and is
+validated by the guest-owned source unit. The source unit retries independently
+of the stack readiness path, so a transient public GitHub outage cannot block
+boot-bound credentials or the packaged Marshall/Lilly services. Identity
+preparation follows the validated Lilly network. Bootstrap Git ignores system and global config so
+the interactive GitHub broker rewrite cannot change the canonical origin. The
+checkout is shared with managed guest accounts (directories and executable
+files mode `0777`, regular files `0666`); restart repairs those modes without
+following symlinks, while special bits and foreign ownership refuse startup.
+Public DNS uses the guest's recursive resolvers and the more-specific Audi
+route remains reserved for `.internal` names.
+The namespace-dependent gateway transaction waits for a bounded TLS probe of
+both inner Marshall listeners (4443 and 5443) against the instance CA before
+Audi or Porsche can publish host certificates. A running BEAM process alone is
+not treated as listener readiness. Until that readiness is true, a fresh
+control proof is published immediately so its short heartbeat cannot expire
+while optional DNS, Porsche and Audi lookups run.
 
 Evidence: [guest builder](repo:nix/domains/artifacts/guest/default.nix),
 [Ubuntu builder guide](repo:docs/guests/ubuntu-guests.md), [Inception](repo:docs/guests/inception.md),

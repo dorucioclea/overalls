@@ -119,6 +119,10 @@ defmodule Audi.Application do
      ]}
   end
 
+  defp role_children([{:role, :private_issuer} | options]) do
+    {:ok, [{Audi.PrivateIssuer, options}]}
+  end
+
   defp role_children([{:role, :dns} | options]) do
     authority =
       struct!(

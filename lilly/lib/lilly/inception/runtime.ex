@@ -99,6 +99,12 @@ defmodule Lilly.Inception.Runtime do
     :ok
   end
 
+  # @cc [owner:ghuntley,label:protocol;recovery] inception-final-publication-commit
+  # After host DNS observations are accepted by the child, the final child
+  # publication MUST be submitted with the refreshed parent offer before its
+  # deadline. The first publication may contain only a proof or a not-ready
+  # control record; dropping this final exchange leaves the parent with stale
+  # DNS and prevents a newly issued control certificate from becoming reachable.
   defp poll(config, session, command, proof_cursor) do
     with {:ok, offer} <- Client.exchange_inception(config.client, session, command, nil),
          {:ok, spec} <- Executor.specification(command),
@@ -149,14 +155,22 @@ defmodule Lilly.Inception.Runtime do
           )
 
         if System.monotonic_time(:millisecond) < next_offer.deadline do
-          Driver.inception_publication(
-            config.execution,
-            pool,
-            spec,
-            Map.put(namespace, :observations, observations),
-            execution_epoch: command.execution_epoch,
-            generation: command.generation
-          )
+          with {:ok, final_publication} <-
+                 Driver.inception_publication(
+                   config.execution,
+                   pool,
+                   spec,
+                   Map.put(namespace, :observations, observations),
+                   execution_epoch: command.execution_epoch,
+                   generation: command.generation
+                 ),
+               {:ok, _final_offer} <-
+                 Client.exchange_inception(config.client, session, command, %{
+                   "offer_id" => next_offer.offer_id,
+                   "publication" => final_publication
+                 }) do
+            :ok
+          end
         end
       end
     end

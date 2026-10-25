@@ -1933,6 +1933,23 @@ Tested scope: hostd library tests (decoder and lease-order Hegel properties, rea
 
 **Preferred test work:** A dedicated host-effects-custody machine test for wrong-peer refusal, BEAM SIGKILL mid-command and escaped descendants under cgroup custody.
 
+## Create an Inception workload with a durable Overalls development checkout
+
+Coverage: **partial**. Layers: identity, authorization, transport, isolation, storage, recovery.
+
+Boundary: A newly created Inception guest owns a first-boot Git checkout of the canonical Overalls repository.
+
+Required refusal: A malformed existing workspace is refused and an existing developer checkout is never overwritten.
+
+Tested scope: The guest bootstrap clones the canonical source, records the exact origin, and preserves a developer edit across stop/start.
+
+- **unit, present**: [self.assertEqual((target / "file.ex").read_text(), "developer edits")](repo:nix/verification/tests/evaluation/inception-prepare.py) — Isolated local Git origin; malformed paths, edit retention and origin validation are covered without external network access..
+- **machine, recorded**: [inception-probe verify 1 1](repo:nix/verification/tests/machines/inception/driver.py) — Real Marshall/Lilly nested lifecycle records the `.git` directory, exact GitHub origin, writable development checkout and requested default shape. The later DNS-01 replica timeout prevented the restart/edit-retention phase from running.; [execution record](repo:docs/architecture/reviews/2026-10-22-inception-development-checkout.md).
+
+**Gaps:** Native source publication is recorded, but restart/edit retention and the remaining gateway/DNS-01 phases need a complete native run.
+
+**Preferred test work:** Rerun the full nested Inception machine test to record developer-edit retention across stop/start and complete the gateway checks.
+
 ## Operate control and accounting without Marshall diagnostic ingestion
 
 Coverage: **partial**. Layers: authorization, transport, execution, recovery.

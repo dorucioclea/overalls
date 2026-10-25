@@ -13,6 +13,7 @@ pkgs.runCommand "inception-runtime-check" { nativeBuildInputs = [ (pkgs.python3.
   python3 -W error ${./marshall-public-host.py} ${../../../domains/system/marshall-public-host.py}
   python3 -W error ${./marshall-default-image.py} ${../../../domains/system/marshall-default-image.py}
   python3 -W error ${./inception-runtime.py} ${../../../domains/artifacts/guest/inception/runtime.py}
+  python3 -W error ${./inception-git-identity.py} ${../../../domains/artifacts/guest/inception/git_identity.py}
   python3 -W error ${./inception-publication.py} ${../../../domains/artifacts/guest/inception}
   python3 -W error ${./inception-observations.py} ${../../../domains/artifacts/guest/inception}
   python3 -W error ${./inception-control-proofs.py} ${../../../domains/artifacts/guest/inception} ${../../../../protocol/test/fixtures/inception_public.json}

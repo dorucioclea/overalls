@@ -75,16 +75,100 @@ class PreparationTest(unittest.TestCase):
         source.mkdir()
         (source / "file.ex").write_text("original")
         (source / "file.ex").chmod(0o444)
+        subprocess.run(
+            [git, "-C", str(source), "init", "--initial-branch=main"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+        subprocess.run([git, "-C", str(source), "add", "."], check=True, stdout=subprocess.DEVNULL)
+        subprocess.run(
+            [
+                git,
+                "-C",
+                str(source),
+                "-c",
+                "user.name=fixture",
+                "-c",
+                "user.email=fixture@example.test",
+                "commit",
+                "-m",
+                "fixture",
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
         workspace = self.root / "workspace"
         with patch.object(prepare, "WORKSPACE", workspace):
-            prepare.prepare_source(source, git)
+            prepare.prepare_source(source.as_uri(), git)
             target = workspace / "overalls"
             self.assertTrue((target / ".git").is_dir())
+            self.assertEqual(workspace.stat().st_mode & 0o777, 0o755)
+            self.assertEqual(target.stat().st_mode & 0o777, 0o777)
+            self.assertEqual((target / "file.ex").stat().st_mode & 0o777, 0o666)
             (target / "file.ex").write_text("developer edits")
-            prepare.prepare_source(source, git)
+            prepare.prepare_source(source.as_uri(), git)
             self.assertEqual((target / "file.ex").read_text(), "developer edits")
             status = subprocess.check_output([git, "-C", str(target), "status", "--porcelain"])
             self.assertEqual(status.strip(), b"M file.ex")
+            # URL rewriting in an interactive repository-local config must not
+            # change the bootstrap's raw canonical-origin validation.
+            subprocess.run(
+                [
+                    git,
+                    "-C",
+                    str(target),
+                    "config",
+                    "--local",
+                    "url.file:///wrong.insteadOf",
+                    source.as_uri(),
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+            )
+            prepare.prepare_source(source.as_uri(), git)
+            subprocess.run(
+                [git, "-C", str(target), "remote", "set-url", "origin", "file:///wrong"],
+                check=True,
+                stdout=subprocess.DEVNULL,
+            )
+            with self.assertRaisesRegex(prepare.SetupError, "development source origin invalid"):
+                prepare.prepare_source(source.as_uri(), git)
+
+    def test_existing_workspace_symlink_and_non_git_path_fail_closed(self) -> None:
+        workspace = self.root / "workspace"
+        workspace.mkdir()
+        outside = self.root / "outside"
+        outside.mkdir()
+        with patch.object(prepare, "WORKSPACE", workspace):
+            (workspace / "overalls").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(prepare.SetupError, "development workspace invalid"):
+                prepare.prepare_source("file:///unreachable", git)
+            (workspace / "overalls").unlink()
+            (workspace / "overalls").mkdir()
+            with self.assertRaisesRegex(prepare.SetupError, "development workspace invalid"):
+                prepare.prepare_source("file:///unreachable", git)
+
+    def test_existing_workspace_ownership_and_permissions_fail_closed(self) -> None:
+        workspace = self.root / "workspace"
+        workspace.mkdir()
+        target = workspace / "overalls"
+        target.mkdir()
+        (target / ".git").mkdir()
+        with patch.object(prepare, "WORKSPACE", workspace):
+            # The Nix sandbox permits the owner to set the sticky bit but
+            # rejects setuid, so use a portable special mode here.
+            target.chmod(0o1755)
+            with self.assertRaisesRegex(prepare.SetupError, "development workspace invalid"):
+                prepare.prepare_source("file:///unreachable", git)
+            target.chmod(0o755)
+            (target / ".git").chmod(0o1755)
+            with self.assertRaisesRegex(prepare.SetupError, "development workspace invalid"):
+                prepare.prepare_source("file:///unreachable", git)
+            if os.getuid() == 0:
+                os.chown(target, 65534, -1)
+                (target / ".git").chmod(0o755)
+                with self.assertRaisesRegex(prepare.SetupError, "development workspace invalid"):
+                    prepare.prepare_source("file:///unreachable", git)
 
     def test_database_password_is_only_on_stdin_with_statement_logging_disabled(self) -> None:
         identity = prepare.identities(self.root)

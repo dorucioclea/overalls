@@ -100,7 +100,12 @@ in {
     services.resolved = {
       enable = true;
       settings.Resolve = {
+        # Route public names to the explicit recursive servers below.  The
+        # lilly-private-dns link installs the more-specific ~internal route;
+        # Audi remains authoritative for that suffix and is never a public
+        # fallback.
         Domains = [ "~." ];
+        DNS = [ "1.1.1.1" "9.9.9.9" ];
         DNSOverTLS = "no";
         DNSSEC = "no";
         FallbackDNS = "";

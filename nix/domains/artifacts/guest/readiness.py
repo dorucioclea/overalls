@@ -15,6 +15,21 @@ from typing import TypedDict
 PORT = 1024
 MAXIMUM = 9_223_372_036_854_775_807
 UUID = re.compile(r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}")
+FAILURE_MARKER = "/run/lilly-readiness-failure"
+FAILURES = frozenset(
+    {
+        "multi_user_inactive",
+        "lilly_network_inactive",
+        "required_unit_inactive",
+        "ssh_unit_inactive",
+        "address_missing",
+        "gateway_route_missing",
+        "default_route_missing",
+        "root_write_failed",
+        "probe_error",
+        "peer_rejected",
+    }
+)
 
 
 class Identity(TypedDict):
@@ -120,6 +135,43 @@ def network_ready(boot: Identity, addresses: object, routes: object) -> bool:
     return expected_address and gateway and default
 
 
+def network_failure(boot: Identity, addresses: object, routes: object) -> str | None:
+    """Return the first fixed live-network failure category, if any."""
+    if not isinstance(addresses, list) or not any(
+        isinstance(interface, dict)
+        and interface.get("ifname") == "eth0"
+        and isinstance(interface.get("flags"), list)
+        and "UP" in interface["flags"]
+        and isinstance(interface.get("addr_info"), list)
+        and any(
+            isinstance(entry, dict)
+            and entry.get("family") == "inet"
+            and entry.get("local") == boot["address"]
+            and entry.get("prefixlen") == 32
+            for entry in interface["addr_info"]
+        )
+        for interface in addresses
+    ):
+        return "address_missing"
+    if not isinstance(routes, list) or not any(
+        isinstance(route, dict)
+        and route.get("dev") == "eth0"
+        and route.get("scope") == "link"
+        and route.get("dst") in (boot["gateway"], boot["gateway"] + "/32")
+        for route in routes
+    ):
+        return "gateway_route_missing"
+    if not isinstance(routes, list) or not any(
+        isinstance(route, dict)
+        and route.get("dev") == "eth0"
+        and route.get("dst") == "default"
+        and route.get("gateway") == boot["gateway"]
+        for route in routes
+    ):
+        return "default_route_missing"
+    return None
+
+
 def writable_root(directory: str = "/") -> None:
     # Create on the root filesystem itself, not /run or a private temporary mount.
     descriptor, name = tempfile.mkstemp(prefix=".lilly-readiness-", dir=directory)
@@ -132,6 +184,37 @@ def writable_root(directory: str = "/") -> None:
         os.unlink(name)
 
 
+def record_failure(category: str) -> None:
+    """@cc [owner:ghuntley,label:verification;recovery] readiness-failure-categories
+    Readiness diagnostics MUST publish only one fixed category, atomically and
+    without command output, credentials or guest-controlled payloads.
+    """
+    if category not in FAILURES:
+        category = "probe_error"
+    try:
+        descriptor, name = tempfile.mkstemp(prefix=".lilly-readiness-failure-", dir="/run")
+    except OSError:
+        # The production service is root-owned and can write /run. Evaluation
+        # tests may run as an unprivileged user; diagnostics must never change
+        # the fail-closed readiness result.
+        return
+    try:
+        os.fchmod(descriptor, 0o644)
+        with os.fdopen(descriptor, "w", encoding="ascii") as output:
+            output.write(category + "\n")
+            output.flush()
+            os.fsync(output.fileno())
+        os.replace(name, FAILURE_MARKER)
+    finally:
+        with contextlib.suppress(FileNotFoundError):
+            os.unlink(name)
+
+
+def clear_failure() -> None:
+    with contextlib.suppress(OSError):
+        os.unlink(FAILURE_MARKER)
+
+
 def ready(
     boot: Identity,
     systemctl: str,
@@ -142,30 +225,50 @@ def ready(
     the configured /32 address and gateway routes, and a successful root write
     and fsync. Missing or failed probes MUST NOT produce readiness evidence.
     """
+    clear_failure()
     try:
-        command([systemctl, "is-active", "--quiet", "multi-user.target"])
-        command([systemctl, "is-active", "--quiet", "lilly-network.service"])
+
+        def require_unit(unit: str, category: str) -> None:
+            try:
+                command([systemctl, "is-active", "--quiet", unit])
+            except (OSError, subprocess.SubprocessError):
+                record_failure(category)
+                raise
+
+        require_unit("multi-user.target", "multi_user_inactive")
+        require_unit("lilly-network.service", "lilly_network_inactive")
         required = os.environ.get("LILLY_REQUIRED_UNITS", "").split()
         if len(required) > 16 or any(
             not re.fullmatch(r"[a-zA-Z0-9_-]+\.service", unit) for unit in required
         ):
+            record_failure("probe_error")
             return False
         for unit in required:
-            command([systemctl, "is-active", "--quiet", unit])
+            require_unit(unit, "required_unit_inactive")
         ssh_unit = os.environ.get("LILLY_SSH_UNIT", "")
         if ssh_unit:
             if not re.fullmatch(r"(?:ssh|sshd)\.service", ssh_unit):
+                record_failure("probe_error")
                 return False
-            command([systemctl, "is-active", "--quiet", ssh_unit])
+            require_unit(ssh_unit, "ssh_unit_inactive")
         addresses: object = json.loads(command([ip, "-j", "-4", "address", "show", "dev", "eth0"]))
         # A device-filtered iproute2 query omits dev from each JSON route.
         # Retain it here so network_ready can verify interface ownership itself.
         routes: object = json.loads(command([ip, "-j", "-4", "route", "show"]))
-        if not network_ready(boot, addresses, routes):
+        failure = network_failure(boot, addresses, routes)
+        if failure is not None:
+            record_failure(failure)
             return False
-        writable_root()
+        try:
+            writable_root()
+        except OSError:
+            record_failure("root_write_failed")
+            raise
+        clear_failure()
         return True
     except (OSError, subprocess.SubprocessError, ValueError, TypeError, AttributeError):
+        if not os.path.exists(FAILURE_MARKER):
+            record_failure("probe_error")
         return False
 
 
@@ -185,12 +288,17 @@ def answer(
     probe: Callable[[], bool],
 ) -> None:
     """@cc [owner:ghuntley,label:security] guest-readiness-host-only
-    Only host CID 2 may receive a response, after live probes succeed. The service
-    MUST NOT ingest caller identity or commands. Responses MUST bind this boot's
-    placement, epoch, challenge and kernel boot ID, with bounded socket writes.
+    Only host CID 2 may receive a response, after live probes succeed. Rejected
+    peer CIDs MUST publish only the fixed `peer_rejected` diagnostic category.
+    The service MUST NOT ingest caller identity or commands. Responses MUST bind
+    this boot's placement, epoch, challenge and kernel boot ID, with bounded
+    socket writes.
     """
     connection.settimeout(2)
-    if peer[0] == 2 and probe():
+    if peer[0] != 2:
+        record_failure("peer_rejected")
+        return
+    if probe():
         connection.sendall(response(boot, boot_id))
 
 

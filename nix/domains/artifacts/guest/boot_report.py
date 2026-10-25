@@ -7,6 +7,21 @@ from collections.abc import Callable, Sequence
 from typing import Final
 
 MARKER: Final = "lilly-boot-report: "
+READINESS_FAILURE_MARKER: Final = "/run/lilly-readiness-failure"
+READINESS_FAILURES: Final = frozenset(
+    {
+        "multi_user_inactive",
+        "lilly_network_inactive",
+        "required_unit_inactive",
+        "ssh_unit_inactive",
+        "address_missing",
+        "gateway_route_missing",
+        "default_route_missing",
+        "root_write_failed",
+        "probe_error",
+        "peer_rejected",
+    }
+)
 MAXIMUM_LINE: Final = 200
 MAXIMUM_SECTION_LINES: Final = 24
 BLAME_LINES: Final = 15
@@ -30,9 +45,35 @@ TIMELINE_UNITS: Final = (
     "systemd-resolved.service",
     "lilly-private-dns.service",
     "lilly-readiness.service",
+    # Inception's nested profile needs the identity and image phases called
+    # out explicitly: a report that only names generic readiness units cannot
+    # distinguish a KVM identity failure from a later image-build failure.
+    "inception-identity.service",
+    "inception-credentials.service",
+    "inception-image.service",
+    "inception-source.service",
     "multi-user.target",
 )
 CHAIN_UNITS: Final = ("overalls-guest-trust.service", "lilly-readiness.service")
+STATUS_UNITS: Final = (
+    "overalls-guest-trust.service",
+    "lilly-network.service",
+    "lilly-readiness.service",
+    "inception-identity.service",
+    "inception-credentials.service",
+    "inception-image.service",
+    "inception-storage.service",
+    "postgresql-setup.service",
+    "inception-database.service",
+    "inception-environment.service",
+    "inception-migrate.service",
+    "inception-enrollment.service",
+    "inception-enable.service",
+    "lilly.service",
+    "marshall-inception.service",
+    "postgresql.service",
+    "multi-user.target",
+)
 TIMELINE_PROPERTIES: Final = "InactiveExitTimestampMonotonic,ActiveEnterTimestampMonotonic"
 MANAGER_PROPERTIES: Final = (
     "InitRDTimestampMonotonic,UserspaceTimestampMonotonic,FinishTimestampMonotonic"
@@ -86,6 +127,15 @@ def services(blame: str) -> str:
     return "\n".join(line for line in blame.splitlines() if not line.rstrip().endswith(".device"))
 
 
+def readiness_failure(run: Runner) -> str | None:
+    """Read only the fixed category emitted by the live readiness probe."""
+    value = run(["cat", READINESS_FAILURE_MARKER])
+    if value is None:
+        return None
+    category = value.strip()
+    return category if category in READINESS_FAILURES else None
+
+
 def _seconds(microseconds: str) -> str:
     if not microseconds.isdecimal() or int(microseconds) == 0:
         return "-"
@@ -124,6 +174,9 @@ def report(
         sleep(POLL_SECONDS)
         finished = run([analyze, "time"])
     lines = [MARKER + "begin"]
+    failure = readiness_failure(run)
+    if failure is not None:
+        lines.append(MARKER + "readiness-failure=" + failure)
     lines += bound(finished or "Bootup is not yet finished")
     phases = run([systemctl, "show", "--no-pager", "-p", MANAGER_PROPERTIES])
     lines += bound(manager(phases or ""), 1)
@@ -131,6 +184,36 @@ def report(
     lines += bound(chain or "critical-chain unavailable")
     shown = run([systemctl, "show", "--no-pager", "-p", TIMELINE_PROPERTIES, *TIMELINE_UNITS])
     lines += bound("\n".join(timeline(shown or "")), len(TIMELINE_UNITS))
+    # Query one unit at a time.  `systemctl show` does not guarantee a blank
+    # separator when several units are passed, and a missing unit can suppress
+    # the remaining output on some systemd versions.  Positional association
+    # would then report a healthy unit under the wrong name.  The fixed list and
+    # per-call timeout keep this diagnostic bounded and prevent unit names from
+    # becoming guest-controlled output.
+    for unit in STATUS_UNITS:
+        shown = run(
+            [
+                systemctl,
+                "show",
+                "--no-pager",
+                "-p",
+                "ActiveState,SubState,Result",
+                unit,
+            ]
+        )
+        values = dict(line.split("=", 1) for line in (shown or "").splitlines() if "=" in line)
+        active = values.get("ActiveState", "unknown")
+        substate = values.get("SubState", "unknown")
+        result = values.get("Result", "unknown")
+        if active not in {"active", "inactive", "failed", "activating", "deactivating"}:
+            active = "unknown"
+        if substate not in {"running", "dead", "exited", "failed", "auto-restart", "start-pre"}:
+            substate = "unknown"
+        if result not in {"success", "exit-code", "signal", "timeout", "dependency", "skipped"}:
+            result = "unknown"
+        lines.append(
+            f"{MARKER}status unit={unit} active={active} substate={substate} result={result}"
+        )
     # The trust receiver's catalogued events (awaiting/installing/installed)
     # carry no payload; their monotonic stamps split listen and install time.
     trust = run([journalctl, "-b", "--no-pager", "-o", "short-monotonic", "-u", CHAIN_UNITS[0]])

@@ -61,6 +61,39 @@ defmodule Audi.Config do
     end
   end
 
+  # @cc [owner:ghuntley,label:security] audi-private-issuer-configuration
+  # The restricted issuer role MUST accept only its canonical Unix socket and
+  # service-owned issuer credentials. It MUST reject TCP endpoints, unknown
+  # fields, missing credentials and paths that escape the runtime boundary.
+  defp decode(
+         %{
+           "version" => 1,
+           "role" => "private-issuer",
+           "socket" => socket,
+           "python" => python,
+           "issuer_key" => key,
+           "issuer_certificate" => certificate
+         } = value
+       ) do
+    with true <- map_size(value) == 6,
+         true <-
+           canonical_path?(socket) and String.starts_with?(socket, "/run/audi-private-issuer/"),
+         true <- canonical_path?(python),
+         {:ok, _} <- read(key, :secret, 65_536),
+         :ok <- certificate(certificate) do
+      {:ok,
+       [
+         role: :private_issuer,
+         socket: socket,
+         python: python,
+         issuer_key: key,
+         issuer_certificate: certificate
+       ]}
+    else
+      _ -> {:error, :invalid_runtime_configuration}
+    end
+  end
+
   defp decode(
          %{
            "version" => 1,

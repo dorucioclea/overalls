@@ -1,5 +1,7 @@
 # Architecture reviews
 
+- [Inception development checkout (2026-10-22)](2026-10-22-inception-development-checkout.md): ADR-0256 guest-owned canonical Git checkout, corrected offline image source hierarchy, re-enabled CI and focused evidence; native GitHub egress remains an explicit gap.
+
 - [Mila native Apple custody](2026-10-21-mila-apple-custody.md): deployment-scoped Secure Enclave adapter; signed hardware evidence remains open.
 
 - [Mila native Rust session (2026-10-21)](2026-10-21-mila-native-session.md): actual certificate-pinned SSH machine pagination and atomic refresh, with local scripted-server and Hegel evidence; native adapters and real Porsche journeys remain open.

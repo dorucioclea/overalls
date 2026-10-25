@@ -4,6 +4,11 @@ let
   runtime = "/run/credentials/ziggy.service/runtime.json";
   cfg = {
     package = packages.ziggy;
+    # The shared Ziggy unit accepts an optional release-independent
+    # configuration file. Inception uses the immutable runtime descriptor
+    # directly, so keep this explicitly null rather than relying on a module
+    # option that is not present in this local service record.
+    configurationFile = null;
     cpuCores = 2;
     memoryMiB = 1024;
     caFile = "/run/inception-public/ca.crt";

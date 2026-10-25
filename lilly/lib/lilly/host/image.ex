@@ -44,6 +44,26 @@ defmodule Lilly.Host.Image do
   @spec load(Path.t()) :: {:ok, t()} | {:error, :invalid_local_image}
   def load(path), do: inspect_image(path, :hash)
 
+  @doc "Validate an immutable Nix store image without rereading its large artifacts."
+  # @cc [owner:ghuntley,label:security;capacity] immutable-store-image-authority
+  # load_immutable/1 MUST accept only a structurally valid image whose complete
+  # file set resolves beneath root-owned, read-only `/nix/store` output paths.
+  # Nix image outputs commonly link their manifest, kernel, initrd and root
+  # artifact to separate store outputs; each resolved output is independently
+  # deployment-authoritative. Arbitrary paths, writable files and changed
+  # identities MUST fall back to the digest-verified load/1 path and MUST NOT
+  # be marked verified.
+  @spec load_immutable(Path.t()) :: {:ok, t()} | {:error, :invalid_local_image}
+  def load_immutable(path) do
+    with {:ok, staged} <- stage(path),
+         true <- immutable_store_files?(staged),
+         true <- unchanged?(staged) do
+      {:ok, %{staged | verified: true}}
+    else
+      _ -> {:error, :invalid_local_image}
+    end
+  end
+
   # @cc [owner:ghuntley,label:security;recovery] image-digest-cache-exact-identity
   # load_cached/2 MUST return a verified image without rehashing only when the
   # private cache records this exact path and manifest ID with native file
@@ -251,6 +271,23 @@ defmodule Lilly.Host.Image do
       |> Enum.map(& &1.id)
       |> Enum.sort()
 
+  defp immutable_store_files?(%__MODULE__{files: files}) do
+    files != %{} and
+      files
+      |> Map.values()
+      |> Enum.all?(fn {path, stat} ->
+        with ["/", "nix", "store", output | _] <- Path.split(path),
+             true <- Regex.match?(~r/^[a-z0-9]{32}-/, output),
+             true <- stat.uid == 0,
+             true <- stat.links == 1,
+             true <- band(stat.mode, 0o222) == 0 do
+          true
+        else
+          _ -> false
+        end
+      end)
+  end
+
   @doc "Image-side file name of the root disk artifact (`rootfs.ext4` or `disk.raw`)."
   @spec root_artifact(t()) :: String.t()
   def root_artifact(%__MODULE__{manifest: manifest}), do: ImageManifest.root_artifact(manifest)
@@ -310,9 +347,14 @@ defmodule Lilly.Host.Image do
 
   defp safe_ancestors("/"), do: :ok
 
+  # A root-run Lilly may still delegate its durable template files to the
+  # configured service uid. That uid is the same trusted deployment identity
+  # accepted by Host.Privilege; accepting it for directory ancestry keeps the
+  # root-run and unprivileged service paths equivalent without trusting any VM
+  # or arbitrary uid.
   defp safe_ancestors(path) do
     with {:ok, %File.Stat{type: :directory, mode: mode, uid: owner}} <- File.lstat(path),
-         true <- owner in [0, uid()],
+         true <- owner in [0, uid(), Lilly.Host.Privilege.service_uid()],
          true <- band(mode, 0o022) == 0 or band(mode, 0o1000) != 0,
          do: safe_ancestors(Path.dirname(path))
   end

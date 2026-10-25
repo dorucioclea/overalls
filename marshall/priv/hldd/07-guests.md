@@ -483,7 +483,9 @@ checkout is shared with managed guest accounts (directories and executable
 files mode `0777`, regular files `0666`); restart repairs those modes without
 following symlinks, while special bits and foreign ownership refuse startup.
 Public DNS uses the guest's recursive resolvers and the more-specific Audi
-route remains reserved for `.internal` names.
+route remains reserved for `.internal` names. The control certificate's
+DNS-01 hook waits for the exact parent observation; it does not ask the
+child-only resolver to validate the parent-owned control record.
 The namespace-dependent gateway transaction waits for a bounded TLS probe of
 both inner Marshall listeners (4443 and 5443) against the instance CA before
 Audi or Porsche can publish host certificates. A running BEAM process alone is

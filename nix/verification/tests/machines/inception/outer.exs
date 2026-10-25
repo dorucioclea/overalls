@@ -5,6 +5,9 @@
 defmodule InceptionOuterFixture do
   alias Marshall.Compute.{Enrollment, EnrollmentPreparation, Images, Ledger, Operation, VirtualMachine}
   @root "/run/inception-outer"
+  # Capacity admission waits for Lilly's fresh host report after enrollment;
+  # keep this bounded but longer than one reporting interval plus cold startup.
+  @provision_retry_ms 900_000
 
   def run do
     Application.put_env(:marshall, :operator_mode, true)
@@ -61,7 +64,7 @@ defmodule InceptionOuterFixture do
         request = %{name: "native-inception-#{instance()}", idempotency_key: "native-inception-#{instance()}", architecture: :x86_64,
           profile: :inception, image_id: image, vcpu: 16,
           memory_bytes: 32 * 1024 ** 3, disk_bytes: 64 * 1024 ** 3}
-        {:ok, vm} = provision_retry(request, actor, System.monotonic_time(:millisecond) + 180_000)
+        {:ok, vm} = provision_retry(request, actor, System.monotonic_time(:millisecond) + @provision_retry_ms)
         write_instance("vm.json", %{user_id: actor.id, vm_id: vm.id})
         [operation] = Ledger.read!(Operation, vm_id: vm.id, generation: vm.generation)
         write_instance("command.json", operation.command_snapshot)

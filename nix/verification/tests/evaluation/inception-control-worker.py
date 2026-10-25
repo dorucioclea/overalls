@@ -133,7 +133,8 @@ class WorkerTest(unittest.TestCase):
             )
         self.assertEqual(args[0], "/immutable/lego")
         self.assertEqual(args[args.index("--domains") + 1], self.config["origins"]["control"])
-        self.assertEqual(args[args.index("--dns.resolvers") + 1], "127.0.0.1:53")
+        self.assertNotIn("--dns.resolvers", args)
+        self.assertEqual(args[args.index("--dns.propagation-wait") + 1], "1s")
         self.assertEqual(env["EXEC_PATH"], "/immutable/hook")
         self.assertEqual(env["LEGO_DISABLE_CNAME_SUPPORT"], "true")
         self.assertEqual(

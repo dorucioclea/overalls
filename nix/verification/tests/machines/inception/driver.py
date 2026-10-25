@@ -144,7 +144,9 @@ with subtest("an ordinary user creates Inception through real outer Marshall and
     bounded_succeed(
         "inception-probe outer-request",
         "systemctl start inception-outer@enroll.service",
-        timeout=600,
+        # Outer admission may need to wait for a fresh post-enrollment Lilly
+        # capacity sample; keep the driver deadline beyond that bounded retry.
+        timeout=1200,
     )
     outer.succeed("systemctl start inception-outer@enroll-dns.service")
     for machine, address in [(ns1, "11.0.0.3"), (ns2, "11.0.0.4")]:

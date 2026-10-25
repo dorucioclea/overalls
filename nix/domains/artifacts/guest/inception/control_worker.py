@@ -49,7 +49,9 @@ def invocation(
     consent, independent persistent account state and a fixed image-owned hook.
     No ambient proxy, provider credential or parent credential may be inherited.
     The hook's bound parent observation MUST establish propagation; direct DNS
-    propagation and CNAME lookups MUST NOT bypass that observation.
+    propagation and CNAME lookups MUST NOT bypass that observation. The child
+    resolver MUST NOT be passed to lego because it is authoritative only for the
+    child application zone, while the control owner is projected by the parent.
     """
     public = config["public"]
     if public["accept_terms"] is not True:
@@ -67,8 +69,10 @@ def invocation(
         config["origins"]["control"],
         "--dns",
         "exec",
-        "--dns.resolvers",
-        "127.0.0.1:53",
+        # The exec hook waits for the parent observation.  Passing the inner
+        # Audi resolver here makes lego resolve the parent-owned control name
+        # against a child-only authority and can reject an otherwise valid
+        # challenge before the ACME server checks the projected TXT record.
         "--dns.propagation-wait",
         "1s",
         "run",

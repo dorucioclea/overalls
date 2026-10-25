@@ -312,6 +312,7 @@ buildPkgs.lib.genAttrs [ "marshall-release" "lilly-release" "audi-release" "pors
   inception-ssh-host-ca = import ./machines/inception-ssh-host-ca { pkgs = testPkgs; };
   inception-image-builder = import ./evaluation/inception-image-builder.nix { pkgs = buildPkgs; inherit packages; };
   inception-probe = import ./evaluation/inception-probe.nix { pkgs = testPkgs; };
+  inception-systemd = import ./evaluation/inception-systemd.nix { pkgs = testPkgs; };
   inception-proof-broker = buildPkgs.runCommand "inception-proof-broker-check" { nativeBuildInputs = [ buildPkgs.python3 ]; } ''
     export PYTHONDONTWRITEBYTECODE=1
     python3 -W error ${./evaluation/inception-proof-broker.py} ${../../domains/artifacts/guest/inception} ${packages.audi}/bin/audi

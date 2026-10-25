@@ -1,5 +1,5 @@
 ---
-digest: c3725ea5c1d5dae1a02311de839f28fe061418c6265d533cf27f9fd8de09c703
+digest: 7ae19b50cf45b3c14133dce10b3539f089564fa61accbdc3024126baed9351dc
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Reviewed the merged guest and coverage chapters, including the Inception checkout evidence and retained guest promotion behavior.
+Parent-owned DNS proof and cycle-free namespace startup now have focused evaluation and native retry evidence.

@@ -307,6 +307,8 @@ in
   # Marshall MUST wait for parent namespace files without exhausting startup
   # retries. Namespace reception MUST remain independent of Marshall readiness
   # and certificate issuance, so parent polling can complete initial bootstrap.
+  # The waiter is wanted by the ingress listener and ordered after it; it MUST
+  # not require ingress back, or systemd would create a dependency cycle.
   systemd.services.inception-namespace =
     (oneshot [ "inception-ingress.service" ] ''
       while [ ! -s /run/inception/public-host ] || [ ! -s /run/inception/namespace.env ]; do
@@ -318,6 +320,10 @@ in
       # namespace without waiting on this service; once the authenticated
       # exchange installs namespace.env, the waiter releases post-ready.
       wantedBy = lib.mkForce [ "inception-ingress.service" ];
+      # `wantedBy` makes ingress pull this waiter in.  Requiring ingress here
+      # would create the reverse edge and leave both units in a dependency
+      # cycle before the listener can accept the parent exchange.
+      requires = lib.mkForce [];
       serviceConfig = {
         Type = "oneshot"; RemainAfterExit = true; UMask = "0077";
         TimeoutStartSec = "infinity";

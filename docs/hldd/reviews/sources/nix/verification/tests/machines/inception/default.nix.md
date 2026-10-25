@@ -1,11 +1,11 @@
 ---
-digest: 76d3a991e4e22d9296a5454c776c643a778e1d2d4b2f83c346d0f12a060385c0
-disposition: updated
+digest: d5e213b7f77761ec49a0325f975a763180f309e652d84ebbde8d4ffe1f71dcb7
+disposition: no-impact
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
 path: nix/verification/tests/machines/inception/default.nix
 reviewed_chapters:
-  marshall/priv/hldd/07-guests.md: fe23df6e2b0f70cf7246c21244e4916a0835f56c0841531f249b06ec70a5c032
+  marshall/priv/hldd/07-guests.md: 253b9d9a78a7c9edacb11c37991ab70c9247a4a5baf9d216e0f0475fb0b4691e
   marshall/priv/hldd/12-configuration.md: 5318d494cf8479636aa2e2c3c61cb5505cb4cb8386e39b935cf62c62b997169f
   marshall/priv/hldd/13-deployment.md: 0bc4fe19bb9cdf60d5edc24c3777c7f54b170426d9ae5d1f611a2240053c3350
   marshall/priv/hldd/14-operations.md: 68c72d0e6fde22edd5d892f824dedd44f1843d68ece6c96ff5b3e2c1e50051c9
@@ -21,4 +21,4 @@ state: present
 version: 2
 ---
 
-Reviewed Inception guest bootstrap, native fixture egress, source checkout assertions and associated deployment evidence; refreshed only the task paths.
+The nested fixture capacity increase only supplies resources for concurrent test guests and preserves the documented deployment behavior.

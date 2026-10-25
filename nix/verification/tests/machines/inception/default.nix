@@ -154,8 +154,12 @@ in
       # The isolated HTTPS GitHub fixture uses a test-only CA; deliver only
       # its public root to the nested guest trust bundle.
       guestTrustRoots = [ "${sourceFixtureTls}/ca.pem" ];
-      guestCpuCores = lib.mkForce 32;
-      guestMemoryMiB = lib.mkForce 69632;
+      # The lifecycle scenario runs two 16-vCPU/32-GiB Inception children at
+      # once.  Marshall reserves one host core and 1 GiB for host services,
+      # so the aggregate guest slice must exceed 32 cores and 64 GiB or the
+      # second placement remains deferred as execution_unavailable.
+      guestCpuCores = lib.mkForce 48;
+      guestMemoryMiB = lib.mkForce 98304;
       images = [ { path = "${packages.inceptionGuest}"; } ];
       inceptionImageId = builtins.readFile imageId;
       inceptionSMTPFile = "/run/inception-test/smtp.json";

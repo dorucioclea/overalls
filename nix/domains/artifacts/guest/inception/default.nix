@@ -313,7 +313,11 @@ in
         ${pkgs.coreutils}/bin/sleep 1
       done
     '') // {
-      wantedBy = lib.mkForce [];
+      # Start the waiter with the long-running ingress listener. It remains
+      # outside multi-user.target, so readiness can publish the parent
+      # namespace without waiting on this service; once the authenticated
+      # exchange installs namespace.env, the waiter releases post-ready.
+      wantedBy = lib.mkForce [ "inception-ingress.service" ];
       serviceConfig = {
         Type = "oneshot"; RemainAfterExit = true; UMask = "0077";
         TimeoutStartSec = "infinity";

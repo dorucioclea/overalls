@@ -18,8 +18,10 @@ is a template for a separate writable VM disk. See ADR-0011 and ADR-0016.
 
 @cc [owner:ghuntley,label:build;protocol] guest-git-identity-capability
 Linux and Windows image builders MUST declare git_identity_version 1 only when
-the current Git identity writer, system configuration include and enabled workspace
-service are installed in the image. Images without that service MUST omit the
+the current Git identity writer, system configuration include and an enabled
+workspace identity writer are installed in the image. The writer MAY be the
+generic workspace receiver or a profile-owned writer such as Inception's
+guest-owned bootstrap; images without an enabled writer MUST omit the
 capability. Existing immutable native artifacts MUST NOT acquire it without a
 separately rebuilt, reviewed and admitted exact image. New native candidates MAY
 explicitly declare version 1 only with source-v2, the current attribution writer

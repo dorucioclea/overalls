@@ -11,6 +11,10 @@ pkgs.runCommand "inception-image-builder-check" {
   set -eu
   # The runtime cache must retain the recipe for the offline rebuild.
   test -f ${packages.imageBuilder.cache}/recipe.nix
+  # The offline rebuild must preserve Inception's console-gated bootstrap;
+  # otherwise a generic private guest reintroduces the SSH/Audi/namespace
+  # readiness cycle before the child can receive its namespace.
+  grep -q 'LILLY_SSH_UNIT=' ${packages.imageBuilder.recipe}
   test -e ${packages.imageBuilder.cache}/pinned-guest-source
   test -e ${packages.imageBuilder.cache}/pinned-nixpkgs-source
   test -e ${packages.imageBuilder.cache}/pinned-linux-cli

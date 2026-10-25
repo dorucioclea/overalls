@@ -217,9 +217,15 @@ class ReadinessTest(unittest.TestCase):
     def test_nonhost_peer_does_not_probe_or_receive(self) -> None:
         for peer in (0, 1, 3, 99):
             server, client = socket.socketpair()
-            with server, client, patch.object(readiness, "ready") as probe:
+            with (
+                server,
+                client,
+                patch.object(readiness, "ready") as probe,
+                patch.object(readiness, "record_failure") as failure,
+            ):
                 readiness.answer(server, (peer, 1234), self.boot, BOOT_ID, probe)
                 probe.assert_not_called()
+                failure.assert_called_once_with("peer_rejected")
                 server.shutdown(socket.SHUT_WR)
                 self.assertEqual(client.recv(1), b"")
 

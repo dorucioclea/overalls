@@ -241,6 +241,7 @@ class ControlTLSTest(unittest.TestCase):
             "haproxy": HAPROXY,
             "caFile": str(self.roots),
             "destination": str(control.CERTIFICATES),
+            "peerCertificates": [],
             "proxyConfig": str(proxy),
         }
         module = control.validator(VALIDATOR)

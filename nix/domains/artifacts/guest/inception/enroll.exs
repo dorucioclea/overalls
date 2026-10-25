@@ -8,10 +8,14 @@ Application.put_env(:marshall, :operator_mode, true)
 state = "/var/lib/inception"
 config = System.fetch_env!("INCEPTION_CONFIG") |> File.read!() |> JSON.decode!()
 identity = Path.join(state, "identity.json") |> File.read!() |> JSON.decode!()
-# The nested guest image is rebuilt by inception-image.service with this
-# instance's public private-service root; enrollment never registers an
-# image without instance trust.
-guest_image = Path.join(state, "guest-image")
+# inception-image.service supplies the registered seed image. Its public
+# manifest is registered once; Lilly delivers this instance's public
+# private-service root through the authenticated trust receiver on every
+# child boot, so enrollment never authorizes a child without instance trust.
+guest_image_link = Path.join(state, "guest-image")
+{:ok, guest_image_target} = File.read_link(guest_image_link)
+guest_image = Path.expand(guest_image_target, Path.dirname(guest_image_link))
+true = String.starts_with?(guest_image, "/nix/store/")
 manifest = Path.join(guest_image, "manifest.json") |> File.read!() |> JSON.decode!()
 {:ok, _} = Marshall.Compute.Images.register(manifest, "NixOS")
 credential = Path.join(state, "lilly-credential.json")
@@ -45,22 +49,36 @@ tools = Path.join(config["lilly_release"], "overalls-release.json") |> File.read
 true = audi_uid in 1..4_294_967_294
 
 lilly = %{
-  version: 3, host_id: host.host_id,
+  # Lilly's private runtime schema v4 binds execution to the guest's
+  # cgroup, host identity and boot trust receiver. Keep the enrolled config
+  # on the same schema as the outer fixture and production loader.
+  version: 4, host_id: host.host_id,
   control_plane: "https://localhost:5443",
   cacertfile: "/run/inception-public/ca.crt",
   credential_file: credential,
   state_dir: "/var/lib/lilly/control",
   cgroup_path: "/sys/fs/cgroup/lilly.slice",
-  images: [guest_image],
+  images: [%{"path" => guest_image}],
   ingress: %{path: "/run/lilly-ingress/audi.sock", audi_uid: audi_uid},
-  pools: Enum.map(host.pools, &Map.put(&1, :path, "/pool")),
+  # Enrollment descriptors include an operator-facing pool name. Lilly's
+  # closed runtime configuration deliberately rejects that extra key, so
+  # serialize only the descriptor fields accepted by Config.load/1.
+  pools:
+    Enum.map(host.pools, fn pool ->
+      pool |> Map.take([:id, :filesystem_id, :storage]) |> Map.put(:path, "/pool")
+    end),
   execution: Map.merge(Map.take(tools, ~w(firecracker jailer unshare)), %{
     "state_dir" => "/var/lib/lilly/vms",
     "network_state_dir" => "/var/lib/lilly/network",
     "egress_interface" => "eth0",
     "protected_cidrs" => [],
     "audi_ingress" => true,
-    "private_services" => true
+    "private_services" => true,
+    # The seed image carries only the public build-time bundle. Replace it for
+    # every child boot through Lilly's authenticated trust receiver so the
+    # instance's private issuer root never needs to be baked into a multi-GB
+    # ext4 rebuild.
+    "guest_trust_roots" => ["/run/inception-public/private-root.pem"]
   })
 }
 

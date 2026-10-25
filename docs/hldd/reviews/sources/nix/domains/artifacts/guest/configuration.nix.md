@@ -1,24 +1,24 @@
 ---
-digest: 4c1d81ee52258ca62304943c325c72702a5f6431f42f5ab080f1cae90ab2f149
-disposition: no-impact
+digest: d935a66b8f67810ec53dce0b8dab1a30386375c4995e8897881664cec36e33d5
+disposition: updated
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
 path: nix/domains/artifacts/guest/configuration.nix
 reviewed_chapters:
-  marshall/priv/hldd/07-guests.md: 0f73d65e0218aa15612a351af492879d87f78f6e864901c932124fc394334f4e
-  marshall/priv/hldd/12-configuration.md: ff8e45aaf3daef1140ae8d0ff46e7dff0c95781487abc5511a3202ef1dfd2f15
-  marshall/priv/hldd/13-deployment.md: 8889dad9eade0462be5799bd6ca3f4536fc421f17adcc5d226cefc5a1733fe3e
-  marshall/priv/hldd/14-operations.md: 4d9a416eb0df32a8281f24db06739142db91b637c4ea9416a9f23de49bf73010
-  marshall/priv/hldd/15-monitoring.md: cc17c4c6d32d94c24da6483a8164f374cad31c77d0a477850dc6684625a8cee5
-  marshall/priv/hldd/16-recovery.md: c11d719cde9562dea123b9fff7630f8750bbf758b4919880a15715b86263d3db
-  marshall/priv/hldd/17-reference.md: 7cbeeb5bb6bbbbc170df005edbd41b0b9ea84cc90b0598b4e99b800aa95475b2
-  marshall/priv/hldd/18-options.md: e4159e629673fa07c1348e3c7fc1545c28cf8596e2d0d1313bd363c1ca545f52
-  marshall/priv/hldd/19-coverage.md: c5a1bad02070018de2d0bf83b14bdb9770b44bbd4034f30a38c9041d59979757
-  marshall/priv/hldd/20-security.md: 0854fe3e151c56e794a8069bd384bf68bb6d76cd7827abfeed6c3fa28e91c83b
-  marshall/priv/hldd/21-domains.md: 587584208f1a71100280b9e438b46416b8b56f0f0af2eda585006ad373ff22dc
-  marshall/priv/hldd/22-topology.md: 03993ebc3b0c89183aa3eafd972187e92b346d929a61f22250e9e1b6774e0b4e
+  marshall/priv/hldd/07-guests.md: fe23df6e2b0f70cf7246c21244e4916a0835f56c0841531f249b06ec70a5c032
+  marshall/priv/hldd/12-configuration.md: 5318d494cf8479636aa2e2c3c61cb5505cb4cb8386e39b935cf62c62b997169f
+  marshall/priv/hldd/13-deployment.md: 0bc4fe19bb9cdf60d5edc24c3777c7f54b170426d9ae5d1f611a2240053c3350
+  marshall/priv/hldd/14-operations.md: 68c72d0e6fde22edd5d892f824dedd44f1843d68ece6c96ff5b3e2c1e50051c9
+  marshall/priv/hldd/15-monitoring.md: db740282f22afc4c76be24d9db3f9ef4f10bf2745089a754647c6cf7e8fdfeef
+  marshall/priv/hldd/16-recovery.md: 194fe77196ac4a25ab764d5cf4aee7558da547cd7b59726f32a302019b26136c
+  marshall/priv/hldd/17-reference.md: 7d88fca8dbe56f67c71ea207b0ed860f4cfc005f7cb9f6ccde4ffe4bc718cda5
+  marshall/priv/hldd/18-options.md: 56d6ff5dfa49ede786cba440d57100c75b721b23b1e0616e79d3df8205e5ac11
+  marshall/priv/hldd/19-coverage.md: 9a6c6e497149225fa418d0ec0b2fa9bb578557f066fbd6a194e728073bca669b
+  marshall/priv/hldd/20-security.md: cf1337ba6e78c460d2d00a269abbe3ad011151401179263eb51ab2d90bb4948f
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-Guest Nix feature settings extend existing image configuration without changing service topology
+Reviewed Inception guest bootstrap, native fixture egress, source checkout assertions and associated deployment evidence; refreshed only the task paths.

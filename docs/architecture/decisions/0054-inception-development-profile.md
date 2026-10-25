@@ -39,12 +39,16 @@ The immutable profile determines the additional drive; peers cannot select
 drive names, paths or data-disk size. The shared disk-layout helper supplies
 the exact logical total for reservations and the host's persistent drive list.
 
-The reproducible Nix image contains the development source and pinned tools,
+The reproducible Nix image contains pinned tools,
 PostgreSQL, Marshall, Lilly and an ordinary inner guest image. Per-instance
 bootstrap creates unique database passwords, application secrets, local TLS
 identities and Lilly enrollment credentials. Bootstrap retries and restarts
 preserve identities, database contents, source edits and both disks. Never format
 unexpected existing storage or replace developer edits during automatic startup.
+The source-delivery portion of this decision is amended by
+[ADR-0256](0256-inception-development-checkout.md): first boot clones the
+canonical Overalls repository into the durable workspace instead of bundling a
+source snapshot in the image.
 
 Only SMTP credentials are shared between instances. Deliver an operator-managed
 Inception SMTP bundle at runtime over a private placement-bound channel, never
@@ -135,7 +139,8 @@ passed the real probe and rejected tampered receipt fields. This is single-host
 AMD evidence, not Intel or fleet-wide qualification.
 
 The [Inception image](../../../nix/domains/artifacts/guest/inception/default.nix) builds
-successfully with PostgreSQL, source, tools and both application releases.
+successfully with PostgreSQL, tools and both application releases; ADR-0256
+records the first-boot source checkout.
 [Bootstrap preparation](../../../nix/domains/artifacts/guest/inception/prepare.py) and
 [runtime identity tests](../../../nix/verification/tests/evaluation/inception-runtime.py)
 cover independent credentials and preserved workspace edits. The

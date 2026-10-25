@@ -2,11 +2,16 @@
 let
   inherit (pkgs) lib;
   source = lib.fileset.toSource {
-    root = ../.;
+    # Keep the source tree rooted at the Nix checkout.  The guest constructor
+    # imports sibling system modules through the `nix/domains/...` hierarchy;
+    # flattening `guest/` to the fileset root makes those imports resolve to
+    # `/nix/system/...` in the generated offline recipe.
+    root = ../../../..;
     fileset = lib.fileset.unions [
-      ../default.nix ../configuration.nix ../private-services.nix ../coding-clis.nix
-      ../network.py ../readiness.py ../flush.py ../boot_report.py ../terminald.nix
-      ../kernel.nix ../verify-kernel.py ../ubuntu/normalize_nix_db.py ../CONTRACTS
+      ../.
+      ../../../system/nix-cache.nix
+      ../../../system/public-trust.nix
+      ../../../../platform/nix-cache.nix
     ];
   };
   # @cc [owner:ghuntley,label:security;build] inception-nested-image-public-input
@@ -31,7 +36,7 @@ let
     in
     assert pkgs.lib.assertMsg (hasCertificate && !hasPrivateKey)
       "Nested guest trust requires public certificates only";
-    import ${source} {
+    import ${source}/domains/artifacts/guest {
       inherit pkgs;
       terminald = ${terminald};
       lyraLinux = ${lyraLinux};
@@ -39,6 +44,15 @@ let
         path = builtins.toPath rootCertificate;
         name = "inception-private-root.pem";
       }) ];
+      # The rebuilt child is still the Inception console-gated seed. Keep its
+      # SSH roster service enabled and retrying, but let boot readiness precede
+      # namespace publication so roster authority can become available later.
+      extraModules = [
+        ({ lib, ... }: {
+          systemd.services.lilly-readiness.serviceConfig.Environment =
+            lib.mkForce "LILLY_SSH_UNIT=";
+        })
+      ];
     }
   '';
   recipe = pkgs.writeText "inception-nested-image.nix" expression;
@@ -48,9 +62,24 @@ let
   # contexts. The exported recipe intentionally contains literal store paths for
   # the guest's offline evaluator; importing that generated text here would turn
   # those paths back into unrestricted builtins.storePath lookups.
-  seed = import source {
+  # Construct the seed from the checked-out guest constructor directly.  The
+  # exported recipe above is the runtime source tree; evaluating the local
+  # constructor here retains derivation contexts under pure flake evaluation
+  # without attempting to coerce a subdirectory of the fileset output into an
+  # unrestricted store-path lookup.
+  seed = import ../default.nix {
     inherit pkgs terminald lyraLinux;
     privateServiceRoots = [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+    # This seed is used only for Inception's console-gated child bootstrap.
+    # Keep roster SSH enabled and retrying, but do not make initial boot
+    # readiness wait for the inner Audi namespace that is published only after
+    # readiness. Ordinary guest images retain the SSH readiness gate.
+    extraModules = [
+      ({ lib, ... }: {
+        systemd.services.lilly-readiness.serviceConfig.Environment =
+          lib.mkForce "LILLY_SSH_UNIT=";
+      })
+    ];
   };
   # @cc [owner:ghuntley,label:build] inception-nested-image-offline-closure
   # The cache MUST retain the seed derivation's recursive build closure, the
@@ -65,7 +94,10 @@ let
     rootPaths = [ seed.drvPath recipe source pkgs.path lyraLinux ];
   };
 in {
-  inherit recipe closure;
+  # The seed is a complete private-services guest whose trust is replaced by
+  # Lilly's boot-bound delivery. Inception can use it directly when rebuilding
+  # an ext4 image would exceed the nested host's bounded startup window.
+  inherit recipe closure seed;
   # @cc [owner:ghuntley,label:build] inception-nested-image-runtime-cache
   # The cache output MUST retain the recipe and every closure store path in a
   # single runtime reference, so baking it into an environment keeps the whole

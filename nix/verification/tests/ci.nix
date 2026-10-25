@@ -5,14 +5,6 @@ let
   # matrices by evaluation rather than a hand-maintained list. A check is
   # excluded from CI only by name here, never by omission from the catalog.
   excluded = [
-    # Inception guest workloads are outside CI; the guest-inception package
-    # does not currently evaluate.
-    "inception"
-    "inception-runtime"
-    "inception-ssh-host-ca"
-    "inception-image-builder"
-    "inception-probe"
-    "inception-proof-broker"
   ];
 
   # Checks that run NixOS machine tests without being one themselves.

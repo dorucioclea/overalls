@@ -1,17 +1,17 @@
 ---
-digest: 9026944d36c82e7753264bd205caa23e74389fef7d9121d15d20d4f5f01d60cf
-disposition: no-impact
+digest: 6c5e115010686dced8f78e098dc741e02124fb55573e9afb38118de7393721f3
+disposition: updated
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
 path: docs/architecture/README.md
 reviewed_chapters:
   marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
-  marshall/priv/hldd/19-coverage.md: 3013a16fd909d453f4c177ed004f5cbc0c52beab7ba86c0c2ab9a6b66cc838f8
-  marshall/priv/hldd/20-security.md: 6f505682683ace1b4b948ed6df21f924df87fd5a71793a725906722e7601a211
+  marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
+  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
   marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-ADR-0190 evidence, ADR index, overview, guest matrix and review record the a96f291b promotion; no decision change; handbook update is in 07-guests
+Reviewed the merged architecture indexes and Inception ADR/review references against the current handbook chapters.

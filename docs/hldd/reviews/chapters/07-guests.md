@@ -1,5 +1,5 @@
 ---
-digest: 35ad495b84f5dc5054c38e2b6f6d3bcab92f813eae44198773dea8777dd99ad8
+digest: c3725ea5c1d5dae1a02311de839f28fe061418c6265d533cf27f9fd8de09c703
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Guests chapter now records retained promotions for FreeBSD 5022d714, FreeBSD db752667 and OmniOS 45983bb7: exact original promoted outputs pinned by recursive NAR hash, refusing on cache miss, not re-verified against later registry revisions
+Reviewed the merged guest and coverage chapters, including the Inception checkout evidence and retained guest promotion behavior.

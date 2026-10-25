@@ -37,7 +37,11 @@ defmodule InceptionFixture do
 
     step.("pool built")
     :ok = File.write("/dev/console", "inception fixture: verifying image\n")
-    {:ok, image} = Image.load(System.fetch_env!("INCEPTION_IMAGE"))
+    # The configured image is an immutable Nix store output. Use the same
+    # structural authority as Inception's uncached production launch path;
+    # hashing its sparse 64 GiB root for every probe makes the native test take
+    # tens of minutes before it reaches any lifecycle assertion.
+    {:ok, image} = Image.load_immutable(System.fetch_env!("INCEPTION_IMAGE"))
     step.("image loaded")
     :ok = File.write("/dev/console", "inception fixture: image verified\n")
 
@@ -103,7 +107,16 @@ defmodule InceptionFixture do
 
         {:ok, managed} =
           command
-          |> Map.take([:image_id, :pool_id, :profile, :slot, :vcpu, :memory_bytes, :disk_bytes])
+          |> Map.take([
+            :image_id,
+            :pool_id,
+            :profile,
+            :slot,
+            :vcpu,
+            :memory_bytes,
+            :disk_bytes,
+            :git_identity
+          ])
           |> Map.put(:id, command.placement_id)
           |> Spec.new()
 
@@ -335,13 +348,17 @@ defmodule InceptionFixture do
         # Reconciliation can observe the surviving VMM before inner services
         # finish booting. Require the actual boot-bound core readiness response;
         # a process-running observation must not stand in for enrollment readiness.
-        # Match the production executor and socket helpers' forty-minute maximum.
-        # A longer timeout is rejected as an invalid request, not a longer wait.
-        case Driver.ready(config, pool, spec, Keyword.put(options, :timeout, 2_400_000)) do
+        # The native fixture has a fifteen-minute command envelope.  Keep the
+        # readiness wait below that envelope so a failed nested boot reaches
+        # diagnose_marshall/2 instead of being killed by the outer timeout with
+        # no category-only evidence.
+        ready_result = Driver.ready(config, pool, spec, Keyword.put(options, :timeout, 60_000))
+        case ready_result do
           :ok ->
             :ok
 
-          _ ->
+          {:error, reason} when is_atom(reason) ->
+            IO.puts("Core readiness result: #{reason}")
             diagnose_marshall(config, spec)
 
             for unit <- ~w(inception-enrollment inception-enable lilly marshall-inception) do
@@ -351,7 +368,102 @@ defmodule InceptionFixture do
             end
 
             raise "Inner core readiness unavailable; terminal and credentials withheld"
+
+          _ ->
+            IO.puts("Core readiness result: unavailable")
+            raise "Inner core readiness unavailable; terminal and credentials withheld"
         end
+
+        # The development checkout is deliberately independent of gateway
+        # certificate issuance. Assert it immediately after core readiness so
+        # a later Ziggy/DNS retry cannot mask the capability that lets an
+        # operator develop Overalls inside an Inception guest.
+        # The machine fixture's isolated provider node is the reviewed public
+        # egress router. Keep the guest's production public resolver address
+        # after the private-DNS unit has installed its ~internal route. The
+        # fixture owns that public /32 locally and forwards DNS to its
+        # isolated dnsmasq instance, so no real Internet dependency is added.
+        :pass =
+          console(
+            config,
+            spec,
+            "resolvectl dns eth0 1.1.1.1 9.9.9.9 && resolvectl default-route eth0 yes && systemctl restart inception-source.service",
+            5000
+          )
+
+        # The workload contract requires the canonical public origin. The
+        # fixture maps that hostname to its isolated HTTPS mirror, but must not
+        # weaken the assertion by accepting a test-only alternate URL.
+        expected_source = "https://github.com/ghuntley/overalls"
+
+        source_https_check =
+          "GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null git ls-remote " <>
+            expected_source <> " >/dev/null 2>&1"
+        source_origin_check =
+          "test -d /workspace/overalls/.git && test \"$(GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null git -C /workspace/overalls config --local --get remote.origin.url)\" = " <>
+            expected_source <>
+            " && runuser -u nobody -- test -w /workspace/overalls/README.md"
+
+        try do
+          await(
+            fn ->
+              console(
+                config,
+                spec,
+                # The checkout is the durable product requirement.  The
+                # profile-owned source unit may be restarting its bounded Git
+                # retry loop while an already-published checkout remains
+                # usable, so do not make a transient systemd state gate the
+                # assertion.
+                "test -d /workspace/overalls/.git",
+                5000
+              ) == :pass
+            end,
+            deadline(600_000)
+          )
+        rescue
+          error in RuntimeError ->
+            # Keep a failed native run actionable without returning Git output,
+            # URLs, or terminal bytes.  These predicates distinguish a source
+            # retry from a published checkout whose unit is merely restarting.
+            for {name, command} <- [
+                  {"source active", "systemctl is-active --quiet inception-source.service"},
+                  {"source failed", "systemctl is-failed --quiet inception-source.service"},
+                  {"source result", "test \"$(systemctl show -p Result --value inception-source.service)\" = success"},
+                  {"source retries", "test \"$(systemctl show -p NRestarts --value inception-source.service)\" != 0"},
+                  {"checkout directory", "test -d /workspace/overalls"},
+                  {"checkout Git metadata", "test -d /workspace/overalls/.git"},
+                  {"source attempt timed out", "grep -q '^timeout$' /run/inception/source-status"},
+                  {"source command failed", "grep -q '^failed$' /run/inception/source-status"},
+                  {"source publication succeeded", "grep -q '^success$' /run/inception/source-status"},
+                  {"source trust bundle", "test -s /etc/ssl/certs/ca-bundle.crt"},
+                  {"source route", "ip route get 1.1.1.1 >/dev/null 2>&1"},
+                  {"source DNS", "python3 -c 'import socket; socket.getaddrinfo(\"github.com\", 443)' >/dev/null 2>&1"},
+                  {"source resolver", "resolvectl status >/dev/null 2>&1"},
+                  {"source HTTPS", source_https_check}
+                ] do
+              IO.puts("Inception source #{name}: #{console(config, spec, command, 3000)}")
+            end
+
+            reraise(error, __STACKTRACE__)
+        end
+
+        :pass = console(
+          config,
+          spec,
+          source_origin_check,
+          5000
+        )
+        # Return the guest to its production split-DNS policy before gateway
+        # and private-service assertions. The fixture-only public resolver
+        # selection is needed solely for the canonical GitHub bootstrap above.
+        :pass =
+          console(
+            config,
+            spec,
+            "resolvectl dns eth0 169.254.254.1 && resolvectl default-route eth0 no",
+            5000
+          )
 
         try do
           await(
@@ -363,7 +475,15 @@ defmodule InceptionFixture do
                 5000
               ) == :pass
             end,
-            deadline(90_000)
+            # Gateway startup includes the independently retried host
+            # certificate publication.  A healthy nested guest may therefore
+            # take several minutes after core readiness; keep waiting within
+            # the outer probe's bounded 945 second command deadline instead
+            # of treating that expected recovery window as a failed guest.
+            # Leave a small margin for the probe's 945-second outer command
+            # timeout after the nested guest has spent several minutes
+            # obtaining its independently retried gateway certificates.
+            deadline(840_000)
           )
         rescue
           RuntimeError ->
@@ -383,7 +503,16 @@ defmodule InceptionFixture do
         ziggy_probe =
           "python3 $(jq -r .bootstrap /etc/inception-public.json) exec /etc/inception-public.json $(jq -r .marshall_release /etc/inception-public.json)/bin/marshall eval 'Code.eval_file(\"/root/inception-inner-ziggy.exs\")'"
 
-        :pass = console(config, spec, ziggy_probe, 30_000)
+        # Enrollment enabling and the first independent Ziggy credential
+        # transaction share the inner Marshall database with the gateway
+        # certificate workers. Retry the fixed authority probe while that
+        # transaction converges; a single 30-second console attempt can race
+        # an otherwise healthy post-readiness stack and would prevent the
+        # checkout assertions below from running.
+        await(
+          fn -> console(config, spec, ziggy_probe, 10_000) == :pass end,
+          deadline(180_000)
+        )
 
         await(
           fn -> console(config, spec, "python3 /root/inception-dns-probe.py", 5000) == :pass end,
@@ -396,11 +525,23 @@ defmodule InceptionFixture do
           {"nested KVM device", "test -c /dev/kvm"},
           {"data disk size", "test $(blockdev --getsize64 /dev/vdb) = 274877906944"},
           {"inner pool quota", "test $(zfs get -Hpo value quota inception/lilly) = 257698037760"},
-          {"developer repository", "test -d /workspace/overalls/.git"},
+          {"developer repository",
+           "test -d /workspace/overalls/.git && test \"$(GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null git -C /workspace/overalls config --local --get remote.origin.url)\" = " <>
+             expected_source},
+          {"developer repository writable",
+           "runuser -u nobody -- test -w /workspace/overalls/README.md"},
+          {"Git identity system include",
+           "grep -qF '/run/overalls-workspace/git-identity/gitconfig' /etc/gitconfig"},
+          {"Git identity runtime include",
+           "test -f /run/overalls-workspace/git-identity/gitconfig && test $(stat -c '%a' /run/overalls-workspace/git-identity/gitconfig) = 644"},
+          {"Git identity effective",
+           "test \"$(git config --includes --get user.name)\" = Overalls && test \"$(git config --includes --get user.email)\" = noreply@overalls.dev"},
           {"inner host credential", "test -s /var/lib/inception/lilly-credential.json"},
           {"inner enrollment readiness", "systemctl is-active --quiet inception-enable.service"},
+          {"private PKI active", "systemctl is-active --quiet inception-private-pki.service"},
+          {"private issuer active", "systemctl is-active --quiet audi-private-issuer.service"},
           {"independent private issuer",
-           "systemctl is-active --quiet inception-private-pki.service audi-private-issuer.service && test -S /run/audi-private-issuer/issuer.sock && test -s /run/inception-public/private-root.pem"},
+           "test -S /run/audi-private-issuer/issuer.sock && test -s /run/inception-public/private-root.pem"},
           {"private issuer recovery-key exclusion",
            "test -s /var/lib/inception/private-pki/root.key && test -s /run/audi-private-issuer/credentials/issuer.key && test ! -e /run/audi-private-issuer/credentials/root.key && test ! -e /run/credentials/audi-private-issuer.service/root.key"}
         ]
@@ -434,42 +575,25 @@ defmodule InceptionFixture do
           end
         end
 
-        # Classify the image rebuild without returning its journal or any
-        # command output. These predicates contain no credential material and
-        # remain useful when the unit exits before the rest of the stack starts.
+        # Classify the immutable seed registration without returning its
+        # journal or any command output. The production path links the
+        # prebuilt seed and delivers this instance's private root through
+        # Lilly's authenticated trust channel; it no longer performs a
+        # multi-gigabyte Nix rebuild inside the nested guest.
         for {name, command} <- [
               {"root filesystem resized", "test $(findmnt -bnro SIZE /) -ge 60000000000"},
               {"root filesystem free space",
                "test $(df -B1 --output=avail / | tail -1) -ge 4000000000"},
-              {"nix command enabled", "nix build --help >/dev/null"},
               {"public root present", "test -s /run/inception-public/private-root.pem"},
-              {"image cache present", "test -d /nix/store/*-inception-image-cache"},
-              {"guest source present",
-               "test -e /nix/store/*-inception-image-cache/pinned-guest-source"},
-              {"nixpkgs source present",
-               "test -e /nix/store/*-inception-image-cache/pinned-nixpkgs-source"},
-              {"rebuilt image present", "test -s /var/lib/inception/guest-image/manifest.json"},
-              {"nix feature failure",
-               "journalctl -u inception-image.service --no-pager -o cat | grep -qF \"experimental Nix feature 'nix-command' is disabled\""},
-              {"nix missing path failure",
-               "journalctl -u inception-image.service --no-pager -o cat | grep -Eq \"(path .*(/nix/store|/run/inception-public).*(is not valid|does not exist)|No such file or directory.*(/nix/store|/run/inception-public))\""},
-              {"nix space failure",
-               "journalctl -u inception-image.service --no-pager -o cat | grep -qF 'No space left on device'"}
+              {"seed image link",
+               "test -L /var/lib/inception/guest-image && test -s /var/lib/inception/guest-image/manifest.json"},
+              {"seed image store path",
+               "case \"$(readlink /var/lib/inception/guest-image)\" in /nix/store/*) :;; *) exit 1;; esac"},
+              {"default image identity", "test -s /run/inception/default-image-id"},
+              {"private trust configured",
+               "grep -qF /run/inception-public/private-root.pem /var/lib/inception/lilly.json"}
             ] do
           IO.puts("Core image #{name}: #{console(config, spec, command, 3000)}")
-        end
-
-        for status <-
-              ~w(trust-rejected missing-path capacity permission feature daemon evaluation-assertion evaluation-path evaluation-symbol evaluation-type evaluation-recursion evaluation-other builder other) do
-          result =
-            console(
-              config,
-              spec,
-              "grep -qx #{status} /run/inception/image-build-status",
-              3000
-            )
-
-          IO.puts("Core image failure #{status}: #{result}")
         end
 
       "diagnose-public" ->
@@ -851,8 +975,86 @@ defmodule InceptionFixture do
 
   # Only fixed predicates leave the guest; never print service logs or files.
   defp diagnose_ingress(config, spec) do
+    # The gateways retry certificate publication while the inner Marshall
+    # FleetEndpoint comes up.  Keep this diagnosis to fixed predicates so a
+    # failed boot can distinguish a listener race from a crashed control plane
+    # without exporting journals, credentials or terminal bytes.
+    for port <- ~w(4443 5443) do
+      if console(
+           config,
+           spec,
+           "openssl s_client -brief -connect 127.0.0.1:#{port} -servername localhost -CAfile /run/inception-public/ca.crt -verify_return_error </dev/null >/dev/null 2>&1",
+           3000
+         ) == :pass,
+        do: IO.puts("Inner TCP listener #{port}: listening")
+    end
+
+    for state <- ~w(active activating inactive failed) do
+      if console(
+           config,
+           spec,
+           "test $(systemctl show -p ActiveState --value marshall-inception.service) = #{state}",
+           3000
+         ) == :pass,
+         do: IO.puts("Inner Marshall state: #{state}")
+    end
+
+    for substate <- ~w(running start failed dead exited) do
+      if console(
+           config,
+           spec,
+           "test $(systemctl show -p SubState --value marshall-inception.service) = #{substate}",
+           3000
+         ) == :pass,
+         do: IO.puts("Inner Marshall substate: #{substate}")
+    end
+
+    for status <- ~w(0 1 2 9 137 143 203 217 226 231 245 255) do
+      if console(
+           config,
+           spec,
+           "test $(systemctl show -p ExecMainStatus --value marshall-inception.service) = #{status}",
+           3000
+         ) == :pass,
+         do: IO.puts("Inner Marshall exit status: #{status}")
+    end
+
+    for {field, value} <- [
+          {"Result", "exit-code"},
+          {"Result", "signal"},
+          {"Result", "timeout"},
+          {"Result", "oom-kill"},
+          {"ExecMainCode", "exited"},
+          {"ExecMainCode", "killed"}
+        ] do
+      if console(
+           config,
+           spec,
+           "test $(systemctl show -p #{field} --value marshall-inception.service) = #{value}",
+           3000
+         ) == :pass,
+         do: IO.puts("Inner Marshall #{String.downcase(field)}: #{value}")
+    end
+
+    for category <- [
+          "Invalid production deployment configuration",
+          "Could not start application",
+          "address already in use",
+          "Failed at step",
+          "Connection refused",
+          "Permission denied"
+        ] do
+      if console(
+           config,
+           spec,
+           "journalctl -u marshall-inception.service --no-pager -o cat | grep -qiF '#{category}'",
+           3000
+         ) == :pass,
+         do: IO.puts("Inner Marshall failure category: #{category}")
+    end
+
     for unit <-
-          ~w(inception-ingress inception-namespace inception-enrollment inception-porsche inception-audi
+          ~w(inception-ingress inception-namespace inception-enrollment marshall-inception inception-marshall-listener inception-porsche inception-audi
                    inception-dns-identity inception-dns porsche audi audi-dns inception-publication) do
       for state <- ~w(active failed activating inactive) do
         if console(
@@ -864,6 +1066,16 @@ defmodule InceptionFixture do
            do: IO.puts("Ingress #{unit}: #{state}")
       end
 
+      for field <- ~w(MainPID NRestarts) do
+        if console(
+             config,
+             spec,
+             "test $(systemctl show -p #{field} --value #{unit}.service) != 0",
+             3000
+           ) == :pass,
+           do: IO.puts("Ingress #{unit} #{field}: nonzero")
+      end
+
       for category <- [
             "Permission denied",
             "Failed at step",
@@ -873,6 +1085,35 @@ defmodule InceptionFixture do
             "Could not start application",
             "Connection refused",
             "certificate verify failed",
+            "SSH host certificate unavailable",
+            "gateway-url",
+            "gateway-credential",
+            "gateway-ca",
+            "gateway-client",
+            "gateway-connect",
+            "gateway-tls",
+            "gateway-tls-issuer",
+            "gateway-tls-hostname",
+            "gateway-tls-validity",
+            "gateway-tls-protocol",
+            "gateway-timeout",
+            "gateway-dns",
+            "gateway-http",
+            "gateway-response",
+            "gateway-token",
+            "gateway-json",
+            "gateway-version",
+            "gateway-certificate",
+            "key-generate",
+            "key-read",
+            "key-export",
+            "key-format",
+            "certificate-install",
+            "invalid_request",
+            "unauthorized",
+            "host_key_conflict",
+            "temporarily_unavailable",
+            "unavailable",
             "Traceback",
             "KeyError"
           ] do

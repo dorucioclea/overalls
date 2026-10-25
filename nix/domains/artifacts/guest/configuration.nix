@@ -70,7 +70,11 @@ in
   systemd.services.lilly-console-ready = {
     description = "Mark guest boot completion on the serial console";
     wantedBy = [ "multi-user.target" ];
-    after = [ "multi-user.target" ];
+    # This unit is pulled in by multi-user.target; ordering it after that
+    # target creates a dependency cycle and leaves the target perpetually
+    # activating. Readiness probes multi-user.target, so keep the completion
+    # marker after the guest readiness service instead.
+    after = [ "lilly-readiness.service" ];
     serviceConfig = {
       Type = "oneshot";
       StandardOutput = "tty";

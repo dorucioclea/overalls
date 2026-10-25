@@ -234,6 +234,28 @@ defmodule Marshall.Compute.InceptionTest do
     assert accepted.payload == publication
     assert accepted.expires_at == DateTime.add(before.offer_expires_at, -500, :millisecond)
 
+    # A second child poll may become ready after the parent replicas have
+    # answered the first proof. The refreshed offer must commit that final
+    # publication instead of leaving Marshall with the bootstrap payload.
+    final_publication = put_in(publication, ["records", Access.at(0), "ready"], true)
+    vm_id = vm.id
+    :ok = Marshall.Control.Hints.subscribe(:dns_snapshot, vm_id)
+
+    assert {:ok, final_offer} =
+             Lilly.Control.Client.exchange_inception(
+               client,
+               %{session_id: session, epoch: opened["epoch"]},
+               message,
+               %{"offer_id" => next["offer_id"], "publication" => final_publication}
+             )
+
+    final = Map.new(final_offer, fn {key, value} -> {Atom.to_string(key), value} end)
+    assert_receive {:control_hint, :dns_snapshot, ^vm_id}, 5_000
+
+    [accepted] = Ledger.read!(EnvironmentPublication, vm_id: vm.id)
+    assert accepted.payload == final_publication
+    assert DateTime.compare(accepted.expires_at, DateTime.utc_now()) == :gt
+
     # The public snapshot uses parent-owned addresses and admits bootstrap proofs
     # before the outer provision operation has completed.
     alias Marshall.Ingress
@@ -527,7 +549,7 @@ defmodule Marshall.Compute.InceptionTest do
              EnvironmentPublications.exchange(credential.token, %{
                message
                | result: %{
-                   offer_id: next["offer_id"],
+                   offer_id: final["offer_id"],
                    publication: Map.put(publication, "ttl_ms", 500)
                  }
              })
@@ -539,7 +561,7 @@ defmodule Marshall.Compute.InceptionTest do
     assert {:error, _} =
              EnvironmentPublications.exchange(
                credential.token,
-               %{message | result: %{result | offer_id: next["offer_id"]}}
+               %{message | result: %{result | offer_id: final["offer_id"]}}
              )
 
     assert {:error, _} =

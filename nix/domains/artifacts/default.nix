@@ -450,11 +450,30 @@ rec {
   illumosGuest = omniosGuest;
   ubuntuLock = import ./guest/ubuntu/lock-tool.nix { inherit pkgs; };
   imageBuilder = import ./guest/inception/image-builder.nix { inherit pkgs terminald lyraLinux; };
+  # @cc [owner:ghuntley,label:security;deployment] inception-boot-trust-receiver
+  # Every Inception image MUST include the boot-bound trust receiver, even for
+  # standalone builds whose caller supplies no private roots. Lilly replaces
+  # the image-time bundle with the current host CA before guest networking;
+  # omitting the receiver leaves a trust-enabled Inception workload unable to
+  # reach readiness.
   inceptionGuest = import ./guest {
     inherit pkgs;
-    inherit privateServiceRoots terminald lyraLinux codingClis;
+    # Inception workloads are development guests: advertise the Git identity
+    # capability required by profile admission while retaining the guest-owned
+    # first-boot checkout (it is not the generic workspace receiver).
+    # Inception always needs the boot-bound trust receiver: its nested host
+    # delivers the current control-plane CA before networking and readiness.
+    # Production callers provide their private roots; the standalone test
+    # package has none, so use the pinned public bundle as the image-time
+    # receiver input while Lilly still replaces it for each boot.
+    privateServiceRoots = if privateServiceRoots == []
+      then [ "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ]
+      else privateServiceRoots;
+    inherit terminald lyraLinux codingClis;
+    gitIdentityVersion = 1;
     imageName = "inception-nixos-x86_64";
     minimumMemoryBytes = 34359738368;
+    minimumDiskBytes = 68719476736;
     extraModules = [ (import ./guest/inception {
       packages = { inherit marshall lilly audi porsche ziggy guest smtprelay toolchain secretTools imageBuilder lyra; };
     }) ];

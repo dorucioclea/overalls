@@ -1015,11 +1015,13 @@ retained-record retries, before confirming success. Ownership/mount checks and
 delete fences remain intact; see the [cleanup review](reviews/2026-09-18-vm-directory-cleanup.md).
 
 [ADR-0054](decisions/0054-inception-development-profile.md) adds the Inception
-development profile at 10.40.0.0/16. Public admission, native nesting eligibility,
-two-disk accounting and the bootstrapped PostgreSQL/Marshall/Lilly guest are
-implemented. Basic native boot and restart passed; expanded acceptance is in
-progress. See the [development guide](../guests/inception.md) and
-[review](reviews/2026-09-18-inception-profile.md) for verification limits.
+development profile at 10.40.0.0/16. [ADR-0256](decisions/0256-inception-development-checkout.md)
+requires a first-boot checkout from `https://github.com/ghuntley/overalls`.
+The current resource baseline remains 16 vCPUs, 32 GiB RAM and a 64 GiB root.
+Public admission, native nesting eligibility, two-disk accounting and the bootstrapped
+PostgreSQL/Marshall/Lilly guest are implemented. Basic native boot and restart
+passed; expanded acceptance is in progress. See the [development guide](../guests/inception.md)
+and [review](reviews/2026-09-18-inception-profile.md) for verification limits.
 
 [ADR-0052](decisions/0050-usage-based-overcommit.md) accepts usage-based CPU, RAM
 and disk overcommit and reviewed live resource-budget updates. Fresh scoped

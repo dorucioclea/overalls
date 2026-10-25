@@ -4,6 +4,9 @@ let
   certificates = import ../../../system/ssh-host-certificate.nix {
     inherit pkgs packages;
     role = "audi";
+    # Keep localhost as the TLS authority while the helper pins its connection
+    # to IPv4 loopback. This matches the verified Python publication client:
+    # localhost SNI/HTTP semantics over a raw IPv4 socket.
     origin = "https://localhost:5443";
     caFile = "/run/inception-public/ca.crt";
     credentialFile = "/var/lib/inception/audi.token";
@@ -23,14 +26,21 @@ in
 
   systemd.services.inception-audi = {
     wantedBy = [ "multi-user.target" ];
-    requires = [ "inception-enrollment.service" "inception-namespace.service" ];
-    after = [ "inception-enrollment.service" "inception-namespace.service" ];
+    requires = [ "inception-enrollment.service" "inception-namespace.service" "marshall-inception.service" ];
+    after = [ "inception-enrollment.service" "inception-namespace.service" "marshall-inception.service" "inception-ssh-trust.service" ];
     script = ''
       export INCEPTION_CONFIG=${publicConfig}
       ${pkgs.python3}/bin/python3 ${./.}/roles.py ${../.}
       exec ${pkgs.python3}/bin/python3 ${./.}/prepare.py exec ${publicConfig} ${packages.marshall}/bin/marshall eval 'Code.eval_file("${./audi.exs}")'
     '';
-    serviceConfig = { Type = "oneshot"; RemainAfterExit = true; UMask = "0077"; };
+    serviceConfig = {
+      Type = "oneshot"; RemainAfterExit = true; UMask = "0077";
+      # The authority registration calls Marshall's Fleet API immediately
+      # after its process starts. Retry the bounded bootstrap when the API is
+      # still coming up; a failed first transaction must not strand the
+      # dependent gateway in an inactive state.
+      Restart = "on-failure"; RestartSec = 5; StartLimitIntervalSec = 0;
+    };
   };
 
   # @cc [owner:ghuntley,label:security;recovery] inception-audi-service-custody
@@ -40,10 +50,10 @@ in
   # MUST be IPv4; local Netlink is only for interface discovery. Restart MUST
   # preserve the SSH host key. Public wildcard material comes from inner
   # Marshall's authenticated control API and stays in Audi memory.
-  systemd.services.audi = {
+  systemd.services.audi = pkgs.lib.mkMerge [ certificates.startup {
     wantedBy = [ "multi-user.target" ];
     requires = [ "inception-audi.service" ];
-    after = [ "inception-audi.service" "marshall-inception.service" "lilly-network.service" "lilly.service" ];
+    after = [ "inception-audi.service" "marshall-inception.service" "inception-ssh-trust.service" "lilly-network.service" "lilly.service" ];
     path = [ pkgs.openssh ];
     environment = {
       AUDI_CONFIG_FILE = "/run/credentials/audi.service/runtime.json";
@@ -65,7 +75,22 @@ in
       # only the canonical type and base64 fields, including after an upgrade.
       ${pkgs.coreutils}/bin/cut -d ' ' -f 1,2 /run/audi/host-key.export > /run/audi/host-key.pub
       ${pkgs.coreutils}/bin/mv /run/audi/host-key.pub /var/lib/audi/keys/ssh_host_ed25519_key.pub
-      ${certificates.command}
+      # The SSH listener requires its certificate before it can start. Issue
+      # the first certificate from this already enrolled gateway service;
+      # the separate renewal unit remains ordered after the running daemon.
+      # Keep the credential directory explicit for this ExecStartPre helper;
+      # host certificate issuance must use this unit's systemd credentials.
+      # Marshall's FleetEndpoint is started by the same post-ready target and
+      # can still be binding its TLS socket after the service transaction has
+      # become active. Keep this service activating while the bounded helper
+      # retries; a transient listener race must not strand Audi inactive.
+      for attempt in $(${pkgs.coreutils}/bin/seq 1 30); do
+        if CREDENTIALS_DIRECTORY=/run/credentials/audi.service ${certificates.command}; then
+          exit 0
+        fi
+        ${pkgs.coreutils}/bin/sleep 5
+      done
+      exit 1
     '';
     script = ''
       export RELEASE_COOKIE
@@ -82,7 +107,7 @@ in
       ];
       StateDirectory = "audi"; StateDirectoryMode = "0700";
       RuntimeDirectory = "audi"; RuntimeDirectoryMode = "0700";
-      Restart = "on-failure"; RestartSec = 5; TimeoutStopSec = 30;
+      Restart = "on-failure"; RestartSec = 5; TimeoutStartSec = 900; TimeoutStopSec = 30;
       KillMode = "control-group"; CPUQuota = "200%"; MemoryMax = "1G";
       LimitNOFILE = 65536;
       CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
@@ -95,5 +120,5 @@ in
       RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_NETLINK" ];
       RestrictSUIDSGID = true; LockPersonality = true;
     };
-  };
+  } ];
 }

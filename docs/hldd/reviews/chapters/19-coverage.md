@@ -1,5 +1,5 @@
 ---
-digest: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
+digest: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Batched relocation downtime is now asserted against the per-row read in the relocation source test; the batched-machine-page-decisions scenario cites it and 19-coverage is regenerated from it.
+Reviewed the merged guest and coverage chapters, including the Inception checkout evidence and retained guest promotion behavior.

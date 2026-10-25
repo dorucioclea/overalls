@@ -103,6 +103,9 @@ def host_key(path: Path, owner: int) -> str:
 class LocalClient:
     """Verified localhost TLS on a fixed IPv4 socket; no DNS or proxy resolution."""
 
+    # The inner Marshall browser endpoint is 4443, while the authenticated
+    # machine APIs used by Inception (SSH, Audi and DNS) are served by its
+    # separate FleetEndpoint on the default fleet port 5443.
     def __init__(self, ca: str, port: int = 5443) -> None:
         self.context = ssl.create_default_context(cafile=str(ca))
         self.port = port
@@ -297,6 +300,13 @@ def collect(
     root: Path = ROOT,
     state: Path = STATE,
 ) -> ChildPublication:
+    """@cc [owner:ghuntley,label:security;recovery] inception-control-proof-fast-path
+    While a control proof is present but TLS readiness is false, publication MUST
+    return that proof before optional gateway lookups. Those lookups can each
+    consume a bounded network deadline while the control heartbeat expires in
+    two seconds; delaying the proof would prevent the parent from observing it.
+    Once readiness is true, the complete route and host-key publication resumes.
+    """
     # Validate the closed boot/namespace schema before consuming any authority.
     ingress.request(encode(dict(config, request_id=boot["placement_id"])), boot)
     started = now()
@@ -308,6 +318,20 @@ def collect(
         "audi_host_key": None,
         "records": [],
     }
+
+    try:
+        control, expiry = control_record(
+            json.loads(read_private(root / "control-publication.json", 4096)), config, now()
+        )
+        if control["proofs"] and not control["ready"]:
+            result["records"].append(control)
+            result["expires_at_ms"] = min(result["expires_at_ms"], expiry)
+            if now() >= result["expires_at_ms"]:
+                raise SetupError("child publication collection expired")
+            return result
+    except (OSError, ValueError, TypeError, KeyError, RecursionError, SetupError):
+        pass
+
     try:
         token = read_private(state / "dns.token", 80).decode("ascii")
         snapshot = client.request(

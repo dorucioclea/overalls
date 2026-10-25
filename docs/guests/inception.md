@@ -13,7 +13,7 @@ The profile uses `10.40.0.0/16` and the existing guest isolation rules.
 
 ## Deployment configuration
 
-Build `nix build .#inception-guest`. Register its `manifest.json` through the
+Build `nix build .#guest-inception`. Register its `manifest.json` through the
 protected `Marshall.Compute.Images.register/2` operator action, and install
 the resulting immutable image on the intended Lilly hosts. Use the canonical
 image ID returned by registration for both Nix options:
@@ -72,14 +72,16 @@ Choose **Inception** in the control plane's creation form. The image is bound to
 the profile and its resource defaults populate automatically. The authenticated
 outer terminal provides administrative access to the guest.
 
-The editable, initialized Git checkout lives at `/workspace/overalls`. Enter
+On first boot the guest clones `https://github.com/ghuntley/overalls` into the
+editable, initialized Git checkout at `/workspace/overalls`. Enter
 `devenv shell` there for the pinned development environment. Bootstrapped services
 run the image's packaged releases: editing source does not automatically replace
 them. Use the repository's ordinary build and development commands to test changes.
 
-Useful service names are `postgresql`, `marshall-inception`, `lilly`,
-`inception-storage`, `inception-enrollment` and `inception-enable`. Marshall listens
-on guest-local browser TLS port 4443 and fleet TLS port 5443; PostgreSQL listens on loopback. Local TLS public
+Useful service names are `postgresql`, `marshall-inception`, `inception-marshall-listener`, `lilly`, `inception-source`,
+`inception-storage`, `inception-enrollment` and `inception-enable`. The source unit
+retries the public checkout independently of stack readiness. Marshall listens on
+guest-local browser TLS port 4443 and fleet TLS port 5443; PostgreSQL listens on loopback. Local TLS public
 certificates are under `/run/inception-public`. Administrative bootstrap material
 is private under `/var/lib/inception`; do not copy it to another deployment.
 The root identity, database, workspace edits, enrollment and ZFS binding survive
@@ -91,9 +93,10 @@ and app names, Audi/Porsche ingress and independent inner authentication under
 [ADR-0085](../architecture/decisions/0085-inception-public-ingress.md). Full native
 public-access acceptance remains incomplete; see its
 [implementation review](../architecture/reviews/2026-09-18-inception-public-ingress.md).
-Inception workloads can be moved between hosts and cloned like any other
-profile; the single dataset stream carries both drives. Root growth is
-accounted separately; the data disk remains 256 GiB.
+The profile's transfer and clone wiring carries both drives in one dataset
+stream, but native relocation, evacuation and clone acceptance remain gated by
+the outstanding ADR-0072 fleet evidence. Root growth is accounted separately;
+the data disk remains 256 GiB.
 
 ## Inner inference configuration
 
@@ -123,10 +126,11 @@ services to be ready before starting nested guests.
 
 Private Audi uses the inner issuer, its own host certificate, and Lilly's exact
 owned namespace. Service wiring and configuration checks pass; native startup
-and private-inference acceptance remain incomplete. The nested guest image is
-rebuilt from the instance's public private-service root before enrollment, so
-inner guests trust only their own environment. Enrollment alone does not
-establish a working `llm.internal` service.
+and private-inference acceptance remain incomplete. The registered nested guest
+image is a public seed; Lilly delivers the instance's private-service root
+through the authenticated trust receiver for each child boot, so inner guests
+trust only their own environment. Enrollment alone does not establish a
+working `llm.internal` service.
 
 ## Credentials and maintenance
 

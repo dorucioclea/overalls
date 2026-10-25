@@ -1,21 +1,17 @@
 ---
-digest: 24bb64de6c7d6e6cf7da9edb075d6bb002651331cc8e485063c7a2feb8f9cad0
-disposition: no-impact
+digest: 1852fd2e1df723c27ad7ed36800b1991eed9f6a83d1533504d383eb3215b2c8e
+disposition: updated
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
-migration:
-  governance:
-    chapter_digest: 751ceb5fdfcc269772d47964ba027021dfc5bbf898375b131030c5c474f3edc0
-    source_digest: 9d32ce22ccb4f120978a3e89a9ead131666dc31eab3a6227ca7efab86556993c
 path: docs/architecture/decisions/0054-inception-development-profile.md
 reviewed_chapters:
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/19-coverage.md: 5dc84656f2a81c5674ed8311af44a7f2e9c33262d36f624e11f8ba378a32db61
-  marshall/priv/hldd/20-security.md: ebf5f76bb3b9c45d1bd1dd0c370480f4634f4ad6df267fa706355fb48ed38537
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 7d88fca8dbe56f67c71ea207b0ed860f4cfc005f7cb9f6ccde4ffe4bc718cda5
+  marshall/priv/hldd/19-coverage.md: 84b7f6445bae8d3fc8f3b6a021e774c27460a8acb4420fe40f803bbe5c1f6abe
+  marshall/priv/hldd/20-security.md: cf1337ba6e78c460d2d00a269abbe3ad011151401179263eb51ab2d90bb4948f
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-governance: Reviewed the Apple native compile fixes for route hashing and list identity; they preserve the documented native scaffold behavior.
+The architecture index and ADR/review records now identify ADR-0256 for the Inception development checkout and state its current partial native evidence.

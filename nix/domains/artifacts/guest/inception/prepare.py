@@ -1,15 +1,18 @@
 """Privileged, retryable Inception preparation; serving units never migrate."""
 
+import contextlib
 import fcntl
 import hashlib
 import json
 import os
 import secrets
 import shutil
+import signal
 import stat
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import TypedDict
 
@@ -28,13 +31,43 @@ from runtime import (
 
 STATE = Path("/var/lib/inception")
 RUNTIME = Path("/run/inception")
+SOURCE_STATUS = RUNTIME / "source-status"
 PUBLIC = Path("/run/inception-public")
 WORKSPACE = Path("/workspace")
+CANONICAL_SOURCE_URL = "https://github.com/ghuntley/overalls"
+
+
+def source_status(value: str) -> None:
+    """Publish a fixed source-bootstrap outcome for bounded diagnostics."""
+    with contextlib.suppress(OSError, SetupError):
+        publish(SOURCE_STATUS, (value + "\n").encode())
+        # Status is diagnostic only; a read-only runtime directory must never
+        # change the checkout's retry or publication behavior.
+
+
+def share_checkout(path: Path) -> None:
+    """Make a checkout writable by every managed guest account.
+
+    Inception's workspace is shared by the accounts reconciled into the guest,
+    so a root-owned clone must not leave regular files writable only by root.
+    Symlinks are intentionally left untouched; changing a link target while
+    preparing a checkout would turn an otherwise local operation into a path
+    traversal.  The checkout is a developer workspace, therefore the shared
+    mode is the same 0666/0777 policy used by the generic guest receiver.
+    """
+    for candidate in [path, *path.rglob("*")]:
+        info = candidate.lstat()
+        if stat.S_ISLNK(info.st_mode):
+            continue
+        if stat.S_ISDIR(info.st_mode):
+            candidate.chmod(0o777)
+        elif stat.S_ISREG(info.st_mode):
+            candidate.chmod(0o777 if info.st_mode & 0o111 else 0o666)
 
 
 class Config(TypedDict):
+    source_url: str
     openssl: str
-    source: str
     git: str
     runuser: str
     psql: str
@@ -42,19 +75,174 @@ class Config(TypedDict):
 
 
 def command(
-    arguments: list[str], data: bytes | None = None, env: dict[str, str] | None = None
+    arguments: list[str],
+    data: bytes | None = None,
+    env: dict[str, str] | None = None,
+    timeout: float = 180,
 ) -> bytes:
-    result = subprocess.run(
+    """@cc [owner:ghuntley,label:recovery] inception-command-timeout-boundary
+    A timed-out preparation command MUST terminate its complete child process
+    group before returning so a stalled Git transport cannot block source
+    retries or leave descendants running in the guest.
+    """
+    # Commands such as git clone spawn a transport helper.  A timeout that
+    # kills only the git parent can leave that helper holding the stdout pipe,
+    # preventing communicate() from returning and blocking source retries.
+    # Put each command in its own process group so a timeout terminates the
+    # complete bounded operation before the retry loop continues.
+    process = subprocess.Popen(
         arguments,
-        input=data,
+        stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.DEVNULL,
         env=env,
-        timeout=180,
+        start_new_session=True,
     )
-    if result.returncode != 0:
+    try:
+        output, _ = process.communicate(input=data, timeout=timeout)
+    except subprocess.TimeoutExpired as error:
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(process.pid, signal.SIGKILL)
+        process.communicate()
+        # Treat a stalled network operation like any other bounded preparation
+        # failure so the source bootstrap can retry it without exposing the
+        # command, URL, or subprocess diagnostics.
+        raise SetupError("preparation command timed out") from error
+    if process.returncode != 0:
         raise SetupError("preparation command failed")
-    return result.stdout
+    if output is None:
+        raise SetupError("preparation command produced no output")
+    return output
+
+
+def bootstrap_git_environment() -> dict[str, str]:
+    """Use the canonical GitHub URL without guest-wide URL rewrites.
+
+    The shared guest image installs an interactive Git configuration that
+    rewrites GitHub URLs through the platform broker.  Inception's bootstrap
+    has its own reviewed trust and egress boundary and must clone the
+    canonical public repository directly, so system and user Git configuration
+    cannot alter the source URL or inject credentials.
+    """
+    return {
+        **os.environ,
+        "GIT_CONFIG_NOSYSTEM": "1",
+        "GIT_CONFIG_GLOBAL": os.devnull,
+    }
+
+
+def prepare_source(source_url: str, git: str) -> None:
+    """@cc [owner:ghuntley,label:product;recovery] inception-development-checkout
+    A new Inception workload MUST clone the canonical Overalls repository into
+    ``/workspace/overalls``. The clone is published atomically and a restart
+    MUST leave an existing developer checkout, including uncommitted edits,
+    untouched.
+    """
+    workspace = WORKSPACE
+    workspace.mkdir(mode=0o755, exist_ok=True)
+    info = workspace.lstat()
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o022:
+        raise SetupError("development workspace invalid")
+    # The identity service runs with a private umask.  Keep the workspace
+    # itself traversable by managed developer accounts while retaining
+    # root-only ownership and rejecting group/other write access above.
+    workspace.chmod(0o755)
+    target = workspace / "overalls"
+    if os.path.lexists(target):
+        git_directory = target / ".git"
+        target_info = target.lstat()
+        git_info = git_directory.lstat() if os.path.lexists(git_directory) else None
+        if (
+            target.is_symlink()
+            or not stat.S_ISDIR(target_info.st_mode)
+            or target_info.st_uid != os.getuid()
+            or target_info.st_mode & 0o7000
+            or git_info is None
+            or git_directory.is_symlink()
+            or not stat.S_ISDIR(git_info.st_mode)
+            or git_info.st_uid != os.getuid()
+            or git_info.st_mode & 0o7000
+        ):
+            raise SetupError("development workspace invalid")
+        try:
+            origin = command(
+                [git, "-C", str(target), "config", "--local", "--get", "remote.origin.url"],
+                env=bootstrap_git_environment(),
+            )
+        except SetupError as error:
+            raise SetupError("development workspace invalid") from error
+        if origin.decode().strip() != source_url:
+            raise SetupError("development source origin invalid")
+        # A valid checkout may have been copied from an older image or had
+        # modes tightened by a tool between boots.  Reapply the shared
+        # workspace policy without touching content or following links.
+        share_checkout(target)
+        source_status("existing")
+        return
+    with tempfile.TemporaryDirectory(prefix=".overalls-", dir=workspace) as temporary:
+        tree = Path(temporary) / "source"
+        last_error: SetupError | None = None
+        for attempt in range(5):
+            try:
+                source_status("attempt")
+                command(
+                    # The guest deliberately disables the interactive GitHub
+                    # broker config. Keep the broker's reviewed transport
+                    # choice (HTTP/1.1 with connection close) for direct
+                    # public egress as well; nested NATs have historically
+                    # exposed HTTP/2 stalls that otherwise consume the whole
+                    # retry window.
+                    [
+                        git,
+                        "-c",
+                        "http.version=HTTP/1.1",
+                        "clone",
+                        "--depth=1",
+                        "--",
+                        source_url,
+                        str(tree),
+                    ],
+                    env=bootstrap_git_environment(),
+                    # GitHub is public egress and may be temporarily
+                    # unreachable while the nested route converges. Bound
+                    # each attempt so the service can retry within the guest
+                    # readiness envelope instead of spending the whole boot
+                    # window in one stalled TCP operation.
+                    timeout=60,
+                )
+                last_error = None
+                break
+            except SetupError as error:
+                source_status(
+                    "timeout" if str(error) == "preparation command timed out" else "failed"
+                )
+                last_error = error
+                shutil.rmtree(tree, ignore_errors=True)
+                if attempt < 4:
+                    # GitHub may not be reachable when the guest's network is
+                    # still converging. Keep the identity unit retryable while
+                    # avoiding an unbounded bootstrap loop.
+                    time.sleep(5)
+        if last_error is not None:
+            raise last_error
+        if (
+            command(
+                [git, "-C", str(tree), "config", "--local", "--get", "remote.origin.url"],
+                env=bootstrap_git_environment(),
+            )
+            .decode()
+            .strip()
+            != source_url
+        ):
+            raise SetupError("development source origin invalid")
+        share_checkout(tree)
+        os.rename(tree, target)
+        source_status("success")
+        fd = os.open(workspace, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
 
 
 def public_directory() -> None:
@@ -232,43 +420,6 @@ def prepare_database(identity: Identity, config: Config) -> None:
     )
 
 
-def prepare_source(source: str, git: str) -> None:
-    """@cc [owner:ghuntley,label:recovery] inception-source-edits-survive
-    Source preparation MUST populate a new workspace atomically and MUST NOT copy
-    over an existing developer workspace on restart or image update.
-    """
-    workspace = WORKSPACE
-    workspace.mkdir(mode=0o755, exist_ok=True)
-    target = workspace / "overalls"
-    if os.path.lexists(target):
-        if target.is_symlink() or not target.is_dir():
-            raise SetupError("development workspace invalid")
-        return
-    with tempfile.TemporaryDirectory(prefix=".overalls-", dir=workspace) as temporary:
-        tree = Path(temporary) / "source"
-        shutil.copytree(source, tree, symlinks=True)
-        for path in [tree, *tree.rglob("*")]:
-            if not path.is_symlink():
-                path.chmod(path.stat().st_mode | stat.S_IWUSR)
-        command([git, "-C", str(tree), "init", "--initial-branch=inception"])
-        command([git, "-C", str(tree), "add", "."])
-        command(
-            [
-                git,
-                "-C",
-                str(tree),
-                "-c",
-                "user.name=Overalls source image",
-                "-c",
-                "user.email=source-image@localhost",
-                "commit",
-                "-m",
-                "Bundled development source",
-            ]
-        )
-        os.rename(tree, target)
-
-
 def main() -> None:
     if os.getuid() != 0:
         raise SetupError("root preparation required")
@@ -276,6 +427,20 @@ def main() -> None:
     config = json.loads(Path(config_path).read_bytes())
     private_directory(STATE)
     private_directory(RUNTIME)
+    # The source checkout is an optional network operation.  It must not hold
+    # the bootstrap lock while GitHub is unavailable: identity, credentials
+    # and private-PKI preparation all use that lock and are prerequisites for
+    # the guest's readiness exchange.  The checkout is published atomically
+    # by prepare_source and its systemd unit serializes retries.
+    if action == "source":
+        if config.get("source_url") != CANONICAL_SOURCE_URL:
+            raise SetupError("development source origin invalid")
+        # The source origin is part of the workload contract. Keep the
+        # production bootstrap on the canonical HTTPS URL even in fixtures;
+        # test routing changes the endpoint behind that hostname rather than
+        # accepting a transport or URL override.
+        prepare_source(config["source_url"], config["git"])
+        return
     fd = os.open(STATE / "bootstrap.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, "rb") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -292,7 +457,6 @@ def main() -> None:
             else:
                 publish(hostid_path, hostid, replace=False)
                 hostid_path.chmod(0o644)
-            prepare_source(config["source"], config["git"])
         elif action == "environment":
             prepare_environment(identity, config["system_ca"])
         elif action == "database":

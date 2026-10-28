@@ -107,7 +107,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@be39fa834029ffcf3e99cc8f93ed063231c98bf95 # v4.0.4
+      - uses: android-actions/setup-android@138b5fb1cf087fdb4c5f3c621466fe304d0cf2e3 # v4.0.4
       - name: Install Android SDK and Rust targets
         run: |
           sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;28.2.13676358"

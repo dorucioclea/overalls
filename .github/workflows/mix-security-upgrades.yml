@@ -38,7 +38,7 @@ jobs:
         uses: cachix/install-nix-action@9aaadd8b85853f67fcdf488e6a4e9efa94ee96e2
 
       - name: Setup Cachix
-        uses: cachix/cachix-action@ee79db531bfb851a7cf47035057b7cca88d26449
+        uses: cachix/cachix-action@v17
         with:
           name: devenv
 

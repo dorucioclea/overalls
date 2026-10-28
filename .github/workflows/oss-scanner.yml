@@ -23,7 +23,7 @@ jobs:
     steps:
       # A plain full clone: the image must contain a self-contained .git, not
       # one that borrows objects from a runner-side mirror.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
 

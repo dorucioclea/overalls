@@ -117,7 +117,7 @@ runs:
     # daemon holds a read lock on the local Nix database for the whole job,
     # which deadlocks devenv when it needs the write lock.
     - name: Configure Cachix
-      uses: cachix/cachix-action@ee79db531bfb851a7cf47035057b7cca88d26449
+      uses: cachix/cachix-action@v17
       with:
         name: overalls
         extraPullNames: devenv

@@ -8,6 +8,8 @@ locked-down, cookie-free content origin.
 Marshall-owned `thread`, `message_board` and `artifact` tools through an Oban job
 instead of a polling worker, excludes them from guest executor claims, and makes
 Thread status a state machine.
+[ADR-0261](0261-thread-feed-turn-notifications-and-subscription-revocation.md)
+adds `turn_finished` feed notifications and audited subscription revocation jobs.
 
 [ADR-0250](0250-independent-hldd-review-records.md) replaces aggregate HLDD review
 invalidation with independent source and chapter receipts, YAML scenario and host
@@ -1092,6 +1094,7 @@ ADR-0015/0037 retain their statuses and accepted rationale.
 | [ADR-0258](0258-marshall-page-service-levels.md) | accepted | partial | Marshall page interaction service levels |
 | [ADR-0259](0259-deployment-revision-telemetry.md) | accepted | partial | Deployment revision in telemetry provenance |
 | [ADR-0260](0260-underclass-egress-without-exit-node.md) | accepted | partial | Underclass egress proxy without an exit node |
+| [ADR-0261](0261-thread-feed-turn-notifications-and-subscription-revocation.md) | accepted | partial | Thread feed turn notifications and subscription revocation |
 
 The [Mila native release readiness review](../reviews/2026-10-24-mila-native-release-readiness.md)
 updates ADR-0249 implementation evidence without changing its accepted/partial status.

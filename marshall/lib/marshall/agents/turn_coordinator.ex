@@ -165,6 +165,8 @@ defmodule Marshall.Agents.TurnCoordinator do
       outcome: :failed
     })
 
+    Marshall.Threads.FeedAppendJob.enqueue!(thread, turn)
+
     Ledger.after_commit(fn ->
       Marshall.Events.emit("agent.turn_finished",
         vm_id: root.vm_id,
@@ -269,6 +271,8 @@ defmodule Marshall.Agents.TurnCoordinator do
         target_id: turn.id,
         outcome: status
       })
+
+      Marshall.Threads.FeedAppendJob.enqueue!(thread, turn)
 
       Ledger.after_commit(fn ->
         Marshall.Events.emit("agent.turn_finished",

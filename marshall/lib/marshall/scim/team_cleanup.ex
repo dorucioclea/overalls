@@ -33,7 +33,10 @@ defmodule Marshall.Scim.TeamCleanup do
     TeamMember
     |> Ledger.read!(team_id: team.id)
     |> Enum.reject(&(&1.role == :owner))
-    |> Enum.each(&Ledger.archive!(&1, :remove))
+    |> Enum.each(fn membership ->
+      Ledger.archive!(membership, :remove)
+      Marshall.Threads.SubscriptionRevokeJob.enqueue_owner!(membership.user_id)
+    end)
 
     # Archived (deleted) team machines included: their grants and sessions are
     # retired with the team rather than left as live rows.
@@ -59,7 +62,14 @@ defmodule Marshall.Scim.TeamCleanup do
   @spec archive!(Team.t()) :: :ok
   def archive!(%Team{} = team) do
     :ok = revoke_authority!(team)
-    TeamMember |> Ledger.read!(team_id: team.id) |> Enum.each(&Ledger.archive!(&1, :remove))
+
+    TeamMember
+    |> Ledger.read!(team_id: team.id)
+    |> Enum.each(fn membership ->
+      Ledger.archive!(membership, :remove)
+      Marshall.Threads.SubscriptionRevokeJob.enqueue_owner!(membership.user_id)
+    end)
+
     Ledger.archive!(team, :archive)
   end
 end

@@ -1,5 +1,5 @@
 ---
-digest: 035e1c0ae0a600a3eaf7f613f740d41a23016b793d093c479390208c07fabdd0
+digest: 5dd817691affc77412d1bbdcc544dfcccc8393ade6f1d716ccd944ea770f3df1
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Mila scenarios now reference native Rust/Linux evidence after Flutter retirement.
+Reviewed after rebasing onto trunk: regenerated coverage keeps trunk's entries and differs only by the artifact and thread-tool scenario updates recording the 2026-10-28 machine runs and new properties.

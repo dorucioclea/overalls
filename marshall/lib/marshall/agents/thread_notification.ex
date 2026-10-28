@@ -42,7 +42,11 @@ defmodule Marshall.Agents.ThreadNotification do
     attribute :user_thread_id, :uuid, allow_nil?: false
     attribute :owner_id, :uuid, allow_nil?: false
     attribute :sequence, :integer, allow_nil?: false, constraints: [min: 1]
-    attribute :kind, :atom, allow_nil?: false, constraints: [one_of: [:machine_purged]]
+
+    attribute :kind, :atom,
+      allow_nil?: false,
+      constraints: [one_of: [:machine_purged, :turn_finished]]
+
     attribute :metadata, :map, allow_nil?: false, default: %{}
     create_timestamp :inserted_at
     update_timestamp :updated_at

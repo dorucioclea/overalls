@@ -71,7 +71,18 @@ with subtest("machine objective is admitted and executed after provisioning"):
     vm_id = sql(f"SELECT machine_id FROM threads WHERE id='{thread_id}'")
     assert vm_id is not None
     vm_id = str(uuid.UUID(vm_id))
-    assert sql(f"SELECT agent_thread_id FROM threads WHERE id='{thread_id}'") == thread_id
+    # The user thread binds its machine's top-level agent thread; the two are
+    # distinct identities, so compare the binding rather than the IDs.
+    agent_thread_id = str(
+        uuid.UUID(sql(f"SELECT agent_thread_id FROM threads WHERE id='{thread_id}'"))
+    )
+    assert (
+        sql(
+            "SELECT count(*) FROM agent_threads t JOIN agent_roots r ON r.id = t.root_id "
+            f"WHERE t.id='{agent_thread_id}' AND r.vm_id='{vm_id}' AND t.parent_thread_id IS NULL"
+        )
+        == "1"
+    )
     eventually(lambda: vm_state(vm_id) == "running", timeout=300)
     initial = f"thread-initial:{thread_id}"
     eventually(

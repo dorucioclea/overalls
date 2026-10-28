@@ -171,6 +171,7 @@ defmodule Marshall.Teams.Coordinator do
     event = {:membership, team.id, user.id, actor.id, arguments.role}
     changed = not (arguments.role == :removed and existing == [])
     if changed, do: receipt!(actor.id, team.id, :team_membership_change)
+    if changed, do: Marshall.Threads.SubscriptionRevokeJob.enqueue_owner!(user.id)
     {result, if(changed, do: event)}
   end
 
@@ -459,6 +460,7 @@ defmodule Marshall.Teams.Coordinator do
     Enum.each(memberships, fn membership ->
       Ledger.archive!(membership, :remove)
       receipt!(actor_id, membership.team_id, :team_membership_change)
+      Marshall.Threads.SubscriptionRevokeJob.enqueue_owner!(membership.user_id)
       schedule_event({:membership, membership.team_id, membership.user_id, actor_id, :removed})
     end)
 

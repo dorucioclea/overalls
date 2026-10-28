@@ -33,6 +33,7 @@ SCRIPTED_PROMPTS = {
         "Publish artifact fixture",
         "Publish stale artifact fixture",
         "Publish staged artifact fixture",
+        "Publish restarted artifact fixture",
     ],
     "thread-tool": ["Use thread tool fixture"],
 }
@@ -111,6 +112,25 @@ def scripted(
             and done[0].get("version") == 1
             and isinstance(done[0].get("artifact_id"), str)
         ):
+            return [reply_message()]
+        return None
+    if prompt == "Publish restarted artifact fixture":
+        # Queued while server tools are paused, then executed after every
+        # Marshall replica restarts.
+        if not done:
+            return [
+                call(
+                    "fleet-artifact-restarted",
+                    "artifact",
+                    {
+                        "operation": "publish",
+                        "base_version": 0,
+                        "title": "Restarted artifact",
+                        "content": "<p>restarted artifact</p>",
+                    },
+                )
+            ]
+        if len(done) == 1 and done[0].get("version") == 1:
             return [reply_message()]
         return None
     artifact = published_artifact(messages)

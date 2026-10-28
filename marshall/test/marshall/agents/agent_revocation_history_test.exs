@@ -545,7 +545,9 @@ defmodule Marshall.Agents.AgentRevocationHistoryTest do
                :thread_deleted,
                :cli_approved,
                :cli_refused,
-               :cli_expired
+               :cli_expired,
+               :context_captured,
+               :context_compacted
              ]
     end
 

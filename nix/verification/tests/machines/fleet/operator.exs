@@ -724,7 +724,7 @@ defmodule FleetOperator do
     {:ok, thread} =
       Marshall.Threads.create_thread(
         %{
-          objective: "Report this machine's hostname",
+          objective: "Read this machine's hostname",
           mode: :medium,
           idempotency_key: key,
           machine_spec: %{

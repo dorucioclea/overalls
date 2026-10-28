@@ -70,6 +70,7 @@ defmodule Marshall.Threads.Sharing do
 
       [] ->
         grant = replace(thread.id, user.id, actor.id, request.role)
+        Marshall.Threads.SubscriptionRevokeJob.enqueue_thread!(thread.id)
 
         receipt =
           Ledger.create!(AccessChange, :record, %{

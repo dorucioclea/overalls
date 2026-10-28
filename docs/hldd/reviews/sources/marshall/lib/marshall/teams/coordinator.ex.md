@@ -1,28 +1,24 @@
 ---
-digest: 90083651343b9dfb8f46d08ed138976c3cc4a155945f9cfba4495f1fbf0815cc
-disposition: no-impact
+digest: 70856107dda221b30e1c563310f8a160d90bc610b41eb7f28f88c67a26c94b54
+disposition: updated
 kind: source
 mapping_digest: c5d6b9e33b777c90bbc22e5608c825ce6977ecc6384e262a6c79b99b4af3d9a2
-migration:
-  marshall:
-    chapter_digest: 611713216c60038ac614a76a8aa4c5cb29f705024b6f3d45fb4b34d1ac794463
-    source_digest: 66cd97c314ea56b581e84f078c4745e952d0cd805117b65f0d777dadac728694
 path: marshall/lib/marshall/teams/coordinator.ex
 reviewed_chapters:
-  marshall/priv/hldd/02-control-plane.md: 8398bc3791875b6bc8cf22b6602a6efccb886c001a0f78d5a1500a3f5707ff3d
-  marshall/priv/hldd/03-access.md: 08dc3c53c626ebafffba5f908f09ccd49edd919b7a03a3ef8c12113f5097bd96
-  marshall/priv/hldd/04-lifecycle.md: a3c881206a8331e5dbcd995c9762772639a9e28bdc22102c2a2e64bf63aa7449
-  marshall/priv/hldd/06-workflows.md: a35d0a72eb3b3b7afcd667d162ccba51020f8e47877ef29002a77a0dd4cef501
-  marshall/priv/hldd/08-interactive.md: cf0280940ef764edd70bd6eefff72711c307481314287fdc1dcef96d866e4538
-  marshall/priv/hldd/11-agents.md: 583a34e60b6968f2e8e49141feed2e653b46074be845a1c918a1908e19fa04a4
-  marshall/priv/hldd/15-monitoring.md: cc17c4c6d32d94c24da6483a8164f374cad31c77d0a477850dc6684625a8cee5
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/19-coverage.md: 5dc84656f2a81c5674ed8311af44a7f2e9c33262d36f624e11f8ba378a32db61
-  marshall/priv/hldd/20-security.md: ebf5f76bb3b9c45d1bd1dd0c370480f4634f4ad6df267fa706355fb48ed38537
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/02-control-plane.md: 6ca9a834408a12e1c9a666920927dc154ea406239616809492defdb1e6b1bbfe
+  marshall/priv/hldd/03-access.md: 5e197b8346180c9f65c712048048da17934c117a500fe63cfca781cd8933dae6
+  marshall/priv/hldd/04-lifecycle.md: f3c40798f402b553640bb25852bcb205c327c87d7ad6735b4f1b243c5616b4a2
+  marshall/priv/hldd/06-workflows.md: ad304114da706e2daaf6296aac5c058376e50742cc378ad4fc2a9d475d485124
+  marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
+  marshall/priv/hldd/11-agents.md: d6e2a66aebde7ce5368d470550113cd1d5908d6ec6c0567f765b8cb6dac09eb1
+  marshall/priv/hldd/15-monitoring.md: 47cae9cafce18ef57d278be5b04ce1dce3799f6583aa1a5bfa8ff80babbf1a99
+  marshall/priv/hldd/17-reference.md: 1c45053e1626bbaa444d831e055a2a5588251bcd9de92ac6b772b4f7dcb76174
+  marshall/priv/hldd/19-coverage.md: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-marshall: Reviewed concurrent thread-tools and Mila FFI changes; this group’s documented behavior and authority boundaries remain unchanged.
+ADR-0261: 11-agents documents turn_finished feed notifications, FeedAppendJob and SubscriptionRevokeJob with the revoked subscription state; 17-reference lists the new Hegel properties. Reconciler NOT EXISTS subqueries gain select 1, fixing the crash recorded in the review; provision worker property rewritten for Hegel.

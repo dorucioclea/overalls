@@ -110,20 +110,21 @@ evidence:
     messages, imports) served through the proxy inside the artifact-origin machine; nothing reaches the outside
     origin. Passed within the recorded artifact-origin run on 2026-10-21.
 - assertion: revoking the share stops a live ticket on its next fetch
-  execution: present
+  execution: recorded
   kind: machine
   path: nix/verification/tests/machines/artifact-agent-publish/scenario.py
+  record: docs/architecture/reviews/2026-10-21-artifacts-and-thread-tool.md
+  record_assertion: '`nix build .#checks.x86_64-linux.artifact-agent-publish` passed: all 15 subtests'
   scope: Fleet with a real NixOS guest; inline publish, stale-base refusal, guest-staged large upload through Lyra
-    and Ziggy, viewer rendering and shared-storage refusal, revocation and payload-free logs. All 11 subtests
-    passed locally on 2026-10-21 on the merged tree without a repository execution record.
-gaps: artifact-origin is the only machine run recorded in the review (all 8 subtests and its Hegel escape
-  property, 2026-10-21); it covers the proxy, content listener and Chromium isolation, not a real guest.
-  artifact-agent-publish passed all 11 subtests locally on the merged tree but has no repository execution
-  record, and its stale-base subtest failed intermittently with provider_failed before the merge. Focused Marshall runs on 2026-10-21 also have no execution record. No test restores a backup with artifacts,
-  exercises purge or sweep batching at scale, or drives the storage bridge's role checks from a hostile page in a
-  real browser. The content host
-  is same-site with Marshall until a separate registrable domain exists. Production has not enabled the content
-  host.
+    and Ziggy, viewer rendering and shared-storage refusal, revocation, payload-free logs, owner deletion with a
+    tombstone, a purge interrupted by stopping every replica and a queued server-tool command across a full
+    restart. All 15 subtests passed on 2026-10-28.
+gaps: The artifact-origin (2026-10-21) and artifact-agent-publish (2026-10-28) machine runs are recorded in the
+  review; artifact-agent-publish's stale-base subtest failed intermittently with provider_failed before the
+  2026-10-21 merge. Administrator deletion is covered only by BEAM tests because unattended fixtures cannot hold
+  elevation. No test restores a backup with artifacts or drives the storage bridge's role checks from a hostile
+  page in a real browser. The content host is same-site with Marshall until a separate registrable domain exists.
+  Production has not enabled the content host.
 id: artifacts-publish-share
 journey: An agent publishes an artifact, revises it with read-before-write, the owner shares it with a viewer
   who renders it on the isolated content origin, and revoking the share stops the viewer's next fetch
@@ -135,11 +136,11 @@ layers:
 - isolation
 - storage
 - recovery
-preferred_gap: Add a repository execution record for the passing artifact-agent-publish run; add a property history over publish, share, revoke and delete sequences against
-  real PostgreSQL, and a restore drill that checks ticket expiry and purge resumption.
+preferred_gap: Add a restore drill that checks ticket expiry and purge resumption from a backup, and a hostile-page
+  browser test of the storage bridge's role checks.
 scope: Hegel properties for edits, manifests, limits, tool parsing and Markdown escaping, a PostgreSQL-backed
   versioning model and single-winner concurrent publishes; PostgreSQL-backed units for the role matrix,
   server-tool publish and refusal, content endpoint tickets and headers, LiveView sharing and storage, and Ziggy's
-  chunk bound; the recorded artifact-origin machine run and its Hegel escape property; artifact-agent-publish passing locally
-  without an execution record.
+  chunk bound; authorization-freshness, publish-request and Oban-idempotency properties; the recorded artifact-origin
+  machine run and its Hegel escape property; and the recorded artifact-agent-publish run.
 status: partial

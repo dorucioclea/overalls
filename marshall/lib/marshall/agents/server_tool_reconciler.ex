@@ -46,7 +46,8 @@ defmodule Marshall.Agents.ServerToolReconciler do
           where:
             not exists(
               from(r in "artifact_publish_requests",
-                where: r.command_id == parent_as(:command).id and r.state == "staging"
+                where: r.command_id == parent_as(:command).id and r.state == "staging",
+                select: 1
               )
             ),
           where:
@@ -55,7 +56,8 @@ defmodule Marshall.Agents.ServerToolReconciler do
                 where:
                   j.worker == "Marshall.Agents.ServerToolJob" and
                     j.state in ["available", "scheduled", "executing", "retryable"] and
-                    fragment("?->>'command_id' = ?::text", j.args, parent_as(:command).id)
+                    fragment("?->>'command_id' = ?::text", j.args, parent_as(:command).id),
+                select: 1
               )
             ),
           limit: @batch,

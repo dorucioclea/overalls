@@ -117,3 +117,4 @@ restrictions. Retention and bounded notification delivery need operational limit
 
 - [ADR-0175](0175-thread-sharing-and-bound-machine-authority.md)
 - [ADR-0251](0251-thread-owned-durable-attachments.md)
+- [ADR-0261](0261-thread-feed-turn-notifications-and-subscription-revocation.md) adds `turn_finished` notifications and the `revoked` subscription state.

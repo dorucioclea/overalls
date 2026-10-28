@@ -79,7 +79,7 @@ JSON-encoded read object is limited to 64 KiB, including metadata and escaping;
 larger results return `result_too_large` without partial content. Pending
 threads without an agent binding have no events. Internal agent-thread IDs are
 not valid user-thread read targets. Subscriptions persist through Ash resources with idempotent active/inactive state
-transitions. Subscribe and replay lock the user thread and recheck read authority.
+transitions and a `revoked` state for lost read authority. Subscribe and replay lock the user thread and recheck read authority.
 The subscription's durable user-thread identity survives machine replacement;
 the originating agent-thread identity is retained as provenance. Creating a first
 subscription requires a bound agent thread. Existing subscriptions remain usable
@@ -93,6 +93,22 @@ agents and machines outside Threads retain their exact agent-thread destination.
 Unsubscribing one receiver does not disable other agents for the same account.
 Agent replay requires that caller's active receiver as well as the account's
 active subscription and current read permission.
+
+The feed carries two content-free kinds: `machine_purged` from board cleanup and
+`turn_finished`. Finishing an ordinary turn of a top-level agent thread inserts
+`Threads.FeedAppendJob` in the turn-finish transaction; the job appends one
+notification holding only the turn ID and closed outcome, under the user
+thread's feed lock with the next dense sequence, and appends nothing on retry or
+duplicate. Maintenance turns, including subscription-notification turns, and
+child threads are not announced, so mutually subscribed threads cannot wake each
+other indefinitely. Thread grant changes, team-membership changes (including SCIM
+cleanup) and account retirement insert `Threads.SubscriptionRevokeJob` in their
+own transaction. It rechecks current Cedar read under the user-thread lock and
+moves each subscription whose owner lost read to `revoked`, deactivates its
+receivers and records one `thread_subscription_revoked` audit row. A later
+authorized subscribe reactivates it; subscribe, replay and delivery still recheck
+authority themselves
+([ADR-0261](repo:docs/architecture/decisions/0261-thread-feed-turn-notifications-and-subscription-revocation.md)).
 
 The notification worker polls PostgreSQL once per second. It locks target and
 receiving user threads in UUID order, then the receiving agent, machine and

@@ -83,3 +83,4 @@ None.
 
 Builds on [ADR-0252](0252-profile-boards-and-thread-subscriptions.md);
 [ADR-0253](0253-artifacts-domain.md) adds the `artifact` server tool.
+[ADR-0261](0261-thread-feed-turn-notifications-and-subscription-revocation.md) adds the feed-append and subscription-revocation jobs.

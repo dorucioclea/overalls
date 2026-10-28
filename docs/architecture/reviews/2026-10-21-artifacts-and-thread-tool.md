@@ -102,6 +102,74 @@ On the merged tree (trunk `9d8ff1ee0` plus this change), on 2026-10-21:
   only a genuine machine binding. The thread-tool fixture now makes the shared
   thread the owner's machine thread with the member as operator.
 
+## 2026-10-28 follow-up: feed and revocation jobs and missing properties
+
+The plan's two remaining Oban jobs and its missing property tests were built on
+trunk `f7b52cd21` ([ADR-0261](../decisions/0261-thread-feed-turn-notifications-and-subscription-revocation.md)):
+
+- `Threads.FeedAppendJob` appends one `turn_finished` notification per finished
+  ordinary top-level turn, enqueued in the turn-finish transaction; board
+  cleanup and the job share `Agents.ThreadFeed` for dense sequencing.
+- `Threads.SubscriptionRevokeJob`, enqueued by thread-grant, team-membership,
+  SCIM cleanup and retirement changes, moves subscriptions whose owner lost
+  current Cedar read to the new `revoked` state with one audit row each. The
+  migration only widens the subscription state check.
+- New Hegel properties: coordinator lifecycle, artifact authorization freshness
+  (direct grants, team grants, membership, tickets), publish-request states,
+  server-tool claims (executor exclusion, racing workers, reconciler), thread
+  tool visibility and replay, feed-job revocation model and Oban idempotency
+  (reruns, rolled-back runs, duplicate enqueues).
+
+Defects found by the new properties and fixed here:
+
+- `ServerToolReconciler` raised `Ecto.SubQueryError` on every run: its two
+  schemaless `NOT EXISTS` subqueries had no `select`, so lost server-tool jobs
+  were never re-enqueued and stale claims never finished `uncertain`.
+- `provision_worker_property_test.exs` used StreamData syntax that Hegel lacks
+  and did not compile, which stopped any Marshall run including the threads
+  test directory.
+
+New machine subtests:
+
+- `artifact-agent-publish`: the owner's deletion stops a live viewer ticket and
+  leaves a content-free tombstone with one `deleted` and one `purged` audit row;
+  a purge of 2,500 storage entries interrupted after one batch by stopping every
+  Marshall replica finishes after restart with no content rows; a server-tool
+  command queued while the agent-tool queue is paused and every replica restarts
+  runs exactly once and publishes exactly one version.
+- `thread-tool`: revoking the member's share moves their subscription to
+  `revoked`, deactivates its receivers and writes one
+  `thread_subscription_revoked` audit row.
+
+Defects found by the machine runs and fixed here:
+
+- `fleet/scenarios/agent.py` asserted that a user thread's ID equals its agent
+  thread's ID (trunk `4f262ee02`); the two are distinct identities, so every
+  fleet check composing that subtest failed. It now checks that the user thread
+  binds a top-level agent thread on its own machine.
+- The fleet thread fixture's objective ("Report this machine's hostname") was
+  not a scripted provider prompt, so the initial turn was refused with
+  `prompt` and never completed once that subtest asserted completion. It now
+  uses the scripted "Read this machine's hostname".
+- `agent_revocation_history_test.exs` omitted the closed, content-free
+  `context_captured` and `context_compacted` audit kinds from its receipt check.
+
+Execution on 2026-10-28 (local, staged tree on `f7b52cd21`):
+
+- `nix build .#checks.x86_64-linux.artifact-agent-publish` passed: all 15 subtests
+- `nix build .#checks.x86_64-linux.thread-tool` passed: all 10 subtests
+- Marshall agents, threads, transcript, sharing, message-board, state-machine,
+  Oban-queue, teams, SCIM, accounts, contract and artifact suites passed
+  (246 tests in the second run; the first run's only failure was the receipt
+  check above). `mix dialyzer --force-check` reported 0 errors;
+  `check_logging marshall`, `hldd_views --check` and `check_hldd` passed.
+
+Architecture impact: ADR-0261 extends ADR-0252's subscription states and
+notification kinds; ADR-0255's dispatch is unchanged. No machine test yet
+exercises a `turn_finished` notification turn delivered to a subscribed agent;
+that path is BEAM-only. Administrator deletion is covered by BEAM tests only,
+because elevation cannot be held by an unattended fixture.
+
 ## Remaining gaps
 
 - The stale-base `artifact-agent-publish` subtest failed intermittently with

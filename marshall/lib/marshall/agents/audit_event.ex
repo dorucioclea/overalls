@@ -69,7 +69,8 @@ defmodule Marshall.Agents.AuditEvent do
           :artifact_published,
           :artifact_read,
           :artifact_listed,
-          :artifact_deleted
+          :artifact_deleted,
+          :thread_subscription_revoked
         ]
       ]
 

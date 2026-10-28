@@ -5,6 +5,8 @@
 # member, never the owner's private thread). The ADR-0255 Oban job
 # MUST run every thread command without a guest executor identity, each MUST
 # write one tool_finished audit row, and no log may contain thread titles.
+# Revoking the member's share MUST move the member's subscription to `revoked`
+# through the ADR-0261 job, deactivate its receivers and record one audit row.
 # Fragment of the fleet driver: users, sql, operator and the server-tool setup
 # helpers are defined by earlier fragments.
 
@@ -74,3 +76,40 @@ with subtest("thread operations write audit rows and logs omit thread content"):
     )
     for title in ["Fleet shared plan", "Fleet private plan"]:
         assert title not in journals, "thread content reached the logs"
+
+with subtest("revoking the share revokes the member's subscription"):
+    server_tool_operator(
+        m1,
+        dict(
+            action="thread-share",
+            thread_id=shared_thread,
+            owner_id=owner_id,
+            user_id=member_id,
+            role="revoked",
+        ),
+    )
+    subscription_filter = f"owner_id='{member_id}' AND user_thread_id='{shared_thread}'"
+    eventually(
+        lambda: (
+            sql(f"SELECT state FROM agent_thread_tool_subscriptions WHERE {subscription_filter}")
+            == "revoked"
+        ),
+        timeout=180,
+    )
+    subscription = sql(
+        f"SELECT id FROM agent_thread_tool_subscriptions WHERE {subscription_filter}"
+    )
+    assert (
+        sql(
+            "SELECT count(*) FROM agent_thread_receivers "
+            f"WHERE subscription_id='{subscription}' AND state='active'"
+        )
+        == "0"
+    )
+    assert (
+        sql(
+            "SELECT count(*) FROM agent_audit_events "
+            f"WHERE target_id='{subscription}' AND kind='thread_subscription_revoked'"
+        )
+        == "1"
+    )

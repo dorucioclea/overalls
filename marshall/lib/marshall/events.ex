@@ -102,6 +102,21 @@ defmodule Marshall.Events do
     metadata: [thread_id: :uuid, user_id: :uuid]
   )
 
+  defevent("thread.feed_appended",
+    message: "User thread feed notification appended",
+    metadata: [thread_id: :uuid, turn_id: :uuid]
+  )
+
+  defevent("thread.subscription_revoked",
+    message: "Thread subscription revoked after read authority was lost",
+    metadata: [subscription_id: :uuid, thread_id: :uuid, user_id: :uuid]
+  )
+
+  defevent("thread.subscriptions_reviewed",
+    message: "Thread subscriptions re-evaluated after an authority change",
+    metadata: [checked: :int, revoked: :int]
+  )
+
   defevent("thread.provision_failed",
     level: :warning,
     message: "User thread machine provisioning failed",

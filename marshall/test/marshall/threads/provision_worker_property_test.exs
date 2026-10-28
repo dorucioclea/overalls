@@ -3,12 +3,24 @@ defmodule Marshall.Threads.ProvisionWorkerPropertyTest do
   import Hegel
   import Hegel.Gen
 
+  @retryable [:machine_not_ready, :agent_unavailable]
+  @terminal [
+    :machine_unavailable,
+    :forbidden,
+    :provider_failed,
+    :capability_denied,
+    :access_revoked,
+    :invalid_request,
+    :not_found
+  ]
+
   property "only transient activation failures are retried", test_cases: 100 do
-    check all(
-            reason <- one_of([constant(:machine_not_ready), constant(:agent_unavailable), atom()])
-          ) do
-      assert Marshall.Threads.ProvisionWorker.retryable_activation_reason?(reason) ==
-               reason in [:machine_not_ready, :agent_unavailable]
-    end
+    reason = draw("reason", member_of(@retryable ++ @terminal))
+    noise = draw("noise", term())
+
+    assert Marshall.Threads.ProvisionWorker.retryable_activation_reason?(reason) ==
+             reason in @retryable
+
+    refute Marshall.Threads.ProvisionWorker.retryable_activation_reason?({reason, noise})
   end
 end

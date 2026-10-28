@@ -472,7 +472,9 @@ defmodule Marshall.Agents.ModelProtocol do
       %{
         "role" => "developer",
         "content" =>
-          "A subscribed thread has a machine-cleanup notification. This is a system notification, not a user request. Use the thread tool to replay details if needed: " <>
+          "A subscribed thread has a " <>
+            notification_label(body["kind"]) <>
+            " notification. This is a system notification, not a user request. Use the thread tool to replay details if needed: " <>
             Jason.encode!(notification)
       }
     ]
@@ -704,4 +706,8 @@ defmodule Marshall.Agents.ModelProtocol do
     do:
       byte_size(model) in 1..256 and
         Regex.match?(~r/\A[a-zA-Z0-9][a-zA-Z0-9._:\/-]*\z/, model)
+
+  @spec notification_label(term()) :: String.t()
+  defp notification_label("turn_finished"), do: "turn-finished"
+  defp notification_label(_), do: "machine-cleanup"
 end

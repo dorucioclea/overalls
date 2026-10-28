@@ -117,6 +117,27 @@ defmodule ArtifactMachineFixture do
   def storage_write(artifact_id, user_id, namespace, key, value),
     do: Storage.put(user!(user_id), artifact_id, namespace, key, value)
 
+  @doc "Writes `count` small personal entries as the owner so a purge needs several steps."
+  @spec fill_storage!(String.t(), String.t(), pos_integer()) :: :ok
+  def fill_storage!(artifact_id, owner_id, count) when count in 1..5_000 do
+    Enum.each(1..count, fn n ->
+      :ok = Storage.put(user!(owner_id), artifact_id, :personal, "entry-#{n}", "1")
+    end)
+  end
+
+  @doc "Deletes through the owner's authorized action; the purge job is enqueued with it."
+  @spec delete!(String.t(), String.t()) :: :ok
+  def delete!(artifact_id, owner_id) do
+    {:ok, %Artifact{state: :deleting}} = Library.delete(user!(owner_id), artifact_id, :web)
+    :ok
+  end
+
+  @doc "Runs exactly one purge step, as a worker would before being interrupted."
+  @spec purge_step!(String.t()) :: :ok
+  def purge_step!(artifact_id) do
+    :ok = Marshall.Artifacts.PurgeJob.perform(%Oban.Job{args: %{"artifact_id" => artifact_id}})
+  end
+
   @spec state!(String.t()) :: %{
           current_version: non_neg_integer(),
           versions: non_neg_integer(),
@@ -195,6 +216,23 @@ defmodule ThreadMachineFixture do
     end
 
     %{id: thread.id}
+  end
+
+  @doc "Changes a reader's role through the creator's real set_access action."
+  @spec share!(String.t(), String.t(), String.t(), :operator | :viewer | :revoked) :: :ok
+  def share!(thread_id, owner_id, user_id, role) do
+    {:ok, _} =
+      Marshall.Threads.set_access(
+        %{
+          thread_id: thread_id,
+          email: to_string(Security.current(user_id).email),
+          role: role,
+          idempotency_key: Ash.UUID.generate()
+        },
+        actor: Security.current(owner_id)
+      )
+
+    :ok
   end
 
   @spec bind_machine!(

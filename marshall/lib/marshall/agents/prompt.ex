@@ -67,7 +67,7 @@ defmodule Marshall.Agents.Prompt do
   @spec valid_maintenance_metadata?(atom(), map()) :: boolean()
   defp valid_maintenance_metadata?(:subscription_notification, metadata) do
     Enum.sort(Map.keys(metadata)) == ~w(kind notification_id sequence thread_id) and
-      metadata["kind"] == "machine_purged" and
+      metadata["kind"] in ["machine_purged", "turn_finished"] and
       OverallsProtocol.uuid?(metadata["notification_id"]) and
       OverallsProtocol.uuid?(metadata["thread_id"]) and
       is_integer(metadata["sequence"]) and metadata["sequence"] > 0

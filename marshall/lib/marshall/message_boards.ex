@@ -119,33 +119,10 @@ defmodule Marshall.MessageBoards do
   defp append_cleanup!(thread_id, vm_id, state, count) do
     case notification_target(thread_id, vm_id) do
       {id, owner} ->
-        Ecto.Adapters.SQL.query!(
-          Marshall.Repo,
-          "SELECT pg_advisory_xact_lock(hashtextextended($1, 0))",
-          ["thread-notification:#{thread_id}"],
-          log: false
-        )
-
-        events =
-          Marshall.Agents.ThreadNotification
-          |> Ash.Query.filter(user_thread_id == ^thread_id)
-          |> Ash.Query.sort(sequence: :desc)
-          |> Ash.Query.limit(1)
-          |> Ash.read!(actor: SystemActor.compute())
-
-        sequence =
-          case events do
-            [] -> 1
-            [event] -> event.sequence + 1
-          end
-
-        Ledger.create!(Marshall.Agents.ThreadNotification, :append, %{
-          thread_id: id,
-          user_thread_id: thread_id,
-          owner_id: owner,
-          sequence: sequence,
-          kind: :machine_purged,
-          metadata: %{state: Atom.to_string(state), vm_id: vm_id, count: count}
+        Marshall.Agents.ThreadFeed.append_locked!(thread_id, id, owner, :machine_purged, %{
+          state: Atom.to_string(state),
+          vm_id: vm_id,
+          count: count
         })
 
       _ ->

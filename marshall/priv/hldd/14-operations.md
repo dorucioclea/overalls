@@ -798,6 +798,8 @@ Background work runs in Oban ([configuration](repo:marshall/config/config.exs)):
 | `Artifacts.PurgeJob` | `artifacts` (limit 5), enqueued by deletion | Deletes 1,000 content rows per step until done, then `deleted` |
 | `Artifacts.SweepJob` | `artifacts`, hourly at :20 | Deletes up to 500 unreferenced blobs older than one hour per run |
 | `Artifacts.UsageReconcileJob` | `maintenance`, daily at 03:40 | Corrects storage usage counters from entries |
+| `Threads.FeedAppendJob` | `default`, enqueued when an ordinary top-level turn finishes | Appends one `turn_finished` feed notification; up to 10 attempts |
+| `Threads.SubscriptionRevokeJob` | `default`, enqueued by thread-grant, team-membership and retirement changes | Revokes subscriptions whose owner lost read, 200 per page; up to 10 attempts |
 
 All jobs are idempotent; re-running one is safe.
 

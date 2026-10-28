@@ -76,7 +76,7 @@ defmodule Marshall.Authorization.AshAuthorizer do
     Marshall.Agents.SkillRevision => [:read, :record],
     Marshall.MessageBoards.Board => [:read, :open],
     Marshall.MessageBoards.Post => [:read, :post, :destroy],
-    Marshall.Agents.ThreadSubscription => [:read, :subscribe, :activate, :deactivate],
+    Marshall.Agents.ThreadSubscription => [:read, :subscribe, :activate, :deactivate, :revoke],
     Marshall.Agents.ThreadReceiver => [
       :read,
       :register,

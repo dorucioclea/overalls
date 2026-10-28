@@ -26,20 +26,23 @@ defmodule Marshall.Agents.ThreadSubscription do
 
     check_constraints do
       check_constraint :state, "thread_subscription_state",
-        check: "state IN ('active', 'inactive')"
+        check: "state IN ('active', 'inactive', 'revoked')"
     end
   end
 
-  # @cc [owner:ghuntley,label:durability] thread-subscription-transitions
+  # @cc [owner:ghuntley,label:durability;security] thread-subscription-transitions
   # Activate and deactivate MUST be idempotent state transitions retaining identity.
+  # Revocation records lost read authority; only a fresh, authorized subscribe
+  # may leave `revoked`.
   state_machine do
     state_attribute :state
     initial_states [:active, :inactive]
     default_initial_state :active
 
     transitions do
-      transition :activate, from: [:active, :inactive], to: :active
-      transition :deactivate, from: [:active, :inactive], to: :inactive
+      transition :activate, from: [:active, :inactive, :revoked], to: :active
+      transition :deactivate, from: [:active, :inactive, :revoked], to: :inactive
+      transition :revoke, from: [:active, :inactive], to: :revoked
     end
   end
 
@@ -59,6 +62,11 @@ defmodule Marshall.Agents.ThreadSubscription do
       accept []
       change transition_state(:inactive)
     end
+
+    update :revoke do
+      accept []
+      change transition_state(:revoked)
+    end
   end
 
   attributes do
@@ -70,7 +78,7 @@ defmodule Marshall.Agents.ThreadSubscription do
     attribute :state, :atom,
       allow_nil?: false,
       default: :active,
-      constraints: [one_of: [:active, :inactive]]
+      constraints: [one_of: [:active, :inactive, :revoked]]
 
     attribute :cursor, :integer, allow_nil?: false, default: 0
     create_timestamp :inserted_at

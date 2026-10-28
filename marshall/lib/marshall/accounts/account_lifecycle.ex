@@ -176,7 +176,7 @@ defmodule Marshall.Accounts.AccountLifecycle do
   # Administrator retirement and SCIM finalization MUST retire the same
   # attached state in the identity-retiring transaction: the guest account,
   # team memberships and transfers, user-owned integrations, GitHub and
-  # notification subscriptions.
+  # notification subscriptions, and MUST enqueue revocation of thread subscriptions.
   @doc "Retires every identity attachment; the caller holds the retirement fence and user lock."
   @spec retire_attachments!(String.t(), String.t()) :: :ok
   def retire_attachments!(id, actor_id) do
@@ -185,7 +185,7 @@ defmodule Marshall.Accounts.AccountLifecycle do
     retire_integrations!(id)
     Marshall.GitHub.retire_locked!(id)
     _ = Marshall.Notifications.revoke_for_user!(id, :account_retired)
-    :ok
+    Marshall.Threads.SubscriptionRevokeJob.enqueue_owner!(id)
   end
 
   @spec owned_count(String.t()) :: non_neg_integer()

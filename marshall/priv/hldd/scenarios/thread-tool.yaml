@@ -35,16 +35,37 @@ evidence:
   path: marshall/test/marshall/state_machines_test.exs
   scope: Every governed state-machine resource, including Thread; two recorded pre-existing exceptions
     (Scim.Configuration.create, Redaction.Shard.transition). Focused run passed on 2026-10-21.
-- assertion: thread search, read, subscribe and replay honour Cedar read access
+- assertion: search, subscribe and replay follow current thread authority
   execution: present
+  kind: property
+  path: marshall/test/marshall/agents/thread_tool_property_test.exs
+  scope: Hegel-generated shares and feed appends against real PostgreSQL; idempotent subscribe and refusal of
+    unshared threads. Focused run passed on 2026-10-28.
+- assertion: server-tool commands are claimed once and never by the executor
+  execution: present
+  kind: property
+  path: marshall/test/marshall/agents/server_tool_claim_property_test.exs
+  scope: Hegel-generated executors, racing workers and reconciler passes against real PostgreSQL; found and fixed a
+    reconciler query that raised on every run. Focused run passed on 2026-10-28.
+- assertion: subscription reviews match the current read authority model
+  execution: present
+  kind: property
+  path: marshall/test/marshall/threads/feed_jobs_test.exs
+  scope: Hegel model over grant, team and subscribe histories for SubscriptionRevokeJob, plus units for one
+    turn_finished notification per finished ordinary turn (ADR-0261). Focused run passed on 2026-10-28.
+- assertion: thread search, read, subscribe and replay honour Cedar read access
+  execution: recorded
   kind: machine
   path: nix/verification/tests/machines/thread-tool/scenario.py
+  record: docs/architecture/reviews/2026-10-21-artifacts-and-thread-tool.md
+  record_assertion: '`nix build .#checks.x86_64-linux.thread-tool` passed: all 10 subtests'
   scope: Fleet with a real NixOS guest and model fixture; the owner's machine thread is shared with the member
     as operator and an unbound private thread is not; search returns only the shared thread, and read,
     subscribe with an active receiver and replay complete with one tool_finished audit row per command, no
-    executor identity and payload-free logs.
-gaps: The thread-tool NixOS machine test passed locally on 2026-10-21 on the merged design but has no repository
-  execution record. The reconciler's requeue and uncertain-claim paths have no dedicated test.
+    executor identity and payload-free logs; revoking the share revokes the subscription, deactivates its
+    receivers and writes one thread_subscription_revoked audit row. All 10 subtests passed on 2026-10-28.
+gaps: No machine test delivers a turn_finished notification turn to a subscribed agent; that path is BEAM-only.
+  Focused Marshall runs have no repository execution record.
 id: thread-tool
 journey: An agent searches, reads, subscribes to and replays a user thread the prompting user can read, and is
   refused threads it cannot read
@@ -54,9 +75,9 @@ layers:
 - execution
 - storage
 - recovery
-preferred_gap: Add a repository execution record for the thread-tool NixOS machine run and a reconciler test
-  for orphaned queued and stale claimed commands.
+preferred_gap: Extend the thread-tool machine run to finish a turn in a followed thread and assert the subscriber's
+  notification turn.
 scope: A Hegel state-machine property against PostgreSQL, graph and accepted-attribute units, PostgreSQL-backed
-  server-tool units for Cedar-visible search and claim-time access refusal, and one present but unrecorded NixOS
-  machine test.
+  server-tool units for Cedar-visible search and claim-time access refusal, thread-tool, server-tool claim and feed
+  job properties, and the recorded thread-tool NixOS machine run.
 status: partial

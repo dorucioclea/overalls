@@ -17,6 +17,7 @@ defmodule FleetServerToolOperator do
     "Publish artifact fixture",
     "Publish stale artifact fixture",
     "Publish staged artifact fixture",
+    "Publish restarted artifact fixture",
     "Use thread tool fixture"
   ]
 
@@ -82,6 +83,42 @@ defmodule FleetServerToolOperator do
     end
   end
 
+  # Purge interruption: this eval node never serves the artifacts queue, so the
+  # one step it runs is the only work done before the replicas restart.
+  def run(%{
+        "action" => "artifact-purge-interrupted",
+        "owner_id" => owner,
+        "entries" => entries
+      })
+      when is_integer(entries) do
+    :ok = Oban.pause_queue(queue: :artifacts, local_only: true)
+
+    %{id: artifact} =
+      Artifacts.seed_artifact!(%{
+        owner_id: owner,
+        title: "Purge fixture",
+        entry: "index.html",
+        files: %{"index.html" => "<p>purge fixture</p>"}
+      })
+
+    :ok = Artifacts.fill_storage!(artifact, owner, entries)
+    :ok = Artifacts.delete!(artifact, owner)
+    :ok = Artifacts.purge_step!(artifact)
+    %{artifact_id: artifact}
+  end
+
+  def run(%{"action" => "artifact-delete", "artifact_id" => artifact, "owner_id" => owner}) do
+    :ok = Artifacts.delete!(artifact, owner)
+    %{deleting: true}
+  end
+
+  # Pauses server-tool execution on every replica through the shared notifier
+  # so a queued command is still pending when the replicas restart.
+  def run(%{"action" => "pause-agent-tools"}) do
+    :ok = Oban.pause_queue(queue: :agent_tools)
+    %{paused: "agent_tools"}
+  end
+
   def run(%{"action" => "artifact-state", "artifact_id" => artifact}) do
     state = Artifacts.state!(artifact)
 
@@ -117,6 +154,18 @@ defmodule FleetServerToolOperator do
       })
 
     %{thread_id: id}
+  end
+
+  def run(%{
+        "action" => "thread-share",
+        "thread_id" => thread,
+        "owner_id" => owner,
+        "user_id" => user,
+        "role" => role
+      })
+      when role in ["operator", "viewer", "revoked"] do
+    :ok = Threads.share!(thread, owner, user, String.to_existing_atom(role))
+    %{shared: role}
   end
 
   defp private_write(path, value) when is_binary(value) do

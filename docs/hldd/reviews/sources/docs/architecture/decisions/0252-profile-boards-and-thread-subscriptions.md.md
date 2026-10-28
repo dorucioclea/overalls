@@ -1,17 +1,17 @@
 ---
-digest: a51d229c29bf4fa3e196ffec95d4b50112b1f81bda95a0b9b73a83187c0c2df5
-disposition: no-impact
+digest: 04b6b59567cdf14f6669dfe359df109c85ea4520fb077e48fc3c783075f14b39
+disposition: updated
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
 path: docs/architecture/decisions/0252-profile-boards-and-thread-subscriptions.md
 reviewed_chapters:
-  marshall/priv/hldd/17-reference.md: 7cbeeb5bb6bbbbc170df005edbd41b0b9ea84cc90b0598b4e99b800aa95475b2
-  marshall/priv/hldd/19-coverage.md: 4eeaf4262a43bb43546a9372a2cf2c499f6c2d480a1cec68c77d585d727dc5d9
-  marshall/priv/hldd/20-security.md: c6acd9d0dc9ad13a47d0b6a3b2ec63fffb1b062d169f766cac577b01935407af
-  marshall/priv/hldd/21-domains.md: 30873f1b247f2666ca7eb0f93f5a942394e733fb993ea599cba1392dc7d21bae
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 1c45053e1626bbaa444d831e055a2a5588251bcd9de92ac6b772b4f7dcb76174
+  marshall/priv/hldd/19-coverage.md: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Reviewed architecture and ADR evidence; chapter changes already recorded.
+ADR-0261 added and indexed; ADR-0252/0255 link it; overview and artifacts review record the feed/revocation jobs, new properties and reconciler fix, matching 11-agents, 14-operations and 17-reference.

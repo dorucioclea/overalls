@@ -242,7 +242,7 @@ defmodule Marshall.Agents.ThreadDelivery do
           "thread_id" => subscription.user_thread_id,
           "notification_id" => event.id,
           "sequence" => event.sequence,
-          "kind" => "machine_purged"
+          "kind" => Atom.to_string(event.kind)
         }
 
         key = "subscription:" <> receiver.id <> ":" <> Integer.to_string(event.sequence)

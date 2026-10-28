@@ -744,6 +744,11 @@ the polling worker for ADR-0252's `thread` and `message_board` tools, and runs t
 `artifact` tool, with an Oban job under the prompting user's fresh Cedar and Access
 authority; it excludes Marshall-owned tools from guest executor claims and makes
 Thread status an AshStateMachine with one lifecycle audit event per transition.
+[ADR-0261](decisions/0261-thread-feed-turn-notifications-and-subscription-revocation.md)
+appends a content-free `turn_finished` notification for each finished ordinary
+turn through an Oban job enqueued in the turn-finish transaction, and revokes
+subscriptions whose owner lost read through a job enqueued by every grant,
+team-membership or retirement change.
 [ADR-0253](decisions/0253-artifacts-domain.md) adds `Marshall.Artifacts`:
 versioned, optimistic-base agent-published pages, Cedar owner/writer/viewer
 grants for users and teams, per-artifact storage, closed audit and administrator

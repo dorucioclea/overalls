@@ -55,6 +55,36 @@ class ChildPublication(TypedDict):
     records: list[dict[str, object]]
 
 
+def previous_records(value: object) -> list[dict[str, object]]:
+    """Validate records copied from the last complete local publication."""
+    if not isinstance(value, list) or len(value) > 255:
+        raise SetupError("prior publication records invalid")
+    records: list[dict[str, object]] = []
+    labels: set[str] = set()
+    for item in value:
+        if (
+            not isinstance(item, dict)
+            or set(item) != {"label", "ready", "proofs"}
+            or not isinstance(item["label"], str)
+            or item["label"] in labels
+            or not (
+                item["label"] == "control"
+                or item["label"] == ""
+                or ingress.LABEL.fullmatch(item["label"])
+            )
+            or type(item["ready"]) is not bool
+            or not isinstance(item["proofs"], list)
+            or len(item["proofs"]) > 2
+            or not all(proof(entry) for entry in item["proofs"])
+            or len(set(item["proofs"])) != len(item["proofs"])
+            or (item["label"] == "" and (item["ready"] or not item["proofs"]))
+        ):
+            raise SetupError("prior publication record invalid")
+        labels.add(item["label"])
+        records.append({"label": item["label"], "ready": item["ready"], "proofs": item["proofs"]})
+    return records
+
+
 def now() -> int:
     return time.monotonic_ns() // 1000000
 
@@ -304,11 +334,23 @@ def collect(
     While a control proof is present, publication MUST return that proof before
     optional gateway lookups. This also applies when an older certificate is
     already serving: renewal must not let the slow gateway lookups outlive the
-    control heartbeat before the parent observes the new proof. Once the proof
-    is cleaned up, the complete route and host-key publication resumes.
+    control heartbeat before the parent observes the new proof. A still-valid
+    prior route and host-key snapshot MUST be retained so publishing a control
+    proof cannot withdraw the child's A record during certificate issuance.
     """
     # Validate the closed boot/namespace schema before consuming any authority.
     ingress.request(encode(dict(config, request_id=boot["placement_id"])), boot)
+    request_config: ingress.Configuration = {
+        "version": config["version"],
+        "binding": config["binding"],
+        "request_id": boot["placement_id"],
+        "generation": config["generation"],
+        "origins": config["origins"],
+    }
+    if "public" in config:
+        request_config["public"] = config["public"]
+    if "parent" in config:
+        request_config["parent"] = config["parent"]
     started = now()
     result: ChildPublication = {
         "binding": config["binding"],
@@ -324,6 +366,21 @@ def collect(
             json.loads(read_private(root / "control-publication.json", 4096)), config, now()
         )
         if control["proofs"]:
+            # DNS/SSH lookups can take the whole control heartbeat under load.
+            # Keep the last complete local snapshot when it is still valid; the
+            # parent will cap its lease by that snapshot's remaining lifetime.
+            try:
+                previous = ingress.publication(request_config, root, now=started)
+                result["expires_at_ms"] = min(result["expires_at_ms"], started + previous["ttl_ms"])
+                result["porsche_host_key"] = previous["porsche_host_key"]
+                result["audi_host_key"] = previous["audi_host_key"]
+                result["records"].extend(
+                    record
+                    for record in previous_records(previous["records"])
+                    if record["label"] != "control"
+                )
+            except (OSError, ValueError, TypeError, KeyError, RecursionError, SetupError):
+                pass
             result["records"].append(control)
             result["expires_at_ms"] = min(result["expires_at_ms"], expiry)
             if now() >= result["expires_at_ms"]:

@@ -311,6 +311,19 @@ class PublicationTest(unittest.TestCase):
             self.assertEqual(calls, [])
             calls.clear()
             publish(
+                self.root / "publication.json",
+                encode(
+                    {
+                        "binding": self.boot,
+                        "generation": 1,
+                        "expires_at_ms": 5000,
+                        "porsche_host_key": KEY,
+                        "audi_host_key": KEY,
+                        "records": [{"label": LABEL, "ready": True, "proofs": []}],
+                    }
+                ),
+            )
+            publish(
                 self.root / "control-publication.json",
                 encode(
                     {
@@ -325,7 +338,11 @@ class PublicationTest(unittest.TestCase):
             result = publication.collect(self.boot, self.config, Client(), self.root, self.root)
             self.assertEqual(result["expires_at_ms"], 1100)
             self.assertEqual(
-                result["records"], [{"label": "control", "ready": True, "proofs": [PROOF]}]
+                result["records"],
+                [
+                    {"label": LABEL, "ready": True, "proofs": []},
+                    {"label": "control", "ready": True, "proofs": [PROOF]},
+                ],
             )
             self.assertEqual(calls, [])
             with self.assertRaises(SetupError):

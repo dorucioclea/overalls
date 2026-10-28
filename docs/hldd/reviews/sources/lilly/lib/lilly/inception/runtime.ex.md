@@ -1,6 +1,6 @@
 ---
-digest: 7e73e9abacc61122bfdf2254732067665e4243e5f07e8942b734de99872fee02
-disposition: updated
+digest: 670aed0113199bdf3d6791a3be6e0f2809cc490cd60aff60f5fd507b8cc95826
+disposition: no-impact
 kind: source
 mapping_digest: f7ae1015b8a6b22d2b48a9d01c1d52b5bf0d4191e2a4cb42263c24f5d17194fc
 path: lilly/lib/lilly/inception/runtime.ex
@@ -19,4 +19,4 @@ state: present
 version: 2
 ---
 
-Lilly now refreshes the parent offer after each guest publication collection, including the publication submitted after authoritative observation, so every short-lived result is committed against current authority.
+The change preserves the existing bounded Inception publication contract and DNS evidence boundaries; it only removes a redundant intermediate poll within the already documented lease fence.

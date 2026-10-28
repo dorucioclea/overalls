@@ -11,14 +11,14 @@ private class MemorySettingsStore : MilaSettingsStore {
 
 class MilaSettingsTest {
     @Test fun localeIsCanonicalizedToBcp47() {
-        assertEquals("fr-FR", canonicalMilaLocale(" fr_fr "))
-        assertEquals("fr-FR", canonicalMilaLocale("fr-FR"))
+        assertEquals("fr", canonicalMilaLocale(" fr_fr "))
+        assertEquals("fr", canonicalMilaLocale("fr-FR"))
         assertEquals(null, canonicalMilaLocale("not a locale"))
         assertEquals(null, canonicalMilaLocale("en-" + "x".repeat(64)))
     }
     @Test fun roundTripPreservesTypedPreferences() {
         val store = MemorySettingsStore(); val controller = MilaSettingsController(store)
-        val expected = MilaSettings(MilaAppearance.Dark, "fr-FR"); controller.save(expected)
+        val expected = MilaSettings(MilaAppearance.Dark, "fr"); controller.save(expected)
         assertEquals(expected, controller.load())
     }
     @Test fun malformedValuesUseSafeDefaults() {
@@ -27,11 +27,11 @@ class MilaSettingsTest {
     }
     @Test fun unsupportedCanonicalLocaleFallsBackToBundledDefault() {
         val store = MemorySettingsStore().also { it.values["mila.locale"] = "zh-CN" }
-        assertEquals("en", MilaSettingsController(store).load().locale)
+        assertEquals("zh-Hans", MilaSettingsController(store).load().locale)
     }
     @Test fun saveWritesCanonicalLocale() {
         val store = MemorySettingsStore(); MilaSettingsController(store).save(MilaSettings(MilaAppearance.System, " fr_fr "))
-        assertEquals("fr-FR", store.values["mila.locale"])
+        assertEquals("fr", store.values["mila.locale"])
     }
     @Test fun localeDirectionIsTypedAndFailsClosed() {
         assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("ar-EG"))

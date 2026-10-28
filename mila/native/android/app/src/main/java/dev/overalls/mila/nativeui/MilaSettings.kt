@@ -22,7 +22,9 @@ fun canonicalMilaLocale(value: String): String? {
     if (normalized.length > 64) return null
     if (!normalized.matches(Regex("^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$"))) return null
     val tag = Locale.forLanguageTag(normalized).toLanguageTag()
-    return tag.takeIf { it != "und" && it.substringBefore('-').length in 2..3 }
+    if (tag == "und" || tag.substringBefore('-').length !in 2..3) return null
+    return MilaStrings.supportedLocales.firstOrNull { it.equals(tag, ignoreCase = true) }
+        ?: MilaStrings.supportedLocales.firstOrNull { it.substringBefore('-') == tag.substringBefore('-') }
 }
 
 /** Return RTL only for the language tags whose scripts flow right-to-left. */

@@ -142,10 +142,10 @@ jobs:
         include:
           - platform: macos
             identity_var: MILA_APPLE_IDENTITY
-            artifact: "*.dmg"
+            artifact: "mila-native-macos-release.tar.gz"
           - platform: ios
             identity_var: MILA_IOS_IDENTITY
-            artifact: "*.ipa"
+            artifact: "mila-native-ios-release.tar.gz"
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Setup Nix
@@ -232,12 +232,11 @@ jobs:
           MILA_APPLE_PROFILE_NOTIFICATION_SERVICE: ${{ matrix.platform == 'macos' && vars.MILA_MACOS_PROFILE_NOTIFICATION_SERVICE || vars.MILA_IOS_PROFILE_NOTIFICATION_SERVICE }}
         run: |
           set -euo pipefail
-          devenv shell -- mila-build ${{ matrix.platform }} release
-          # The iOS plan copies the exported IPA without a checksum file.
+          export MILA_FFI_LIB_DIR="$GITHUB_WORKSPACE/mila/rust/target/release"
+          ./mila/native/mila-build ${{ matrix.platform }} release
           out=mila/build/${{ matrix.platform }}-release
-          if [ ! -f "$out/SHA256SUMS" ]; then
-            (cd "$out" && shasum -a 256 ${{ matrix.artifact }} > SHA256SUMS)
-          fi
+          test -f "$out/${{ matrix.artifact }}"
+          (cd "$out" && shasum -a 256 "${{ matrix.artifact }}" > SHA256SUMS)
       - name: Remove signing material
         if: always()
         run: |

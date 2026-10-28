@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [[ $# -ne 2 ]]; then
+  echo 'usage: mila-build <ios|macos> <dev|release>' >&2
+  exit 2
+fi
+case "$1" in
+  ios|macos) exec "$(cd "$(dirname "$0")" && pwd)/apple/build.sh" "$1" "$2" ;;
+  *) echo "unsupported native Apple platform: $1" >&2; exit 2 ;;
+esac

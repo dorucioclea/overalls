@@ -1,5 +1,5 @@
 ---
-digest: 83616581d0020ffd5bdc8b8ad08f0104cb8decd84986c602ee5a4f5e32daa449
+digest: 41e45837cf8394781fd346309e4a81c4b8e37eb50598de6dda13118f01ac5e58
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Retired Flutter artifacts and legacy machine checks; native-only release and CI evidence is authoritative.
+Restored native Apple build entry point and release packaging for iOS and macOS.

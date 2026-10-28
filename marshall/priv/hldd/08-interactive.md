@@ -1355,9 +1355,7 @@ Evidence:
 
 ### Mila build targets
 
-Every platform has a dev and a release target, driven by one typed planner,
-`mila-build`
-(`mila-build <linux|android|ios|macos|windows> <dev|release>`).
+Every platform has native dev and release targets. Apple builds use `devenv shell -- mila-build <ios|macos> <dev|release>`; Linux uses Nix, Android uses Gradle and Windows uses .NET.
 
 | Platform | Dev | Release |
 | --- | --- | --- |

@@ -309,6 +309,25 @@ class PublicationTest(unittest.TestCase):
                 result["records"], [{"label": "control", "ready": False, "proofs": [PROOF]}]
             )
             self.assertEqual(calls, [])
+            calls.clear()
+            publish(
+                self.root / "control-publication.json",
+                encode(
+                    {
+                        "binding": self.boot,
+                        "generation": 1,
+                        "expires_at_ms": 1100,
+                        "ready": True,
+                        "proofs": [PROOF],
+                    }
+                ),
+            )
+            result = publication.collect(self.boot, self.config, Client(), self.root, self.root)
+            self.assertEqual(result["expires_at_ms"], 1100)
+            self.assertEqual(
+                result["records"], [{"label": "control", "ready": True, "proofs": [PROOF]}]
+            )
+            self.assertEqual(calls, [])
             with self.assertRaises(SetupError):
                 publication.collect(
                     dict(self.boot, execution_epoch=2), self.config, Client(), self.root, self.root

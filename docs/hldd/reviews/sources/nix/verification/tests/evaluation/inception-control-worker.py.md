@@ -1,11 +1,11 @@
 ---
-digest: 0451306392f474f75227a1f83af770fac1a971a36b87b98c3bea44bbdfa60e90
+digest: 4ac77844d6b283ff859c0a6e516aa1e3aa1e48776bb9ed86d161eab209ebbcdc
 disposition: updated
 kind: source
 mapping_digest: 05e1761038133f69f40af77d180940fa94168af5fea92478049f84f74b8e9d48
 path: nix/verification/tests/evaluation/inception-control-worker.py
 reviewed_chapters:
-  marshall/priv/hldd/07-guests.md: 7ae19b50cf45b3c14133dce10b3539f089564fa61accbdc3024126baed9351dc
+  marshall/priv/hldd/07-guests.md: 3a5ea04515ee01a2121645d29f6ebdf063ffa7617ba4a44cd84e8946725974fa
   marshall/priv/hldd/12-configuration.md: 5318d494cf8479636aa2e2c3c61cb5505cb4cb8386e39b935cf62c62b997169f
   marshall/priv/hldd/13-deployment.md: 0bc4fe19bb9cdf60d5edc24c3777c7f54b170426d9ae5d1f611a2240053c3350
   marshall/priv/hldd/14-operations.md: 68c72d0e6fde22edd5d892f824dedd44f1843d68ece6c96ff5b3e2c1e50051c9
@@ -21,4 +21,4 @@ state: present
 version: 2
 ---
 
-Parent-owned DNS proof and cycle-free namespace startup now have focused evaluation and native retry evidence.
+Inception public certificate publication now preserves the complete Lego issuer chain, refreshes short-lived parent offers around child collection, and records native machine coverage for the nested control certificate path.

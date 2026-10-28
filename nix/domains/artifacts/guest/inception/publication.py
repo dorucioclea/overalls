@@ -301,11 +301,11 @@ def collect(
     state: Path = STATE,
 ) -> ChildPublication:
     """@cc [owner:ghuntley,label:security;recovery] inception-control-proof-fast-path
-    While a control proof is present but TLS readiness is false, publication MUST
-    return that proof before optional gateway lookups. Those lookups can each
-    consume a bounded network deadline while the control heartbeat expires in
-    two seconds; delaying the proof would prevent the parent from observing it.
-    Once readiness is true, the complete route and host-key publication resumes.
+    While a control proof is present, publication MUST return that proof before
+    optional gateway lookups. This also applies when an older certificate is
+    already serving: renewal must not let the slow gateway lookups outlive the
+    control heartbeat before the parent observes the new proof. Once the proof
+    is cleaned up, the complete route and host-key publication resumes.
     """
     # Validate the closed boot/namespace schema before consuming any authority.
     ingress.request(encode(dict(config, request_id=boot["placement_id"])), boot)
@@ -323,7 +323,7 @@ def collect(
         control, expiry = control_record(
             json.loads(read_private(root / "control-publication.json", 4096)), config, now()
         )
-        if control["proofs"] and not control["ready"]:
+        if control["proofs"]:
             result["records"].append(control)
             result["expires_at_ms"] = min(result["expires_at_ms"], expiry)
             if now() >= result["expires_at_ms"]:

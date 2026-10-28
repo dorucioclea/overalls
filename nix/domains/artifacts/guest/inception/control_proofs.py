@@ -21,6 +21,8 @@ from runtime import SetupError, encode, private_directory, publish, read_private
 ROOT = Path("/run/inception-control")
 NAMESPACE = Path("/run/inception")
 RUN_ID = re.compile(r"[0-9a-f]{64}")
+JOB_TTL_MS = 300_000
+PUBLICATION_TTL_MS = 5_000
 
 
 class Boot(Binding):
@@ -85,7 +87,7 @@ def begin(
     """@cc [owner:ghuntley,label:security;recovery] inception-control-proof-job
     A new certificate job MUST bind the current boot, generation and fixed
     control hostname. It MUST clear previous proofs and have one non-renewable
-    three-minute deadline. Only the single supervised certificate worker may
+    five-minute deadline. Only the single supervised certificate worker may
     begin jobs; a hook MUST NOT extend or replace job authority.
     """
     current = now() if current is None else current
@@ -98,7 +100,7 @@ def begin(
         "generation": config["generation"],
         "hostname": config["origins"]["control"],
         "started_at_ms": current,
-        "expires_at_ms": current + 180000,
+        "expires_at_ms": current + JOB_TTL_MS,
         "proofs": [],
     }
     with job_lock(root):
@@ -143,7 +145,7 @@ def current_job(
         or not job["started_at_ms"]
         <= current
         < job["expires_at_ms"]
-        <= job["started_at_ms"] + 180000
+        <= job["started_at_ms"] + JOB_TTL_MS
         or not isinstance(job["proofs"], list)
         or len(job["proofs"]) > 1
         or not all(observations.proof(p) for p in job["proofs"])
@@ -194,7 +196,7 @@ def record(
     current: int | None = None,
 ) -> Publication:
     """@cc [owner:ghuntley,label:recovery] inception-control-proof-heartbeat
-    Control publication MUST expire within two seconds if its producer stops.
+    Control publication MUST expire within five seconds if its producer stops.
     Proofs MUST additionally remain bound to the live current job and its original
     deadline. Readiness MUST be supplied only by a freshly verified local TLS
     listener; this helper MUST NOT infer readiness from proof or file existence.
@@ -203,7 +205,7 @@ def record(
     if type(ready) is not bool:
         raise SetupError("control certificate readiness invalid")
     config = configuration(boot, namespace)
-    proofs, expiry = [], current + 2000
+    proofs, expiry = [], current + PUBLICATION_TTL_MS
     try:
         job = current_job(boot, root, namespace, current)
         if job["binding"] == config["binding"] and job["generation"] == config["generation"]:
@@ -245,10 +247,9 @@ def wait_observed(
             "proofs": [proof],
         }
         try:
-            # DNS TTLs are whole seconds. A two-second publication produces at
-            # most one second of observed TTL after sampling and transport; an
-            # extra one-second margin would reject every legitimate observation.
-            # The broker still checks exact authority and its original deadline.
+            # DNS TTLs are whole seconds. A five-second publication leaves
+            # bounded room for sampling and transport while the broker still
+            # checks exact authority and the original job deadline.
             if observations.remaining(request, shared) > 0:
                 return
         except (OSError, ValueError, KeyError, TypeError, SetupError):

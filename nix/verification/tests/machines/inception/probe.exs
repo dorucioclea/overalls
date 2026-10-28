@@ -605,7 +605,7 @@ defmodule InceptionFixture do
         for unit <-
               ~w(inception-control-certificate inception-control-proxy inception-publication audi) do
           result = console(config, spec, "systemctl is-active --quiet #{unit}.service", 3000)
-          File.write!("/dev/console", "Public #{unit} active: #{result}\n")
+          IO.puts("Public #{unit} active: #{result}")
         end
 
         for {name, command} <- [
@@ -624,7 +624,7 @@ defmodule InceptionFixture do
               {"worker crash",
                "systemctl show -p NRestarts --value inception-control-certificate.service | grep -qv '^0$'"}
             ] do
-          File.write!("/dev/console", "Public #{name}: #{console(config, spec, command, 3000)}\n")
+          IO.puts("Public #{name}: #{console(config, spec, command, 3000)}")
         end
 
       "storage-refusal" ->

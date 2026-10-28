@@ -235,15 +235,14 @@ class ControlTLSTest(unittest.TestCase):
         proxy.write_text(
             control.proxy_config(boot, config).replace(str(control.BACKEND_CA), str(self.roots))
         )
-        settings = {
-            "hostname": hostname,
-            "openssl": OPENSSL,
-            "haproxy": HAPROXY,
-            "caFile": str(self.roots),
-            "destination": str(control.CERTIFICATES),
-            "peerCertificates": [],
-            "proxyConfig": str(proxy),
-        }
+        settings = control.validation_settings(
+            hostname,
+            OPENSSL,
+            HAPROXY,
+            self.roots,
+            control.CERTIFICATES,
+            proxy,
+        )
         module = control.validator(VALIDATOR)
         accepted = control.validate(pem, settings, module, self.root)
         self.assertEqual(

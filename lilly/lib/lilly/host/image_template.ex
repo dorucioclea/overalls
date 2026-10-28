@@ -804,13 +804,23 @@ defmodule Lilly.Host.ImageTemplate do
     )
   end
 
+  # @cc [owner:ghuntley,label:security;concurrency] template-lock-parent-owned
+  # A template reader or builder MUST claim its digest lock directory for the
+  # configured service UID while holding the native owner.lock lease, before
+  # invoking the callback. This keeps root-assisted callers compatible with
+  # the image-copy helper's source-lease owner and parent-owner checks.
   defp lease(pool, "sha256:" <> digest, mode, fun) do
     with :ok <- directories(pool),
          directory = Path.join([base(pool), "locks", digest]),
          {:ok, lock} <-
            if(mode == :shared, do: Lock.shared(directory), else: Lock.acquire(directory)) do
+      # Root-launched maintenance and fixture workers use the same hostd
+      # service UID as the production BEAM. The lock inode is handed to that
+      # UID by hostd; claim its parent while the lock is held as well so the
+      # leased image copier can verify the native owner/parent handoff.
       try do
-        fun.() |> normalize()
+        with :ok <- Lilly.Host.Privilege.claim_directory(directory),
+             do: fun.() |> normalize()
       after
         Lock.release(lock)
       end

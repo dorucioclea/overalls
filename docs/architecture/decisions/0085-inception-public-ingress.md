@@ -164,7 +164,7 @@ native acceptance remain unverified or unfinished.
 
 The [control proof hook](../../../nix/domains/artifacts/guest/inception/control_proofs.py)
 now limits updates to the assigned control DNS-01 owner, a current random job
-nonce and one non-renewable three-minute deadline. Its two-second publication
+nonce and one non-renewable five-minute deadline. Its five-second publication
 heartbeat cannot extend that job; generation/boot changes and delayed cleanup
 fail closed. Five [runtime checks](../../../nix/verification/tests/evaluation/inception-control-proofs.py)
 passed, including actual parent evidence reads and expiry. The hook is not yet
@@ -349,11 +349,11 @@ evaluation passed. Actual public issuance and Firecracker acceptance remain
 outstanding; these local checks do not establish complete public bootstrap.
 
 Control proof acceptance uses the same strictly-unexpired rule as inner Audi.
-An extra one-second margin was incompatible with the two-second producer lease
-after DNS TTL rounding. Removing that margin preserves the original expiry and
-exact boot/generation/proof checks; it does not extend publication or observation
-authority. The runtime gate exercises real-file evidence with less than one
-second remaining. Native issuance remains unverified.
+The five-second producer heartbeat leaves room for authenticated parent exchange
+and bounded authoritative observation under native pool contention. The original
+job expiry, boot/generation/proof checks and parent offer expiry remain binding;
+the heartbeat cannot renew authority. The runtime gate exercises real-file
+evidence near expiry. Native issuance remains unverified.
 
 The [inner Audi unit](../../../nix/domains/artifacts/guest/inception/audi.nix) now has a
 separate private credential and persistent Ed25519 identity. Its

@@ -431,8 +431,10 @@ with subtest("inner control obtains a real DNS-01 certificate through both paren
                         + " A +short "
                         + transport
                     )
+                    # Parent DNS observation and Pebble's bounded ACME polling
+                    # can each consume several minutes under native pool load.
                     internet.wait_until_succeeds(
-                        'test "$(' + command + ')" = 11.0.0.5', timeout=240
+                        'test "$(' + command + ')" = 11.0.0.5', timeout=420
                     )
             internet.wait_until_succeeds(
                 "curl --fail --silent --show-error --max-time 5 --cacert /var/lib/inception-fixture-issuer/root.pem "
@@ -441,12 +443,16 @@ with subtest("inner control obtains a real DNS-01 certificate through both paren
                 + " "
                 + shlex.quote("https://" + control_hostname + "/health/ready")
                 + " >/dev/null",
-                timeout=240,
+                timeout=420,
             )
     except Exception:
         for instance in [1, 2]:
             try:
-                bounded_succeed(f"inception-probe diagnose-public 1 1 {instance}", timeout=300)
+                status, diagnostics = outer.execute(
+                    "timeout --kill-after=10s 285s bash -c "
+                    + shlex.quote(f"inception-probe diagnose-public 1 1 {instance}")
+                )
+                print(f"Public diagnostics instance {instance} (status {status}):\n{diagnostics}")
             except Exception:
                 print(f"Public diagnostics unavailable for fixture instance {instance}")
         raise

@@ -4,6 +4,9 @@ defmodule Lilly.Inception.Runtime do
   alias Lilly.Control.{Client, Store}
   alias Lilly.VM.{Driver, Executor}
 
+  @poll_budget_ms 14_000
+  @poll_retry_ms 100
+
   @spec start_link(keyword()) :: GenServer.on_start()
   def start_link(options), do: GenServer.start_link(__MODULE__, options)
 
@@ -100,12 +103,47 @@ defmodule Lilly.Inception.Runtime do
   end
 
   # @cc [owner:ghuntley,label:protocol;recovery] inception-final-publication-commit
+  # A child publication is collected over a guest vsock and may consume most
+  # of the five-second parent offer before it is ready to submit. Refresh the
+  # offer after each collection; submitting against the offer used to discover
+  # the namespace would make a still-valid child heartbeat appear expired.
   # After host DNS observations are accepted by the child, the final child
   # publication MUST be submitted with the refreshed parent offer before its
   # deadline. The first publication may contain only a proof or a not-ready
   # control record; dropping this final exchange leaves the parent with stale
   # DNS and prevents a newly issued control certificate from becoming reachable.
+  # A rejected exchange MUST retry the complete poll with a new offer and fresh
+  # child publication while the bounded task lease remains. Retrying a stale
+  # result is forbidden because it could extend an expired child heartbeat.
+  # After the bootstrap publication is accepted, a second child sample MUST be
+  # committed against the returned offer before observation; deriving the DNS
+  # deadline from the first offer would make a five-second heartbeat stale while
+  # the parent exchange is still completing.
   defp poll(config, session, command, proof_cursor) do
+    deadline = System.monotonic_time(:millisecond) + @poll_budget_ms
+    poll_until(config, session, command, proof_cursor, deadline)
+  end
+
+  @spec poll_until(map(), map(), map(), non_neg_integer(), integer()) :: :ok
+  defp poll_until(config, session, command, proof_cursor, deadline) do
+    case poll_once(config, session, command, proof_cursor) do
+      :ok ->
+        :ok
+
+      _failure ->
+        remaining = deadline - System.monotonic_time(:millisecond)
+
+        if remaining > 0 do
+          Process.sleep(min(@poll_retry_ms, remaining))
+          poll_until(config, session, command, proof_cursor, deadline)
+        else
+          :ok
+        end
+    end
+  end
+
+  @spec poll_once(map(), map(), map(), non_neg_integer()) :: :ok | {:error, atom()} | nil
+  defp poll_once(config, session, command, proof_cursor) do
     with {:ok, offer} <- Client.exchange_inception(config.client, session, command, nil),
          {:ok, spec} <- Executor.specification(command),
          pool when not is_nil(pool) <- Enum.find(config.pools, &(&1.id == command.pool_id)),
@@ -124,37 +162,60 @@ defmodule Lilly.Inception.Runtime do
              execution_epoch: command.execution_epoch,
              generation: command.generation
            ),
-         true <- System.monotonic_time(:millisecond) < offer.deadline do
+         {:ok, publication_offer} <-
+           Client.exchange_inception(config.client, session, command, nil),
+         true <- System.monotonic_time(:millisecond) < publication_offer.deadline do
       with {:ok, next_offer} <-
              Client.exchange_inception(config.client, session, command, %{
-               "offer_id" => offer.offer_id,
+               "offer_id" => publication_offer.offer_id,
                "publication" => publication
              }),
-           true <- is_map(offer.public),
+           true <- is_map(publication_offer.public),
            true <-
-             Map.take(next_offer, [:label, :zone, :environment_generation, :public]) ==
-               Map.take(offer, [:label, :zone, :environment_generation, :public]) do
+             Map.take(publication_offer, [:label, :zone, :environment_generation, :public]) ==
+               Map.take(offer, [:label, :zone, :environment_generation, :public]),
+           {:ok, refreshed_publication} <-
+             Driver.inception_publication(
+               config.execution,
+               pool,
+               spec,
+               %{
+                 label: next_offer.label,
+                 zone: next_offer.zone,
+                 generation: next_offer.environment_generation,
+                 parent: next_offer.parent,
+                 public: next_offer.public
+               },
+               execution_epoch: command.execution_epoch,
+               generation: command.generation
+             ),
+           {:ok, observed_offer} <-
+             Client.exchange_inception(config.client, session, command, %{
+               "offer_id" => next_offer.offer_id,
+               "publication" => refreshed_publication
+             }) do
         # Parent publication happens before querying the physical authoritative
         # replicas. The result is returned only through the same owned boot.
         namespace = %{
-          label: offer.label,
-          zone: offer.zone,
-          generation: offer.environment_generation,
-          parent: offer.parent,
-          public: offer.public
+          label: next_offer.label,
+          zone: next_offer.zone,
+          generation: next_offer.environment_generation,
+          parent: next_offer.parent,
+          public: next_offer.public
         }
 
-        source_deadline = offer.deadline + publication["ttl_ms"] - 5000
+        source_deadline = next_offer.deadline + refreshed_publication["ttl_ms"] - 5000
 
-        observations =
-          Lilly.Inception.Propagation.observe(
-            namespace,
-            publication,
-            source_deadline,
-            proof_cursor
-          )
+        if source_deadline > System.monotonic_time(:millisecond) + 1200 and
+             System.monotonic_time(:millisecond) < observed_offer.deadline do
+          observations =
+            Lilly.Inception.Propagation.observe(
+              namespace,
+              refreshed_publication,
+              source_deadline,
+              proof_cursor
+            )
 
-        if System.monotonic_time(:millisecond) < next_offer.deadline do
           with {:ok, final_publication} <-
                  Driver.inception_publication(
                    config.execution,
@@ -164,13 +225,21 @@ defmodule Lilly.Inception.Runtime do
                    execution_epoch: command.execution_epoch,
                    generation: command.generation
                  ),
-               {:ok, _final_offer} <-
+               {:ok, final_offer} <-
+                 Client.exchange_inception(config.client, session, command, nil),
+               true <- System.monotonic_time(:millisecond) < final_offer.deadline,
+               true <-
+                 Map.take(final_offer, [:label, :zone, :environment_generation, :public]) ==
+                   Map.take(next_offer, [:label, :zone, :environment_generation, :public]),
+               {:ok, _committed_offer} <-
                  Client.exchange_inception(config.client, session, command, %{
-                   "offer_id" => next_offer.offer_id,
+                   "offer_id" => final_offer.offer_id,
                    "publication" => final_publication
                  }) do
             :ok
           end
+        else
+          {:error, :stale_publication}
         end
       end
     end

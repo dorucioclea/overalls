@@ -122,6 +122,33 @@ class WorkerTest(unittest.TestCase):
             ),
         }
 
+    def test_completed_order_keeps_the_issuer_chain(self) -> None:
+        directory = self.root / "certificates"
+        calls: list[tuple[str, int]] = []
+
+        class Issuer:
+            @staticmethod
+            def issuer_file(path: Path, issuer: int) -> bytes:
+                calls.append((path.name, issuer))
+                return path.name.encode()
+
+        self.assertEqual(
+            worker.issued_material(Issuer(), directory, self.config["origins"]["control"]),
+            (
+                (self.config["origins"]["control"] + ".key").encode()
+                + (self.config["origins"]["control"] + ".crt").encode()
+                + (self.config["origins"]["control"] + ".issuer.crt").encode()
+            ),
+        )
+        self.assertEqual(
+            calls,
+            [
+                (self.config["origins"]["control"] + ".key", 0),
+                (self.config["origins"]["control"] + ".crt", 0),
+                (self.config["origins"]["control"] + ".issuer.crt", 0),
+            ],
+        )
+
     def test_issuer_environment_is_closed_and_fixed_hook_owns_propagation(self) -> None:
         with patch.dict(
             os.environ, {"HTTPS_PROXY": "http://untrusted", "AWS_SECRET_ACCESS_KEY": "sentinel"}

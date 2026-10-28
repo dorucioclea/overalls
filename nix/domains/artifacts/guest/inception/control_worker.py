@@ -9,7 +9,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Never, TypedDict
+from typing import Never, Protocol, TypedDict, cast
 
 import control_proofs as proofs
 import control_tls as tls
@@ -27,6 +27,24 @@ class Image(TypedDict):
     haproxy: str
     validator: str
     systemctl: str
+
+
+class IssuerFiles(Protocol):
+    def issuer_file(self, path: Path, issuer: int) -> bytes: ...
+
+
+def issued_material(module: IssuerFiles, directory: Path, hostname: str) -> bytes:
+    """@cc [owner:ghuntley,label:security] inception-control-issued-chain
+    An issued control certificate MUST combine the private key, leaf and Lego's
+    issuer chain in that order. A leaf-only candidate MUST NOT be offered to the
+    shared validator because it cannot establish trust to the configured root.
+    Every component MUST pass the issuer custody checks before concatenation.
+    """
+    return (
+        module.issuer_file(directory / (hostname + ".key"), 0)
+        + module.issuer_file(directory / (hostname + ".crt"), 0)
+        + module.issuer_file(directory / (hostname + ".issuer.crt"), 0)
+    )
 
 
 def stop_job(process: subprocess.Popen[bytes] | None) -> None:
@@ -134,14 +152,14 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
         hostname = config["origins"]["control"]
         proxy = proofs.ROOT / "haproxy.cfg"
         publish(proxy, tls.proxy_config(boot, config).encode())
-        validation: tls.Validation = {
-            "hostname": hostname,
-            "openssl": image["openssl"],
-            "haproxy": image["haproxy"],
-            "caFile": "/run/inception/audi-trust.pem",
-            "destination": str(tls.CERTIFICATES),
-            "proxyConfig": str(proxy),
-        }
+        validation = tls.validation_settings(
+            hostname,
+            image["openssl"],
+            image["haproxy"],
+            "/run/inception/audi-trust.pem",
+            tls.CERTIFICATES,
+            proxy,
+        )
         module = tls.validator(image["validator"])
         process, job, material, retry, proxy_retry = None, None, None, 0, 0
 
@@ -160,6 +178,12 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
             tls.install(candidate)
             service("reload-or-restart")
             return candidate
+
+        def clear_issuer_output() -> None:
+            """Discard an earlier attempt before granting a new job authority."""
+            directory = STATE / "acme" / "certificates"
+            for suffix in (".key", ".crt", ".issuer.crt"):
+                (directory / (hostname + suffix)).unlink(missing_ok=True)
 
         try:
             with contextlib.suppress(OSError, ValueError, subprocess.SubprocessError, SetupError):
@@ -188,12 +212,17 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
                         # Old hooks are dead before removing job authority.
                         clear_job()
                         retry = current + 60000
-                        if status == 0 and current < job["expires_at_ms"]:
+                        if current < job["expires_at_ms"]:
                             try:
                                 directory = STATE / "acme" / "certificates"
-                                candidate = module.issuer_file(
-                                    directory / (hostname + ".key"), 0
-                                ) + module.issuer_file(directory / (hostname + ".crt"), 0)
+                                # Lego stores the issued leaf and its issuer chain
+                                # separately.  The validator needs the complete chain
+                                # so OpenSSL can build trust to the configured Pebble
+                                # root; accepting the leaf alone rejects every
+                                # otherwise valid ACME issuance.
+                                candidate = issued_material(
+                                    cast(IssuerFiles, module), directory, hostname
+                                )
                                 material = accept(candidate)
                             except (OSError, ValueError, subprocess.SubprocessError, SetupError):
                                 print(
@@ -203,6 +232,7 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
                 elif current >= retry and (material is None or tls.renewal_due(material)):
                     job = proofs.begin(boot)
                     arguments, environment = invocation(image, config, job)
+                    clear_issuer_output()
                     process = subprocess.Popen(
                         arguments,
                         env=environment,

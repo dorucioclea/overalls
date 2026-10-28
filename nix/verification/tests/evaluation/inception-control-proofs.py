@@ -109,11 +109,11 @@ class ControlProofTest(unittest.TestCase):
     def test_exact_owner_and_proof_never_refresh_the_job_deadline(self) -> None:
         job = self.begin()
         changed = self.update(job)
-        self.assertEqual(changed["expires_at_ms"], 181000)
+        self.assertEqual(changed["expires_at_ms"], 301000)
         self.assertEqual(changed["proofs"], [PROOF])
-        self.assertEqual(self.update(job, current=180999), changed)
+        self.assertEqual(self.update(job, current=300999), changed)
         with self.assertRaises(SetupError):
-            self.update(job, current=181000)
+            self.update(job, current=301000)
         for owner in [self.owner[:-1], self.owner + "other.", "_acme-challenge.other.example."]:
             with self.assertRaises(SetupError):
                 self.update(job, owner=owner)
@@ -151,7 +151,7 @@ class ControlProofTest(unittest.TestCase):
         ingress.install(self.config, self.namespace)
         for field, value in [
             ("generation", True),
-            ("expires_at_ms", 181001),
+            ("expires_at_ms", 301001),
             ("started_at_ms", 2000),
             ("binding", dict(self.boot, execution_epoch=True)),
         ]:
@@ -164,13 +164,13 @@ class ControlProofTest(unittest.TestCase):
     def test_heartbeat_cannot_extend_job_or_claim_implicit_readiness(self) -> None:
         job = self.begin()
         self.update(job)
-        value = control.record(self.boot, False, self.root, self.namespace, 180500)
+        value = control.record(self.boot, False, self.root, self.namespace, 300500)
         self.assertFalse(value["ready"])
         self.assertEqual(value["proofs"], [PROOF])
-        self.assertEqual(value["expires_at_ms"], 181000)
-        expired = control.record(self.boot, False, self.root, self.namespace, 181000)
+        self.assertEqual(value["expires_at_ms"], 301000)
+        expired = control.record(self.boot, False, self.root, self.namespace, 301000)
         self.assertEqual(expired["proofs"], [])
-        self.assertEqual(expired["expires_at_ms"], 183000)
+        self.assertEqual(expired["expires_at_ms"], 306000)
         with self.assertRaises(SetupError):
             control.record(self.boot, 1, self.root, self.namespace, 1200)
 

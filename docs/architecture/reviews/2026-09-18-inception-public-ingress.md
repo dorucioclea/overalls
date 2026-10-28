@@ -1,5 +1,18 @@
 # IPv4 separation and Inception public ingress — implementation review
 
+## Current correction — 2026-10-28
+
+The native run reached both nested control certificate workers and Pebble orders,
+but a two-second child heartbeat was not accepted reliably: parent pool-locked
+sections reached 1.3 seconds before the second authenticated exchange and left
+no observation window. The control publication lease is now five seconds,
+matching the existing child-publication maximum and parent offer bound. It still
+binds the boot, generation, job nonce and original five-minute job deadline; no
+lease renewal or receipt-time extension is possible. Lilly retries a complete
+poll with fresh offers/publications and refreshes the child sample before
+observation, with a 1.2-second bounded query guard. The focused runtime gate
+passes after this correction; the native acceptance run must be rerun.
+
 ## Current reconciliation checkpoint — 2026-09-20
 
 The user explicitly requested publishing this incomplete checkpoint before

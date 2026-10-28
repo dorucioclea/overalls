@@ -1,5 +1,5 @@
 ---
-digest: 7ae19b50cf45b3c14133dce10b3539f089564fa61accbdc3024126baed9351dc
+digest: 3a5ea04515ee01a2121645d29f6ebdf063ffa7617ba4a44cd84e8946725974fa
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Parent-owned DNS proof and cycle-free namespace startup now have focused evaluation and native retry evidence.
+Inception public certificate publication now preserves the complete Lego issuer chain, refreshes short-lived parent offers around child collection, and records native machine coverage for the nested control certificate path.

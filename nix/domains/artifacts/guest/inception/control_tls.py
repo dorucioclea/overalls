@@ -42,7 +42,39 @@ class Validation(TypedDict):
     haproxy: str
     caFile: str
     destination: str
+    peerCertificates: list[str]
     proxyConfig: str
+
+
+def validation_settings(
+    hostname: str,
+    openssl: str,
+    haproxy: str,
+    ca_file: str | Path,
+    destination: str | Path,
+    proxy_config: str | Path,
+) -> Validation:
+    """@cc [owner:ghuntley,label:security] inception-control-validation-settings
+    Every control certificate validation request MUST include the complete
+    shared validator schema, including an explicit empty peer set when this
+    proxy has no sibling certificates.
+
+    Build the complete shared certificate-validation configuration.
+
+    The shared validator treats peer certificate paths as part of its input
+    contract, even when this single-certificate proxy has no peers. Keep that
+    adapter here so production supervision and isolated validation tests use
+    the same typed settings.
+    """
+    return {
+        "hostname": hostname,
+        "openssl": openssl,
+        "haproxy": haproxy,
+        "caFile": str(ca_file),
+        "destination": str(destination),
+        "peerCertificates": [],
+        "proxyConfig": str(proxy_config),
+    }
 
 
 def proxy_config(boot: Boot, config: ingress.Configuration) -> str:

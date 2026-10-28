@@ -2,7 +2,7 @@
 
 ## Scope and architecture impact
 
-This review reconciles ADR-0256 with the current Inception image, bootstrap,
+This review reconciles ADR-0261 with the current Inception image, bootstrap,
 native fixture and CI catalog. The change preserves Inception's existing
 Marshall → Lilly → Firecracker ownership boundary and the fixed resource and
 separate-data-disk policy from ADR-0054/ADR-0072. It adds no protocol surface
@@ -69,7 +69,7 @@ guest's public resolver `/32`s on the isolated provider node. The source
 checkout assertions are now recorded in a real nested lifecycle run. The
 restart/edit-retention phase was not reached because the later DNS-01 replica
 subtest timed out, and the focused preparation test still uses an isolated
-local Git origin. ADR-0256 therefore remains **partial** until a native run
+local Git origin. ADR-0261 therefore remains **partial** until a native run
 records the restart/edit-retention assertions and the complete fixture reaches
 its remaining gateway checks.
 

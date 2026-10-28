@@ -1,5 +1,5 @@
 ---
-digest: 3a5ea04515ee01a2121645d29f6ebdf063ffa7617ba4a44cd84e8946725974fa
+digest: 9c512bab15164ab203d5addb78884246f0e4defb4b885cff4d004fad52855246
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Inception public certificate publication now preserves the complete Lego issuer chain, refreshes short-lived parent offers around child collection, and records native machine coverage for the nested control certificate path.
+Lilly now refreshes the parent offer after each guest publication collection, including the publication submitted after authoritative observation, so every short-lived result is committed against current authority.

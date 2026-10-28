@@ -189,22 +189,28 @@ defmodule Lilly.Inception.Runtime do
                execution_epoch: command.execution_epoch,
                generation: command.generation
              ),
+           {:ok, refreshed_offer} <-
+             Client.exchange_inception(config.client, session, command, nil),
+           true <- System.monotonic_time(:millisecond) < refreshed_offer.deadline,
            {:ok, observed_offer} <-
              Client.exchange_inception(config.client, session, command, %{
-               "offer_id" => next_offer.offer_id,
+               "offer_id" => refreshed_offer.offer_id,
                "publication" => refreshed_publication
-             }) do
+             }),
+           true <-
+             Map.take(refreshed_offer, [:label, :zone, :environment_generation, :public]) ==
+               Map.take(next_offer, [:label, :zone, :environment_generation, :public]) do
         # Parent publication happens before querying the physical authoritative
         # replicas. The result is returned only through the same owned boot.
         namespace = %{
-          label: next_offer.label,
-          zone: next_offer.zone,
-          generation: next_offer.environment_generation,
-          parent: next_offer.parent,
-          public: next_offer.public
+          label: refreshed_offer.label,
+          zone: refreshed_offer.zone,
+          generation: refreshed_offer.environment_generation,
+          parent: refreshed_offer.parent,
+          public: refreshed_offer.public
         }
 
-        source_deadline = next_offer.deadline + refreshed_publication["ttl_ms"] - 5000
+        source_deadline = refreshed_offer.deadline + refreshed_publication["ttl_ms"] - 5000
 
         if source_deadline > System.monotonic_time(:millisecond) + 1200 and
              System.monotonic_time(:millisecond) < observed_offer.deadline do
@@ -230,7 +236,7 @@ defmodule Lilly.Inception.Runtime do
                true <- System.monotonic_time(:millisecond) < final_offer.deadline,
                true <-
                  Map.take(final_offer, [:label, :zone, :environment_generation, :public]) ==
-                   Map.take(next_offer, [:label, :zone, :environment_generation, :public]),
+                   Map.take(refreshed_offer, [:label, :zone, :environment_generation, :public]),
                {:ok, _committed_offer} <-
                  Client.exchange_inception(config.client, session, command, %{
                    "offer_id" => final_offer.offer_id,

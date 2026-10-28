@@ -1,17 +1,17 @@
 ---
-digest: 1852fd2e1df723c27ad7ed36800b1991eed9f6a83d1533504d383eb3215b2c8e
-disposition: updated
+digest: f3718a85238f7aedb422cb9c21473aa9deb2372426981b0e4192eb1b2d6c7f7d
+disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
 path: docs/architecture/decisions/0054-inception-development-profile.md
 reviewed_chapters:
-  marshall/priv/hldd/17-reference.md: 7d88fca8dbe56f67c71ea207b0ed860f4cfc005f7cb9f6ccde4ffe4bc718cda5
-  marshall/priv/hldd/19-coverage.md: 84b7f6445bae8d3fc8f3b6a021e774c27460a8acb4420fe40f803bbe5c1f6abe
-  marshall/priv/hldd/20-security.md: cf1337ba6e78c460d2d00a269abbe3ad011151401179263eb51ab2d90bb4948f
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/19-coverage.md: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
-  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-The architecture index and ADR/review records now identify ADR-0256 for the Inception development checkout and state its current partial native evidence.
+The Inception development checkout ADR was renumbered to resolve a duplicate identifier; its reader-facing design remains unchanged and links are preserved.

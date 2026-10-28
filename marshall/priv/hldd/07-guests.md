@@ -489,6 +489,9 @@ child-only resolver to validate the parent-owned control record.
 Each issuance attempt has a non-renewable five-minute lease so the parent
 observation, ACME validation and certificate retrieval complete under native
 pool contention; expired attempts discard their process group and proofs.
+Lilly refreshes the parent offer after each child publication collection and
+again immediately before committing the final observed publication, so a
+short-lived child heartbeat is never submitted against an older offer.
 The namespace-dependent gateway transaction waits for a bounded TLS probe of
 both inner Marshall listeners (4443 and 5443) against the instance CA before
 Audi or Porsche can publish host certificates. A running BEAM process alone is

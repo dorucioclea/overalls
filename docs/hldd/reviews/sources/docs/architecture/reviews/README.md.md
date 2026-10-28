@@ -1,6 +1,6 @@
 ---
-digest: 3480f0ba2bcaaade9a6a6459dbe05a2503e323c3781a293754d6fc994e8d81fc
-disposition: updated
+digest: 9666da6fcd1b4785cf1b3d5539d0a438f1482d1a47c21b83741f0dfa5c31daa3
+disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
 path: docs/architecture/reviews/README.md
@@ -14,4 +14,4 @@ state: present
 version: 2
 ---
 
-ADR-0260 route-only Underclass egress (no mac-mini exit node) and d7a0ccf pin; reviewed against 10-services, 18-options, 19-coverage, 20-security, 22-topology and the Underclass operations guide
+Renumbering the duplicate Inception ADR and its review index preserves the same reader-facing chapters and evidence.

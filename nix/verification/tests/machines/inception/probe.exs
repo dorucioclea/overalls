@@ -387,7 +387,10 @@ defmodule InceptionFixture do
           console(
             config,
             spec,
-            "resolvectl dns eth0 1.1.1.1 9.9.9.9 && resolvectl default-route eth0 yes && systemctl restart inception-source.service",
+            # The private resolver may have cached a negative answer before
+            # the fixture's public route is installed. Flush that cache before
+            # switching the guest to the isolated public resolver path.
+            "resolvectl flush-caches && resolvectl reset-server-features && resolvectl dns eth0 1.1.1.1 9.9.9.9 && resolvectl default-route eth0 yes && systemctl restart inception-source.service",
             5000
           )
 

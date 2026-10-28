@@ -1,17 +1,17 @@
 ---
-digest: 4a63fb2f34d5470bd5a67bf3c103bf0992cd6880337be8eaeffcd62632dcd6b4
+digest: 716d597c39c6d88005b53cb57c06de61551e9383f7d7ee5089701690ed3a1e80
 disposition: no-impact
 kind: source
 mapping_digest: f07446cbdc8e81ddaa4a97fd6d9b0bbde96c7b8a70f872c586949a0d4268de43
 path: docs/architecture/reviews/2026-10-22-inception-development-checkout.md
 reviewed_chapters:
-  marshall/priv/hldd/17-reference.md: 7d88fca8dbe56f67c71ea207b0ed860f4cfc005f7cb9f6ccde4ffe4bc718cda5
-  marshall/priv/hldd/19-coverage.md: 9a6c6e497149225fa418d0ec0b2fa9bb578557f066fbd6a194e728073bca669b
-  marshall/priv/hldd/20-security.md: cf1337ba6e78c460d2d00a269abbe3ad011151401179263eb51ab2d90bb4948f
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/19-coverage.md: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
-  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Architecture and guest-guide edits are reconciled by the current shared HLDD chapters; deployment review recorded the implementation evidence and no additional handbook behavior is introduced here.
+Renumbering the duplicate Inception ADR and its review index preserves the same reader-facing chapters and evidence.

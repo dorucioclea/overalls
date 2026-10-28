@@ -1,6 +1,6 @@
-# ADR-0256: Inception development checkout
+# ADR-0261: Inception development checkout
 
-- ID: ADR-0256
+- ID: ADR-0261
 - Date: 2026-10-22
 - Status: accepted
 - Implementation: partial

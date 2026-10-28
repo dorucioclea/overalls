@@ -50,10 +50,9 @@ unlock.
 
 ## Release boundary
 
-The .NET release is independent of the Flutter application. Publish it with
+The .NET release is the production native client. Publish it with
 `dotnet publish Mila.Windows.csproj -c Release -r win-x64 --self-contained true`
-and stage the production `mila_native.dll`; do not run `flutter build windows`.
+and stage the production `mila_native.dll`; do not invoke a different platform build.
 Before signing or archiving, run `powershell -File .\verify-release.ps1
 -PublishDirectory .\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish`.
-The verifier requires both release binaries and rejects Flutter/Dart engine,
-snapshot, and generated-runner files.
+The verifier requires both release binaries and rejects foreign runtime engines, snapshots, and generated-runner files.

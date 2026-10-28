@@ -81,7 +81,7 @@ fn command_fixture_agreement() {
 
 /// @cc [owner:ghuntley,label:verification;protocol] mila-protocol-route-roundtrip
 /// Every accepted shared route MUST survive parse/format and every sampled refused
-/// route MUST remain refused, preserving the Elixir and Dart fixture contract.
+/// route MUST remain refused, preserving the Elixir and legacy language fixture contract.
 #[hegel::test(test_cases = 32)]
 fn sampled_routes_agree(tc: TestCase) {
     let accepted = tc.draw(gs::sampled_from(routes().accepted.clone()));

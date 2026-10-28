@@ -2,7 +2,7 @@
 
 This directory is a standalone GTK4/libadwaita presentation seam for Mila. It is intentionally
 outside `mila/rust`'s workspace so a host can integrate generated Rust bindings after the native
-surface has a stable shape. It does not modify the Flutter runner.
+surface has a stable shape. The GTK shell uses the shared Rust session adapter.
 
 `dev.overalls.Mila.Linux` is a stable `GApplication` id and the application opts into
 `HANDLES_OPEN`. GTK/GIO therefore forwards a second launch to the existing process. The desktop

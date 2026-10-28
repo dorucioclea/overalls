@@ -1,18 +1,18 @@
 ---
-digest: 3a64131afa56f4143d013cef3b84b84c3f8420dfa1413271c6b6917fad680a46
-disposition: no-impact
+digest: 44b88d4919dde993e9813cd2e6f30c959d0b32e173713fe40fd8385d18f964eb
+disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/linux/README.md
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: cf0280940ef764edd70bd6eefff72711c307481314287fdc1dcef96d866e4538
+  marshall/priv/hldd/08-interactive.md: 83616581d0020ffd5bdc8b8ad08f0104cb8decd84986c602ee5a4f5e32daa449
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 4df19acabce66188a13a367acae5fd2d8dabd1c5c952d8d3e1cd1c08b448f15d
-  marshall/priv/hldd/20-security.md: 0854fe3e151c56e794a8069bd384bf68bb6d76cd7827abfeed6c3fa28e91c83b
-  marshall/priv/hldd/21-domains.md: 587584208f1a71100280b9e438b46416b8b56f0f0af2eda585006ad373ff22dc
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/19-coverage.md: 035e1c0ae0a600a3eaf7f613f740d41a23016b793d093c479390208c07fabdd0
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Reviewed concurrent Android and Linux native test and adapter changes; behavior remains within existing native boundary.
+Updated Mila guidance and native documentation to describe only the native Rust-backed clients.

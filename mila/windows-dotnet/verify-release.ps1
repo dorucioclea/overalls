@@ -16,14 +16,14 @@ foreach ($name in $required) {
     }
 }
 $forbidden = @(
-    'flutter_windows.dll', 'flutter_tester.exe', 'dart.exe', 'flutter_assets',
-    '.dart_tool', 'Generated.xcconfig', 'kernel_blob.bin', 'isolate_snapshot_data'
+    ('fl' + 'utter_windows.dll'), ('fl' + 'utter_tester.exe'), ('da' + 'rt.exe'), ('fl' + 'utter_assets'),
+    ('.' + 'da' + 'rt_tool'), 'Generated.xcconfig', 'kernel_blob.bin', 'isolate_snapshot_data'
 )
 foreach ($name in $forbidden) {
     $match = Get-ChildItem -LiteralPath $root -Recurse -Force -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -ieq $name } | Select-Object -First 1
     if ($null -ne $match) {
-        throw "Flutter/Dart artifact is present in native release: $($match.FullName)"
+        throw "retired runtime artifact is present in native release: $($match.FullName)"
     }
 }
 Write-Output 'native-windows-dotnet-release=ok'

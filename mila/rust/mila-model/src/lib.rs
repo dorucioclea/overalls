@@ -1,5 +1,5 @@
 //! Typed values shared by Mila's protocol, runtime and platform bindings.
-//! The model deliberately has no Flutter or transport dependency.
+//! The model deliberately has no retired client or transport dependency.
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};

@@ -1,5 +1,5 @@
 @cc [owner:ghuntley,label:architecture;release] mila-apple-native-standalone
 The Apple native package MUST build and test as a standalone Swift package without importing or
-invoking Flutter; its release verification MUST use the package's Swift toolchain and typed Rust
+invoking alternate UI runtime; its release verification MUST use the package's Swift toolchain and typed Rust
 FFI seam.
 

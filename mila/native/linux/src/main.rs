@@ -462,7 +462,7 @@ impl NativeState {
         });
         root.append(&reconnect);
 
-        // Linux intentionally reports lock capability explicitly. The shared Flutter
+        // Linux intentionally reports lock capability explicitly. The shared retired client
         // policy marks Linux as unavailable; keeping this state visible prevents
         // presenting a control that cannot be honored by the native platform.
         let lock_title = strings::text(strings::Message::LockTitle);

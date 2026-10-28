@@ -1,18 +1,18 @@
 ---
-digest: 43a86c99b310b31ec4820ff295145d88e05bd00bb1047c98d5bf0abec30ba7e4
-disposition: no-impact
+digest: 2e8c116f1bdf1dff2557083932d2e34a139499804ded69726060a8c5ae0198b8
+disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/AGENTS.md
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 3b2f40d7d3004923a6bfaa3b6b27287b36731de73182032b29a392be6daf8c0a
+  marshall/priv/hldd/08-interactive.md: 83616581d0020ffd5bdc8b8ad08f0104cb8decd84986c602ee5a4f5e32daa449
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: eec1a8133a836361d14be300a11c987603986208eafcb1cf9930c9fbc0e8d91a
-  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
+  marshall/priv/hldd/19-coverage.md: 035e1c0ae0a600a3eaf7f613f740d41a23016b793d093c479390208c07fabdd0
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
-  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-centralize native localization catalogs outside Flutter tree
+Updated Mila guidance and native documentation to describe only the native Rust-backed clients.

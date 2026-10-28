@@ -175,7 +175,7 @@ public enum MilaThreadAction: Sendable, Equatable {
 
     public var command: String {
         switch self {
-        case .list: return "thread list"
+        case .list: return "thread ls"
         case .read: return "thread read"
         case .answer: return "thread answer"
         case .prompt: return "thread prompt"

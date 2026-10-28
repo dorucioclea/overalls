@@ -259,7 +259,7 @@ final class MilaAuthenticatedTerminalTransportTests: XCTestCase {
 
 final class MilaThreadActionTests: XCTestCase {
     func testClosedThreadActionsProduceRustCommands() {
-        XCTAssertEqual(MilaThreadAction.list.command, "thread list")
+        XCTAssertEqual(MilaThreadAction.list.command, "thread ls")
         XCTAssertEqual(MilaThreadAction.read.command, "thread read")
         XCTAssertEqual(MilaThreadAction.answer("hello").input, "hello")
         XCTAssertEqual(MilaThreadAction.prompt("question").command, "thread prompt")

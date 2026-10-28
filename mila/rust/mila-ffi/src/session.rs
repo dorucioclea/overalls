@@ -753,26 +753,44 @@ pub extern "C" fn mila_session_terminal_attach(
     out_terminal_handle: *mut u64,
 ) -> SessionStatus {
     guarded(|| {
-        if out_terminal_handle.is_null() || !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+        if out_terminal_handle.is_null()
+            || !(1..=4096).contains(&columns)
+            || !(1..=512).contains(&rows)
+        {
             return Err(SessionStatus::Invalid);
         }
         // Validate the parent before opening a network channel.
         let parent = entry(session_handle)?;
         let runtime = runtime()?;
         let mut parent_guard = parent.try_lock().map_err(|_| SessionStatus::Busy)?;
-        let session = &mut parent_guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.session;
-        let terminal = runtime.block_on(session.open_pty(columns, rows)).map_err(|error| match error {
-            mila_session::SessionError::Transport(SshError::Bounds) => SessionStatus::Invalid,
-            mila_session::SessionError::Transport(_) => SessionStatus::Transport,
-            _ => SessionStatus::Invalid,
-        })?;
+        let session = &mut parent_guard
+            .as_mut()
+            .ok_or(SessionStatus::InvalidHandle)?
+            .session;
+        let terminal = runtime
+            .block_on(session.open_pty(columns, rows))
+            .map_err(|error| match error {
+                mila_session::SessionError::Transport(SshError::Bounds) => SessionStatus::Invalid,
+                mila_session::SessionError::Transport(_) => SessionStatus::Transport,
+                _ => SessionStatus::Invalid,
+            })?;
         let mut table = terminals().lock().map_err(|_| SessionStatus::Internal)?;
-        if table.entries.len() >= 64 { return Err(SessionStatus::Busy); }
+        if table.entries.len() >= 64 {
+            return Err(SessionStatus::Busy);
+        }
         let id = table.next.checked_add(1).ok_or(SessionStatus::Internal)?;
         table.next = id;
-        table.entries.insert(id, Arc::new(Mutex::new(Some(TerminalEntry { owner: session_handle, terminal }))));
+        table.entries.insert(
+            id,
+            Arc::new(Mutex::new(Some(TerminalEntry {
+                owner: session_handle,
+                terminal,
+            }))),
+        );
         // SAFETY: checked non-null above.
-        unsafe { *out_terminal_handle = id; }
+        unsafe {
+            *out_terminal_handle = id;
+        }
         Ok(())
     })
 }
@@ -790,7 +808,9 @@ pub unsafe extern "C" fn mila_session_terminal_poll(
         let terminal = terminal_entry(terminal_handle)?;
         let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
         let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
-        let data = runtime.block_on(terminal.read()).map_err(|_| SessionStatus::Transport)?;
+        let data = runtime
+            .block_on(terminal.read())
+            .map_err(|_| SessionStatus::Transport)?;
         unsafe { output(&data, out, capacity, written) }
     })
 }
@@ -808,10 +828,12 @@ pub unsafe extern "C" fn mila_session_terminal_input(
         let terminal = terminal_entry(terminal_handle)?;
         let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
         let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
-        runtime.block_on(terminal.write(input)).map_err(|error| match error {
-            SshError::Bounds => SessionStatus::Invalid,
-            _ => SessionStatus::Transport,
-        })?;
+        runtime
+            .block_on(terminal.write(input))
+            .map_err(|error| match error {
+                SshError::Bounds => SessionStatus::Invalid,
+                _ => SessionStatus::Transport,
+            })?;
         Ok(())
     })
 }
@@ -824,15 +846,19 @@ pub extern "C" fn mila_session_terminal_resize(
     rows: u32,
 ) -> SessionStatus {
     guarded(|| {
-        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) { return Err(SessionStatus::Invalid); }
+        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SessionStatus::Invalid);
+        }
         let runtime = runtime()?;
         let terminal = terminal_entry(terminal_handle)?;
         let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
         let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
-        runtime.block_on(terminal.resize(columns, rows)).map_err(|error| match error {
-            SshError::Bounds => SessionStatus::Invalid,
-            _ => SessionStatus::Transport,
-        })?;
+        runtime
+            .block_on(terminal.resize(columns, rows))
+            .map_err(|error| match error {
+                SshError::Bounds => SessionStatus::Invalid,
+                _ => SessionStatus::Transport,
+            })?;
         Ok(())
     })
 }
@@ -844,8 +870,14 @@ pub extern "C" fn mila_session_terminal_kill(terminal_handle: u64) -> SessionSta
         let terminal = terminal_entry(terminal_handle)?;
         let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
         let mut terminal = guard.take().ok_or(SessionStatus::InvalidHandle)?.terminal;
-        terminals().lock().map_err(|_| SessionStatus::Internal)?.entries.remove(&terminal_handle);
-        runtime()?.block_on(terminal.close()).map_err(|_| SessionStatus::Transport)?;
+        terminals()
+            .lock()
+            .map_err(|_| SessionStatus::Internal)?
+            .entries
+            .remove(&terminal_handle);
+        runtime()?
+            .block_on(terminal.close())
+            .map_err(|_| SessionStatus::Transport)?;
         Ok(())
     })
 }

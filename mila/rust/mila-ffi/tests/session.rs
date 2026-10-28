@@ -339,8 +339,14 @@ fn arbitrary_stale_terminal_handles_refuse_without_writing(tc: hegel::TestCase) 
             SessionStatus::InvalidHandle
         );
     }
-    assert_eq!(mila_session_terminal_resize(handle, 80, 24), SessionStatus::InvalidHandle);
-    assert_eq!(mila_session_terminal_kill(handle), SessionStatus::InvalidHandle);
+    assert_eq!(
+        mila_session_terminal_resize(handle, 80, 24),
+        SessionStatus::InvalidHandle
+    );
+    assert_eq!(
+        mila_session_terminal_kill(handle),
+        SessionStatus::InvalidHandle
+    );
     assert_eq!(output, [0xA5; 64]);
     assert_eq!(written, 17);
 }

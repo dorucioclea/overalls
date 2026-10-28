@@ -535,18 +535,30 @@ pub mod pty {
     }
     impl Session {
         pub fn attach(generation: u64, dimensions: Dimensions) -> Self {
-            Self { generation, dimensions, state: State::Attached }
+            Self {
+                generation,
+                dimensions,
+                state: State::Attached,
+            }
         }
-        pub fn state(&self) -> State { self.state }
-        pub fn dimensions(&self) -> Dimensions { self.dimensions }
+        pub fn state(&self) -> State {
+            self.state
+        }
+        pub fn dimensions(&self) -> Dimensions {
+            self.dimensions
+        }
         pub fn accept_output(&self, generation: u64, chunk: &[u8]) -> Result<(), Error> {
             self.check(generation)?;
-            if chunk.len() > MAX_CHUNK { return Err(Error::Bounds); }
+            if chunk.len() > MAX_CHUNK {
+                return Err(Error::Bounds);
+            }
             Ok(())
         }
         pub fn input(&self, generation: u64, bytes: &[u8]) -> Result<(), Error> {
             self.check(generation)?;
-            if bytes.len() > MAX_INPUT { return Err(Error::Bounds); }
+            if bytes.len() > MAX_INPUT {
+                return Err(Error::Bounds);
+            }
             Ok(())
         }
         pub fn resize(&mut self, generation: u64, dimensions: Dimensions) -> Result<(), Error> {
@@ -560,8 +572,12 @@ pub mod pty {
             Ok(())
         }
         fn check(&self, generation: u64) -> Result<(), Error> {
-            if generation != self.generation { return Err(Error::StaleGeneration); }
-            if self.state == State::Closed { return Err(Error::Closed); }
+            if generation != self.generation {
+                return Err(Error::StaleGeneration);
+            }
+            if self.state == State::Closed {
+                return Err(Error::Closed);
+            }
             Ok(())
         }
     }
@@ -582,7 +598,10 @@ pub mod pty {
         fn bounds_are_fail_closed() {
             assert_eq!(Dimensions::new(0, 24), Err(Error::Dimensions));
             let s = Session::attach(1, Dimensions::new(80, 24).unwrap());
-            assert_eq!(s.accept_output(1, &vec![0; MAX_CHUNK + 1]), Err(Error::Bounds));
+            assert_eq!(
+                s.accept_output(1, &vec![0; MAX_CHUNK + 1]),
+                Err(Error::Bounds)
+            );
             assert_eq!(s.input(1, &vec![0; MAX_INPUT + 1]), Err(Error::Bounds));
         }
     }

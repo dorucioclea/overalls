@@ -91,11 +91,7 @@ impl ApplicationSession {
     /// Opens a bounded interactive terminal on this authenticated deployment.
     /// The returned channel remains owned by the caller while the underlying
     /// certificate-pinned session is borrowed by the transport.
-    pub async fn open_pty(
-        &self,
-        columns: u32,
-        rows: u32,
-    ) -> Result<PtySession, SessionError> {
+    pub async fn open_pty(&self, columns: u32, rows: u32) -> Result<PtySession, SessionError> {
         Ok(PtySession::open(&self.ssh, columns, rows).await?)
     }
     /// Execute one closed-vocabulary thread operation. Response JSON is bounded and

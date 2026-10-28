@@ -92,6 +92,14 @@ public final class MilaLiveSessionTerminalTransport: MilaTerminalTransport, @unc
     private let lock = NSLock()
     private var terminal: UInt64 = 0
 
+    /// Keep locking in a synchronous helper; Swift 6 rejects direct
+    /// `NSLock.lock/unlock` calls from an async context.
+    private func withTerminalLock<T>(_ body: () -> T) -> T {
+        lock.lock()
+        defer { lock.unlock() }
+        return body()
+    }
+
     public init(session: MilaLiveSession) { self.session = session }
 
     public func attach(from: UInt64, columns: UInt16, rows: UInt16, readWrite: Bool) async throws {
@@ -100,30 +108,30 @@ public final class MilaLiveSessionTerminalTransport: MilaTerminalTransport, @unc
         // authenticated session and the requested read/write mode.
         guard readWrite else { throw MilaTerminalError.permissionDenied }
         let handle = try session.terminalAttach(columns: UInt32(columns), rows: UInt32(rows))
-        lock.lock(); let previous = terminal; terminal = handle; lock.unlock()
+        let previous = withTerminalLock { let old = terminal; terminal = handle; return old }
         if previous != 0 { session.terminalKill(previous) }
     }
 
     public func receiveOutput() async throws -> Data? {
-        lock.lock(); let handle = terminal; lock.unlock()
+        let handle = withTerminalLock { terminal }
         guard handle != 0 else { return nil }
         return try session.terminalPoll(handle)
     }
 
     public func sendInput(_ input: Data) async throws {
-        lock.lock(); let handle = terminal; lock.unlock()
+        let handle = withTerminalLock { terminal }
         guard handle != 0 else { throw MilaTerminalError.unavailable }
         try session.terminalInput(handle, data: input)
     }
 
     public func resize(columns: UInt16, rows: UInt16) async throws {
-        lock.lock(); let handle = terminal; lock.unlock()
+        let handle = withTerminalLock { terminal }
         guard handle != 0 else { throw MilaTerminalError.unavailable }
         try session.terminalResize(handle, columns: UInt32(columns), rows: UInt32(rows))
     }
 
     public func close() async {
-        lock.lock(); let handle = terminal; terminal = 0; lock.unlock()
+        let handle = withTerminalLock { let old = terminal; terminal = 0; return old }
         if handle != 0 { session.terminalKill(handle) }
     }
 }

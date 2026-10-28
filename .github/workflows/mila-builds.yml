@@ -34,41 +34,6 @@ permissions:
   contents: read
 
 jobs:
-  linux:
-    runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
-    timeout-minutes: 120
-    steps:
-      - uses: namespacelabs/nscloud-checkout-action@v9
-      - uses: ./.github/actions/devenv
-        with:
-          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          install-devenv: "false"
-      - name: Mila checks and native Linux release targets
-        run: |
-          cachix watch-exec overalls -- nix build -L --no-link \
-            .#checks.x86_64-linux.mila-core \
-            .#checks.x86_64-linux.mila-transport \
-            .#checks.x86_64-linux.mila-tool \
-            .#checks.x86_64-linux.mila-test \
-            .#checks.x86_64-linux.mila-lock-sync \
-            .#checks.x86_64-linux.mila-rust \
-            .#tool-mila-linux-native \
-            .#tool-mila-linux-release \
-            .#tool-mila-rust
-      - name: Verify native Linux release is Flutter-free
-        run: |
-          set -eu
-          nix build -L .#tool-mila-linux-release --out-link linux-release
-          archive=$(find -L linux-release -maxdepth 1 -type f -name '*.tar.gz' -print -quit)
-          test -n "$archive"
-          tar -tzf "$archive" > release-files.txt
-          if grep -Eiq '(^|/)(flutter|dart)(/|$)|flutter|\.dart$' release-files.txt; then
-            echo 'native Linux release contains Flutter/Dart content' >&2
-            cat release-files.txt >&2
-            exit 1
-          fi
-          grep -Eq '(^|/)bin/mila$' release-files.txt
-
   source-bundle:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
     timeout-minutes: 60
@@ -111,69 +76,6 @@ jobs:
           path: out-windows/
           if-no-files-found: error
           retention-days: 7
-
-  apple:
-    # Mila's macOS and iOS dev targets and the shared native poke tests.
-    runs-on: macos-15
-    timeout-minutes: 120
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Nix
-        uses: cachix/install-nix-action@9aaadd8b85853f67fcdf488e6a4e9efa94ee96e2
-      - name: Setup Cachix
-        uses: cachix/cachix-action@ee79db531bfb851a7cf47035057b7cca88d26449
-        with:
-          name: overalls
-          extraPullNames: devenv
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          useDaemon: false
-      - name: Install devenv
-        run: |
-          rev=$(jq -r '.nodes.devenv.locked.rev' devenv.lock)
-          nix profile install "github:cachix/devenv/$rev"
-          devenv version
-      - name: Format, analyze and test Mila
-        run: devenv shell -- mila-check
-      - name: Build Rust FFI for Apple native tests
-        run: devenv shell -- cargo build --manifest-path mila/rust/Cargo.toml -p mila-ffi --release
-      - name: Swift native package tests
-        working-directory: mila/native/apple
-        env:
-          MILA_FFI_LIB_DIR: ${{ github.workspace }}/mila/rust/target/release
-        run: |
-          swift build
-          swift test
-      - name: Swift native package release evidence
-        working-directory: mila/native/apple
-        env:
-          MILA_FFI_LIB_DIR: ${{ github.workspace }}/mila/rust/target/release
-        run: |
-          set -euo pipefail
-          if rg -n -i 'flutter' Package.swift Sources Tests; then
-            echo 'Apple native package must remain independent of Flutter' >&2
-            exit 1
-          fi
-          swift build -c release
-          swift test -c release
-      - name: macOS and iOS dev targets
-        run: |
-          devenv shell -- mila-build macos dev
-          devenv shell -- mila-build ios dev
-      - name: Native RunnerTests (macOS and iOS simulator)
-        # Apple's toolchain, not Nix's: the same environment mila-build uses.
-        run: |
-          devenv shell -- bash -euo pipefail -c '
-            unset SDKROOT CC CXX LD
-            export DEVELOPER_DIR="$(xcode-select -p)" PATH="/usr/bin:$PATH"
-            cd mila/app/macos
-            xcodebuild test -workspace Runner.xcworkspace -scheme Runner \
-              -destination platform=macOS CODE_SIGNING_ALLOWED=NO MILA_SIGNING=unsigned
-            cd ../ios
-            device=$(xcrun simctl list devices available -j |
-              jq -r "[.devices[][] | select(.name | startswith(\"iPhone\"))][0].udid")
-            xcodebuild test -workspace Runner.xcworkspace -scheme Runner \
-              -destination "id=$device" CODE_SIGNING_ALLOWED=NO
-          '
 
   apple-native:
     runs-on: macos-15

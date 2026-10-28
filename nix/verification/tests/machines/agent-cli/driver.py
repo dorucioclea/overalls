@@ -78,7 +78,7 @@ TURN_ROUTE = f"/api/agents/v1/turn/{TURN_ID}?vm_id={VM_ID}"
 
 def _well_formed_bearer(value: str) -> bool:
     """Mirror the fixture's single-bearer acceptance predicate exactly."""
-    return value.startswith(BEARER_PREFIX) and len(value) == 78
+    return value.startswith(BEARER_PREFIX) and len(value) == len(BEARER_PREFIX) + 64
 
 
 def _valid_uuid(value: str) -> bool:

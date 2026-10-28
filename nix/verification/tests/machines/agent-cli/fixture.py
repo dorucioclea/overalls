@@ -35,7 +35,7 @@ class Handler(BaseHTTPRequestHandler):
     def authorized(self) -> bool:
         global TOKEN
         token = self.headers.get("authorization", "").removeprefix("Bearer ")
-        if not token.startswith("overalls_agent_") or len(token) != 78:
+        if not token.startswith("overalls_agent_") or len(token) != len("overalls_agent_") + 64:
             return False
         with LOCK:
             if TOKEN is None:

@@ -4,7 +4,7 @@
 use mila_model::Identifier;
 use mila_runtime::{MachineSnapshot, SnapshotMachine, MAX_SNAPSHOT_BYTES, MAX_SNAPSHOT_MACHINES};
 use mila_transport::{
-    ssh::{DeviceSigner, SshError, SshSession},
+    ssh::{DeviceSigner, PtySession, SshError, SshSession},
     TrustDocument,
 };
 use serde::Deserialize;
@@ -88,6 +88,16 @@ fn validate_ssh_keys(bytes: &[u8]) -> Result<(), SessionError> {
 }
 
 impl ApplicationSession {
+    /// Opens a bounded interactive terminal on this authenticated deployment.
+    /// The returned channel remains owned by the caller while the underlying
+    /// certificate-pinned session is borrowed by the transport.
+    pub async fn open_pty(
+        &self,
+        columns: u32,
+        rows: u32,
+    ) -> Result<PtySession, SessionError> {
+        Ok(PtySession::open(&self.ssh, columns, rows).await?)
+    }
     /// Execute one closed-vocabulary thread operation. Response JSON is bounded and
     /// parsed before crossing a native boundary; stdin is accepted only for commands
     /// whose protocol grammar requires it.

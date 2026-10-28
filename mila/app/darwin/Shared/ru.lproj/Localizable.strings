@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_ru.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "Агенту нужен ваш ответ";
-"MILA_NEEDS_INPUT_BODY" = "Откройте Mila, чтобы ответить.";

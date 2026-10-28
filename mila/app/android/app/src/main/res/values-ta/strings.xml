@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_ta.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">ஒரு ஏஜென்ட்டுக்கு உங்கள் உள்ளீடு தேவை</string>
-    <string name="mila_needs_input_body">பதிலளிக்க Mila-வைத் திறக்கவும்.</string>
-</resources>

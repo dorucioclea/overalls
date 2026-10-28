@@ -5,24 +5,24 @@ denial: A relay refusal, a push_disabled deployment or a denied system permissio
   off with a reason; a stale or reordered reply never changes state; turning notifications off during
   an in-flight registration removes the device once it lands.
 evidence:
-- assertion: push registration matches its model
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: recorded
   kind: property
-  path: mila/packages/mila_core/test/push_registration_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`mila_core` **90 passed**'
   scope: Hegel StateMachine, 1500 cases of 80 steps, with delayed, reordered and stale fake-server replies.
-- assertion: registration sends the push key on stdin and the poke public key in the line
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/packages/mila_transport/test/push_test.dart
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '**32 passed**'
   scope: SusanClient over a fake transport and PushRegistrar over a fake Porsche session.
-- assertion: turning notifications on registers once; the key stays off the line
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/app/test/device_features_test.dart
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: app **39 passed**
   scope: Flutter widget tests over the fake Porsche, fake relay transport and fake push platform.

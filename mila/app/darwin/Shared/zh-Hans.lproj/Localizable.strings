@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_zh_Hans.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "智能体需要你的输入";
-"MILA_NEEDS_INPUT_BODY" = "打开 Mila 进行回答。";

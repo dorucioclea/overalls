@@ -35,14 +35,14 @@ test("native and C notes use upstream grammar without rewriting files", () => {
   })
 })
 
-test("Dart, Kotlin and Swift notes are contiguous slash comment groups", () => {
+test("Kotlin and Swift notes are contiguous slash comment groups", () => {
   const slashNote = contract.trimEnd().split("\n").map(line => `  /// ${line}`).join("\n")
   const source = `class A {\n  // ordinary\n\n${slashNote}\n  void run() {}\n}\n`
-  for (const path of ["a.dart", "A.kt", "A.swift"]) {
+  for (const path of ["A.kt", "A.swift"]) {
     assert.deepEqual(extractNativeNotes(path, source), [{line: 4, lines: contract.trimEnd().split("\n")}])
   }
-  assert.throws(() => extractNativeNotes("a.dart", `${slashNote}\n${slashNote}`), /exactly one/)
-  fixture({"a.dart": source}, (root, paths) => assert.equal(checkFiles(root, paths).nativeNotes, 1))
+  assert.throws(() => extractNativeNotes("a.native", `${slashNote}\n${slashNote}`), /exactly one/)
+  fixture({"a.native": source}, (root, paths) => assert.equal(checkFiles(root, paths).nativeNotes, 1))
 })
 
 test("native block rejects multiple directives", () => {

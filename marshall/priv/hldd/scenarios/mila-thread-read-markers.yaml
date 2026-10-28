@@ -3,10 +3,10 @@ boundary: Marshall.Threads.ReadMarker is keyed per user and agent transcript, wr
 denial: A smaller position leaves the stored marker unchanged; a thread without a bound transcript refuses
   thread_not_ready; a reader without thread read is forbidden.
 evidence:
-- assertion: read marker positions never decrease
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: marshall/test/marshall/ssh/client_commands_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Running-maximum invariant and unread counts.
 gaps: Concurrent writers across nodes are serialized by the lock but not exercised by a distributed test.
 id: mila-thread-read-markers

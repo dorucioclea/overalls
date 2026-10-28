@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_ko.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">에이전트가 입력을 기다리고 있습니다</string>
-    <string name="mila_needs_input_body">Mila를 열어 답하세요.</string>
-</resources>

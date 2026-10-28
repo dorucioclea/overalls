@@ -3,15 +3,15 @@ boundary: web show and web set through Porsche at the shown policy revision; pri
 denial: A non-HTTPS or credentialed URL is not opened; a concurrent change is reported as a conflict;
   an out-of-range port is refused before sending; the webview refuses non-HTTPS navigation.
 evidence:
-- assertion: terminal and web results decode
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/packages/mila_core/test/client_results_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Shared result fixture.
-- assertion: a concurrent change is reported, not overwritten
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/client_flow_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Widget flow against the fake Porsche.
 gaps: iOS and Android webview and share sheet are not built or run.
 id: mila-web-endpoint

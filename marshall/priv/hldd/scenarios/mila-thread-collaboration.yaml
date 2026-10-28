@@ -3,20 +3,20 @@ boundary: Every thread action is a Porsche thread command with a request id; tex
 denial: Text over 64 KiB or invalid UTF-8 is refused before sending; a busy thread or stale plan is refused
   by the server and shown; the read marker never moves back.
 evidence:
-- assertion: read markers only move forward
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/packages/mila_core/test/thread_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: UnreadState and readMarkerToSend.
-- assertion: payloads up to the limit are accepted and never enter the line
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/packages/mila_core/test/thread_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: payloadCommand over generated text.
-- assertion: a prompt travels on stdin, never on the command line
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/client_flow_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Widget flow against the fake Porsche.
 gaps: No run against Marshall's thread domain through Porsche.
 id: mila-thread-collaboration

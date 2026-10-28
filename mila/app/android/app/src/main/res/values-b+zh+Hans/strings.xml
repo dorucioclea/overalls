@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_zh_Hans.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">智能体需要你的输入</string>
-    <string name="mila_needs_input_body">打开 Mila 进行回答。</string>
-</resources>

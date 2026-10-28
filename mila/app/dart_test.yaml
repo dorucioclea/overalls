@@ -1,4 +1,0 @@
-# `golden`: pixel comparisons recorded on Linux (see test/golden_test.dart).
-# macOS and Windows hosts run `flutter test --exclude-tags golden`.
-tags:
-  golden:

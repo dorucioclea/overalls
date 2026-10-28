@@ -1,18 +1,18 @@
 ---
-digest: 98e52aa30984aa52055e9fe635a8bb629fccd47d59082b34972472f87f0cb3ae
+digest: 97841712b8940e0f18e338f2c6c5d7a5735451f87788b59e0e6d1bcb51f6d4a0
 disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/rust/mila-runtime/src/terminal.rs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 9d53735606120890645c1514b7f93d810ff3030f715dcd9b2f10eed0a277ca1c
+  marshall/priv/hldd/08-interactive.md: 56fdb70846551bbf5d4a93d6dd35a7c9b7b3364259bcdac58ffce07b912f786d
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 4df19acabce66188a13a367acae5fd2d8dabd1c5c952d8d3e1cd1c08b448f15d
-  marshall/priv/hldd/20-security.md: 0854fe3e151c56e794a8069bd384bf68bb6d76cd7827abfeed6c3fa28e91c83b
-  marshall/priv/hldd/21-domains.md: 587584208f1a71100280b9e438b46416b8b56f0f0af2eda585006ad373ff22dc
-  marshall/priv/hldd/22-topology.md: 03993ebc3b0c89183aa3eafd972187e92b346d929a61f22250e9e1b6774e0b4e
+  marshall/priv/hldd/19-coverage.md: 9f9f818fb4e1b4e636ad1737243eaed5a2b788011e7a5f192120be1b5f893931
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Terminal reducer ports Dart attach authority, generation fencing, cursor replay/reset, retry exhaustion and read-only refusal with Hegel properties.
+Flutter client trees and their build artifacts were retired; native platform workflows and Rust core remain authoritative.

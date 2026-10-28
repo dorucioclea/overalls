@@ -4,17 +4,17 @@ boundary: Pokes are encrypted to a per-deployment device X25519 key with the hos
 denial: Any flipped byte, truncation, extension, wrong host, unknown version or plaintext outside {v:1,
   kind:needs_input, route} is refused before anything is shown.
 evidence:
-- assertion: changing any byte of a sealed poke is never accepted
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: recorded
   kind: property
-  path: mila/packages/mila_core/test/push_poke_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`mila_core` **90 passed**'
   scope: Pure Dart X25519, HKDF-SHA256 and ChaCha20-Poly1305 over protocol/test/fixtures/push_pokes.json.
-- assertion: invalidVectorsAreRefused
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/app/android/app/src/test/kotlin/dev/overalls/mila/PokeOpenerTest.kt
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`PokeOpener` was compiled with kotlinc 2.3.21 and passed 4 JUnit tests'
   scope: Kotlin PokeOpener compiled with kotlinc 2.3.21 and run under JUnit off-device.

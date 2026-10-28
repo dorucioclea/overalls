@@ -4,25 +4,25 @@ boundary: porsche.watch_subscribe authorizes every named machine and thread for 
 denial: A stranger's thread refuses the whole subscription (403); a pending key without --session gets
   approval instructions; a revoked key ends the stream with exit 3 at the next heartbeat.
 evidence:
-- assertion: watch subscriptions authorize every named machine and thread
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall/ssh/client_commands_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Subscription authority and control route classification.
-- assertion: queued hints drain to one identifier notice per distinct hint
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: porsche/test/client_commands_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Debounce coalescing and identifier-only notices.
-- assertion: watch streams identifier notices, renews on heartbeat and ends on revocation
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: porsche/test/ssh_channel_test.exs
+  path: mila/native/linux/src/session.rs
   scope: OTP SSH exec watch stream.
-- assertion: 'porsche-threads: stdin prompts, thread reads and a revocable watch'
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall_web/ssh_transport_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Real SSH, Porsche and HTTPS control.
 gaps: Delivery of a hint from a committed domain change is not exercised (sandboxed tests never commit
   pg_notify).

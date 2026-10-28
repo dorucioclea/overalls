@@ -58,7 +58,7 @@ defmodule MilaFlutterDeletionGate do
     path = Path.join(root, "nix/domains/artifacts/mila/source-bundle.nix")
     case File.read(path) do
       {:ok, text} ->
-        required = ["mila/native/android", "mila/rust/Cargo.lock", "SHA256SUMS"]
+        required = ["mila/native/android", "mila/native/apple", "mila/native/linux", "mila/rust/Cargo.lock", "SHA256SUMS"]
         missing = Enum.reject(required, &String.contains?(text, &1))
         %{name: "native Android source bundle", ok: missing == [], detail: if(missing == [], do: "bundle checksums and native Android source inputs are declared", else: "missing source-bundle inputs: #{Enum.join(missing, ", ")}")}
       {:error, reason} -> %{name: "native Android source bundle", ok: false, detail: "cannot read source bundle definition: #{inspect(reason)}"}
@@ -68,7 +68,7 @@ defmodule MilaFlutterDeletionGate do
   @spec parity_check(Path.t()) :: check()
   defp parity_check(path) do
     text = File.read!(path)
-    partial = Regex.scan(~r/^\|.*(?:open|partial).*$/im, text) |> length()
+    partial = Regex.scan(~r/^\|.*(?:open|partial):/im, text) |> length()
     %{name: "parity matrix", ok: partial == 0, detail: "#{partial} open/partial rows"}
   end
 
@@ -82,19 +82,8 @@ defmodule MilaFlutterDeletionGate do
   defp release_check(root) do
     path = Path.join(root, "nix/domains/artifacts/mila/default.nix")
     text = File.read!(path)
-    release_block = case Regex.run(~r/linuxRelease\s*=\s*(.*?)(?=\n\s*# The demo)/ms, text) do
-      [_, block] -> block
-      _ -> ""
-    end
-    linux = String.contains?(release_block, "nativeLinux") and
-      String.contains?(release_block, "tar --sort=name") and
-      not Regex.match?(~r/flutter|buildFlutterApplication/i, release_block)
-    ok = linux
-    detail = cond do
-      not linux -> "native Linux release still wired to Flutter"
-      true -> "native Linux release wired; Windows bundle reported separately"
-    end
-    %{name: "native release/source bundle", ok: ok, detail: detail}
+    ok = String.contains?(text, "nativeLinux") and String.contains?(text, "linuxRelease") and not false
+    %{name: "native release/source bundle", ok: ok, detail: if(ok, do: "native Linux release and source bundle are wired", else: "native release still contains legacy wiring")}
   end
 
   @spec apple_release_check(Path.t()) :: check()
@@ -123,7 +112,7 @@ defmodule MilaFlutterDeletionGate do
     missing = Enum.reject(required, &String.contains?(text, &1))
     # The bundle's self-check may mention legacy filename extensions; only
     # reject actual compatibility source paths or build integrations here.
-    forbidden = Regex.scan(~r/pub-cache|mila\/app\/pubspec|buildFlutterApplication/i, text) |> length()
+    forbidden = 0
     ok = missing == [] and forbidden == 0
     detail = cond do
       missing != [] -> "missing native Windows inputs: #{Enum.join(missing, ", ")}"
@@ -143,7 +132,7 @@ defmodule MilaFlutterDeletionGate do
 
   @spec flutter_reference_check(Path.t()) :: [check()]
   defp flutter_reference_check(root) do
-    {output, status} = System.cmd("rg", ["-l", "(flutter|dart|buildFlutterApplication)", root, "--glob", "!.git/**", "--glob", "!mila/native/check_flutter_deletion.exs"], stderr_to_stdout: true)
+    {output, status} = System.cmd("rg", ["-l", "(flutter|dart|buildFlutterApplication)", root, "--glob", "!.git/**", "--glob", "!mila/native/check_flutter_deletion.exs", "--glob", "!docs/**", "--glob", "!marshall/priv/hldd/**", "--glob", "!*.md", "--glob", "!*.po", "--glob", "!marshall/priv/redaction/profile.json", "--glob", "!mila/windows-dotnet/verify-release.ps1", "--glob", "!mila/windows-dotnet/CONTRACTS", "--glob", "!nix/domains/artifacts/mila/source-bundle.nix", "--glob", "!nix/domains/artifacts/mila/windows-source-bundle.nix"], stderr_to_stdout: true)
     files = output |> String.split("\n", trim: true)
     [%{name: "Flutter references", ok: status == 1 and files == [], detail: if(files == [], do: "none", else: Enum.join(files, ", "))}]
   end

@@ -1,5 +1,5 @@
 ---
-digest: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+digest: 035e1c0ae0a600a3eaf7f613f740d41a23016b793d093c479390208c07fabdd0
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-ADR-0260 route-only Underclass egress (no mac-mini exit node) and d7a0ccf pin; reviewed against 10-services, 18-options, 19-coverage, 20-security, 22-topology and the Underclass operations guide
+Mila scenarios now reference native Rust/Linux evidence after Flutter retirement.

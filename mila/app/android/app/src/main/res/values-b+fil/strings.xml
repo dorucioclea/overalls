@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_fil.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">Kailangan ng agent ang input mo</string>
-    <string name="mila_needs_input_body">Buksan ang Mila para sumagot.</string>
-</resources>

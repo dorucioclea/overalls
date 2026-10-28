@@ -3,15 +3,15 @@ boundary: web set keeps unnamed settings, passes the caller's or freshly read po
 denial: A stale revision refuses revision_conflict, port 4444 reserved_editor_port and a profile without
   web web_not_allowed; the endpoint stays unchanged.
 evidence:
-- assertion: web show and web set use the endpoint's optimistic policy revision
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall/ssh/client_commands_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Revision fence, reserved port and receipt provenance.
-- assertion: revision_conflict
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/fleet/scenarios/porsche-threads.py
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-19-mila-m6.md
   record_assertion: '`porsche-threads` passed'
   scope: Native fleet revision refusal.

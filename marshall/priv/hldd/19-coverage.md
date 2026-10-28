@@ -2697,8 +2697,8 @@ Required refusal: A failed or stale authentication leaves Mila locked; a platfor
 
 Tested scope: Pure Dart AppLock under a Hegel StateMachine and Flutter widget tests with a fake authenticator; the Linux machine test checks the unavailable setting. local_auth on devices is not run.
 
-- **property, recorded**: [the lock never shows content early (enabled at start)](repo:mila/packages/mila_core/test/app_lock_test.dart) — Hegel StateMachine over lifecycle, delay and unlock events.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
-- **machine, recorded**: [after a restart the deployment, lock setting and offline list remain](repo:nix/verification/tests/machines/mila-desktop/driver.py) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **property, recorded**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel StateMachine over lifecycle, delay and unlock events.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 **Gaps:** No device run of local_auth on iOS or Android.
 
@@ -2714,8 +2714,8 @@ Required refusal: A release with demo mode, software keys, a missing signing inp
 
 Tested scope: Pure Dart planner unit and Hegel property tests; macOS and iOS-simulator dev builds run on a Mac. Signed Apple, Android and Windows release paths are not executed.
 
-- **property, present**: [release plans never enable demo or software keys and keep secrets out of arguments](repo:mila/tool/test/plan_test.dart) — Hegel over platform, host, demo and Apple-team inputs..
-- **unit, present**: [a missing signing input is refused, never replaced](repo:mila/tool/test/plan_test.dart) — Release planning for Android, iOS, macOS and Windows with no inputs..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel over platform, host, demo and Apple-team inputs..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Release planning for Android, iOS, macOS and Windows with no inputs..
 
 **Gaps:** No CI signing environment or Windows host; notarization, SignTool and upload-key signing are planned but not run.
 
@@ -2731,13 +2731,13 @@ Required refusal: A release build that carries the software-keys define refuses 
 
 Tested scope: Dart unit and Hegel property tests over the SDDL builder and checker on every host, an icacls round trip that runs only on Windows, the typed Windows Rust FFI SSH key list/revoke and sign-in lifecycle smoke projections, and macOS unsigned dev builds launched locally with 0700/0600 data files observed. The Windows CNG/TPM custody channel, live Porsche key journey and Secure Enclave on a signed macOS build are not exercised.
 
-- **unit, present**: [SSH key revoke request-id validation](repo:mila/windows-dotnet-smoke/Program.cs) — The production Windows interop invokes the Rust list/revoke ABI through owned buffers, rejects missing sessions and malformed request ids, and exercises the bounded controller projection; no live Windows host or Porsche journey is claimed..
-- **unit, present**: [missing authenticated machine listing refusal](repo:mila/windows-dotnet-smoke/Program.cs) — The Windows shell copies only bounded machine-list bytes from an authenticated Rust handle, decodes typed rows for selection/detail and refuses a missing handle; no live Windows journey is claimed..
-- **unit, present**: [missing authenticated resize refusal](repo:mila/windows-dotnet-smoke/Program.cs) — Start/stop/delete and bounded resize dispatches use canonical Porsche request ids and an authenticated Rust handle; missing handles refuse without mutation, and no live Windows backend is claimed..
-- **unit, present**: [missing authenticated web listing refusal](repo:mila/windows-dotnet-smoke/Program.cs) — Web endpoint inspection is bound to the selected machine and authenticated Rust handle; missing handles refuse before any endpoint reaches WinUI, with no embedded WebView claim..
-- **unit, present**: [reconnect starts fresh generation](repo:mila/windows-dotnet-smoke/SignInFlowSmoke.cs) — The typed Windows reducer refuses stale approval outcomes, rejects non-HTTPS approval URLs, expires pending approval after ten minutes, and starts reconnects with a fresh generation; the live browser approval result and backend reconnect transport remain unverified..
-- **property, present**: [an allow entry for any other SID is refused](repo:mila/packages/mila_transport/test/owner_only_test.dart) — Hegel over generated SIDs and access masks against the SDDL checker; host-independent..
-- **unit, present**: [a written file is owner-only and refused once shared](repo:mila/packages/mila_transport/test/owner_only_test.dart) — Windows-only icacls grant to Everyone after a protected write..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — The production Windows interop invokes the Rust list/revoke ABI through owned buffers, rejects missing sessions and malformed request ids, and exercises the bounded controller projection; no live Windows host or Porsche journey is claimed..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — The Windows shell copies only bounded machine-list bytes from an authenticated Rust handle, decodes typed rows for selection/detail and refuses a missing handle; no live Windows journey is claimed..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Start/stop/delete and bounded resize dispatches use canonical Porsche request ids and an authenticated Rust handle; missing handles refuse without mutation, and no live Windows backend is claimed..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Web endpoint inspection is bound to the selected machine and authenticated Rust handle; missing handles refuse before any endpoint reaches WinUI, with no embedded WebView claim..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — The typed Windows reducer refuses stale approval outcomes, rejects non-HTTPS approval URLs, expires pending approval after ten minutes, and starts reconnects with a fresh generation; the live browser approval result and backend reconnect transport remain unverified..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel over generated SIDs and access masks against the SDDL checker; host-independent..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Windows-only icacls grant to Everyone after a protected write..
 
 **Gaps:** No signed macOS build or Windows CI host; Secure Enclave and TPM custody, a live Windows Porsche key-management journey, and the live browser approval/reconnect transport are unverified on desktop.
 
@@ -2753,7 +2753,7 @@ Required refusal: An unknown deployment's link lands on the deployment list, a s
 
 Tested scope: NixOS machine test with real X input, packaged Marshall, haproxy and Porsche, and Playwright Chromium for the approval. Machines are not provisioned (no Lilly), so the live list is empty.
 
-- **machine, recorded**: [approval in the browser leads to the machine list](repo:nix/verification/tests/machines/mila-desktop/driver.py) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 **Gaps:** No machine is provisioned, so the list content and machine-page links are exercised only on an empty list and an unknown id.
 
@@ -2769,10 +2769,10 @@ Required refusal: Another CA, another principal, an expired certificate or a pla
 
 Tested scope: Dart certificate verification against Elixir-issued fixtures, trust resolution, and five journeys against a stock OpenSSH server in the Nix sandbox; mutation-checked by disabling the host check.
 
-- **unit, recorded**: [a certificate from another CA is refused before authentication](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart) — Stock OpenSSH server presenting host certificates in the mila-transport Nix check.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **unit, recorded**: [a different CA is refused and the pin is kept](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart) — Trust document pinning and reconciliation.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **unit, recorded**: [server-issued certificates verify in Mila](repo:mila/packages/mila_core/test/host_trust_test.dart) — Elixir-issued certificate fixtures get the same verdict in Dart.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **machine, recorded**: [a certificate from another CA is refused before authentication](repo:nix/verification/tests/machines/mila-porsche/default.nix) — Real Porsche release refusing a rogue CA without an authentication record; Marshall is absent, so commands end in an authority envelope.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Stock OpenSSH server presenting host certificates in the mila-transport Nix check.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Trust document pinning and reconciliation.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Elixir-issued certificate fixtures get the same verdict in Dart.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Real Porsche release refusing a rogue CA without an authentication record; Marshall is absent, so commands end in an authority envelope.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
 
 **Gaps:** The real-Porsche fixture has no Marshall, so a full signed-in command journey through Porsche to Marshall is not yet exercised from Mila.
 
@@ -2788,9 +2788,9 @@ Required refusal: A missing or extra locale, a dropped placeholder or an undocum
 
 Tested scope: Flutter widget tests in the test VM with platform font fallback.
 
-- **unit, present**: [the Porsche locale list matches the gateway catalogs](repo:mila/app/test/localization_test.dart) — Locale set parity with porsche/priv/gettext..
-- **unit, present**: [every Porsche locale has a complete catalog with the same placeholders](repo:mila/app/test/localization_test.dart) — ARB completeness and placeholder parity..
-- **unit, present**: [every Porsche locale renders framework widgets in its direction](repo:mila/app/test/localization_test.dart) — Framework fallback delegates and direction for every locale..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Locale set parity with porsche/priv/gettext..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — ARB completeness and placeholder parity..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Framework fallback delegates and direction for every locale..
 
 **Gaps:** No device rendering, shaping or native-speaker review; goldens use platform fallback fonts rather than bundled Noto faces.
 
@@ -2806,9 +2806,9 @@ Required refusal: Nonzero exit, malformed envelope, invalid authority fields, in
 
 Tested scope: Local real TCP SSH with scripted server replies and pure Hegel decoder properties; native application adapters are not exercised.
 
-- **unit, present**: [pages_refresh_and_complete_snapshot_use_one_authenticated_connection](repo:mila/rust/mila-session/tests/session.rs) — Real local certificate-pinned SSH verifies one authentication, page ordering, snapshot completeness and deployment binding; remote command results are scripted..
-- **unit, present**: [invalid_refused_and_interrupted_refresh_never_replace_the_last_good_list](repo:mila/rust/mila-session/tests/session.rs) — Malformed response, nonzero exit and missing exit status return errors and retain prior validated rows..
-- **property, present**: [decoded_permissions_never_gain_authority](repo:mila/rust/mila-session/tests/properties.rs) — Generated permission, owner and pin combinations preserve the wire projection and action policy; identity and authority corruption is refused..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Real local certificate-pinned SSH verifies one authentication, page ordering, snapshot completeness and deployment binding; remote command results are scripted..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Malformed response, nonzero exit and missing exit status return errors and retain prior validated rows..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Generated permission, owner and pin combinations preserve the wire projection and action policy; identity and authority corruption is refused..
 
 **Gaps:** Native UI and signer wiring, browser approval, real Porsche authorization, watch refresh and persistence custody remain unverified.
 
@@ -2824,8 +2824,8 @@ Required refusal: Any flipped byte, truncation, extension, wrong host, unknown v
 
 Tested scope: Dart openPoke against every shared vector plus Hegel tamper properties; Kotlin PokeOpener against the same vectors under JUnit. Swift CryptoKit opening and the notification extension are not built or run.
 
-- **property, recorded**: [changing any byte of a sealed poke is never accepted](repo:mila/packages/mila_core/test/push_poke_test.dart) — Pure Dart X25519, HKDF-SHA256 and ChaCha20-Poly1305 over protocol/test/fixtures/push_pokes.json.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
-- **unit, recorded**: [invalidVectorsAreRefused](repo:mila/app/android/app/src/test/kotlin/dev/overalls/mila/PokeOpenerTest.kt) — Kotlin PokeOpener compiled with kotlinc 2.3.21 and run under JUnit off-device.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **property, recorded**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Pure Dart X25519, HKDF-SHA256 and ChaCha20-Poly1305 over protocol/test/fixtures/push_pokes.json.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Kotlin PokeOpener compiled with kotlinc 2.3.21 and run under JUnit off-device.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 **Gaps:** The iOS extension and Android messaging service have not been built or run on a device; Marshall's poke producer is another workstream.
 
@@ -2841,9 +2841,9 @@ Required refusal: Another user's device id refuses device_not_found; an eleventh
 
 Tested scope: BEAM Covenant and unit tests through SSH.execute and the domain API; Porsche runner and channel tests for stdin and refusal hints.
 
-- **unit, present**: [SSH key removal and account retirement revoke bound devices](repo:marshall/test/contract/marshall/notifications_contract_test.exs) — Covenant marshall.notifications.I5..
-- **unit, present**: [device versions and registration receipts keep only the push-key digest](repo:marshall/test/contract/marshall/notifications_contract_test.exs) — Covenant marshall.notifications.I6 through SSH.execute..
-- **unit, present**: [WNS metadata registration](repo:mila/windows-dotnet-smoke/WindowsNotificationsSmoke.cs) — The typed Windows controller passes only bounded WNS metadata to the Rust validator, refuses a foreign channel and clears local state; live WNS exchange and Porsche device CRUD remain open..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Covenant marshall.notifications.I5..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Covenant marshall.notifications.I6 through SSH.execute..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — The typed Windows controller passes only bounded WNS metadata to the Rust validator, refuses a foreign channel and clears local state; live WNS exchange and Porsche device CRUD remain open..
 
 **Gaps:** No machine test drives device commands through a real Porsche SSH session.
 
@@ -2859,11 +2859,11 @@ Required refusal: Viewers, the actor, paused, revoked and invalidated devices re
 
 Tested scope: BEAM unit, Hegel and Covenant tests against PostgreSQL with a Req.Test Susan stub, plus a NixOS machine test of the release against a fake Susan at the compiled origin over OS-trusted TLS.
 
-- **unit, present**: [an agent question notifies current writers' devices after commit, not viewers](repo:marshall/test/marshall/notifications/producer_test.exs) — Producer recipients, coalescing and after-commit timing in the BEAM..
-- **unit, present**: [503, 503, 200 sends once successfully; 410 invalidates the device](repo:marshall/test/contract/marshall/notifications_contract_test.exs) — Covenant marshall.notifications.I3 with an in-process Susan stub..
-- **property, present**: [the retry mapping matches the ADR-0225 table](repo:marshall/test/marshall/notifications/delivery_worker_test.exs) — Hegel over status, Retry-After and final attempt..
-- **property, present**: [flipping any bit of a sealed poke is refused](repo:protocol/test/push_poke_test.exs) — PushPoke round-trip and tamper refusal over generated inputs..
-- **machine, recorded**: [Susan 503, 503, then 200 yields exactly one provider send](repo:nix/verification/tests/machines/push-notifications/driver.py) — Release against fake Susan at the compiled origin with OS-trusted TLS.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Producer recipients, coalescing and after-commit timing in the BEAM..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Covenant marshall.notifications.I3 with an in-process Susan stub..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel over status, Retry-After and final attempt..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — PushPoke round-trip and tamper refusal over generated inputs..
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Release against fake Susan at the compiled origin with OS-trusted TLS.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
 
 **Gaps:** Real Susan, APNs/FCM delivery and Mila decryption on a device are not exercised.
 
@@ -2879,9 +2879,9 @@ Required refusal: A relay refusal, a push_disabled deployment or a denied system
 
 Tested scope: Pure Dart registration machine under a Hegel StateMachine with a fake server, relay client and registrar unit tests over fake transports, and Flutter widget journeys over the fake Porsche. Native APNs/FCM token delivery, the real relay and the Marshall device commands are not exercised.
 
-- **property, recorded**: [push registration matches its model](repo:mila/packages/mila_core/test/push_registration_test.dart) — Hegel StateMachine, 1500 cases of 80 steps, with delayed, reordered and stale fake-server replies.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
-- **unit, recorded**: [registration sends the push key on stdin and the poke public key in the line](repo:mila/packages/mila_transport/test/push_test.dart) — SusanClient over a fake transport and PushRegistrar over a fake Porsche session.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
-- **unit, recorded**: [turning notifications on registers once; the key stays off the line](repo:mila/app/test/device_features_test.dart) — Flutter widget tests over the fake Porsche, fake relay transport and fake push platform.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **property, recorded**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel StateMachine, 1500 cases of 80 steps, with delayed, reordered and stale fake-server replies.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — SusanClient over a fake transport and PushRegistrar over a fake Porsche session.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Flutter widget tests over the fake Porsche, fake relay transport and fake push platform.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 **Gaps:** No device build; Susan and the Marshall/Porsche device commands are other workstreams and are not run against Mila.
 
@@ -2897,11 +2897,11 @@ Required refusal: A Linux key file readable by group or other users, or malforme
 
 Tested scope: Dart device-key encoding, signature and file-custody tests, the Hegel stateful sign-in machine, and an Elixir proof that Porsche accepts a signed P-256 client key. Native Secure Enclave and Android Keystore custody are not compiled or run.
 
-- **property, recorded**: [sign-in never shows a stale or expired link](repo:mila/packages/mila_core/test/domain_test.dart) — Hegel stateful sign-in machine over a fake clock and Porsche replies.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **unit, recorded**: [a key file other users can read is refused, not used](repo:mila/packages/mila_transport/test/device_key_test.dart) — Linux file custody: 0600 key, 0700 directory, readable and malformed files refused.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **unit, recorded**: [a signed P-256 device key proves possession like any other client key](repo:porsche/test/ssh_proof_test.exs) — Porsche SSH proof of possession for an ecdsa-sha2-nistp256 client key in the BEAM test VM.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **machine, recorded**: [the pinned CA's certificate and the device key reach Porsche](repo:nix/verification/tests/machines/mila-porsche/default.nix) — Real Porsche release with the device key from mila-probe; Marshall is absent, so commands end in an authority envelope.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
-- **machine, recorded**: [approval in the browser leads to the machine list](repo:nix/verification/tests/machines/mila-desktop/driver.py) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
+- **property, recorded**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel stateful sign-in machine over a fake clock and Porsche replies.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Linux file custody: 0600 key, 0700 directory, readable and malformed files refused.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Porsche SSH proof of possession for an ecdsa-sha2-nistp256 client key in the BEAM test VM.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Real Porsche release with the device key from mila-probe; Marshall is absent, so commands end in an authority envelope.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Linux bundle under X11 against packaged Marshall and Porsche.; [execution record](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 **Gaps:** iOS and Android key custody and link delivery have no device build.
 
@@ -2917,10 +2917,10 @@ Required refusal: Output before the header is dropped; a read-only attachment se
 
 Tested scope: Hegel stateful attach machine, in-memory channel header tests, a stock OpenSSH PTY journey and widget flows against the fake Porsche. No native PTY or real Porsche attach.
 
-- **property, present**: [terminal attach matches its model](repo:mila/packages/mila_core/test/terminal_attach_test.dart) — Hegel StateMachine over attach, header, output, end, reset and read-only events..
-- **unit, present**: [the stderr header, output and exit become signals in order](repo:mila/packages/mila_transport/test/channels_test.dart) — In-memory stderr/stdout/exit streams..
-- **unit, present**: [terminal attach runs on a pty sized to the view, with resize and exit mapping](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart) — Stock OpenSSH ForceCommand emulating attach..
-- **unit, present**: [view-only mode never sends keys or pastes](repo:mila/app/test/client_flow_test.dart) — Widget flow against the fake Porsche..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel StateMachine over attach, header, output, end, reset and read-only events..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — In-memory stderr/stdout/exit streams..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Stock OpenSSH ForceCommand emulating attach..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Widget flow against the fake Porsche..
 
 **Gaps:** The stderr header path cannot be shown through stock OpenSSH; no machine test drives the terminal screen.
 
@@ -2936,9 +2936,9 @@ Required refusal: Text over 64 KiB or invalid UTF-8 is refused before sending; a
 
 Tested scope: Hegel properties for read markers, search and payload bounds; fixture decoding; widget flows against the fake Porsche.
 
-- **property, present**: [read markers only move forward](repo:mila/packages/mila_core/test/thread_test.dart) — UnreadState and readMarkerToSend..
-- **property, present**: [payloads up to the limit are accepted and never enter the line](repo:mila/packages/mila_core/test/thread_test.dart) — payloadCommand over generated text..
-- **unit, present**: [a prompt travels on stdin, never on the command line](repo:mila/app/test/client_flow_test.dart) — Widget flow against the fake Porsche..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — UnreadState and readMarkerToSend..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — payloadCommand over generated text..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Widget flow against the fake Porsche..
 
 **Gaps:** No run against Marshall's thread domain through Porsche.
 
@@ -2954,13 +2954,13 @@ Required refusal: A payload command without stdin, an oversized or empty payload
 
 Tested scope: BEAM tests of protocol grammar (Hegel), Marshall dispatch against the real Threads, Agents and Planning domains, Porsche channel/runner custody, and one real SSH + Porsche + HTTPS control journey.
 
-- **property, present**: [client commands format to canonical lines that parse back unchanged](repo:protocol/test/ssh_client_commands_test.exs) — Canonical line form round-trips and mutation classification for all 15 commands..
-- **property, present**: [stdin payloads are bounded valid text and never accepted on the command line](repo:protocol/test/ssh_client_commands_test.exs) — Stdin payload kinds, limits and command-line refusal..
-- **unit, present**: [thread commands list, show, prompt and mark read through the domain](repo:marshall/test/marshall/ssh/client_commands_test.exs) — Dispatch, unread counts, digest-only receipts with SSH key id, replay and conflict..
-- **unit, present**: [thread answer and plan commands keep the domain's question and proposal fences](repo:marshall/test/marshall/ssh/client_commands_test.exs) — Planning question answer, stale proposal refusal and plan approval into a Work turn..
-- **unit, present**: [exec reads prompt payloads from stdin within their bound](repo:porsche/test/ssh_channel_test.exs) — OTP SSH exec channel buffers, bounds and validates the prompt payload..
-- **unit, present**: [porsche-threads: stdin prompts, thread reads and a revocable watch](repo:marshall/test/marshall_web/ssh_transport_test.exs) — Real OpenSSH-protocol client, Porsche listener and Marshall control over verified TLS in one BEAM..
-- **machine, recorded**: [Porsche thread, web and watch commands drive Marshall domains](repo:nix/verification/tests/machines/fleet/scenarios/porsche-threads.py) — Native OpenSSH, packaged Porsche and Marshall on the fleet fixture.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Canonical line form round-trips and mutation classification for all 15 commands..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Stdin payload kinds, limits and command-line refusal..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Dispatch, unread counts, digest-only receipts with SSH key id, replay and conflict..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Planning question answer, stale proposal refusal and plan approval into a Work turn..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — OTP SSH exec channel buffers, bounds and validates the prompt payload..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Real OpenSSH-protocol client, Porsche listener and Marshall control over verified TLS in one BEAM..
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Native OpenSSH, packaged Porsche and Marshall on the fleet fixture.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
 
 **Gaps:** Committed-hint delivery to a watch is not exercised end to end; the fleet has no model provider, so turns only queue and fixture actions stand in for the model's question and plan tool calls.
 
@@ -2976,7 +2976,7 @@ Required refusal: A smaller position leaves the stored marker unchanged; a threa
 
 Tested scope: Hegel property over arbitrary mark-read sequences against PostgreSQL in the BEAM sandbox.
 
-- **property, present**: [read marker positions never decrease](repo:marshall/test/marshall/ssh/client_commands_test.exs) — Running-maximum invariant and unread counts..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Running-maximum invariant and unread counts..
 
 **Gaps:** Concurrent writers across nodes are serialized by the lock but not exercised by a distributed test.
 
@@ -2992,8 +2992,8 @@ Required refusal: Overlong or malformed lines are refused; silence beyond 40 s r
 
 Tested scope: Hegel stateful supervisor, framing property and OpenSSH reconnect journey.
 
-- **property, present**: [the watch supervisor matches its model](repo:mila/packages/mila_core/test/watch_test.dart) — Hegel StateMachine over open, receive, end and close..
-- **unit, present**: [a watch feed reads JSON lines, reconnects after exit 5 and stops on exit 3](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart) — Stock OpenSSH ForceCommand emulating watch..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel StateMachine over open, receive, end and close..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Stock OpenSSH ForceCommand emulating watch..
 
 **Gaps:** No run against Porsche's real watch.
 
@@ -3009,10 +3009,10 @@ Required refusal: A stranger's thread refuses the whole subscription (403); a pe
 
 Tested scope: Marshall subscription authority, Porsche routing (Hegel coalescing property), OTP channel stream and a real SSH transport journey.
 
-- **unit, present**: [watch subscriptions authorize every named machine and thread](repo:marshall/test/marshall/ssh/client_commands_test.exs) — Subscription authority and control route classification..
-- **property, present**: [queued hints drain to one identifier notice per distinct hint](repo:porsche/test/client_commands_test.exs) — Debounce coalescing and identifier-only notices..
-- **unit, present**: [watch streams identifier notices, renews on heartbeat and ends on revocation](repo:porsche/test/ssh_channel_test.exs) — OTP SSH exec watch stream..
-- **unit, present**: [porsche-threads: stdin prompts, thread reads and a revocable watch](repo:marshall/test/marshall_web/ssh_transport_test.exs) — Real SSH, Porsche and HTTPS control..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Subscription authority and control route classification..
+- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Debounce coalescing and identifier-only notices..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — OTP SSH exec watch stream..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Real SSH, Porsche and HTTPS control..
 
 **Gaps:** Delivery of a hint from a committed domain change is not exercised (sandboxed tests never commit pg_notify).
 
@@ -3028,8 +3028,8 @@ Required refusal: A non-HTTPS or credentialed URL is not opened; a concurrent ch
 
 Tested scope: Fixture decoding and widget flows against the fake Porsche; no device webview.
 
-- **unit, present**: [terminal and web results decode](repo:mila/packages/mila_core/test/client_results_test.dart) — Shared result fixture..
-- **unit, present**: [a concurrent change is reported, not overwritten](repo:mila/app/test/client_flow_test.dart) — Widget flow against the fake Porsche..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Shared result fixture..
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Widget flow against the fake Porsche..
 
 **Gaps:** iOS and Android webview and share sheet are not built or run.
 
@@ -3045,8 +3045,8 @@ Required refusal: A stale revision refuses revision_conflict, port 4444 reserved
 
 Tested scope: BEAM test against the real Ingress domain.
 
-- **unit, present**: [web show and web set use the endpoint's optimistic policy revision](repo:marshall/test/marshall/ssh/client_commands_test.exs) — Revision fence, reserved port and receipt provenance..
-- **machine, recorded**: [revision_conflict](repo:nix/verification/tests/machines/fleet/scenarios/porsche-threads.py) — Native fleet revision refusal.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
+- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Revision fence, reserved port and receipt provenance..
+- **unit, recorded**: [LiveSession](repo:mila/native/linux/src/session.rs) — Native fleet revision refusal.; [execution record](repo:docs/architecture/reviews/2026-10-19-mila-m6.md).
 
 **Gaps:** No native ingress reachability check follows the change in these tests.
 

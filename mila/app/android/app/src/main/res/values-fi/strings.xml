@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_fi.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">Agentti tarvitsee vastaustasi</string>
-    <string name="mila_needs_input_body">Avaa Mila vastataksesi.</string>
-</resources>

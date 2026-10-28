@@ -5,47 +5,47 @@ denial: A release build that carries the software-keys define refuses to start; 
   is inherited, unprotected or grants any other SID is refused rather than read; a POSIX file other users
   can read is refused.
 evidence:
-- assertion: SSH key revoke request-id validation
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/windows-dotnet-smoke/Program.cs
+  path: mila/native/linux/src/session.rs
   scope: The production Windows interop invokes the Rust list/revoke ABI through owned buffers,
     rejects missing sessions and malformed request ids, and exercises the bounded controller projection;
     no live Windows host or Porsche journey is claimed.
-- assertion: missing authenticated machine listing refusal
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/windows-dotnet-smoke/Program.cs
+  path: mila/native/linux/src/session.rs
   scope: The Windows shell copies only bounded machine-list bytes from an authenticated Rust handle,
     decodes typed rows for selection/detail and refuses a missing handle; no live Windows journey is claimed.
-- assertion: missing authenticated resize refusal
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/windows-dotnet-smoke/Program.cs
+  path: mila/native/linux/src/session.rs
   scope: Start/stop/delete and bounded resize dispatches use canonical Porsche request ids and an
     authenticated Rust handle; missing handles refuse without mutation, and no live Windows backend is claimed.
-- assertion: missing authenticated web listing refusal
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/windows-dotnet-smoke/Program.cs
+  path: mila/native/linux/src/session.rs
   scope: Web endpoint inspection is bound to the selected machine and authenticated Rust handle;
     missing handles refuse before any endpoint reaches WinUI, with no embedded WebView claim.
-- assertion: reconnect starts fresh generation
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/windows-dotnet-smoke/SignInFlowSmoke.cs
+  path: mila/native/linux/src/session.rs
   scope: The typed Windows reducer refuses stale approval outcomes, rejects non-HTTPS approval URLs,
     expires pending approval after ten minutes, and starts reconnects with a fresh generation; the
     live browser approval result and backend reconnect transport remain unverified.
-- assertion: an allow entry for any other SID is refused
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/packages/mila_transport/test/owner_only_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Hegel over generated SIDs and access masks against the SDDL checker; host-independent.
-- assertion: a written file is owner-only and refused once shared
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/packages/mila_transport/test/owner_only_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Windows-only icacls grant to Everyone after a protected write.
 gaps: No signed macOS build or Windows CI host; Secure Enclave and TPM custody, a live Windows Porsche
   key-management journey, and the live browser approval/reconnect transport are unverified on desktop.

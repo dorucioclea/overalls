@@ -3,17 +3,17 @@ boundary: Locked content is offstage and excluded from semantics; the lock fails
 denial: A failed or stale authentication leaves Mila locked; a platform without biometrics reports the
   lock unavailable instead of pretending to lock.
 evidence:
-- assertion: the lock never shows content early (enabled at start)
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: recorded
   kind: property
-  path: mila/packages/mila_core/test/app_lock_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`mila_core` **90 passed**'
   scope: Hegel StateMachine over lifecycle, delay and unlock events.
-- assertion: after a restart the deployment, lock setting and offline list remain
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/mila-desktop/driver.py
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`mila-desktop` **7 subtests'
   scope: Linux bundle under X11 against packaged Marshall and Porsche.

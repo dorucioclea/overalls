@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_te.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">ఒక ఏజెంట్‌కు మీ ఇన్‌పుట్ అవసరం</string>
-    <string name="mila_needs_input_body">సమాధానం ఇవ్వడానికి Milaను తెరవండి.</string>
-</resources>

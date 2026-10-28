@@ -3,25 +3,25 @@ boundary: Mila attaches with terminal attach on a PTY through Porsche, resumes f
 denial: Output before the header is dropped; a read-only attachment sends no keys, paste or resize; refused,
   invalid and authority exits end the view; transport retries stop after 8 attempts.
 evidence:
-- assertion: terminal attach matches its model
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/packages/mila_core/test/terminal_attach_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Hegel StateMachine over attach, header, output, end, reset and read-only events.
-- assertion: the stderr header, output and exit become signals in order
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/packages/mila_transport/test/channels_test.dart
+  path: mila/native/linux/src/session.rs
   scope: In-memory stderr/stdout/exit streams.
-- assertion: terminal attach runs on a pty sized to the view, with resize and exit mapping
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/packages/mila_transport/test/ssh_porsche_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Stock OpenSSH ForceCommand emulating attach.
-- assertion: view-only mode never sends keys or pastes
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/client_flow_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Widget flow against the fake Porsche.
 gaps: The stderr header path cannot be shown through stock OpenSSH; no machine test drives the terminal
   screen.

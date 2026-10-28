@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_vi.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">Một tác tử cần bạn trả lời</string>
-    <string name="mila_needs_input_body">Mở Mila để trả lời.</string>
-</resources>

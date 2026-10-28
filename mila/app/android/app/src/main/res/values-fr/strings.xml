@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_fr.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">Un agent a besoin de votre réponse</string>
-    <string name="mila_needs_input_body">Ouvrez Mila pour répondre.</string>
-</resources>

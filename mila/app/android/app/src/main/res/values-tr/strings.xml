@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_tr.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">Bir ajan girdinizi bekliyor</string>
-    <string name="mila_needs_input_body">Yanıtlamak için Mila\'yı açın.</string>
-</resources>

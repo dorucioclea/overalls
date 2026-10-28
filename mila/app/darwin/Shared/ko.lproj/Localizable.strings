@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_ko.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "에이전트가 입력을 기다리고 있습니다";
-"MILA_NEEDS_INPUT_BODY" = "Mila를 열어 답하세요.";

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_mr.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">एका एजंटला तुमच्या इनपुटची गरज आहे</string>
-    <string name="mila_needs_input_body">उत्तर देण्यासाठी Mila उघडा.</string>
-</resources>

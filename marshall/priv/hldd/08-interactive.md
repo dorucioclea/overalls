@@ -1201,7 +1201,7 @@ machine journey remain unverified.
 
 Mila is the Overalls client for iOS, Android, macOS and Windows; its Linux
 build exists for testing. A platform profile
-([`PlatformProfile`](repo:mila/app/lib/transport/platform.dart)) fixes per
+(`PlatformProfile`) fixes per
 platform whether keys are hardware-held, which push provider is used, whether
 web tabs and the app lock exist, and where links arrive; no code path infers
 Linux from "not a phone". It manages machines through one SSH connection to the deployment's
@@ -1211,7 +1211,7 @@ Porsche gateway and adds no Marshall API: every command is an ordinary Porsche
 | Concern | Behaviour |
 | --- | --- |
 | Device identity | One P-256 key per deployment: Secure Enclave (iOS and signed macOS builds), Android Keystore with StrongBox where present, a non-exportable CNG key on Windows (TPM 2.0 through the Platform Crypto Provider, otherwise the Software Key Storage Provider without refusal), and an owner-only file on Linux and unsigned macOS dev builds (`MILA_SOFTWARE_KEYS`, refused by a release build). A key file other users can read is refused. |
-| Owner-only files | POSIX hosts create directories `0700` and files `0600`. Windows applies a protected DACL granting only the current user and SYSTEM, and refuses a file whose DACL admits anyone else ([`owner_only_windows.dart`](repo:mila/packages/mila_transport/lib/src/owner_only_windows.dart)). |
+| Owner-only files | POSIX hosts create directories `0700` and files `0600`. Windows applies a protected DACL granting only the current user and SYSTEM, and refuses a file whose DACL admits anyone else (`owner_only_windows.dart`). |
 | Host trust | `https://HOST/bin/ssh-trust.json` is fetched over HTTPS without redirects and pinned. A later document with another CA, host or zone is refused; a failed fetch uses only an unretired pin. |
 | Host acceptance | Only `ssh-ed25519-cert-v01@openssh.com`. The certificate must come from the pinned CA, name the management host and be inside its validity window. The check runs in key exchange, before user authentication. |
 | Sign-in | Porsche's browser key approval. Adding a deployment starts sign-in at once, and Mila opens each new `approval_url` in the user's default browser (the button reopens it) and keeps the connection, re-checking `whoami` every 2 seconds. A link expires after 600 seconds. The Flutter shell never replaces it while shown; native Android replaces it with the newest approval envelope the control plane rotates for the same pending session, and native Linux, Apple and Windows refuse an approval link whose host is not the selected deployment. A signed-in deployment opens its machine list and shows the `whoami` email. A dropped connection after sign-in is shown as disconnected with Reconnect (a new connection and `whoami`) and Sign out (closes the session locally; the key and its approval are unchanged). Mila does not reconnect by itself. |
@@ -1264,15 +1264,15 @@ endpoint record (`linux-web-browser-fence`) and refuses private endpoints; a liv
 ingress journey remains open. Authenticated `LiveSession` wrappers also list and
 revoke SSH keys with once-only request ids.
 
-Evidence: [transport](repo:mila/packages/mila_transport/lib/src/ssh_porsche.dart)
-and its [OpenSSH journeys](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart),
-[host certificates](repo:mila/packages/mila_core/lib/src/host_trust.dart),
-[sign-in machine](repo:mila/packages/mila_core/lib/src/sign_in.dart),
-[device keys](repo:mila/packages/mila_transport/lib/src/device_key.dart),
-[dartssh2 patch](repo:nix/platform/patches/dartssh2-host-certificates.patch),
+Evidence: transport
+and its OpenSSH journeys,
+host certificates,
+sign-in machine,
+device keys,
+dartssh2 patch,
 [Linux session coordinator and trust tests](repo:mila/native/linux/src/session.rs),
-[real-Porsche machine test](repo:nix/verification/tests/machines/mila-porsche/default.nix)
-(passed against the real Porsche release), the [desktop journey](repo:nix/verification/tests/machines/mila-desktop/default.nix)
+real-Porsche machine test
+(passed against the real Porsche release), the desktop journey
 (browser approval, machine list and forwarded links through the Linux bundle) and the [M1 review](repo:docs/architecture/reviews/2026-10-18-mila-m1.md).
 
 ### Mila notifications, app lock and offline list
@@ -1331,32 +1331,32 @@ Failure behaviour:
 
 Evidence:
 
-- [registration machine](repo:mila/packages/mila_core/lib/src/push_registration.dart)
-  and its [stateful property](repo:mila/packages/mila_core/test/push_registration_test.dart);
-- [poke opening](repo:mila/packages/mila_core/lib/src/push_poke.dart) against
+- registration machine
+  and its stateful property;
+- poke opening against
   the [shared vectors](repo:protocol/test/fixtures/push_pokes.json) in
-  [its tests](repo:mila/packages/mila_core/test/push_poke_test.dart);
-- [relay client](repo:mila/packages/mila_transport/lib/src/susan.dart) and
-  [registrar](repo:mila/packages/mila_transport/lib/src/push_registrar.dart)
-  with [their tests](repo:mila/packages/mila_transport/test/push_test.dart);
-- [lock policy](repo:mila/packages/mila_core/lib/src/app_lock.dart),
-  [snapshot cache](repo:mila/packages/mila_core/lib/src/snapshot_cache.dart)
-  and the [app journeys](repo:mila/app/test/device_features_test.dart);
-- native [iOS and macOS extension](repo:mila/app/darwin/Shared/NotificationService.swift)
-  with [shared poke tests](repo:mila/app/darwin/SharedTests/PushPokeTests.swift)
-  and [Android service](repo:mila/app/android/app/src/main/kotlin/dev/overalls/mila/MilaMessagingService.kt);
+  its tests;
+- relay client and
+  registrar
+  with their tests;
+- lock policy,
+  snapshot cache
+  and the app journeys;
+- native iOS and macOS extension
+  with shared poke tests
+  and Android service;
 - Linux's bounded [device command and projection adapter](repo:mila/native/linux/src/adapter.rs),
   authenticated [session controls](repo:mila/native/linux/src/session.rs), and
   shared [device command wrappers](repo:mila/rust/mila-session/src/lib.rs)
   with [FFI exports](repo:mila/rust/mila-ffi/src/session.rs) are covered by the
   Linux unit test gate; provider registration and live Porsche transport remain unverified;
-- the [desktop machine test](repo:nix/verification/tests/machines/mila-desktop/default.nix)
+- the desktop machine test
   and the [M5 device review](repo:docs/architecture/reviews/2026-10-18-mila-device.md).
 
 ### Mila build targets
 
 Every platform has a dev and a release target, driven by one typed planner,
-[`mila-build`](repo:mila/tool/lib/src/plan.dart)
+`mila-build`
 (`mila-build <linux|android|ios|macos|windows> <dev|release>`).
 
 | Platform | Dev | Release |
@@ -1498,12 +1498,12 @@ are never written to disk, the offline cache, preferences or logs. A paste is
 bracketed and cannot carry control sequences.
 
 Evidence:
-- [command catalogue](repo:mila/packages/mila_core/lib/src/ssh_command.dart);
-- [attach state machine](repo:mila/packages/mila_core/lib/src/terminal_attach.dart);
-- [watch supervisor](repo:mila/packages/mila_core/lib/src/watch.dart);
-- [channels](repo:mila/packages/mila_transport/lib/src/channels.dart) and the
-  [OpenSSH journeys](repo:mila/packages/mila_transport/test/ssh_porsche_test.dart);
-- [app flows](repo:mila/app/test/client_flow_test.dart);
+- command catalogue;
+- attach state machine;
+- watch supervisor;
+- channels and the
+  OpenSSH journeys;
+- app flows;
 - the [UI review](repo:docs/architecture/reviews/2026-10-18-mila-ui.md).
 
 All of these tests are present; none has a recorded passing run yet.

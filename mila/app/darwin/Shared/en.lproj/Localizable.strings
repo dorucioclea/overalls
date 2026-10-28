@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_en.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "An agent needs your input";
-"MILA_NEEDS_INPUT_BODY" = "Open Mila to answer.";

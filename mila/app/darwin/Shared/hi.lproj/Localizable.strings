@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_hi.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "एक एजेंट को आपके इनपुट की ज़रूरत है";
-"MILA_NEEDS_INPUT_BODY" = "जवाब देने के लिए Mila खोलें।";

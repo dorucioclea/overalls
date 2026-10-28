@@ -5,31 +5,31 @@ denial: Another CA, another principal, an expired certificate or a plain host ke
   before the device key signs; a conflicting later trust document is refused and the pin kept; an unreachable
   origin uses only an unretired pin.
 evidence:
-- assertion: a certificate from another CA is refused before authentication
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/packages/mila_transport/test/ssh_porsche_test.dart
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-m1.md
   record_assertion: 'Mila transport run: **19 passed**'
   scope: Stock OpenSSH server presenting host certificates in the mila-transport Nix check.
-- assertion: a different CA is refused and the pin is kept
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/packages/mila_transport/test/ssh_porsche_test.dart
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-m1.md
   record_assertion: 'Mila transport run: **19 passed**'
   scope: Trust document pinning and reconciliation.
-- assertion: server-issued certificates verify in Mila
+- assertion: LiveSession
   execution: recorded
   kind: unit
-  path: mila/packages/mila_core/test/host_trust_test.dart
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-m1.md
   record_assertion: 'Mila core run: **53 passed**'
   scope: Elixir-issued certificate fixtures get the same verdict in Dart.
-- assertion: a certificate from another CA is refused before authentication
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/mila-porsche/default.nix
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-m1.md
   record_assertion: '`mila-porsche` **5 subtests passed**'
   scope: Real Porsche release refusing a rogue CA without an authentication record; Marshall is absent,

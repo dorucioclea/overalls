@@ -1,4 +1,4 @@
-//! Payload-free port of mila_core's terminal_attach.dart reducer.
+//! Payload-free port of the former terminal attachment reducer.
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum AttachPhase {

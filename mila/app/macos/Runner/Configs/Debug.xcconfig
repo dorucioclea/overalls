@@ -1,7 +1,0 @@
-#include "../../Flutter/Flutter-Debug.xcconfig"
-#include "Warnings.xcconfig"
-
-// Which entitlements each target signs with (`<Target>-$(MILA_SIGNING).entitlements`):
-// unsigned dev builds keep software keys and no push; mila-build sets
-// development or release when it signs (ADR-0235).
-MILA_SIGNING = unsigned

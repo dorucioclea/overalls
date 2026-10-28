@@ -1,4 +1,0 @@
-.dart_tool/
-.hegel/
-# The patched dartssh2 store path, linked by devenv and Nix builds.
-/.nix/

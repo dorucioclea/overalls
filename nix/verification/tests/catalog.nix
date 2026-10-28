@@ -103,8 +103,6 @@ buildPkgs.lib.genAttrs [ "marshall-release" "lilly-release" "audi-release" "pors
   underclass-egress = import ./machines/underclass-egress service;
   underclass-slo = import ./machines/underclass-slo service;
   porsche-service = import ./machines/porsche-service service;
-  mila-porsche = import ./machines/mila-porsche service;
-  mila-desktop = import ./machines/mila-desktop service;
   push-notifications = import ./machines/push-notifications service;
   push-relay = import ./machines/push-relay service;
   porsche-secrets = import ./machines/porsche-secrets service;

@@ -1,5 +1,5 @@
 ---
-digest: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
+digest: 83616581d0020ffd5bdc8b8ad08f0104cb8decd84986c602ee5a4f5e32daa449
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Bounded authenticated PTY transport is now wired through Android, Apple, Linux and Windows; Hegel and native tests cover lifecycle and bounds; remaining Flutter parity gaps remain explicit.
+Retired Flutter artifacts and legacy machine checks; native-only release and CI evidence is authoritative.

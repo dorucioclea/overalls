@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_pcm.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "Agent need your answer";
-"MILA_NEEDS_INPUT_BODY" = "Open Mila make you answer.";

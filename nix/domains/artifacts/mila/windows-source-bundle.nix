@@ -19,7 +19,7 @@ pkgs.runCommand "mila-windows-source-bundle-${version}" {} ''
   EOT
   # A native bundle must never carry legacy compatibility inputs.
   if find "$b" -type f \( -iname '*flutter*' -o -iname '*.dart' \) -print -quit | grep -q .; then
-    echo "native Windows bundle contains legacy compatibility input" >&2
+    echo "native Windows bundle contains Flutter/Dart input" >&2
     exit 1
   fi
   (cd "$b" && find . -type f ! -name SHA256SUMS -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS)

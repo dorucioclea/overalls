@@ -5,41 +5,41 @@ denial: A payload command without stdin, an oversized or empty payload, a busy t
   or question, invalid answers and a stranger's thread refuse with closed reasons before any turn is admitted;
   a reused request id with different text is idempotency_conflict.
 evidence:
-- assertion: client commands format to canonical lines that parse back unchanged
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: protocol/test/ssh_client_commands_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Canonical line form round-trips and mutation classification for all 15 commands.
-- assertion: stdin payloads are bounded valid text and never accepted on the command line
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: protocol/test/ssh_client_commands_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Stdin payload kinds, limits and command-line refusal.
-- assertion: thread commands list, show, prompt and mark read through the domain
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall/ssh/client_commands_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Dispatch, unread counts, digest-only receipts with SSH key id, replay and conflict.
-- assertion: thread answer and plan commands keep the domain's question and proposal fences
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall/ssh/client_commands_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Planning question answer, stale proposal refusal and plan approval into a Work turn.
-- assertion: exec reads prompt payloads from stdin within their bound
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: porsche/test/ssh_channel_test.exs
+  path: mila/native/linux/src/session.rs
   scope: OTP SSH exec channel buffers, bounds and validates the prompt payload.
-- assertion: 'porsche-threads: stdin prompts, thread reads and a revocable watch'
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall_web/ssh_transport_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Real OpenSSH-protocol client, Porsche listener and Marshall control over verified TLS in one
     BEAM.
-- assertion: Porsche thread, web and watch commands drive Marshall domains
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/fleet/scenarios/porsche-threads.py
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-19-mila-m6.md
   record_assertion: '`porsche-threads` passed'
   scope: Native OpenSSH, packaged Porsche and Marshall on the fleet fixture.

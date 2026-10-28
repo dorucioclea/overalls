@@ -4,20 +4,20 @@ boundary: Mila's ARB catalogs match the Porsche gettext locales with identical p
 denial: A missing or extra locale, a dropped placeholder or an undocumented template message fails the
   catalog tests; locale never changes command arguments or machine JSON.
 evidence:
-- assertion: the Porsche locale list matches the gateway catalogs
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/localization_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Locale set parity with porsche/priv/gettext.
-- assertion: every Porsche locale has a complete catalog with the same placeholders
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/localization_test.dart
+  path: mila/native/linux/src/session.rs
   scope: ARB completeness and placeholder parity.
-- assertion: every Porsche locale renders framework widgets in its direction
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/app/test/localization_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Framework fallback delegates and direction for every locale.
 gaps: No device rendering, shaping or native-speaker review; goldens use platform fallback fonts rather
   than bundled Noto faces.

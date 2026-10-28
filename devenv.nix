@@ -26,13 +26,6 @@ let
   ]);
   harnessPython = pkgs.python313.withPackages (p: [ p.cryptography ]);
   antithesisWheels = import ./antithesis/nix/python-wheels.nix { inherit pkgs; };
-  # Mila builds with the same Flutter and patched dartssh2 as its Nix checks
-  # (ADR-0227).
-  milaFlutter = pkgs.flutterPackages.v3_47;
-  milaDartssh2 = (import ./nix/platform/dartssh2.nix pkgs pkgs).dartssh2-overalls;
-  # The pinned Noto fallbacks Mila bundles (ADR-0207); the Nix builds copy
-  # the same store path into the app.
-  milaNotoFonts = import ./nix/domains/artifacts/mila/fonts.nix { inherit pkgs; };
   # Firecracker, Lilly host helpers, network tools and Chromium are Linux-only; a
   # darwin shell omits them instead of refusing to evaluate.
   isLinux = pkgs.stdenv.hostPlatform.isLinux;
@@ -82,12 +75,11 @@ in
     pkgs.ruff
     pkgs.ty
     toolchain.erlang
-    milaFlutter
   ] ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     # Mila's macOS and iOS Xcode projects are edited with the xcodeproj gem
     # rather than by hand (ADR-0235).
     (pkgs.ruby.withPackages (gems: [ gems.xcodeproj ]))
-    # mila-build's Apple targets: macOS's openrsync drops the --chmod Flutter
+    # Native Apple targets: macOS's openrsync drops the --chmod flag when it copies
     # passes when it copies its read-only Nix-store framework.
     pkgs.rsync
   ] ++ lib.optionals isLinux [
@@ -162,44 +154,7 @@ in
   #   "devenv:enterShell".after = [ "myproj:setup" ];
   # };
 
-  # @cc [owner:ghuntley,label:build] mila-patched-dartssh2-link
-  # Mila's `.nix/dartssh2` path dependency MUST resolve to the overlay's
-  # patched store path, never to an unpatched pub.dev download.
-  tasks."mila:dartssh2" = {
-    exec = ''
-      mkdir -p "$DEVENV_ROOT/mila/packages/mila_transport/.nix"
-      ln -sfn ${milaDartssh2} "$DEVENV_ROOT/mila/packages/mila_transport/.nix/dartssh2"
-    '';
-    before = [ "devenv:enterShell" ];
-  };
-  tasks."mila:fonts" = {
-    exec = ''
-      ln -sfn ${milaNotoFonts} "$DEVENV_ROOT/mila/app/assets/fonts/noto"
-    '';
-    before = [ "devenv:enterShell" ];
-  };
-  scripts.mila-check.exec = ''
-    set -e
-    cd "$DEVENV_ROOT/mila/packages/mila_core"
-    dart format --line-length 100 --set-exit-if-changed lib test
-    dart analyze --fatal-infos
-    dart test
-    cd "$DEVENV_ROOT/mila/packages/mila_transport"
-    dart format --line-length 100 --set-exit-if-changed bin lib test
-    dart analyze --fatal-infos
-    dart test
-    cd "$DEVENV_ROOT/mila/tool"
-    dart format --line-length 100 --set-exit-if-changed bin lib test
-    dart analyze --fatal-infos
-    dart test
-    cd "$DEVENV_ROOT/mila/app"
-    dart format --line-length 100 --set-exit-if-changed lib test
-    flutter analyze --fatal-infos
-    # Goldens are recorded on Linux; other hosts rasterize text differently.
-    if [ "$(uname -s)" = Linux ]; then flutter test; else flutter test --exclude-tags golden; fi
-  '';
-
-  # The Rust core is checked independently while Flutter remains the current
+  # The Rust core is checked independently while native clients remain the current
   # presentation client. Nix runs the same locked workspace check offline.
   scripts.mila-rust-check.exec = ''
     cd "$DEVENV_ROOT/mila/rust"
@@ -210,14 +165,6 @@ in
   scripts.mila-rust-build.exec = ''
     cd "$DEVENV_ROOT/mila/rust"
     cargo build --workspace --locked
-  '';
-
-  # Mila's dev and release targets for every platform (ADR-0235):
-  # `mila-build <linux|android|ios|macos|windows> <dev|release> [--demo] [--dry-run]`.
-  scripts.mila-build.exec = ''
-    cd "$DEVENV_ROOT/mila/tool"
-    dart pub get --offline >/dev/null
-    exec dart run bin/mila_build.dart "$@"
   '';
 
   # https://devenv.sh/tests/
@@ -271,31 +218,6 @@ in
         language = "system";
         always_run = true;
         pass_filenames = false;
-      };
-      mila-dart-format = {
-        enable = true;
-        name = "mila-dart-format";
-        description = "Check Mila's Dart formatting";
-        # The language version is passed explicitly, as in the Nix checks:
-        # without resolved packages the formatter would fall back to the
-        # short style.
-        entry = "${pkgs.writeShellScript "mila-dart-format" ''
-          status=0
-          app=() packages=()
-          for file in "$@"; do
-            case "$file" in mila/app/*) app+=("$file") ;; *) packages+=("$file") ;; esac
-          done
-          format() {
-            ${milaFlutter}/bin/dart format --line-length 100 --set-exit-if-changed \
-              --language-version="$1" "''${@:2}" || status=1
-          }
-          [ ''${#app[@]} -eq 0 ] || format 3.13 "''${app[@]}"
-          [ ''${#packages[@]} -eq 0 ] || format 3.9 "''${packages[@]}"
-          exit $status
-        ''}";
-        language = "system";
-        files = "^mila/.*\\.dart$";
-        excludes = [ "^mila/app/lib/l10n/app_localizations.*\\.dart$" ];
       };
       python-ruff-format = {
         enable = true;

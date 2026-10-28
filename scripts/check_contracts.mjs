@@ -11,9 +11,9 @@ const cli = join(root, "tools/code-contracts/node_modules/@spolu/cc-check/dist/c
 const require = createRequire(import.meta.url)
 const javascriptExtensions = new Set([".js", ".mjs", ".cjs", ".jsx"])
 const upstreamExtensions = new Set([".ts", ".tsx", ".mts", ".cts", ".py", ".pyi", ".rs", ".go"])
-const nativeExtensions = new Set([".ex", ".exs", ".nix", ".sh", ".c", ".h", ".service", ".slice", ".example", ".dart", ".kt", ".swift"])
+const nativeExtensions = new Set([".ex", ".exs", ".nix", ".sh", ".c", ".h", ".service", ".slice", ".example", ".kt", ".swift"])
 // Languages whose notes are contiguous `//` or `///` line comments.
-const slashExtensions = new Set([".dart", ".kt", ".swift"])
+const slashExtensions = new Set([".kt", ".swift"])
 
 function nativeFile(path) {
   return nativeExtensions.has(extname(path)) || basename(path) === ".envrc"
@@ -90,7 +90,7 @@ export function discoverFiles(directory) {
 /**
  * @cc [owner:ghuntley,label:verification] native-notes-single-directive
  * Each native source note MUST contain exactly one directive in a contiguous hash
- * comment group, C documentation block or (Dart, Kotlin, Swift) contiguous
+ * comment group, C documentation block or (Kotlin, Swift) contiguous
  * `//`/`///` line-comment group. Extraction MUST retain original line
  * numbers and MUST NOT claim to resolve declarations or their ancestors.
  */

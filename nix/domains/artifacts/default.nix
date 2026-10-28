@@ -319,15 +319,7 @@ rec {
   inherit codingClis githubTools;
   inherit lyra lyraLinux lyraWindows lyraNative githubBootstrapRelease;
   marvin = import ./marvin { inherit pkgs; };
-  # Mila, the Flutter client (ADR-0220, ADR-0227); Hegel's Dart binding loads
-  # its pinned engine from the store instead of downloading it.
-  mila = import ./mila {
-    inherit pkgs;
-    libhegelDart = import ../../verification/hegel/libhegel-dart.nix { inherit pkgs; };
-  } // (let rust = import ./mila/rust.nix { inherit pkgs; }; in {
-    rust = rust.package;
-    rustCheck = rust.check;
-  });
+  mila = import ./mila { inherit pkgs; };
   vscodeWeb = import ./vscode-web { inherit pkgs; };
   updateVscodeExtensions = import ./vscode-web/updater.nix { inherit pkgs vscodeWeb; };
   vscodeWebBroker = import ./vscode-web-broker { inherit pkgs; };

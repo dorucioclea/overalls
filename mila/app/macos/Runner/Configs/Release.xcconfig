@@ -1,5 +1,0 @@
-#include "../../Flutter/Flutter-Release.xcconfig"
-#include "Warnings.xcconfig"
-
-// Which entitlements each target signs with (`<Target>-$(MILA_SIGNING).entitlements`).
-MILA_SIGNING = release

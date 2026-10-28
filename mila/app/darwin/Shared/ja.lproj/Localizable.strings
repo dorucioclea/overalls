@@ -1,3 +1,0 @@
-/* Generated from mila/app/lib/l10n/app_ja.arb (pushNeedsInputTitle, pushNeedsInputBody). */
-"MILA_NEEDS_INPUT_TITLE" = "エージェントが入力を必要としています";
-"MILA_NEEDS_INPUT_BODY" = "Mila を開いて回答してください。";

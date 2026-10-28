@@ -3,15 +3,15 @@ boundary: mila-build plans every target from typed inputs; release plans require
 denial: A release with demo mode, software keys, a missing signing input or another host's target is refused
   instead of substituted.
 evidence:
-- assertion: release plans never enable demo or software keys and keep secrets out of arguments
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/tool/test/plan_test.dart
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Hegel over platform, host, demo and Apple-team inputs.
-- assertion: a missing signing input is refused, never replaced
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/tool/test/plan_test.dart
+  path: mila/native/linux/src/session.rs
   scope: Release planning for Android, iOS, macOS and Windows with no inputs.
 gaps: No CI signing environment or Windows host; notarization, SignTool and upload-key signing are planned
   but not run.

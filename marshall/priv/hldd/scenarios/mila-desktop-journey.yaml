@@ -4,10 +4,10 @@ boundary: The Linux bundle reaches the deployment only through the pinned trust 
 denial: An unknown deployment's link lands on the deployment list, a second invocation never opens a second
   window, snapshots hold no approval links or tokens, and a saved list's actions are disabled.
 evidence:
-- assertion: approval in the browser leads to the machine list
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/mila-desktop/driver.py
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-18-mila-device.md
   record_assertion: '`mila-desktop` **7 subtests'
   scope: Linux bundle under X11 against packaged Marshall and Porsche.

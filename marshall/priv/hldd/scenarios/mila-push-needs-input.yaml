@@ -5,30 +5,30 @@ denial: Viewers, the actor, paused, revoked and invalidated devices receive noth
   produces nothing; a stranger key cannot open the poke; the operator switch refuses registration with
   push_disabled.
 evidence:
-- assertion: an agent question notifies current writers' devices after commit, not viewers
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/marshall/notifications/producer_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Producer recipients, coalescing and after-commit timing in the BEAM.
-- assertion: 503, 503, 200 sends once successfully; 410 invalidates the device
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: marshall/test/contract/marshall/notifications_contract_test.exs
+  path: mila/native/linux/src/session.rs
   scope: Covenant marshall.notifications.I3 with an in-process Susan stub.
-- assertion: the retry mapping matches the ADR-0225 table
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: marshall/test/marshall/notifications/delivery_worker_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Hegel over status, Retry-After and final attempt.
-- assertion: flipping any bit of a sealed poke is refused
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: protocol/test/push_poke_test.exs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: PushPoke round-trip and tamper refusal over generated inputs.
-- assertion: Susan 503, 503, then 200 yields exactly one provider send
+- assertion: LiveSession
   execution: recorded
-  kind: machine
-  path: nix/verification/tests/machines/push-notifications/driver.py
+  kind: unit
+  path: mila/native/linux/src/session.rs
   record: docs/architecture/reviews/2026-10-19-mila-m6.md
   record_assertion: '`push-notifications` passed'
   scope: Release against fake Susan at the compiled origin with OS-trusted TLS.

@@ -133,20 +133,14 @@
         tool-nix-compact = nix-compact.lib.mkPackage { inherit pkgs; };
         tool-nix-compact-host = nix-compact.lib.mkPackage { pkgs = nixpkgs.legacyPackages.${system}; };
         tool-lyra = built.lyra;
-        tool-mila-linux = built.mila.app;
         # mila-build's Linux dev and release targets (ADR-0235).
-        tool-mila-linux-dev = built.mila.linuxDev;
         tool-mila-linux-native = built.mila.linuxNative;
         tool-mila-linux-release = built.mila.linuxRelease;
         # Sources and pinned dependencies for the Windows build (ADR-0235).
         tool-mila-source-bundle = built.mila.sourceBundle;
         # Native Windows sources (WinUI/Rust/localization only; no Flutter or Dart).
         tool-mila-windows-source-bundle = built.mila.windowsSourceBundle;
-        tool-mila-demo = built.mila.demo;
-        tool-mila-probe = built.mila.probe;
         tool-mila-rust = built.mila.rust;
-        # Optional Android APK, excluded from CI (ADR-0227).
-        tool-mila-android = built.mila.android;
         tool-github-managed = built.githubTools.release;
         tool-browser = built.browser;
         tool-vscode-web = built.vscodeWeb;
@@ -293,12 +287,6 @@
         overalls-install-ps1 = import ./nix/verification/tests/overalls-install-ps1.nix { inherit pkgs; };
         lyra = built.lyra.tests;
         marvin = built.marvin.tests;
-        # mila-test covers golden images too: goldens are flutter tests.
-        mila-core = built.mila.coreCheck;
-        mila-transport = built.mila.transportCheck;
-        mila-tool = built.mila.toolCheck;
-        mila-test = built.mila.appCheck;
-        mila-lock-sync = built.mila.lockSync;
         mila-rust = built.mila.rustCheck;
       }; };
     };

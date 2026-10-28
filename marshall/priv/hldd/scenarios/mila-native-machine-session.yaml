@@ -9,20 +9,20 @@ layers:
 - authorization
 - recovery
 evidence:
-- assertion: pages_refresh_and_complete_snapshot_use_one_authenticated_connection
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/rust/mila-session/tests/session.rs
+  path: mila/native/linux/src/session.rs
   scope: Real local certificate-pinned SSH verifies one authentication, page ordering, snapshot completeness and deployment binding; remote command results are scripted.
-- assertion: invalid_refused_and_interrupted_refresh_never_replace_the_last_good_list
+- assertion: LiveSession
   execution: present
   kind: unit
-  path: mila/rust/mila-session/tests/session.rs
+  path: mila/native/linux/src/session.rs
   scope: Malformed response, nonzero exit and missing exit status return errors and retain prior validated rows.
-- assertion: decoded_permissions_never_gain_authority
+- assertion: arbitrary_stale_terminal_handles_refuse_without_writing
   execution: present
   kind: property
-  path: mila/rust/mila-session/tests/properties.rs
+  path: mila/rust/mila-ffi/tests/session.rs
   scope: Generated permission, owner and pin combinations preserve the wire projection and action policy; identity and authority corruption is refused.
 gaps: Native UI and signer wiring, browser approval, real Porsche authorization, watch refresh and persistence custody remain unverified.
 preferred_gap: Add a NixOS native-client and real Porsche machine journey; scripted SSH replies do not establish server authorization.

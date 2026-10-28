@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generated from mila/app/lib/l10n/app_ja.arb (pushNeedsInputTitle, pushNeedsInputBody). -->
-<resources>
-    <string name="mila_needs_input_title">エージェントが入力を必要としています</string>
-    <string name="mila_needs_input_body">Mila を開いて回答してください。</string>
-</resources>

@@ -1,11 +1,11 @@
 ---
-digest: 4e9d8f3db1dd9d6dc189dfffc9bbf8cc2e214d9db1739b3efbac040cb19a194c
+digest: 8a00a3ed934088311766aef8bc3e270b114769236beca0ed3d33844289b6110b
 disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/apple/Sources/MilaNativeUI/MilaStrings.swift
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
+  marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed the merged native Mila client changes against the existing interactive and coverage evidence; no new deployment boundary is introduced.
+Native PTY integrations and shared locale picker alignment are implemented; focused native and property tests pass.

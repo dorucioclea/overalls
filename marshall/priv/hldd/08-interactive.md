@@ -1404,6 +1404,14 @@ and second-channel refusal. GTK attach, connect, reconnect, input, resize and
 kill controls now refuse before the reducer unless the session is signed in.
 Porsche SSH/PTY backend wiring and GTK stream attachment remain open.
 
+The authenticated Rust session now exposes a bounded PTY registry through the
+native C ABI: attach, output polling, input, resize and close use monotonic
+opaque handles owned by the parent session. Android JNI/Compose and Apple
+Swift terminal transports call this ABI and fence operations by the signed-in
+session; fresh attachments, bounded buffers and close-after-generation changes
+are covered by their native adapters. Windows and Linux production stream
+attachment remain open until their native clients consume the same registry.
+
 Linux sign-in also provides a [`FileDeviceSigner`](repo:mila/native/linux/src/session.rs)
 for owner-only development and release key files. It rejects symlinks and
 group/world permission bits before loading raw P-256 material, and its test

@@ -729,7 +729,7 @@ impl NativeState {
             .hexpand(true)
             .build();
         let terminal_input = Entry::builder()
-            .placeholder_text("Input length (bytes)")
+            .placeholder_text("Terminal input")
             .hexpand(true)
             .build();
         let terminal_columns = Entry::builder()
@@ -744,8 +744,10 @@ impl NativeState {
             .build();
         let terminal_actions = Box::new(Orientation::Horizontal, 8);
         let terminal_stream = Rc::new(RefCell::new(TerminalStream::new()));
+        let terminal_handle: Rc<RefCell<Option<u64>>> = Rc::new(RefCell::new(None));
         let terminal_status = content.clone();
         let stream = terminal_stream.clone();
+        let handle = terminal_handle.clone();
         let session_input = terminal.clone();
         let session_binding = self.session.clone();
         let attach = Button::with_label(&strings::text(strings::Message::AttachTerminal));
@@ -760,11 +762,33 @@ impl NativeState {
                 return;
             }
             let mut stream = stream.borrow_mut();
-            match stream.attach() {
-                Ok(generation) => terminal_status.set_label(&format!(
-                    "Terminal attaching\nSession {session}\nGeneration {generation}"
-                )),
-                Err(_) => terminal_status.set_label("Terminal attach unavailable."),
+            let generation = match stream.attach() {
+                Ok(generation) => generation,
+                Err(_) => {
+                    terminal_status.set_label("Terminal attach unavailable.");
+                    return;
+                }
+            };
+            let parsed_columns = 80_u16;
+            let parsed_rows = 24_u16;
+            let mut binding = session_binding.borrow_mut();
+            let Some(live) = binding.session_mut() else {
+                terminal_status.set_label("Terminal controls require sign-in.");
+                return;
+            };
+            match live.terminal_attach(parsed_columns, parsed_rows) {
+                Ok(terminal) => {
+                    *handle.borrow_mut() = Some(terminal);
+                    let cursor = stream.state().resume_cursor().unwrap_or(0);
+                    match stream.connected(generation, cursor, true) {
+                        Ok(()) => terminal_status.set_label(&format!("Terminal attached\\nSession {session}\\nGeneration {generation}")),
+                        Err(_) => terminal_status.set_label("Terminal connection rejected."),
+                    }
+                }
+                Err(_) => {
+                    let _ = stream.kill(generation);
+                    terminal_status.set_label("Terminal attach unavailable.");
+                }
             }
         });
         terminal_actions.append(&attach);
@@ -810,6 +834,7 @@ impl NativeState {
 
         let terminal_status = content.clone();
         let stream = terminal_stream.clone();
+        let handle = terminal_handle.clone();
         let input = terminal_input.clone();
         let session_binding = self.session.clone();
         let input_button = Button::with_label("Send input");
@@ -818,14 +843,21 @@ impl NativeState {
                 terminal_status.set_label("Terminal controls require sign-in.");
                 return;
             }
-            let length = input.text().trim().parse::<usize>().ok();
-            let Some(length) = length else {
+            let text = input.text().to_string();
+            let bytes = text.as_bytes();
+            let length = bytes.len();
+            if length == 0 {
                 terminal_status.set_label("Terminal input length rejected.");
                 return;
-            };
+            }
             match stream.borrow().validate_input(length) {
                 Ok(()) => {
-                    terminal_status.set_label(&format!("Terminal input accepted ({length} bytes)"))
+                    let result = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_input(bytes).ok());
+                    if result.is_some() && handle.borrow().is_some() {
+                        terminal_status.set_label(&format!("Terminal input sent ({length} bytes)"))
+                    } else {
+                        terminal_status.set_label("Terminal input rejected by transport.")
+                    }
                 }
                 Err(_) => terminal_status.set_label("Terminal input rejected by Rust policy."),
             }
@@ -834,6 +866,7 @@ impl NativeState {
 
         let terminal_status = content.clone();
         let stream = terminal_stream.clone();
+        let handle = terminal_handle.clone();
         let columns = terminal_columns.clone();
         let rows = terminal_rows.clone();
         let session_binding = self.session.clone();
@@ -854,8 +887,14 @@ impl NativeState {
                 return;
             };
             match stream.borrow().validate_resize(columns, rows) {
-                Ok(()) => terminal_status
-                    .set_label(&format!("Terminal resize accepted ({columns}x{rows})")),
+                Ok(()) => {
+                    let result = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_resize(columns, rows).ok());
+                    if result.is_some() && handle.borrow().is_some() {
+                        terminal_status.set_label(&format!("Terminal resized ({columns}x{rows})"))
+                    } else {
+                        terminal_status.set_label("Terminal resize rejected by transport.")
+                    }
+                }
                 Err(_) => terminal_status.set_label("Terminal resize rejected by Rust policy."),
             }
         });
@@ -863,6 +902,7 @@ impl NativeState {
 
         let terminal_status = content.clone();
         let stream = terminal_stream.clone();
+        let handle = terminal_handle.clone();
         let session_binding = self.session.clone();
         let kill = Button::with_label("Kill");
         kill.connect_clicked(move |_| {
@@ -871,6 +911,8 @@ impl NativeState {
                 return;
             }
             let generation = stream.borrow().state().generation();
+            let _ = session_binding.borrow_mut().session_mut().map(|live| live.terminal_kill());
+            *handle.borrow_mut() = None;
             match stream.borrow_mut().kill(generation) {
                 Ok(()) => {
                     terminal_status.set_label(&format!("Terminal ended\nGeneration {generation}"))
@@ -879,6 +921,36 @@ impl NativeState {
             }
         });
         terminal_actions.append(&kill);
+        let terminal_status = content.clone();
+        let stream = terminal_stream.clone();
+        let handle = terminal_handle.clone();
+        let session_binding = self.session.clone();
+        let poll = Button::with_label("Poll output");
+        poll.connect_clicked(move |_| {
+            let Some(_terminal) = *handle.borrow() else {
+                terminal_status.set_label("Terminal is not attached.");
+                return;
+            };
+            let generation = stream.borrow().state().generation();
+            let output = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_poll().ok());
+            let Some(output) = output else {
+                terminal_status.set_label("Terminal output unavailable.");
+                return;
+            };
+            if output.is_empty() {
+                terminal_status.set_label("Terminal output closed.");
+                *handle.borrow_mut() = None;
+                let _ = stream.borrow_mut().kill(generation);
+                return;
+            }
+            let text = String::from_utf8_lossy(&output).into_owned();
+            let rendered = stream.borrow_mut().render_output(generation, &text);
+            match rendered {
+                Ok(()) => terminal_status.set_label(&stream.borrow().rendered_text()),
+                Err(_) => terminal_status.set_label("Terminal output rejected by renderer."),
+            }
+        });
+        terminal_actions.append(&poll);
         root.append(&terminal);
         root.append(&terminal_input);
         root.append(&terminal_columns);

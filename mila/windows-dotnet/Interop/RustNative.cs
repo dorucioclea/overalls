@@ -176,6 +176,10 @@ internal readonly record struct MilaNativeTerminalResult(MilaNativeStatus Status
 {
     internal bool IsValid => Status == MilaNativeStatus.Ok;
 }
+internal readonly record struct MilaNativeTerminalBytesResult(MilaNativeStatus Status, byte[]? Data)
+{
+    internal bool Succeeded => Status == MilaNativeStatus.Ok && Data is not null;
+}
 
 internal readonly record struct MilaNativePokeResult(MilaNativeStatus Status)
 {
@@ -711,6 +715,77 @@ internal static partial class RustNative
         ushort columns, ushort rows, bool readWrite)
         => TryTerminal(() => TerminalResizeNative(columns, rows, readWrite ? (byte)1 : (byte)0));
 
+    internal static (MilaNativeStatus Status, ulong? Handle) TrySessionTerminalAttach(
+        ulong sessionHandle, ushort columns, ushort rows)
+    {
+        if (sessionHandle == 0 || columns is 0 or > 4096 || rows is 0 or > 512)
+            return (MilaNativeStatus.InvalidRequest, null);
+        try
+        {
+            MilaNativeStatus status = SessionTerminalAttachNative(sessionHandle, columns, rows, out ulong terminal);
+            return status == MilaNativeStatus.Ok && terminal > 0 ? (status, terminal) : (status, null);
+        }
+        catch (DllNotFoundException) { return (MilaNativeStatus.Unavailable, null); }
+        catch (EntryPointNotFoundException) { return (MilaNativeStatus.Unavailable, null); }
+        catch (BadImageFormatException) { return (MilaNativeStatus.Unavailable, null); }
+    }
+
+    internal static MilaNativeTerminalBytesResult TrySessionTerminalPoll(ulong terminalHandle)
+    {
+        if (terminalHandle == 0) return new(MilaNativeStatus.InvalidRequest, null);
+        const int capacity = 65_536;
+        IntPtr output = Marshal.AllocHGlobal(capacity);
+        IntPtr written = Marshal.AllocHGlobal(nuint.Size);
+        try
+        {
+            Marshal.WriteIntPtr(written, IntPtr.Zero);
+            MilaNativeStatus status = SessionTerminalPollNative(terminalHandle, output, (nuint)capacity, written);
+            nuint count = (nuint)Marshal.ReadIntPtr(written);
+            if (status != MilaNativeStatus.Ok || count > (nuint)capacity)
+                return new(status, null);
+            byte[] bytes = new byte[checked((int)count)];
+            Marshal.Copy(output, bytes, 0, bytes.Length);
+            return new(status, bytes);
+        }
+        catch (DllNotFoundException) { return new(MilaNativeStatus.Unavailable, null); }
+        catch (EntryPointNotFoundException) { return new(MilaNativeStatus.Unavailable, null); }
+        catch (BadImageFormatException) { return new(MilaNativeStatus.Unavailable, null); }
+        finally { Marshal.FreeHGlobal(output); Marshal.FreeHGlobal(written); }
+    }
+
+    internal static MilaNativeStatus TrySessionTerminalInput(ulong terminalHandle, ReadOnlySpan<byte> input)
+    {
+        if (terminalHandle == 0 || input.Length > 65_536) return MilaNativeStatus.InvalidRequest;
+        IntPtr buffer = Marshal.AllocHGlobal(input.Length);
+        try
+        {
+            Marshal.Copy(input.ToArray(), 0, buffer, input.Length);
+            return SessionTerminalInputNative(terminalHandle, buffer, (nuint)input.Length);
+        }
+        catch (DllNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (EntryPointNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (BadImageFormatException) { return MilaNativeStatus.Unavailable; }
+        finally { Marshal.FreeHGlobal(buffer); }
+    }
+
+    internal static MilaNativeStatus TrySessionTerminalResize(ulong terminalHandle, ushort columns, ushort rows)
+    {
+        if (terminalHandle == 0 || columns is 0 or > 4096 || rows is 0 or > 512) return MilaNativeStatus.InvalidRequest;
+        try { return SessionTerminalResizeNative(terminalHandle, columns, rows); }
+        catch (DllNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (EntryPointNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (BadImageFormatException) { return MilaNativeStatus.Unavailable; }
+    }
+
+    internal static MilaNativeStatus TrySessionTerminalKill(ulong terminalHandle)
+    {
+        if (terminalHandle == 0) return MilaNativeStatus.InvalidRequest;
+        try { return SessionTerminalKillNative(terminalHandle); }
+        catch (DllNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (EntryPointNotFoundException) { return MilaNativeStatus.Unavailable; }
+        catch (BadImageFormatException) { return MilaNativeStatus.Unavailable; }
+    }
+
     /// <summary>Validates an opaque Susan push poke before waking the UI.</summary>
     internal static unsafe MilaNativePokeResult TryValidatePushPoke(
         ReadOnlySpan<byte> envelope, ulong now)
@@ -858,6 +933,21 @@ internal static partial class RustNative
     [LibraryImport(LibraryName, EntryPoint = "mila_terminal_resize_validate")]
     private static partial MilaNativeStatus TerminalResizeNative(
         ushort columns, ushort rows, byte readWrite);
+
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_terminal_attach")]
+    private static partial MilaNativeStatus SessionTerminalAttachNative(
+        ulong sessionHandle, uint columns, uint rows, out ulong terminalHandle);
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_terminal_poll")]
+    private static partial MilaNativeStatus SessionTerminalPollNative(
+        ulong terminalHandle, IntPtr output, nuint capacity, IntPtr written);
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_terminal_input")]
+    private static partial MilaNativeStatus SessionTerminalInputNative(
+        ulong terminalHandle, IntPtr input, nuint inputLength);
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_terminal_resize")]
+    private static partial MilaNativeStatus SessionTerminalResizeNative(
+        ulong terminalHandle, uint columns, uint rows);
+    [LibraryImport(LibraryName, EntryPoint = "mila_session_terminal_kill")]
+    private static partial MilaNativeStatus SessionTerminalKillNative(ulong terminalHandle);
 
     [LibraryImport(LibraryName, EntryPoint = "mila_push_poke_validate")]
     private static partial MilaNativeStatus PushPokeNative(

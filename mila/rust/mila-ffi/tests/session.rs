@@ -321,3 +321,43 @@ fn machine_actions_reject_invalid_inputs_before_lookup() {
     };
     assert_eq!(status, SessionStatus::InvalidHandle);
 }
+
+/// PTY handles are opaque capabilities. Every generated stale handle must be
+/// rejected without modifying caller-owned output or length storage.
+#[hegel::test(test_cases = 128)]
+fn arbitrary_stale_terminal_handles_refuse_without_writing(tc: hegel::TestCase) {
+    let handle = tc.draw(hegel::generators::default::<u64>()) | (1_u64 << 63);
+    let mut output = [0xA5; 64];
+    let mut written = 17_usize;
+    unsafe {
+        assert_eq!(
+            mila_session_terminal_poll(handle, output.as_mut_ptr(), output.len(), &mut written),
+            SessionStatus::InvalidHandle
+        );
+        assert_eq!(
+            mila_session_terminal_input(handle, b"x".as_ptr(), 1),
+            SessionStatus::InvalidHandle
+        );
+    }
+    assert_eq!(mila_session_terminal_resize(handle, 80, 24), SessionStatus::InvalidHandle);
+    assert_eq!(mila_session_terminal_kill(handle), SessionStatus::InvalidHandle);
+    assert_eq!(output, [0xA5; 64]);
+    assert_eq!(written, 17);
+}
+
+/// Dimension validation is stable across the full generated input space and
+/// does not perform a session lookup for malformed dimensions.
+#[hegel::test(test_cases = 128)]
+fn arbitrary_terminal_dimensions_are_bounded_before_lookup(tc: hegel::TestCase) {
+    let columns = tc.draw(hegel::generators::default::<u32>());
+    let rows = tc.draw(hegel::generators::default::<u32>());
+    let valid = (1..=4096).contains(&columns) && (1..=512).contains(&rows);
+    let mut terminal = 0_u64;
+    let status = mila_session_terminal_attach(u64::MAX, columns, rows, &mut terminal);
+    if valid {
+        assert_eq!(status, SessionStatus::InvalidHandle);
+    } else {
+        assert_eq!(status, SessionStatus::Invalid);
+    }
+    assert_eq!(terminal, 0);
+}

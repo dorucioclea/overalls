@@ -8,6 +8,7 @@ internal sealed class MilaTerminalSession
     internal MilaTerminalState State { get; private set; } = MilaTerminalState.SignedOut;
     private long _generation;
     private ulong _sessionHandle;
+    private ulong _terminalHandle;
     private bool _readWrite;
     private readonly System.Text.StringBuilder _output = new();
 
@@ -29,6 +30,14 @@ internal sealed class MilaTerminalSession
         _sessionHandle = sessionHandle;
         return BeginAttach(generation, readWrite);
     }
+    internal bool SetNativeTerminal(ulong terminalHandle)
+    {
+        if (terminalHandle == 0 || _sessionHandle == 0 || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed)
+            return false;
+        _terminalHandle = terminalHandle;
+        return true;
+    }
+    internal ulong NativeTerminalHandle => _terminalHandle;
     internal bool Append(long generation, ReadOnlySpan<char> text)
     {
         if (generation != _generation || State is MilaTerminalState.SignedOut or MilaTerminalState.Killed) return false;
@@ -55,7 +64,7 @@ internal sealed class MilaTerminalSession
         return true;
     }
     internal bool Reconnect(long generation) => generation == _generation &&
-        State is (MilaTerminalState.Live or MilaTerminalState.ReadOnly);
+        State is (MilaTerminalState.Attaching or MilaTerminalState.Live or MilaTerminalState.ReadOnly);
     /// Marks the authenticated PTY closed by the transport. A clean EOF must
     /// invalidate reconnect and input until a fresh attach generation starts.
     internal bool ReceiveEof(long generation)
@@ -65,7 +74,12 @@ internal sealed class MilaTerminalSession
         return true;
     }
     internal void Kill(long generation) { if (generation == _generation) State = MilaTerminalState.Killed; }
-    internal void SignOut() { _generation++; _readWrite = false; State = MilaTerminalState.SignedOut; _output.Clear(); }
+    internal void SignOut()
+    {
+        if (_terminalHandle != 0) RustNative.TrySessionTerminalKill(_terminalHandle);
+        _terminalHandle = 0;
+        _generation++; _readWrite = false; State = MilaTerminalState.SignedOut; _output.Clear();
+    }
 }
 
 internal enum MilaTerminalState { SignedOut, Attaching, ReadOnly, Live, Failed, Killed }

@@ -1,18 +1,18 @@
 ---
-digest: c0bcdb57b225362f844ae2282da332e4465b2d8703afc67927db83cd23405cea
+digest: 0bb236d578d05c6506527396e42eafb842713f7bbe288b8a106106c8620ba29a
 disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/rust/mila-transport/src/lib.rs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 09f355e198d8957f477938be495baf0a01f1d3ae38ca0d014f864ce248fdf921
+  marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 4df19acabce66188a13a367acae5fd2d8dabd1c5c952d8d3e1cd1c08b448f15d
-  marshall/priv/hldd/20-security.md: 0854fe3e151c56e794a8069bd384bf68bb6d76cd7827abfeed6c3fa28e91c83b
-  marshall/priv/hldd/21-domains.md: 587584208f1a71100280b9e438b46416b8b56f0f0af2eda585006ad373ff22dc
-  marshall/priv/hldd/22-topology.md: 03993ebc3b0c89183aa3eafd972187e92b346d929a61f22250e9e1b6774e0b4e
+  marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
+  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-Rust SSH transport implementation documented in interactive chapter; native platform adapters and production acceptance remain open
+Bounded authenticated PTY transport is now wired through Android, Apple, Linux and Windows; Hegel and native tests cover lifecycle and bounds; remaining Flutter parity gaps remain explicit.

@@ -1,18 +1,18 @@
 ---
-digest: 4fd85c3233e2f71ccd0abe73ec578f1a6ca8a258ca71c19f7889a52fc0f304c8
-disposition: no-impact
+digest: 89e3b92ab09f7d78851eace401b794305ac0686ab4ef7d1457fc2d97c7f210d9
+disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/rust/mila-ffi/tests/session.rs
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 368f33fbb31c849c8558e3988b6199db2635f59e76065042873e1de42c9eaef3
+  marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 8728371d7d3d458cf040ff3567c7406ec290bf4bb8f68fd672513f0aa0bc9cbe
-  marshall/priv/hldd/20-security.md: 6f505682683ace1b4b948ed6df21f924df87fd5a71793a725906722e7601a211
+  marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
+  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
   marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
 state: present
 version: 2
 ---
 
-Android authenticated machine mutation dispatch through Rust session FFI; no new domain or deployment boundary
+Bounded authenticated PTY transport is now wired through Android, Apple, Linux and Windows; Hegel and native tests cover lifecycle and bounds; remaining Flutter parity gaps remain explicit.

@@ -458,13 +458,9 @@ private struct SettingsView: View {
             }
             Section("Language") {
                 Picker("Language", selection: $locale) {
-                    Text(MilaStrings.localeDisplayName("en")).tag("en")
-                    Text(MilaStrings.localeDisplayName("fr-FR")).tag("fr-FR")
-                    Text(MilaStrings.localeDisplayName("de")).tag("de")
-                    Text(MilaStrings.localeDisplayName("es")).tag("es")
-                    Text(MilaStrings.localeDisplayName("ja")).tag("ja")
-                    Text(MilaStrings.localeDisplayName("ar")).tag("ar")
-                    Text(MilaStrings.localeDisplayName("he")).tag("he")
+                    ForEach(MilaStrings.supportedLocales, id: \.self) { candidate in
+                        Text(MilaStrings.localeDisplayName(candidate)).tag(candidate)
+                    }
                 }
                 .onChange(of: locale) { _, value in
                     let canonical = MilaStrings.canonicalLocale(value)

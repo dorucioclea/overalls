@@ -1,11 +1,11 @@
 ---
-digest: 9d2a0a2c8d7bfc3889b45d19a6f34be0c891a30406e8440d687e501500023c7d
+digest: 3817382e22cac4b238b496893782f6348dec955aa355c45c91498c0d5ddad015
 disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/android/app/src/main/java/dev/overalls/mila/nativeui/MilaFfiAdapter.kt
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
+  marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
   marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
   marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Reviewed the merged native Mila client changes against the existing interactive and coverage evidence; no new deployment boundary is introduced.
+Bounded authenticated PTY transport is now wired through Android, Apple, Linux and Windows; Hegel and native tests cover lifecycle and bounds; remaining Flutter parity gaps remain explicit.

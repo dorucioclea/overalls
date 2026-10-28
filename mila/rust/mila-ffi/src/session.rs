@@ -2,7 +2,7 @@
 use mila_session::ApplicationSession;
 use mila_transport::{
     decode_trust_document,
-    ssh::{DeviceSigner, SshError},
+    ssh::{DeviceSigner, PtySession, SshError},
 };
 use std::{
     collections::HashMap,
@@ -51,15 +51,73 @@ impl DeviceSigner for CallbackSigner {
 struct Entry {
     session: ApplicationSession,
 }
+struct TerminalEntry {
+    owner: u64,
+    terminal: PtySession,
+}
 #[derive(Default)]
 struct Registry {
     next: u64,
     entries: HashMap<u64, Arc<Mutex<Option<Entry>>>>,
 }
 static REGISTRY: OnceLock<Mutex<Registry>> = OnceLock::new();
+#[derive(Default)]
+struct TerminalRegistry {
+    next: u64,
+    entries: HashMap<u64, Arc<Mutex<Option<TerminalEntry>>>>,
+}
+static TERMINALS: OnceLock<Mutex<TerminalRegistry>> = OnceLock::new();
 static RUNTIME: OnceLock<Result<tokio::runtime::Runtime, std::io::Error>> = OnceLock::new();
 fn registry() -> &'static Mutex<Registry> {
     REGISTRY.get_or_init(Mutex::default)
+}
+fn terminals() -> &'static Mutex<TerminalRegistry> {
+    TERMINALS.get_or_init(Mutex::default)
+}
+fn terminal_entry(handle: u64) -> Result<Arc<Mutex<Option<TerminalEntry>>>, SessionStatus> {
+    terminals()
+        .lock()
+        .map_err(|_| SessionStatus::Internal)?
+        .entries
+        .get(&handle)
+        .cloned()
+        .ok_or(SessionStatus::InvalidHandle)
+}
+
+/// Remove every terminal capability owned by a closing parent session before
+/// disconnecting that session. This fences terminal operations that could
+/// otherwise outlive their authenticated SSH connection.
+fn take_owned_terminals(owner: u64) -> Result<Vec<PtySession>, SessionStatus> {
+    let candidates = terminals()
+        .lock()
+        .map_err(|_| SessionStatus::Internal)?
+        .entries
+        .iter()
+        .map(|(handle, entry)| (*handle, entry.clone()))
+        .collect::<Vec<_>>();
+    let mut collected = Vec::with_capacity(candidates.len());
+    for (handle, entry) in candidates {
+        let owned = entry
+            .try_lock()
+            .map_err(|_| SessionStatus::Busy)?
+            .as_ref()
+            .is_some_and(|value| value.owner == owner);
+        if !owned {
+            continue;
+        }
+        let removed = terminals()
+            .lock()
+            .map_err(|_| SessionStatus::Internal)?
+            .entries
+            .remove(&handle);
+        if let Some(removed) = removed {
+            let mut guard = removed.try_lock().map_err(|_| SessionStatus::Busy)?;
+            if let Some(entry) = guard.take() {
+                collected.push(entry.terminal);
+            }
+        }
+    }
+    Ok(collected)
 }
 fn runtime() -> Result<&'static tokio::runtime::Runtime, SessionStatus> {
     if tokio::runtime::Handle::try_current().is_ok() {
@@ -685,6 +743,113 @@ pub unsafe extern "C" fn mila_session_snapshot(
         output(&data, out, capacity, written)
     })
 }
+
+/// Open a bounded interactive terminal attached to an authenticated session.
+#[no_mangle]
+pub extern "C" fn mila_session_terminal_attach(
+    session_handle: u64,
+    columns: u32,
+    rows: u32,
+    out_terminal_handle: *mut u64,
+) -> SessionStatus {
+    guarded(|| {
+        if out_terminal_handle.is_null() || !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SessionStatus::Invalid);
+        }
+        // Validate the parent before opening a network channel.
+        let parent = entry(session_handle)?;
+        let runtime = runtime()?;
+        let mut parent_guard = parent.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let session = &mut parent_guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.session;
+        let terminal = runtime.block_on(session.open_pty(columns, rows)).map_err(|error| match error {
+            mila_session::SessionError::Transport(SshError::Bounds) => SessionStatus::Invalid,
+            mila_session::SessionError::Transport(_) => SessionStatus::Transport,
+            _ => SessionStatus::Invalid,
+        })?;
+        let mut table = terminals().lock().map_err(|_| SessionStatus::Internal)?;
+        if table.entries.len() >= 64 { return Err(SessionStatus::Busy); }
+        let id = table.next.checked_add(1).ok_or(SessionStatus::Internal)?;
+        table.next = id;
+        table.entries.insert(id, Arc::new(Mutex::new(Some(TerminalEntry { owner: session_handle, terminal }))));
+        // SAFETY: checked non-null above.
+        unsafe { *out_terminal_handle = id; }
+        Ok(())
+    })
+}
+
+/// Poll one bounded output chunk. An empty chunk is a valid no-data/closed result.
+#[no_mangle]
+pub unsafe extern "C" fn mila_session_terminal_poll(
+    terminal_handle: u64,
+    out: *mut u8,
+    capacity: usize,
+    written: *mut usize,
+) -> SessionStatus {
+    guarded(|| {
+        let runtime = runtime()?;
+        let terminal = terminal_entry(terminal_handle)?;
+        let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
+        let data = runtime.block_on(terminal.read()).map_err(|_| SessionStatus::Transport)?;
+        unsafe { output(&data, out, capacity, written) }
+    })
+}
+
+/// Send bounded input bytes to a terminal.
+#[no_mangle]
+pub unsafe extern "C" fn mila_session_terminal_input(
+    terminal_handle: u64,
+    input: *const u8,
+    input_len: usize,
+) -> SessionStatus {
+    guarded(|| {
+        let input = unsafe { bytes(input, input_len, 1 << 20)? };
+        let runtime = runtime()?;
+        let terminal = terminal_entry(terminal_handle)?;
+        let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
+        runtime.block_on(terminal.write(input)).map_err(|error| match error {
+            SshError::Bounds => SessionStatus::Invalid,
+            _ => SessionStatus::Transport,
+        })?;
+        Ok(())
+    })
+}
+
+/// Resize a terminal using bounded dimensions.
+#[no_mangle]
+pub extern "C" fn mila_session_terminal_resize(
+    terminal_handle: u64,
+    columns: u32,
+    rows: u32,
+) -> SessionStatus {
+    guarded(|| {
+        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) { return Err(SessionStatus::Invalid); }
+        let runtime = runtime()?;
+        let terminal = terminal_entry(terminal_handle)?;
+        let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let terminal = &mut guard.as_mut().ok_or(SessionStatus::InvalidHandle)?.terminal;
+        runtime.block_on(terminal.resize(columns, rows)).map_err(|error| match error {
+            SshError::Bounds => SessionStatus::Invalid,
+            _ => SessionStatus::Transport,
+        })?;
+        Ok(())
+    })
+}
+
+/// Close a terminal and remove its handle before network shutdown.
+#[no_mangle]
+pub extern "C" fn mila_session_terminal_kill(terminal_handle: u64) -> SessionStatus {
+    guarded(|| {
+        let terminal = terminal_entry(terminal_handle)?;
+        let mut guard = terminal.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let mut terminal = guard.take().ok_or(SessionStatus::InvalidHandle)?.terminal;
+        terminals().lock().map_err(|_| SessionStatus::Internal)?.entries.remove(&terminal_handle);
+        runtime()?.block_on(terminal.close()).map_err(|_| SessionStatus::Transport)?;
+        Ok(())
+    })
+}
+
 /// @cc [owner:ghuntley,label:security] mila-session-ffi-handle-lifetime
 /// Closed handles MUST never be reused. Close MUST remove authority before network
 /// disconnect; concurrent operations either finish before close or refuse stale handles.
@@ -694,6 +859,10 @@ pub extern "C" fn mila_session_close(handle: u64) -> SessionStatus {
         let runtime = runtime()?;
         let entry = entry(handle)?;
         let mut locked = entry.try_lock().map_err(|_| SessionStatus::Busy)?;
+        let owned_terminals = take_owned_terminals(handle)?;
+        for mut terminal in owned_terminals {
+            let _ = runtime.block_on(terminal.close());
+        }
         let entry = locked.take().ok_or(SessionStatus::InvalidHandle)?;
         registry()
             .lock()

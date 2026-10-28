@@ -77,6 +77,16 @@ MilaFfiStatus mila_terminal_attach_validate(uint64_t from, uint16_t columns,
 MilaFfiStatus mila_terminal_input_validate(size_t length, uint8_t read_write);
 MilaFfiStatus mila_terminal_resize_validate(uint16_t columns, uint16_t rows,
                                             uint8_t read_write);
+/* Authenticated PTY lifecycle. Handles are opaque and generation-bound. */
+MilaFfiStatus mila_session_terminal_attach(uint64_t session_handle, uint32_t columns,
+                                           uint32_t rows, uint64_t *out_terminal_handle);
+MilaFfiStatus mila_session_terminal_poll(uint64_t terminal_handle, uint8_t *output,
+                                         size_t capacity, size_t *written);
+MilaFfiStatus mila_session_terminal_input(uint64_t terminal_handle, const uint8_t *input,
+                                          size_t input_length);
+MilaFfiStatus mila_session_terminal_resize(uint64_t terminal_handle, uint32_t columns,
+                                           uint32_t rows);
+MilaFfiStatus mila_session_terminal_kill(uint64_t terminal_handle);
 /* Decodes one bounded watch line and returns only its event tag. */
 MilaFfiStatus mila_watch_event_kind(const uint8_t *line, size_t length,
                                     MilaWatchEventKind *out_kind);

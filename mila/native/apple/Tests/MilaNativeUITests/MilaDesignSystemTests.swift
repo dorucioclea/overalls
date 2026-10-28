@@ -19,14 +19,14 @@ final class MilaDesignSystemTests: XCTestCase {
 
     func testLocaleDisplayNamesUseCanonicalCatalogLocales() {
         XCTAssertEqual(MilaStrings.localeDisplayName("fr_fr"), "Français")
-        XCTAssertEqual(MilaStrings.localeDisplayName("he-IL"), "עברית")
+        XCTAssertEqual(MilaStrings.localeDisplayName("ur"), "اردو")
         XCTAssertEqual(MilaStrings.localeDisplayName("unknown"), "English")
     }
 
     func testLocaleCanonicalizationNormalizesBCP47AndRejectsUnknown() {
         XCTAssertEqual(MilaStrings.canonicalLocale(" fr_fr "), "fr-FR")
         XCTAssertEqual(MilaStrings.canonicalLocale("AR"), "ar")
-        XCTAssertEqual(MilaStrings.canonicalLocale("he-IL"), "he")
+        XCTAssertEqual(MilaStrings.canonicalLocale("he-IL"), "en")
         XCTAssertEqual(MilaStrings.canonicalLocale("de-Latn-DE"), "en")
         XCTAssertEqual(MilaStrings.canonicalLocale("xx_YY"), "en")
         XCTAssertEqual(MilaStrings.canonicalLocale(String(repeating: "x", count: 65)), "en")

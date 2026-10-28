@@ -146,6 +146,7 @@ impl From<mila_ffi::session::SessionStatus> for SessionError {
 /// One owned FFI session. Closing removes the remote authority exactly once.
 pub struct LiveSession {
     handle: Option<u64>,
+    terminal: Option<u64>,
     submitted_mutations: HashSet<String>,
 }
 
@@ -182,6 +183,7 @@ impl LiveSession {
         }
         Ok(Self {
             handle: Some(handle),
+            terminal: None,
             submitted_mutations: HashSet::new(),
         })
     }
@@ -606,6 +608,9 @@ impl LiveSession {
     }
 
     pub fn close(&mut self) -> Result<(), SessionError> {
+        if let Some(terminal) = self.terminal.take() {
+            let _ = mila_ffi::session::mila_session_terminal_kill(terminal);
+        }
         let Some(handle) = self.handle.take() else {
             return Ok(());
         };
@@ -619,6 +624,86 @@ impl LiveSession {
 
     pub fn is_open(&self) -> bool {
         self.handle.is_some()
+    }
+
+    /// Open one authenticated PTY owned by this deployment session.
+    pub fn terminal_attach(&mut self, columns: u16, rows: u16) -> Result<u64, SessionError> {
+        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SessionError::InvalidInput);
+        }
+        if self.terminal.is_some() {
+            return Err(SessionError::Busy);
+        }
+        let mut terminal = 0_u64;
+        let status = mila_ffi::session::mila_session_terminal_attach(
+            self.handle()?,
+            u32::from(columns),
+            u32::from(rows),
+            &mut terminal,
+        );
+        if status != mila_ffi::session::SessionStatus::Ok || terminal == 0 {
+            return Err(status.into());
+        }
+        self.terminal = Some(terminal);
+        Ok(terminal)
+    }
+
+    /// Poll a bounded output chunk from the authenticated PTY.
+    pub fn terminal_poll(&mut self) -> Result<Vec<u8>, SessionError> {
+        let terminal = self.terminal.ok_or(SessionError::StaleHandle)?;
+        let mut output = vec![0_u8; 65_536];
+        let mut written = 0_usize;
+        let status = unsafe {
+            mila_ffi::session::mila_session_terminal_poll(
+                terminal,
+                output.as_mut_ptr(),
+                output.len(),
+                &mut written,
+            )
+        };
+        if status != mila_ffi::session::SessionStatus::Ok || written > output.len() {
+            return Err(status.into());
+        }
+        output.truncate(written);
+        Ok(output)
+    }
+
+    pub fn terminal_input(&mut self, input: &[u8]) -> Result<(), SessionError> {
+        if input.len() > (1 << 20) {
+            return Err(SessionError::InvalidInput);
+        }
+        let terminal = self.terminal.ok_or(SessionError::StaleHandle)?;
+        let status = unsafe {
+            mila_ffi::session::mila_session_terminal_input(terminal, input.as_ptr(), input.len())
+        };
+        (status == mila_ffi::session::SessionStatus::Ok)
+            .then_some(())
+            .ok_or_else(|| status.into())
+    }
+
+    pub fn terminal_resize(&mut self, columns: u16, rows: u16) -> Result<(), SessionError> {
+        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SessionError::InvalidInput);
+        }
+        let terminal = self.terminal.ok_or(SessionError::StaleHandle)?;
+        let status = mila_ffi::session::mila_session_terminal_resize(
+            terminal,
+            u32::from(columns),
+            u32::from(rows),
+        );
+        (status == mila_ffi::session::SessionStatus::Ok)
+            .then_some(())
+            .ok_or_else(|| status.into())
+    }
+
+    pub fn terminal_kill(&mut self) -> Result<(), SessionError> {
+        let Some(terminal) = self.terminal.take() else {
+            return Ok(());
+        };
+        let status = mila_ffi::session::mila_session_terminal_kill(terminal);
+        (status == mila_ffi::session::SessionStatus::Ok)
+            .then_some(())
+            .ok_or_else(|| status.into())
     }
 
     fn handle(&self) -> Result<u64, SessionError> {
@@ -1402,6 +1487,7 @@ mod tests {
     fn web_set_requires_positive_policy_revision() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(
@@ -1420,6 +1506,7 @@ mod tests {
     fn web_controls_require_an_authenticated_handle_and_bounded_request() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(
@@ -1452,6 +1539,7 @@ mod tests {
     fn notification_device_controls_require_authenticated_session() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(session.device_list(), Err(SessionError::StaleHandle));
@@ -1469,6 +1557,7 @@ mod tests {
     fn machine_actions_require_authenticated_session_and_canonical_request() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(
@@ -1501,6 +1590,7 @@ mod tests {
     fn machine_create_rejects_unsafe_display_names_before_authentication() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         let request = "porsche-00000000000000000000000000000000";
@@ -1518,6 +1608,7 @@ mod tests {
     fn sharing_requires_authenticated_session_and_typed_role() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         let request = "porsche-00000000000000000000000000000000";
@@ -1547,6 +1638,7 @@ mod tests {
     fn thread_actions_require_authenticated_session_and_bounded_input() {
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(
@@ -1640,6 +1732,7 @@ mod tests {
         );
         let mut session = LiveSession {
             handle: None,
+            terminal: None,
             submitted_mutations: HashSet::new(),
         };
         assert_eq!(

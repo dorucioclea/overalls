@@ -95,7 +95,10 @@ public final class MilaLiveSessionTerminalTransport: MilaTerminalTransport, @unc
     public init(session: MilaLiveSession) { self.session = session }
 
     public func attach(from: UInt64, columns: UInt16, rows: UInt16, readWrite: Bool) async throws {
-        guard from != 0, readWrite else { throw MilaTerminalError.permissionDenied }
+        // `from` is the UI resume cursor, not the opaque PTY handle.  A fresh
+        // attachment legitimately starts at zero; authorization comes from the
+        // authenticated session and the requested read/write mode.
+        guard readWrite else { throw MilaTerminalError.permissionDenied }
         let handle = try session.terminalAttach(columns: UInt32(columns), rows: UInt32(rows))
         lock.lock(); let previous = terminal; terminal = handle; lock.unlock()
         if previous != 0 { session.terminalKill(previous) }

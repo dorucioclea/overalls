@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Dispatching;
 using Microsoft.Web.WebView2.Core;
 using System.Security.Cryptography;
 using Windows.System;
@@ -21,6 +22,7 @@ public sealed partial class MainWindow : Window
     private readonly MilaSessionConnection _session = new();
     private readonly MilaTerminalSession _terminal = new();
     private long _terminalGeneration;
+    private DispatcherQueueTimer? _terminalPollTimer;
     private ulong _webRevision;
     private Uri? _webUrl;
     private bool _webNavigationBound;
@@ -32,6 +34,9 @@ public sealed partial class MainWindow : Window
     public MainWindow(string? activation = null)
     {
         InitializeComponent();
+        _terminalPollTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+        _terminalPollTimer.Interval = TimeSpan.FromMilliseconds(100);
+        _terminalPollTimer.Tick += (_, _) => PollTerminalOutput();
         _sshKeys = new MilaSshKeysController(LoadSshKeysAsync, RevokeSshKeyAsync);
         _notificationDevices = new MilaWindowsNotificationDevicesController(LoadNotificationDevicesAsync, RemoveNotificationDeviceAsync, SetNotificationPreferenceAsync);
         Closed += (_, _) => { _closed = true; _signIn.SignOut(); _session.Dispose(); };
@@ -157,7 +162,11 @@ public sealed partial class MainWindow : Window
         LockButton.Content = S("lockTitle", "Lock app");
         LockStatus.Text = S("lockUnavailable", "App lock is unavailable until Windows Hello is configured.");
         SettingsHelp.Text = S("settingsOffline", "Runtime settings are managed by the core library.");
-        LocalePicker.ItemsSource = new[] { "en", "en-GB", "fr", "de", "es", "ja", "ar", "he" };
+        LocalePicker.ItemsSource = new[] {
+            "en", "zh-Hans", "hi", "es", "ar", "fr", "bn", "pt-BR", "pt-PT",
+            "ru", "ur", "id", "de", "ja", "pcm", "mr", "te", "tr", "ta", "vi",
+            "ko", "fil", "et", "fi", "sv", "arz", "sw", "ha",
+        };
         SaveSettings.Content = S("settingsSave", "Save settings");
         SettingsStatus.Text = S("ready", "Ready");
         _ = RefreshLockAvailabilityAsync();
@@ -445,14 +454,34 @@ public sealed partial class MainWindow : Window
             return;
         }
         MilaNativeTerminalResult result = RustNative.TryValidateTerminalAttach(0, 80, 24, true);
+        if (_terminal.NativeTerminalHandle != 0) RustNative.TrySessionTerminalKill(_terminal.NativeTerminalHandle);
         _terminalGeneration = DateTime.UtcNow.Ticks;
-        TerminalStatus.Text = result.IsValid && _terminal.BeginAuthenticatedAttach(sessionHandle, _terminalGeneration, true) > 0
-            ? S("terminalAttaching", "Attaching…") : S("terminalRefused", "Terminal refused");
-        // This is the bounded renderer acknowledgement. Actual PTY frames
-        // arrive through the authenticated transport and must be projected by
-        // Rust before being appended with AppendReceived.
-        if (result.IsValid && _terminal.AppendReceived(_terminalGeneration, "Mila terminal ready\r\n"))
-            TerminalOutput.Text = _terminal.Output;
+        ulong? terminalHandle = result.IsValid
+            ? RustNative.TrySessionTerminalAttach(sessionHandle, 80, 24).Handle
+            : null;
+        bool attached = terminalHandle is > 0 && _terminal.BeginAuthenticatedAttach(sessionHandle, _terminalGeneration, true) > 0 &&
+            _terminal.SetNativeTerminal(terminalHandle.Value);
+        TerminalStatus.Text = attached ? S("terminalAttaching", "Attaching…") : S("terminalRefused", "Terminal refused");
+        if (attached)
+        {
+            _terminalPollTimer?.Start();
+            MilaNativeTerminalBytesResult polled = RustNative.TrySessionTerminalPoll(terminalHandle.Value);
+            if (polled.Succeeded && polled.Data is { Length: > 0 } bytes)
+            {
+                string text = System.Text.Encoding.UTF8.GetString(bytes);
+                if (_terminal.AppendReceived(_terminalGeneration, text)) TerminalOutput.Text = _terminal.Output;
+            }
+        }
+    }
+    private void PollTerminalOutput()
+    {
+        if (_closed) { _terminalPollTimer?.Stop(); return; }
+        ulong terminal = _terminal.NativeTerminalHandle;
+        if (terminal == 0 || !_terminal.Reconnect(_terminalGeneration)) return;
+        MilaNativeTerminalBytesResult polled = RustNative.TrySessionTerminalPoll(terminal);
+        if (!polled.Succeeded || polled.Data is not { Length: > 0 } bytes) return;
+        string text = System.Text.Encoding.UTF8.GetString(bytes);
+        if (_terminal.AppendReceived(_terminalGeneration, text)) TerminalOutput.Text = _terminal.Output;
     }
     private void ValidateTerminalResize(object sender, RoutedEventArgs args)
     {
@@ -463,7 +492,8 @@ public sealed partial class MainWindow : Window
             return;
         }
         MilaNativeTerminalResult result = RustNative.TryValidateTerminalResize(80, 24, true);
-        TerminalStatus.Text = result.IsValid && _terminal.Resize(_terminalGeneration, 80, 24)
+        MilaNativeStatus native = result.IsValid ? RustNative.TrySessionTerminalResize(_terminal.NativeTerminalHandle, 80, 24) : result.Status;
+        TerminalStatus.Text = result.IsValid && native == MilaNativeStatus.Ok && _terminal.Resize(_terminalGeneration, 80, 24)
             ? S("terminalLive", "Terminal live") : S("terminalInvalid", "Invalid terminal dimensions");
     }
     private void ValidateTerminalInput(object sender, RoutedEventArgs args)
@@ -476,7 +506,8 @@ public sealed partial class MainWindow : Window
         }
         byte[] input = System.Text.Encoding.UTF8.GetBytes(TerminalInputText.Text);
         MilaNativeTerminalResult result = RustNative.TryValidateTerminalInput((nuint)input.Length, true);
-        bool sent = result.IsValid && _terminal.SendInput(_terminalGeneration, input);
+        MilaNativeStatus native = result.IsValid ? RustNative.TrySessionTerminalInput(_terminal.NativeTerminalHandle, input) : result.Status;
+        bool sent = result.IsValid && native == MilaNativeStatus.Ok && _terminal.SendInput(_terminalGeneration, input);
         TerminalStatus.Text = sent ? S("terminalLive", "Terminal live") : S("terminalReadOnly", "Terminal is read only");
         if (sent) TerminalInputText.Text = string.Empty;
     }
@@ -489,7 +520,9 @@ public sealed partial class MainWindow : Window
         }
         // Kill is valid while an authenticated attach is still negotiating;
         // requiring Reconnect here left an attaching PTY impossible to cancel.
+        if (_terminal.NativeTerminalHandle != 0) RustNative.TrySessionTerminalKill(_terminal.NativeTerminalHandle);
         _terminal.Kill(_terminalGeneration);
+        _terminalPollTimer?.Stop();
         TerminalStatus.Text = S("terminalEnded", "Terminal ended");
     }
     private void ConnectToDeployment(object sender, RoutedEventArgs args)

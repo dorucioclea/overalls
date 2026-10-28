@@ -18,7 +18,14 @@ internal enum class MilaMessage(val catalogId: String) {
 
 internal object MilaStrings {
     /** Locale bundles shipped by the native Android artifact. Keep this list bounded and typed. */
-    val supportedLocales: List<String> = listOf("en", "fr-FR", "de", "es", "ja", "ar", "he")
+    // Keep the picker in lockstep with mila-localization's generated catalog
+    // set. The JSON bundles and the Rust locale policy are the source of truth;
+    // this list only gives the shell a deterministic ordering for its UI.
+    val supportedLocales: List<String> = listOf(
+        "en", "zh-Hans", "hi", "es", "ar", "fr", "bn", "pt-BR", "pt-PT",
+        "ru", "ur", "id", "de", "ja", "pcm", "mr", "te", "tr", "ta", "vi",
+        "ko", "fil", "et", "fi", "sv", "arz", "sw", "ha",
+    )
     private var catalog: Map<String, String> = emptyMap()
     private val english = mapOf(
         MilaMessage.AppName to "Mila", MilaMessage.Machines to "Machines", MilaMessage.Threads to "Threads",

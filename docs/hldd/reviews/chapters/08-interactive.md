@@ -1,5 +1,5 @@
 ---
-digest: e30dfcfc4d7d1c2ad4dbfffeff050f40895971685e76bde8705c14598947227a
+digest: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-08-interactive now documents native sign-in link rotation (Android) and host-bound approval refusal (Linux/Apple/Windows), native Android/Apple app-lock prompts surviving backgrounding, the Linux public matching-port browser fence and LiveSession SSH-key wrappers, and the unsigned native Android release candidate; also records the Linux thread-action contract refusals before FFI dispatch
+Bounded authenticated PTY transport is now wired through Android, Apple, Linux and Windows; Hegel and native tests cover lifecycle and bounds; remaining Flutter parity gaps remain explicit.

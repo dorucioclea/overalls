@@ -4,9 +4,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MilaStringsTest {
-    @Test fun supportedLocaleCatalogIncludesRtlHebrew() {
-        assert(MilaStrings.supportedLocales.contains("he"))
-        assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("he"))
+    @Test fun supportedLocaleCatalogIncludesRtlUrdu() {
+        assert(MilaStrings.supportedLocales.contains("ur"))
+        assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("ur"))
     }
 
     @Test fun stableMessageIdentityHasDeterministicFallback() {

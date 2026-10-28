@@ -1,12 +1,15 @@
 # Shared localization catalogs
 
-`generate_catalogs.py` converts Marshall's canonical Gettext catalogs into a
-stable, platform-neutral JSON intermediate consumed by native client build
-steps. Message identity preserves domain, context, source id, and plural forms.
+`generate_catalogs.py` converts Mila's canonical catalogs into a stable,
+platform-neutral JSON intermediate consumed by every native client build step.
+The checked-in ARB files under `mila/localization/catalogs` are the native
+source bundle; the generator also accepts Marshall Gettext trees when invoked
+with an alternate `--source`. Message identity preserves domain, context,
+source id, and plural forms.
 
 ```sh
 python3 mila/localization/generate_catalogs.py \
-  --source marshall/priv/gettext --output build/mila-localization
+  --source mila/localization/catalogs --output build/mila-localization
 ```
 
 The generator sorts locales, domains, and messages and writes a schema-versioned

@@ -4,6 +4,12 @@ import Foundation
 public enum MilaMessage: String, Sendable { case appName, sharePrincipal, shareAdd, shareRemove, shareAdded, shareRemoved, machines, threads, settings, ready, refresh, connecting, connected, runtimeUnavailable, noAction, snapshotLoaded, noSnapshotLoaded, machinesEmpty, machinesHint, openTerminal, actionSubmitted, actionNotSubmitted, rejectedByRust, machineUnavailable, commandsRust, noThreads, threadsHint, unavailable, terminal, input, send, reconnect, appearance, appearanceSystem, appearanceLight, appearanceDark, lockTitle, lockExplain, lockUnavailable, lockUnlock, lockFailed, notificationsTitle, notificationsExplain, notificationsTurnOn, notificationsTurnOff, pushUnsupported, sshKeysTitle, sshKeysExplain, sshKeysEmpty, sshKeyRevoke, sshKeyAlgorithm, sshKeyThisDevice, webOpen, webInvalid, webPlaceholder }
 
 public enum MilaStrings {
+    /// The deterministic ordering emitted by the shared Rust locale policy.
+    public static let supportedLocales = [
+        "en", "zh-Hans", "hi", "es", "ar", "fr", "bn", "pt-BR", "pt-PT",
+        "ru", "ur", "id", "de", "ja", "pcm", "mr", "te", "tr", "ta", "vi",
+        "ko", "fil", "et", "fi", "sv", "arz", "sw", "ha",
+    ]
     /// Canonicalize a user-selected BCP-47 locale to one of the bundled catalogs.
     public static func canonicalLocale(_ raw: String) -> String {
         let normalized = String(raw.trimmingCharacters(in: .whitespacesAndNewlines).prefix(64)).replacingOccurrences(of: "_", with: "-")
@@ -12,23 +18,25 @@ public enum MilaStrings {
         let script = parts.dropFirst().first(where: { $0.count == 4 })?.capitalized
         let region = parts.dropFirst().first(where: { $0.count == 2 || $0.count == 3 && $0.allSatisfy(\.isNumber) })?.uppercased()
         let candidate = [language, script, region].compactMap { $0 }.joined(separator: "-")
-        let supported = ["en", "fr-FR", "de", "es", "ja", "ar", "he"]
+        let supported = supportedLocales
         if supported.contains(candidate) { return candidate }
         // Region/script-qualified requests should fall back to the bundled
-        // language catalog when no qualified catalog exists (for example,
-        // `he-IL` uses the Hebrew catalog `he`).
+        // language catalog when no qualified catalog exists.
         return script == nil && supported.contains(language) ? language : "en"
     }
     /// Stable display names for the locale picker, independent of the host locale.
     public static func localeDisplayName(_ raw: String) -> String {
         switch canonicalLocale(raw) {
-        case "fr-FR": return "Français"
-        case "de": return "Deutsch"
-        case "es": return "Español"
-        case "ja": return "日本語"
-        case "ar": return "العربية"
-        case "he": return "עברית"
-        default: return "English"
+        case "zh-Hans": return "简体中文"; case "hi": return "हिन्दी"; case "es": return "Español"
+        case "ar": return "العربية"; case "fr": return "Français"; case "bn": return "বাংলা"
+        case "pt-BR": return "Português (Brasil)"; case "pt-PT": return "Português (Portugal)"
+        case "ru": return "Русский"; case "ur": return "اردو"; case "id": return "Bahasa Indonesia"
+        case "de": return "Deutsch"; case "ja": return "日本語"; case "pcm": return "Naijá"
+        case "mr": return "मराठी"; case "te": return "తెలుగు"; case "tr": return "Türkçe"
+        case "ta": return "தமிழ்"; case "vi": return "Tiếng Việt"; case "ko": return "한국어"
+        case "fil": return "Filipino"; case "et": return "Eesti"; case "fi": return "Suomi"
+        case "sv": return "Svenska"; case "arz": return "العربية (مصر)"; case "sw": return "Kiswahili"
+        case "ha": return "Hausa"; default: return "English"
         }
     }
 

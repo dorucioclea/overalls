@@ -18,6 +18,7 @@
     <Compile Include="../windows-dotnet/Interop/DeviceKey.cs" Link="Interop/DeviceKey.cs" />
     <Compile Include="../windows-dotnet/Interop/DeploymentStore.cs" Link="Interop/DeploymentStore.cs" />
     <Compile Include="../windows-dotnet/Interop/SessionListing.cs" Link="Interop/SessionListing.cs" />
+    <Compile Include="../windows-dotnet/Interop/ThreadListing.cs" Link="Interop/ThreadListing.cs" />
     <Compile Include="../windows-dotnet/Interop/SshKeys.cs" Link="Interop/SshKeys.cs" />
     <Compile Include="../windows-dotnet/Interop/MachineMutation.cs" Link="Interop/MachineMutation.cs" />
     <Compile Include="../windows-dotnet/Interop/ExternalActivation.cs" Link="Interop/ExternalActivation.cs" />

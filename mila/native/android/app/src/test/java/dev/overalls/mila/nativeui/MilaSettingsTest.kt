@@ -35,7 +35,7 @@ class MilaSettingsTest {
     }
     @Test fun localeDirectionIsTypedAndFailsClosed() {
         assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("ar-EG"))
-        assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("fa"))
+        assertEquals(MilaLocaleDirection.Rtl, milaLocaleDirection("ur"))
         assertEquals(MilaLocaleDirection.Ltr, milaLocaleDirection("en"))
         assertEquals(MilaLocaleDirection.Ltr, milaLocaleDirection("bad locale"))
     }

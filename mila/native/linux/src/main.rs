@@ -781,7 +781,9 @@ impl NativeState {
                     *handle.borrow_mut() = Some(terminal);
                     let cursor = stream.state().resume_cursor().unwrap_or(0);
                     match stream.connected(generation, cursor, true) {
-                        Ok(()) => terminal_status.set_label(&format!("Terminal attached\\nSession {session}\\nGeneration {generation}")),
+                        Ok(()) => terminal_status.set_label(&format!(
+                            "Terminal attached\\nSession {session}\\nGeneration {generation}"
+                        )),
                         Err(_) => terminal_status.set_label("Terminal connection rejected."),
                     }
                 }
@@ -852,7 +854,10 @@ impl NativeState {
             }
             match stream.borrow().validate_input(length) {
                 Ok(()) => {
-                    let result = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_input(bytes).ok());
+                    let result = session_binding
+                        .borrow_mut()
+                        .session_mut()
+                        .and_then(|live| live.terminal_input(bytes).ok());
                     if result.is_some() && handle.borrow().is_some() {
                         terminal_status.set_label(&format!("Terminal input sent ({length} bytes)"))
                     } else {
@@ -888,7 +893,10 @@ impl NativeState {
             };
             match stream.borrow().validate_resize(columns, rows) {
                 Ok(()) => {
-                    let result = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_resize(columns, rows).ok());
+                    let result = session_binding
+                        .borrow_mut()
+                        .session_mut()
+                        .and_then(|live| live.terminal_resize(columns, rows).ok());
                     if result.is_some() && handle.borrow().is_some() {
                         terminal_status.set_label(&format!("Terminal resized ({columns}x{rows})"))
                     } else {
@@ -911,7 +919,10 @@ impl NativeState {
                 return;
             }
             let generation = stream.borrow().state().generation();
-            let _ = session_binding.borrow_mut().session_mut().map(|live| live.terminal_kill());
+            let _ = session_binding
+                .borrow_mut()
+                .session_mut()
+                .map(|live| live.terminal_kill());
             *handle.borrow_mut() = None;
             match stream.borrow_mut().kill(generation) {
                 Ok(()) => {
@@ -932,7 +943,10 @@ impl NativeState {
                 return;
             };
             let generation = stream.borrow().state().generation();
-            let output = session_binding.borrow_mut().session_mut().and_then(|live| live.terminal_poll().ok());
+            let output = session_binding
+                .borrow_mut()
+                .session_mut()
+                .and_then(|live| live.terminal_poll().ok());
             let Some(output) = output else {
                 terminal_status.set_label("Terminal output unavailable.");
                 return;

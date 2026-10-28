@@ -1,0 +1,38 @@
+boundary: Dedicated unprivileged userspace tailnet node per host with no exit node; Underclass cgroup
+  limited to loopback behind a privileged start gate that clears any stale exit-node preference; host
+  tailscaled, routes and other services unchanged.
+denial: Underclass refuses to start while the egress node is logged out or still reports an exit node;
+  its unit cannot reach any non-loopback address directly.
+evidence:
+- assertion: routing without an exit node clears a stale one and leaves directly
+  execution: recorded
+  kind: machine
+  path: nix/verification/tests/machines/underclass-egress/default.nix
+  record: docs/architecture/reviews/2026-10-28-underclass-egress-without-exit-node.md
+  record_assertion: the test script finished in
+  scope: Real headscale tailnet; a route-only specialisation starts while the stored preference names
+    an offline exit node, the gate clears it, the unit still cannot connect directly, and the proxied
+    source seen upstream is the host's own address.
+- assertion: egressRoutedDirect
+  execution: recorded
+  kind: unit
+  path: nix/verification/tests/evaluation/underclass.nix
+  record: docs/architecture/reviews/2026-10-28-underclass-egress-without-exit-node.md
+  record_assertion: including `egressRoutedDirect` and
+  scope: Evaluated route-only stage sets the loopback proxy, IP filter, a distinct privileged gate and
+    unit ordering; an exit node without routing fails evaluation.
+gaps: Production Tailscale control plane, activation of the route-only profile on both hosts and a live
+  provider request through each host's egress node are unverified.
+id: underclass-egress-direct
+journey: Keep Underclass provider traffic behind the dedicated egress node's proxy with no exit node,
+  leaving from the host's own address
+layers:
+- identity
+- transport
+- isolation
+- recovery
+preferred_gap: 'No property test: the behaviour is a fixed configuration and network boundary rather than
+  a generated input space. After activation, record one live proxied request per host.'
+scope: 'Private headscale tailnet and a routed public-style destination: route-only evaluation wiring,
+  stale-preference clearing on start, cgroup confinement and the host source address through the proxy.'
+status: partial

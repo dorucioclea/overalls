@@ -21,9 +21,9 @@ evidence:
   record_assertion: including `egressOptIn`, `egressNodeIsolated`, `egressRouted` and
   scope: 'Evaluated two-stage opt-in: node-only stage leaves Underclass unchanged; routed stage sets the
     loopback proxy, IP filter, privileged gate and unit ordering.'
-gaps: Production Tailscale control plane, the macOS Mac Mini exit node, live login of both egress identities,
-  stage-2 activation and a provider request observed from the Australian address are unverified. Root
-  can clear the exit-node preference until the next Underclass start.
+gaps: Production Tailscale control plane, the macOS Mac Mini exit node and a provider request observed
+  from the Australian address are unverified. The enrolled profile no longer selects an exit node (ADR-0260;
+  see underclass-egress-direct). Root can clear the exit-node preference until the next Underclass start.
 id: underclass-australian-egress
 journey: Send Underclass provider traffic, and only that traffic, out through the operator's Australian
   tailnet exit node

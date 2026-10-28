@@ -9861,9 +9861,9 @@ true
 ## `services.underclass.egress.exitNode`
 
 Tailnet exit node (MagicDNS name or Tailscale IP) that all Underclass upstream
-traffic leaves through. Null keeps direct upstream egress. When set, Underclass
-reaches only loopback and refuses to start until the egress node is logged in
-and has selected this exit node.
+traffic leaves through. Setting it implies `route`. Null with `route` keeps
+traffic behind the egress node's proxy but leaves from the host's own address,
+and every Underclass start clears any stale exit-node preference.
 
 
 Type: `null or string matching the pattern [A-Za-z0-9][A-Za-z0-9.:-]*`.
@@ -9891,6 +9891,22 @@ Default:
 
 ```nix
 1055
+```
+
+
+## `services.underclass.egress.route`
+
+Send all Underclass upstream traffic through the egress node's loopback proxy.
+Underclass then reaches only loopback and refuses to start until the egress node
+is logged in with the configured exit-node preference (`exitNode`, or none).
+
+
+Type: `boolean`.
+
+Default:
+
+```nix
+config.services.underclass.egress.exitNode != null
 ```
 
 
@@ -9953,7 +9969,7 @@ Type: `package`.
 Default:
 
 ```nix
-<derivation underclass-0.1.0-c58a972>
+<derivation underclass-0.1.0-d7a0ccf>
 ```
 
 

@@ -166,11 +166,16 @@ isolated restore are verified, loss of a host database requires provider
 re-onboarding and can invalidate rotated refresh tokens. No recovery or
 availability claim is made for this state.
 
-## Australian upstream egress
+## Upstream egress node
 
 [ADR-0185](../architecture/decisions/0185-underclass-tailnet-exit-egress.md)
-routes Underclass provider traffic, and nothing else, through the `mac-mini`
-tailnet exit node. Each host runs `underclass-egress.service`. This is a
+routes Underclass provider traffic, and nothing else, through a dedicated
+tailnet egress node, optionally via an exit node.
+[ADR-0260](../architecture/decisions/0260-underclass-egress-without-exit-node.md)
+removed the `mac-mini` exit node after it went offline on 2026-10-28. The
+enrolled profile sets `egress = { enable = true; route = true; }`, so traffic
+keeps the proxy and loopback confinement but leaves from the host's own address.
+Each host runs `underclass-egress.service`. This is a
 separate, unprivileged, userspace `tailscaled` with its own state and socket.
 It has no TUN device and installs no routes. Its HTTP proxy listens only on
 `127.0.0.1:1055`. The host's own `tailscaled`, Tailscale Serve and every other
@@ -189,17 +194,19 @@ Rollout has two stages, because Underclass is an update health unit:
    `sudo underclass-egress up --force-reauth`. Then
    `sudo underclass-egress set --exit-node=mac-mini` followed by
    `curl -x http://127.0.0.1:1055 https://ipinfo.io/country` should print `AU`.
-2. Setting `services.underclass.egress.exitNode = "mac-mini"` gives Underclass
-   `HTTPS_PROXY`, confines its unit to loopback with systemd IP filtering, and
-   adds a privileged start gate. The gate re-selects the exit node with LAN
-   access disabled, and refuses to start while the node is logged out.
+2. Setting `services.underclass.egress.route = true` (implied by setting
+   `exitNode`) gives Underclass `HTTPS_PROXY`, confines its unit to loopback
+   with systemd IP filtering, and adds a privileged start gate. Without an exit
+   node, the gate clears any stored exit-node preference. With one, it
+   re-selects that exit node with LAN access disabled. Either way it refuses to
+   start while the node is logged out.
 
-The enrolled profile now sets both stages (`exitNode = "mac-mini"`). Ship it
-only after each host's egress node has been joined. Otherwise Underclass
-refuses to start, and the updater rolls the deployment back.
+The enrolled profile sets both stages with no exit node. Ship it only after each
+host's egress node has been joined. Otherwise Underclass refuses to start, and
+the updater rolls the deployment back.
 
-Failure behaviour: if the Mac Mini, its connection or the tailnet path is
-down, provider requests fail. They never fall back to the host's own address,
+Failure behaviour with an exit node configured: if the exit node, its
+connection or the tailnet path is down, provider requests fail. They never fall back to the host's own address,
 and Underclass keeps running and recovers by itself when the exit node
 returns. Provider DNS is resolved at the exit node. "Allow LAN access" on the
 Mac only matters for the Mac's own use of other exit nodes; it does not affect
@@ -211,8 +218,10 @@ refusals ("cannot select exit node"). Root clearing the exit node through
 `underclass-egress set --exit-node=` makes proxied traffic leave directly until
 the next Underclass start re-asserts it. Do not do that on a live host.
 
-To roll back, remove `exitNode`. Underclass returns to direct egress on
-activation, and the egress node can stay logged in.
+To stop using an exit node, remove `exitNode` and keep `route = true`; the next
+Underclass start clears the stored preference. Setting `route = false` as well
+returns Underclass to direct egress without the proxy, and the egress node can
+stay logged in.
 
 ## Live acceptance
 

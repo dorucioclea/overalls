@@ -410,10 +410,11 @@ in {
     enable = true;
     environmentFile = "/run/overalls-secrets/underclass/environment";
     secretUnits = [ "overalls-secrets-underclass.service" ];
-    # ADR-0185: provider traffic leaves only through the dedicated egress node
-    # and the Australian Mac Mini exit node. Join each host's node first
-    # (`sudo underclass-egress up`), or Underclass refuses to start.
-    egress = { enable = true; exitNode = "mac-mini"; };
+    # ADR-0185, amended by ADR-0260: provider traffic leaves only through the
+    # dedicated egress node's proxy, with no exit node, so it uses the host's own
+    # address. Join each host's node first (`sudo underclass-egress up`), or
+    # Underclass refuses to start.
+    egress = { enable = true; route = true; };
   };
   # @cc [owner:ghuntley,label:security;deployment] ziggy-host-local-underclass
   # Enrolled Ziggy uses only the proxy credential, never the Underclass UI token.

@@ -1579,7 +1579,7 @@ random base64 prefixes from becoming Erlang options.
 | Host deployment and TLS | NixOS roles, reproducible packages/images, verified proxy backends and HTTP-01 peer routing | [ADR-0038](decisions/0038-http01-validation-and-peer-routing.md) |
 | Storage | ZFS backing, placement commitments, physical accounting and explicit relocation | [ADR-0037](decisions/0037-workload-placement-and-relocation.md) |
 | Deployment assurance | SSH-derived secret custody and NixOS machine tests | [ADR-0041](decisions/0041-declarative-fleet-users.md), [ADR-0033](decisions/0033-nixos-machine-verification.md) |
-| Developer inference proxy | Independent host-local subscription pools, runtime credentials, local read-only monitor socket, tailnet-only HTTPS and opt-in exit-node upstream egress | [ADR-0102](decisions/0102-local-underclass-monitor-socket.md), [ADR-0185](decisions/0185-underclass-tailnet-exit-egress.md) |
+| Developer inference proxy | Independent host-local subscription pools, runtime credentials, local read-only monitor socket, tailnet-only HTTPS and opt-in egress-node upstream proxy with optional exit node | [ADR-0102](decisions/0102-local-underclass-monitor-socket.md), [ADR-0185](decisions/0185-underclass-tailnet-exit-egress.md), [ADR-0260](decisions/0260-underclass-egress-without-exit-node.md) |
 
 These are modeling boundaries, not instructions to create separate services for
 every domain. Marshall and Lilly are the application boundary.

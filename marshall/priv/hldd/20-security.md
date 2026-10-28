@@ -279,8 +279,9 @@ and `fleet-network` machine checks, plus the `fleet-firewall-configuration` and
 
 ## Underclass provider egress layers
 
-ADR-0185 sends Underclass provider traffic through a dedicated tailnet node and
-the operator's exit node in Australia. The host's own tailnet node and every
+ADR-0185 sends Underclass provider traffic through a dedicated tailnet node,
+optionally via an exit node; ADR-0260 runs the enrolled hosts with no exit node,
+so traffic leaves from the host's own address. The host's own tailnet node and every
 other service keep direct egress. These sensitive operations are root-only:
 joining the egress node (`sudo underclass-egress up`) and changing its exit
 node.
@@ -290,14 +291,14 @@ node.
 | Identity | Each host has a separate `<host>-underclass-egress` tailnet identity, joined once by an operator; the module holds no Tailscale key. A logged-out or unapproved node makes the start gate refuse to start Underclass. |
 | Authorization | Tailnet policy must allow that identity to use the exit node. The egress socket directory is private to the node's dynamic user, so only root can change it. Underclass's proxy and admin bearer tokens are unchanged. |
 | Transport | Underclass reaches only the loopback HTTP proxy. HTTPS stays end to end between Underclass and the provider through `CONNECT`, inside WireGuard to the exit node. LAN access through the exit node is disabled. |
-| Execution | A privileged start gate re-selects the exit node on every start. Without a selected exit node, Underclass does not start. |
+| Execution | A privileged start gate re-asserts the configured preference on every start: it selects the configured exit node, or clears a stale one when none is configured. If the preference does not match, Underclass does not start. |
 | Isolation | systemd IP filtering allows the Underclass cgroup only loopback addresses, so direct connections fail. The egress node is userspace-only: no TUN device, routes, capabilities or IPv6 sockets. |
 | Storage | The node's keys live in `/var/lib/underclass-egress` (mode 0700, dynamic user), separate from the Underclass pool database and the host's own tailnet state. |
-| Recovery | If the exit node is lost, provider requests fail and never use the host's address. Underclass still restarts while the exit node is offline. Node state survives a reboot. Removing `exitNode` restores direct egress. |
+| Recovery | With an exit node, losing it fails provider requests, which never use the host's address. Underclass still restarts while the exit node is offline. Node state survives a reboot. Removing `exitNode` while keeping `route` (ADR-0260) clears the preference on the next start and keeps the proxy confinement. |
 
 Untested boundaries: the production Tailscale control plane and tailnet policy,
-the macOS exit node, and stage-2 activation. Root clearing the preference
-mid-run leaks until the next start. Evidence: the `underclass-egress` machine
+and activation of the route-only profile. With an exit node configured, root
+clearing the preference mid-run leaks until the next start. Evidence: the `underclass-egress` machine
 check and the [Underclass operations](repo:docs/services/underclass.md) guide.
 
 ## Experimental Antithesis fixture custody

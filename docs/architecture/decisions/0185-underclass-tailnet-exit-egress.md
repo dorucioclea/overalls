@@ -170,6 +170,9 @@ if the root-operator window above becomes a concern.
 
 ## Related decisions
 
+[ADR-0260](0260-underclass-egress-without-exit-node.md) amends stage 2: the
+enrolled profile keeps routing through the egress node with no exit node, after
+`mac-mini` went offline on 2026-10-28.
 [ADR-0245](0245-underclass-egress-node-tag.md) tags the egress node
 `tag:underclass`.
 [ADR-0102](0102-local-underclass-monitor-socket.md) keeps the independent pools,

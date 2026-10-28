@@ -69,7 +69,8 @@ assert builtins.hasContext good.services.overallsSecrets.bundles.lilly.encrypted
 assert good.services.underclass.enable;
 assert good.services.underclass.environmentFile == "/run/overalls-secrets/underclass/environment";
 assert builtins.elem "overalls-secrets-underclass.service" good.systemd.services.underclass.requires;
-assert good.services.underclass.egress.enable && good.services.underclass.egress.exitNode == "mac-mini";
+assert good.services.underclass.egress.enable && good.services.underclass.egress.route
+  && good.services.underclass.egress.exitNode == null;
 assert good.services.overallsSecrets.bundles.underclass.outputs.environment.secrets
   == [ "UNDERCLASS_PROXY_KEY" "UNDERCLASS_UI_TOKEN" ];
 assert !valid wrongIdentity;

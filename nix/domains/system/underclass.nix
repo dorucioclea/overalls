@@ -10,7 +10,7 @@ let
   otelEnabled = lib.attrByPath [ "services" "overallsOtelFleet" "enable" ] false config;
   otelProbe = pkgs.callPackage ./otel-guest/receiver.nix {};
   egress = cfg.egress;
-  egressRouted = egress.exitNode != null;
+  egressRouted = egress.route;
   egressSocket = "/run/underclass-egress/tailscaled.sock";
   egressProxy = "http://127.0.0.1:${toString egress.proxyPort}";
   # Operator entry point for the dedicated node, e.g. `sudo underclass-egress up`.
@@ -27,11 +27,13 @@ let
     exec ${tailscaleExe} --socket=${egressSocket} "$@"
   '';
   # Runs with full privileges (`+`) before every Underclass start: re-asserts
-  # the exit-node preference on the dedicated node and refuses to start while
-  # that node is logged out or the preference is absent.
-  egressGate = pkgs.writeShellScript "underclass-egress-gate" ''
+  # the configured exit-node preference on the dedicated node (clearing any
+  # stale one when no exit node is configured) and refuses to start while that
+  # node is logged out or the preference does not match.
+  egressGate = pkgs.writeShellScript "underclass-egress-gate" (''
     set -eu
     ts="${tailscaleExe} --socket=${egressSocket}"
+  '' + (if egress.exitNode != null then ''
     if ! $ts set --exit-node=${egress.exitNode} --exit-node-allow-lan-access=false; then
       echo "underclass egress node cannot select exit node ${egress.exitNode}; log it in with: underclass-egress up" >&2
       exit 1
@@ -41,7 +43,17 @@ let
       echo "underclass egress node is not running with exit node ${egress.exitNode}" >&2
       exit 1
     }
-  '';
+  '' else ''
+    if ! $ts set --exit-node=; then
+      echo "underclass egress node cannot clear its exit node; log it in with: underclass-egress up" >&2
+      exit 1
+    fi
+    $ts status --json | ${lib.getExe pkgs.jq} -e \
+      '.BackendState == "Running" and ((.ExitNodeStatus.ID // "") == "")' >/dev/null || {
+      echo "underclass egress node is not running without an exit node" >&2
+      exit 1
+    }
+  ''));
 in
 {
   options.services.underclass = {
@@ -89,9 +101,19 @@ in
         example = "mac-mini";
         description = ''
           Tailnet exit node (MagicDNS name or Tailscale IP) that all Underclass upstream
-          traffic leaves through. Null keeps direct upstream egress. When set, Underclass
-          reaches only loopback and refuses to start until the egress node is logged in
-          and has selected this exit node.
+          traffic leaves through. Setting it implies `route`. Null with `route` keeps
+          traffic behind the egress node's proxy but leaves from the host's own address,
+          and every Underclass start clears any stale exit-node preference.
+        '';
+      };
+      route = mkOption {
+        type = types.bool;
+        default = egress.exitNode != null;
+        defaultText = lib.literalExpression "config.services.underclass.egress.exitNode != null";
+        description = ''
+          Send all Underclass upstream traffic through the egress node's loopback proxy.
+          Underclass then reaches only loopback and refuses to start until the egress node
+          is logged in with the configured exit-node preference (`exitNode`, or none).
         '';
       };
       proxyPort = mkOption {
@@ -125,7 +147,11 @@ in
       }
       {
         assertion = !egressRouted || egress.enable;
-        message = "services.underclass.egress.exitNode requires services.underclass.egress.enable.";
+        message = "services.underclass.egress.route and exitNode require services.underclass.egress.enable.";
+      }
+      {
+        assertion = egress.exitNode == null || egressRouted;
+        message = "services.underclass.egress.exitNode requires services.underclass.egress.route.";
       }
       {
         assertion = !egress.enable || egress.proxyPort != cfg.port;
@@ -142,11 +168,13 @@ in
     # each credential MUST be rejected at the other authorization boundary.
 
     # @cc [owner:ghuntley,label:security] underclass-egress-fail-closed
-    # When an egress exit node is configured, Underclass MUST send upstream
-    # traffic only through the egress node's loopback proxy: its unit MUST be
-    # unable to reach any non-loopback address, and it MUST NOT start until the
-    # egress node is logged in with that exit node selected. Losing the exit
-    # node MUST fail requests rather than fall back to the host's own route.
+    # When egress routing is enabled, Underclass MUST send upstream traffic only
+    # through the egress node's loopback proxy: its unit MUST be unable to reach
+    # any non-loopback address, and it MUST NOT start until the egress node is
+    # logged in with the configured exit-node preference. With an exit node
+    # configured, losing it MUST fail requests rather than fall back to the
+    # host's own route; with none configured, each start MUST clear any stale
+    # exit-node preference.
     systemd.services.underclass = {
       description = "Independent host-local Underclass subscription pool";
       wantedBy = [ "multi-user.target" ];

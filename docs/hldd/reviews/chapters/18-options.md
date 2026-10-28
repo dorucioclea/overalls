@@ -1,5 +1,5 @@
 ---
-digest: aa4a6b24dd1fac9b6d2eb6657444423d5a530f3bd5a8e3ef21db1e6b95671dc0
+digest: 36eb75282edf617a1de06e4077c3cd20b396b14b150b9a36fb25e0256b069326
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-18-options regenerated for the request recorder environmentSuffix option and marshall_live source enum (ADR-0258).
+ADR-0260 route-only Underclass egress (no mac-mini exit node) and d7a0ccf pin; reviewed against 10-services, 18-options, 19-coverage, 20-security, 22-topology and the Underclass operations guide

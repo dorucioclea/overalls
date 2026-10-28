@@ -370,28 +370,38 @@ re-enables it once a known non-free plan returns, recording the cause in a new
 ADR 0025). It also fixes Claude Code accounts that stayed cooling: the account
 usage API reports percent utilization, which was read as a fraction, and token
 refresh requested an ungranted scope and failed with `invalid_scope`.
-The current package pin is `c58a972`, with a refreshed source archive hash and
-unchanged Cargo lock/vendor hash. The instrumentation patch applies unchanged.
-Upstream Rust tests passed on the unpatched source; the package was not rebuilt
-for this pin, NixOS checks were not run, and live provider behavior and production
-activation remain unverified.
-Provider egress can be pinned to a tailnet exit node (ADR-0185).
+Revision `d7a0ccf` adds `POST /admin/api/accounts/{id}/refresh` and
+`underclass refresh <account>|--all`, which force one token refresh through the
+running server. A successful refresh returns an `auth_error` account to rotation
+unless the free-plan gate would disable it; a failed one changes nothing
+(upstream ADR 0026).
+The current package pin is `d7a0ccf`, with a refreshed source archive hash and
+unchanged Cargo lock/vendor hash. The instrumentation patch applies with offsets.
+The package builds, and the `underclass-configuration` and `underclass-egress`
+checks pass on this pin; live provider behavior and production activation remain
+unverified.
+Provider egress goes through a dedicated tailnet egress node, optionally via an
+exit node (ADR-0185, amended by ADR-0260).
 `underclass-egress.service` runs a separate unprivileged userspace `tailscaled`
 with its own state and socket, no TUN device and no routes. Its HTTP proxy
 listens only on `127.0.0.1:1055`. The enrolled profile sets
-`services.underclass.egress.exitNode = "mac-mini"`. Each host's node starts
+`services.underclass.egress = { enable = true; route = true; }` with no exit
+node, so provider traffic leaves from the host's own address. Each host's node starts
 logged out, and an operator joins it once with `sudo underclass-egress up`,
 which always advertises `tag:underclass` (ADR-0245) so tailnet policy can
 identify the node.
-The exit-node setting gives Underclass `HTTPS_PROXY`, confines
-the unit to loopback through systemd IP filtering, and adds a privileged start
-gate. The gate selects the exit node with LAN access disabled and refuses to
+`egress.route` (implied by `egress.exitNode`) gives Underclass `HTTPS_PROXY`,
+confines the unit to loopback through systemd IP filtering, and adds a privileged
+start gate. Without an exit node, the gate clears any stale exit-node preference
+and refuses to start while the node is logged out or still reports one. With an
+exit node, the gate selects it with LAN access disabled and refuses to
 start while the node is logged out. Losing the exit node fails provider
 requests instead of falling back to the host's address. Underclass still
 restarts while the exit node is offline, and resolves provider DNS at the exit
 node. The `underclass-egress` machine check verifies these properties on a
-headscale tailnet. Live login of both nodes and a request observed from the
-Mac Mini remain open; root can clear the preference until the next start.
+headscale tailnet, including the route-only mode. A live request through each
+host's egress node remains open; root can change the preference until the next
+start.
 See [Underclass operations](repo:docs/services/underclass.md).
 
 ## Galileo

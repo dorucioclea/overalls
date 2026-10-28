@@ -4,7 +4,10 @@
 # source address at a separate internet host. It MUST show that Underclass's
 # unit reaches that host only through the exit node, refuses to start before
 # the egress node is logged in, and fails rather than leaks when the exit node
-# goes away. It does not exercise live providers or the production tailnet.
+# goes away. It MUST also show that routing without an exit node clears a stale
+# exit-node preference, keeps the unit confined to the egress proxy, and leaves
+# from the host's own address. It does not exercise live providers or the
+# production tailnet.
 { pkgs, module, ... }:
 let
   tls = pkgs.runCommand "underclass-egress-tls" { nativeBuildInputs = [ pkgs.openssl ]; } ''
@@ -136,6 +139,11 @@ in {
           enable = true;
           exitNode = "exit";
         };
+      };
+      # ADR-0260: the same egress node and loopback confinement, with no exit node.
+      specialisation.routed-direct.configuration.services.underclass.egress = {
+        exitNode = pkgs.lib.mkForce null;
+        route = true;
       };
       environment.etc."underclass-test.env".text = ''
         UNDERCLASS_PROXY_KEY=synthetic-proxy-key
@@ -276,6 +284,29 @@ in {
         assert status.get("ExitNodeStatus", {}).get("ID"), status.get("ExitNodeStatus")
         host.wait_until_succeeds(f"curl -sf --max-time 20 -x {PROXY} https://upstream.test/", timeout=120)
         expect_source("https://upstream.test/", proxy=True, expected=exit_address)
+
+    with subtest("routing without an exit node clears a stale one and leaves directly"):
+        # The stored preference still names the exit node, as production did when
+        # its exit node went offline; the gate must clear it on start.
+        exit.succeed("systemctl stop tailscaled.service")
+        host.succeed(
+            "/run/current-system/specialisation/routed-direct/bin/switch-to-configuration test"
+        )
+        host.succeed("systemctl restart underclass.service")
+        host.wait_for_unit("underclass.service")
+        status = json.loads(host.succeed(f"{EGRESS} status --json"))
+        assert not (status.get("ExitNodeStatus") or {}).get("ID"), status.get("ExitNodeStatus")
+        host.wait_until_succeeds(f"curl -sf --max-time 20 -x {PROXY} https://provider.test/", timeout=120)
+        expect_source("https://provider.test/", proxy=True, expected=host_address)
+        host.fail(in_underclass_unit("curl -sf --max-time 5 https://provider.test/"))
+        seen = host.succeed(in_underclass_unit(f"curl -sf --max-time 20 -x {PROXY} https://provider.test/"))
+        assert seen.strip() == host_address, seen
+        unit_env = host.succeed("systemctl show underclass.service -p Environment --value")
+        assert f"HTTPS_PROXY={PROXY}" in unit_env, unit_env
+        exit.succeed("systemctl start tailscaled.service")
+        host.succeed("/run/current-system/bin/switch-to-configuration test")
+        host.succeed("systemctl restart underclass.service")
+        host.wait_for_unit("underclass.service")
 
     with subtest("the egress node's state survives a reboot"):
         host.reboot()

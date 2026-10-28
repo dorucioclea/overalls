@@ -172,6 +172,10 @@ ADR-0184 decision 3.
 
 [ADR-0186](0186-covenant-contract-verification.md) adopts Covenant as a test-only, deterministic contract verification layer across all twelve Elixir applications. It complements existing `CONTRACTS`, ADR, HLDD, native and integration evidence; the initial obligations establish module-loadability baselines and explicitly do not claim native or deployment guarantees.
 
+[ADR-0260](0260-underclass-egress-without-exit-node.md) keeps Underclass behind
+the dedicated egress node's proxy and loopback confinement with no exit node,
+clearing stale exit-node preferences on every start, amending ADR-0185 stage 2.
+
 [ADR-0185](0185-underclass-tailnet-exit-egress.md) routes Underclass provider
 traffic, and only that traffic, through a dedicated userspace tailnet node and
 an Australian exit node, confining the Underclass unit to loopback behind a
@@ -1087,6 +1091,7 @@ ADR-0015/0037 retain their statuses and accepted rationale.
 | [ADR-0257](0257-liveview-callback-observability.md) | accepted | partial | Trace every Marshall LiveView callback |
 | [ADR-0258](0258-marshall-page-service-levels.md) | accepted | partial | Marshall page interaction service levels |
 | [ADR-0259](0259-deployment-revision-telemetry.md) | accepted | partial | Deployment revision in telemetry provenance |
+| [ADR-0260](0260-underclass-egress-without-exit-node.md) | accepted | partial | Underclass egress proxy without an exit node |
 
 The [Mila native release readiness review](../reviews/2026-10-24-mila-native-release-readiness.md)
 updates ADR-0249 implementation evidence without changing its accepted/partial status.

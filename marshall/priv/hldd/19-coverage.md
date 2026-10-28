@@ -4446,9 +4446,26 @@ Tested scope: Private headscale tailnet, Linux kernel exit node and a routed pub
 - **machine, recorded**: [losing the exit node fails requests instead of leaking](repo:nix/verification/tests/machines/underclass-egress/default.nix) — Real headscale tailnet with kernel exit node and dedicated userspace egress node; destination access log shows no host-address request after the exit node stops.; [execution record](repo:docs/architecture/reviews/2026-10-17-underclass-tailnet-egress.md).
 - **unit, recorded**: [egressRouted](repo:nix/verification/tests/evaluation/underclass.nix) — Evaluated two-stage opt-in: node-only stage leaves Underclass unchanged; routed stage sets the loopback proxy, IP filter, privileged gate and unit ordering.; [execution record](repo:docs/architecture/reviews/2026-10-17-underclass-tailnet-egress.md).
 
-**Gaps:** Production Tailscale control plane, the macOS Mac Mini exit node, live login of both egress identities, stage-2 activation and a provider request observed from the Australian address are unverified. Root can clear the exit-node preference until the next Underclass start.
+**Gaps:** Production Tailscale control plane, the macOS Mac Mini exit node and a provider request observed from the Australian address are unverified. The enrolled profile no longer selects an exit node (ADR-0260; see underclass-egress-direct). Root can clear the exit-node preference until the next Underclass start.
 
 **Preferred test work:** No property test: the behaviour is a fixed configuration and network boundary rather than a generated input space. After stage 2, record one live proxied request per host showing the Mac Mini's address, and consider a periodic preference check.
+
+## Keep Underclass provider traffic behind the dedicated egress node's proxy with no exit node, leaving from the host's own address
+
+Coverage: **partial**. Layers: identity, transport, isolation, recovery.
+
+Boundary: Dedicated unprivileged userspace tailnet node per host with no exit node; Underclass cgroup limited to loopback behind a privileged start gate that clears any stale exit-node preference; host tailscaled, routes and other services unchanged.
+
+Required refusal: Underclass refuses to start while the egress node is logged out or still reports an exit node; its unit cannot reach any non-loopback address directly.
+
+Tested scope: Private headscale tailnet and a routed public-style destination: route-only evaluation wiring, stale-preference clearing on start, cgroup confinement and the host source address through the proxy.
+
+- **machine, recorded**: [routing without an exit node clears a stale one and leaves directly](repo:nix/verification/tests/machines/underclass-egress/default.nix) — Real headscale tailnet; a route-only specialisation starts while the stored preference names an offline exit node, the gate clears it, the unit still cannot connect directly, and the proxied source seen upstream is the host's own address.; [execution record](repo:docs/architecture/reviews/2026-10-28-underclass-egress-without-exit-node.md).
+- **unit, recorded**: [egressRoutedDirect](repo:nix/verification/tests/evaluation/underclass.nix) — Evaluated route-only stage sets the loopback proxy, IP filter, a distinct privileged gate and unit ordering; an exit node without routing fails evaluation.; [execution record](repo:docs/architecture/reviews/2026-10-28-underclass-egress-without-exit-node.md).
+
+**Gaps:** Production Tailscale control plane, activation of the route-only profile on both hosts and a live provider request through each host's egress node are unverified.
+
+**Preferred test work:** No property test: the behaviour is a fixed configuration and network boundary rather than a generated input space. After activation, record one live proxied request per host.
 
 ## Read a guarded candidate for Underclass local monitor availability on both hosts
 

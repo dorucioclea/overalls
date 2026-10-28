@@ -34,6 +34,20 @@ let
       egress = { enable = true; exitNode = "mac-mini"; };
     };
   };
+  routedDirect = evaluate {
+    services.underclass = {
+      enable = true;
+      tailscaleServe.enable = false;
+      egress = { enable = true; route = true; };
+    };
+  };
+  exitWithoutRoute = evaluate {
+    services.underclass = {
+      enable = true;
+      tailscaleServe.enable = false;
+      egress = { enable = true; exitNode = "mac-mini"; route = false; };
+    };
+  };
   routedWithoutNode = evaluate {
     services.underclass = { enable = true; tailscaleServe.enable = false; egress.exitNode = "mac-mini"; };
   };
@@ -41,6 +55,7 @@ let
   startPre = unit: lib.concatStringsSep "\n" (lib.toList unit.serviceConfig.ExecStartPre);
   egressUnit = egressNodeOnly.systemd.services.underclass-egress;
   routedService = routed.systemd.services.underclass;
+  routedDirectService = routedDirect.systemd.services.underclass;
   publication = enabled.systemd.services.underclass-tailscale-serve;
 
   # @cc [owner:ghuntley,label:verification] underclass-configuration-check
@@ -81,8 +96,8 @@ let
 
     # @cc [owner:ghuntley,label:verification;security] underclass-egress-configuration-check
     # Egress MUST stay opt-in in two stages: the node alone leaves Underclass's
-    # direct egress untouched, and only a selected exit node confines Underclass
-    # to loopback behind the privileged start gate.
+    # direct egress untouched, and only routing (implied by a selected exit node)
+    # confines Underclass to loopback behind the privileged start gate.
     egressOptIn = !(enabled.systemd.services ? underclass-egress)
       && !(service.environment ? HTTPS_PROXY)
       && !(service.serviceConfig ? IPAddressDeny)
@@ -105,7 +120,18 @@ let
       && lib.hasInfix "underclass-egress-gate" (startPre routedService)
       && builtins.elem "underclass-egress.service" routedService.requires
       && builtins.elem "underclass-egress.service" routedService.after;
+    egressRoutedDirect = routedDirect.services.underclass.egress.exitNode == null
+      && routedDirectService.environment.HTTPS_PROXY == "http://127.0.0.1:1055"
+      && routedDirectService.environment.HTTP_PROXY == "http://127.0.0.1:1055"
+      && routedDirectService.serviceConfig.IPAddressDeny == "any"
+      && routedDirectService.serviceConfig.IPAddressAllow == "localhost"
+      && lib.hasInfix "underclass-egress-gate" (startPre routedDirectService)
+      && startPre routedDirectService != startPre routedService
+      && builtins.elem "underclass-egress.service" routedDirectService.requires
+      && routed.services.underclass.egress.route
+      && !egressNodeOnly.services.underclass.egress.route;
     egressNodeRequired = !(lib.all (item: item.assertion) routedWithoutNode.assertions);
+    exitNodeRequiresRoute = !(lib.all (item: item.assertion) exitWithoutRoute.assertions);
     egressJoinTags = let cli = lib.findFirst (p: (p.name or "") == "underclass-egress") null
       egressNodeOnly.environment.systemPackages; in
       egressNodeOnly.services.underclass.egress.tags == [ "tag:underclass" ]

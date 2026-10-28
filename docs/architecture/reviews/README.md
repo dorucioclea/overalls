@@ -1,5 +1,6 @@
 # Architecture reviews
 
+- [Underclass egress without an exit node (2026-10-28)](2026-10-28-underclass-egress-without-exit-node.md): route-only egress mode, stale exit-node preference clearing and the `d7a0ccf` pin under ADR-0260.
 - [Mila native release readiness (2026-10-24)](2026-10-24-mila-native-release-readiness.md): native release/source-bundle replacement obligations, centralized catalog evidence and incomplete platform acceptance under ADR-0249.
 
 - [Mila Windows authenticated SSH keys (2026-10-22)](2026-10-22-mila-windows-ssh-keys.md): typed Rust FFI list/revoke wiring and stale-response fencing in the WinUI client; live Windows/Porsche execution remains open.

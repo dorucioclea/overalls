@@ -1,5 +1,5 @@
 ---
-digest: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+digest: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Shared diagnostics gain the marshall.agent.server_tool, marshall.artifact.publish, marshall.artifact.content and marshall.cedar.authorize spans, tool/namespace/via enum and version/file_count number attributes, and the server-tool and artifact publish, refusal, content and storage metrics; the regenerated trace schema matches. Chapters 15-monitoring and 17-reference list these signals and their closed attributes.
+ADR-0260 route-only Underclass egress (no mac-mini exit node) and d7a0ccf pin; reviewed against 10-services, 18-options, 19-coverage, 20-security, 22-topology and the Underclass operations guide

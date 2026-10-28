@@ -422,7 +422,7 @@ flowchart TB
     Underclass -->|loopback HTTP proxy only| UnderclassEgress[Userspace Tailscale egress node]
   end
   Lilly -->|verified TLS polling over fleet network| Marshall
-  UnderclassEgress -->|WireGuard tailnet| AuExit[Operator exit node in Australia]
+  UnderclassEgress -->|direct, or optional WireGuard exit node| ProviderApis[Provider APIs]
   Private -->|current authority| Marshall
   Public[Public DNS and application clients] --> Audi[Audi and DNS on both hosts]
   Audi -->|current placement and access| Marshall
@@ -580,12 +580,12 @@ local monitor probe. Isolated native custody passed; production activation remai
 under verification.
 Each host's `underclass-egress` node is a second, unprivileged, userspace
 tailnet identity with its own state and socket. It has no TUN device or routes,
-and the host's own Tailscale node is unchanged. When an exit node is configured,
-Underclass's cgroup can reach only loopback. Provider requests then leave
-through the egress proxy and the operator's Australian exit node, and fail
-rather than fall back when that node is unavailable (ADR-0185). The exit node
-is outside the fleet failure boundary and is a single dependency for both
-hosts' provider traffic.
+and the host's own Tailscale node is unchanged. When egress routing is enabled,
+Underclass's cgroup can reach only loopback, and provider requests leave through
+the egress proxy. The enrolled profile configures no exit node (ADR-0260), so
+they leave from the host's own address. If an exit node is configured, requests
+leave through it and fail rather than fall back when it is unavailable
+(ADR-0185); that exit node is then outside the fleet failure boundary.
 Audi private's Rust exporter reads only its mode-0600 numeric snapshot and
 connects through a separate group-restricted collector socket. Nix assigns
 `service.name=audi_private`. Bound transport completions stay distinct from

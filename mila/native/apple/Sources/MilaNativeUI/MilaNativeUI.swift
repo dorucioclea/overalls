@@ -344,9 +344,15 @@ private struct ThreadsView: View {
 
     private static func decodeThreadIDs(_ data: Data) -> [UUID] {
         struct Row: Decodable { let id: UUID }
+        struct Envelope: Decodable { let result: Result }
+        struct Result: Decodable { let threads: [Row] }
         guard data.count <= 512 * 1024 else { return [] }
-        if let rows = try? JSONDecoder().decode([Row].self, from: data) { return rows.map(\.id).prefix(256).map { $0 } }
-        if let rows = try? JSONDecoder().decode([String].self, from: data) {
+        let decoder = JSONDecoder()
+        if let envelope = try? decoder.decode(Envelope.self, from: data) {
+            return envelope.result.threads.map(\.id).prefix(256).map { $0 }
+        }
+        if let rows = try? decoder.decode([Row].self, from: data) { return rows.map(\.id).prefix(256).map { $0 } }
+        if let rows = try? decoder.decode([String].self, from: data) {
             return rows.compactMap(UUID.init(uuidString:)).prefix(256).map { $0 }
         }
         return []

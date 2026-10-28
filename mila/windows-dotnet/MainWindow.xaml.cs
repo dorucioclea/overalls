@@ -814,8 +814,9 @@ public sealed partial class MainWindow : Window
         try
         {
             string? input = string.IsNullOrWhiteSpace(ThreadInput.Text) ? null : ThreadInput.Text.Trim();
-            string? secondary = action is MilaThreadAction.PlanApprove or MilaThreadAction.PlanRevise ? input : null;
-            string? payload = action is MilaThreadAction.Prompt or MilaThreadAction.Answer ? input : null;
+            string? secondary = action is MilaThreadAction.PlanApprove or MilaThreadAction.PlanRevise
+                ? _threadController.State.Thread?.PlanId?.ToString("D") : null;
+            string? payload = action is MilaThreadAction.Prompt or MilaThreadAction.Answer or MilaThreadAction.PlanRevise ? input : null;
             bool applied = await Task.Run(() => _threadController.SubmitLive(handle, action, secondary, payload));
             ThreadCommandStatus.Text = applied ? S("requestSucceeded", "Request submitted") : S("requestFailed", "Request refused");
             if (applied) ThreadInput.Text = string.Empty;

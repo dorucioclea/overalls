@@ -136,6 +136,9 @@ internal static class Program
         bool refused = false;
         try { RustNative.DecodeSessionListing(Encoding.UTF8.GetBytes("{\"machines\":[{\"id\":\"bad\"}]}")); } catch (InvalidDataException) { refused = true; }
         Require(refused, "invalid listing refusal");
+        Guid planId = new("00000000-0000-0000-0000-000000000002");
+        MilaThreadListing threadListing = MilaThreadListing.Decode(Encoding.UTF8.GetBytes("{\"threads\":[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"build\",\"state\":\"open\",\"latest_plan\":{\"id\":\"00000000-0000-0000-0000-000000000002\"}}] }"));
+        Require(threadListing.Threads[0].PlanId == planId, "thread plan identity projection");
         MilaSshKey key = MilaSshKeysController.DecodeListing(Encoding.UTF8.GetBytes($"{{\"keys\":[{{\"id\":\"{keyId:D}\",\"fingerprint\":\"SHA256:test\",\"algorithm\":\"ed25519\",\"current_device\":false}}]}}"))[0];
         Require(key.Id == keyId && key.Algorithm == "ed25519", "SSH key listing projection");
         Require(MilaSshKeysController.Fingerprint("ssh-ed25519 !!!") is null,

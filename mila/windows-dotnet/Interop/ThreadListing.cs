@@ -3,7 +3,7 @@ using System.Text.Json;
 namespace Mila.Windows.Interop;
 
 /// <summary>Bounded, typed thread projection owned by the Rust session boundary.</summary>
-internal sealed record MilaThreadRow(Guid Id, string Title, string State);
+internal sealed record MilaThreadRow(Guid Id, string Title, string State, Guid? PlanId = null);
 internal sealed record MilaThreadListing(IReadOnlyList<MilaThreadRow> Threads, bool HasMore)
 {
     internal const int MaxBytes = 8 * 1024 * 1024;
@@ -25,7 +25,11 @@ internal sealed record MilaThreadListing(IReadOnlyList<MilaThreadRow> Threads, b
                 throw new InvalidDataException("invalid thread id");
             string title = ReadString(row, "title") ?? id.ToString("D");
             string state = ReadString(row, "state") ?? "unknown";
-            threads.Add(new(id, title, state));
+            Guid? planId = null;
+            if (row.TryGetProperty("latest_plan", out JsonElement plan) && plan.ValueKind == JsonValueKind.Object &&
+                plan.TryGetProperty("id", out JsonElement planElement) && planElement.ValueKind == JsonValueKind.String &&
+                Guid.TryParseExact(planElement.GetString(), "D", out Guid parsedPlan)) planId = parsedPlan;
+            threads.Add(new(id, title, state, planId));
         }
         bool hasMore = root.TryGetProperty("has_more", out JsonElement more) && more.ValueKind == JsonValueKind.True;
         return new(threads, hasMore);

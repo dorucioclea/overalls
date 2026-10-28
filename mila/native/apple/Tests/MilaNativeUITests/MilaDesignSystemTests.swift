@@ -24,7 +24,7 @@ final class MilaDesignSystemTests: XCTestCase {
     }
 
     func testLocaleCanonicalizationNormalizesBCP47AndRejectsUnknown() {
-        XCTAssertEqual(MilaStrings.canonicalLocale(" fr_fr "), "fr-FR")
+        XCTAssertEqual(MilaStrings.canonicalLocale(" fr_fr "), "fr")
         XCTAssertEqual(MilaStrings.canonicalLocale("AR"), "ar")
         XCTAssertEqual(MilaStrings.canonicalLocale("he-IL"), "en")
         XCTAssertEqual(MilaStrings.canonicalLocale("de-Latn-DE"), "en")

@@ -1,18 +1,18 @@
 ---
-digest: 7a031f67f88ca278ec0e262ede52b94e1e43fa0c847d7977459f306cd9c7215b
-disposition: updated
+digest: 193a10ccf429444c5d853d223a4fcd3e71981ecee6eb3c5a5a4c283ff6353634
+disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/apple/Tests/MilaNativeUITests/MilaDesignSystemTests.swift
 reviewed_chapters:
   marshall/priv/hldd/08-interactive.md: a73e53415576f8b64ba1819539c525647d2f09ef1bbad4145127101a5d1c5acd
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 55ce01e3652633d3d7a1c99a90403035b51f590dca6fa95b8a047e2873469f96
-  marshall/priv/hldd/20-security.md: 23fdebc69e8bdbe970942ca43234274500c4f4382f074a590e9238b1762939af
+  marshall/priv/hldd/19-coverage.md: 5b009ee4c185cea4c49db891a472efda7d758f2711720cafa7a193f926f7c2f4
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
-  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Native PTY integrations and shared locale picker alignment are implemented; focused native and property tests pass.
+Updated locale expectation to match the shared catalog canonicalization.

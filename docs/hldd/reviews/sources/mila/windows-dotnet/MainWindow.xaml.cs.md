@@ -1,6 +1,6 @@
 ---
-digest: c831045546da5a1219c26498bd49f96d4cc06037dba6d53bc15b17f4ea8b6361
-disposition: updated
+digest: 90a2c1be3a4b3fbf656f27ac8415d3365288734f315f9ce5bf23fecd088516cb
+disposition: no-impact
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/windows-dotnet/MainWindow.xaml.cs
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Windows PTY polling uses the explicit WinUI DispatcherQueueTimer type.
+Removed obsolete Flutter Android CI job while retaining native Android verification; Windows compile fixes preserve documented behavior.

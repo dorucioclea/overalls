@@ -112,18 +112,6 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  android:
-    runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
-    timeout-minutes: 90
-    steps:
-      - uses: namespacelabs/nscloud-checkout-action@v9
-      - uses: ./.github/actions/devenv
-        with:
-          cachix-auth-token: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          install-devenv: "false"
-      - name: Android dev APK (debug key)
-        run: cachix watch-exec overalls -- nix build -L --no-link .#tool-mila-android
-
   apple:
     # Mila's macOS and iOS dev targets and the shared native poke tests.
     runs-on: macos-15

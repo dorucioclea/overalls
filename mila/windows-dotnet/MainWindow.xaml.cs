@@ -34,7 +34,7 @@ public sealed partial class MainWindow : Window
     public MainWindow(string? activation = null)
     {
         InitializeComponent();
-        _terminalPollTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+        _terminalPollTimer = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().CreateTimer();
         _terminalPollTimer.Interval = TimeSpan.FromMilliseconds(100);
         _terminalPollTimer.Tick += (_, _) => PollTerminalOutput();
         _sshKeys = new MilaSshKeysController(LoadSshKeysAsync, RevokeSshKeyAsync);
@@ -465,7 +465,7 @@ public sealed partial class MainWindow : Window
         if (attached)
         {
             _terminalPollTimer?.Start();
-            MilaNativeTerminalBytesResult polled = RustNative.TrySessionTerminalPoll(terminalHandle.Value);
+            MilaNativeTerminalBytesResult polled = RustNative.TrySessionTerminalPoll(terminalHandle!.Value);
             if (polled.Succeeded && polled.Data is { Length: > 0 } bytes)
             {
                 string text = System.Text.Encoding.UTF8.GetString(bytes);

@@ -22,7 +22,7 @@ jobs:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
     timeout-minutes: 60
     steps:
-      - uses: namespacelabs/nscloud-checkout-action@v9
+      - uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9
         with:
           fetch-depth: 0
       - uses: ./.github/actions/devenv
@@ -50,7 +50,7 @@ jobs:
       matrix:
         project: [protocol, marshall, lilly, audi, brady, ziggy, porsche, galileo, enrico, peach, susan]
     steps:
-      - uses: namespacelabs/nscloud-checkout-action@v9
+      - uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9
         with:
           fetch-depth: 0
       # Each service keeps its fetched deps and compiled _build (including the
@@ -93,7 +93,7 @@ jobs:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
     timeout-minutes: 180
     steps:
-      - uses: namespacelabs/nscloud-checkout-action@v9
+      - uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9
         with:
           fetch-depth: 0
       - uses: ./.github/actions/devenv

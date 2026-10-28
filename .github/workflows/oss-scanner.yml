@@ -23,15 +23,15 @@ jobs:
     steps:
       # A plain full clone: the image must contain a self-contained .git, not
       # one that borrows objects from a runner-side mirror.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
 
       - name: Configure Namespace remote builders
-        uses: namespacelabs/nscloud-setup-buildx-action@v0
+        uses: namespacelabs/nscloud-setup-buildx-action@d059ed7184f0bc7c8b27e8810cea153d02bcc6dd # v0
 
       - name: Build and publish
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
           file: .oss-scanner/Dockerfile

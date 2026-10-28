@@ -49,7 +49,7 @@ runs:
         } >> "$GITHUB_OUTPUT"
 
     - name: Mount caches from cache volume
-      uses: namespacelabs/nscloud-cache-action@v1
+      uses: namespacelabs/nscloud-cache-action@1124a6f3ce44e5cf84cc22111530961f4d2a15f9 # v1
       with:
         cache: nix
         path: |
@@ -117,7 +117,7 @@ runs:
     # daemon holds a read lock on the local Nix database for the whole job,
     # which deadlocks devenv when it needs the write lock.
     - name: Configure Cachix
-      uses: cachix/cachix-action@v17
+      uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
       with:
         name: overalls
         extraPullNames: devenv

@@ -233,3 +233,75 @@ impl SshSession {
         Ok(())
     }
 }
+
+/// A bounded interactive PTY channel on an authenticated SSH session.
+/// The channel is deliberately owned by the caller so reads and writes cannot
+/// outlive the certificate-pinned connection that created them.
+pub struct PtySession {
+    reader: russh::ChannelReadHalf<HostPolicy>,
+    writer: russh::ChannelWriteHalf<russh::client::Msg>,
+    timeout: Duration,
+    closed: bool,
+}
+
+impl PtySession {
+    /// Opens a Porsche terminal with a server-side PTY and bounded dimensions.
+    pub async fn open(session: &SshSession, columns: u32, rows: u32) -> Result<Self, SshError> {
+        if !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SshError::Bounds);
+        }
+        let channel = tokio::time::timeout(session.timeout, session.connection.channel_open_session())
+            .await
+            .map_err(|_| SshError::Timeout)??;
+        let (mut reader, mut writer) = channel.split();
+        let result = tokio::time::timeout(session.timeout, async {
+            writer.request_pty(true, "xterm-256color", columns, rows, 0, 0, &[]).await?;
+            writer.exec(true, b"terminal attach --json").await?;
+            Ok::<_, SshError>(())
+        }).await.map_err(|_| SshError::Timeout)?;
+        if let Err(error) = result {
+            let _ = writer.close().await;
+            return Err(error);
+        }
+        Ok(Self { reader, writer, timeout: session.timeout, closed: false })
+    }
+
+    /// Reads one bounded PTY data chunk. Empty means no data or channel close.
+    pub async fn read(&mut self) -> Result<Vec<u8>, SshError> {
+        if self.closed { return Ok(Vec::new()); }
+        let message = tokio::time::timeout(self.timeout, self.reader.wait())
+            .await.map_err(|_| SshError::Timeout)?;
+        match message {
+            Some(ChannelMsg::Data { data }) if data.len() <= MAX_OUTPUT => Ok(data.to_vec()),
+            Some(ChannelMsg::Data { .. }) => Err(SshError::Bounds),
+            Some(ChannelMsg::Close) | None => { self.closed = true; Ok(Vec::new()) }
+            Some(ChannelMsg::Failure) => Err(SshError::Authentication),
+            Some(_) => Ok(Vec::new()),
+        }
+    }
+
+    pub async fn write(&mut self, input: &[u8]) -> Result<(), SshError> {
+        if self.closed || input.len() > MAX_INPUT { return Err(SshError::Bounds); }
+        tokio::time::timeout(self.timeout, self.writer.data(input))
+            .await.map_err(|_| SshError::Timeout)??;
+        Ok(())
+    }
+
+    pub async fn resize(&mut self, columns: u32, rows: u32) -> Result<(), SshError> {
+        if self.closed || !(1..=4096).contains(&columns) || !(1..=512).contains(&rows) {
+            return Err(SshError::Bounds);
+        }
+        tokio::time::timeout(self.timeout, self.writer.window_change(columns, rows, 0, 0))
+            .await.map_err(|_| SshError::Timeout)??;
+        Ok(())
+    }
+
+    pub async fn close(&mut self) -> Result<(), SshError> {
+        if !self.closed {
+            self.closed = true;
+            tokio::time::timeout(self.timeout, self.writer.close())
+                .await.map_err(|_| SshError::Timeout)??;
+        }
+        Ok(())
+    }
+}

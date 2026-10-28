@@ -194,6 +194,54 @@ public final class MilaLiveSession: @unchecked Sendable {
         return try copyListing(current)
     }
 
+    /// Opens an authenticated PTY owned by this session. The returned opaque
+    /// handle is valid only until `terminalKill` or session close.
+    public func terminalAttach(columns: UInt32 = 120, rows: UInt32 = 40) throws -> UInt64 {
+        let current = try validHandle()
+        guard (1...4096).contains(columns), (1...512).contains(rows) else { throw MilaSessionError.invalidInput }
+        var terminal: UInt64 = 0
+        let status = mila_session_terminal_attach(current, columns, rows, &terminal).rawValue
+        guard status == 0, terminal != 0 else { throw Self.error(status) }
+        return terminal
+    }
+
+    /// Polls one bounded PTY output chunk. Empty data means no data or EOF.
+    public func terminalPoll(_ terminal: UInt64) throws -> Data {
+        guard terminal != 0 else { throw MilaSessionError.invalidInput }
+        var required = 0
+        var status = mila_session_terminal_poll(terminal, nil, 0, &required).rawValue
+        guard (status == -3 || (status == 0 && required == 0)), required <= 1_048_576 else { throw Self.error(status) }
+        if required == 0 { return Data() }
+        var bytes = [UInt8](repeating: 0, count: required)
+        status = bytes.withUnsafeMutableBufferPointer { output in
+            mila_session_terminal_poll(terminal, output.baseAddress, output.count, &required).rawValue
+        }
+        guard status == 0 else { throw Self.error(status) }
+        return Data(bytes.prefix(required))
+    }
+
+    /// Writes bounded input bytes to an authenticated PTY.
+    public func terminalInput(_ terminal: UInt64, data: Data) throws {
+        guard terminal != 0, !data.isEmpty, data.count <= 1 << 20 else { throw MilaSessionError.invalidInput }
+        let status = data.withUnsafeBytes { raw in
+            mila_session_terminal_input(terminal, raw.bindMemory(to: UInt8.self).baseAddress, data.count).rawValue
+        }
+        guard status == 0 else { throw Self.error(status) }
+    }
+
+    /// Resizes an authenticated PTY using the same bounds as the Rust transport.
+    public func terminalResize(_ terminal: UInt64, columns: UInt32, rows: UInt32) throws {
+        guard terminal != 0, (1...4096).contains(columns), (1...512).contains(rows) else { throw MilaSessionError.invalidInput }
+        let status = mila_session_terminal_resize(terminal, columns, rows).rawValue
+        guard status == 0 else { throw Self.error(status) }
+    }
+
+    /// Closes a PTY and invalidates its opaque handle.
+    public func terminalKill(_ terminal: UInt64) {
+        guard terminal != 0 else { return }
+        _ = mila_session_terminal_kill(terminal)
+    }
+
     public func close() {
         lock.lock(); defer { lock.unlock() }
         guard handle != 0 else { return }

@@ -136,6 +136,19 @@ interface MilaFfiAdapter {
     fun terminalAttach(from: Long, columns: Int, rows: Int, readWrite: Boolean): Result<Unit> = Result.failure(IllegalStateException("native runtime unavailable"))
     fun terminalInput(length: Int, readWrite: Boolean): Result<Unit> = Result.failure(IllegalStateException("native runtime unavailable"))
     fun terminalResize(columns: Int, rows: Int, readWrite: Boolean): Result<Unit> = Result.failure(IllegalStateException("native runtime unavailable"))
+    /** Opens a real Rust PTY and returns its opaque handle. */
+    fun terminalOpen(columns: Int, rows: Int, readWrite: Boolean): Result<Long> =
+        terminalAttach(0, columns, rows, readWrite).map { 0L }
+    /** Polls bounded output bytes from the Rust-owned PTY. */
+    fun terminalPoll(handle: Long, maxBytes: Int = 64 * 1024): Result<ByteArray> =
+        Result.failure(IllegalStateException("terminal output unavailable"))
+    /** Writes input bytes to the Rust-owned PTY. */
+    fun terminalInputBytes(handle: Long, bytes: ByteArray): Result<Unit> =
+        terminalInput(bytes.size, true)
+    fun terminalResizeHandle(handle: Long, columns: Int, rows: Int): Result<Unit> =
+        terminalResize(columns, rows, true)
+    /** Closes the Rust-owned PTY handle. */
+    fun terminalClose(handle: Long): Result<Unit> = Result.success(Unit)
 }
 
 /** Inputs needed to establish the certificate-authenticated Porsche session. */
@@ -199,6 +212,11 @@ interface MilaRustBindings {
     fun sessionTerminalInput(handle: Long, length: Int, readWrite: Boolean): Int = -12
     /** Resizes a PTY owned by the authenticated session. */
     fun sessionTerminalResize(handle: Long, columns: Int, rows: Int, readWrite: Boolean): Int = -12
+    fun sessionTerminalOpen(handle: Long, columns: Int, rows: Int): Long = 0
+    fun sessionTerminalPoll(handle: Long, maxBytes: Int): ByteArray? = null
+    fun sessionTerminalInputBytes(handle: Long, bytes: ByteArray): Int = -12
+    fun sessionTerminalResizeHandle(handle: Long, columns: Int, rows: Int): Int = -12
+    fun sessionTerminalClose(handle: Long): Int = -12
     /** Revokes one opaque key id using a caller-supplied at-most-once request id. */
     fun sessionSshKeyRevoke(handle: Long, key: String, requestId: String): Int = -12
     fun sessionClose(handle: Long): Int = -12
@@ -276,6 +294,11 @@ internal object MilaRustFfi : MilaRustBindings {
     override fun sessionTerminalAttach(handle: Long, from: Long, columns: Int, rows: Int, readWrite: Boolean): Int = nativeSessionTerminalAttach(handle, from, columns, rows, readWrite)
     override fun sessionTerminalInput(handle: Long, length: Int, readWrite: Boolean): Int = nativeSessionTerminalInput(handle, length, readWrite)
     override fun sessionTerminalResize(handle: Long, columns: Int, rows: Int, readWrite: Boolean): Int = nativeSessionTerminalResize(handle, columns, rows, readWrite)
+    override fun sessionTerminalOpen(handle: Long, columns: Int, rows: Int): Long = nativeSessionTerminalOpen(handle, columns, rows)
+    override fun sessionTerminalPoll(handle: Long, maxBytes: Int): ByteArray? = nativeSessionTerminalPoll(handle, maxBytes)
+    override fun sessionTerminalInputBytes(handle: Long, bytes: ByteArray): Int = nativeSessionTerminalInputBytes(handle, bytes)
+    override fun sessionTerminalResizeHandle(handle: Long, columns: Int, rows: Int): Int = nativeSessionTerminalResizeHandle(handle, columns, rows)
+    override fun sessionTerminalClose(handle: Long): Int = nativeSessionTerminalClose(handle)
 
     @JvmStatic
     external fun nativeAbiVersion(): Int
@@ -320,6 +343,11 @@ internal object MilaRustFfi : MilaRustBindings {
     @JvmStatic external fun nativeSessionTerminalAttach(handle: Long, from: Long, columns: Int, rows: Int, readWrite: Boolean): Int
     @JvmStatic external fun nativeSessionTerminalInput(handle: Long, length: Int, readWrite: Boolean): Int
     @JvmStatic external fun nativeSessionTerminalResize(handle: Long, columns: Int, rows: Int, readWrite: Boolean): Int
+    @JvmStatic external fun nativeSessionTerminalOpen(handle: Long, columns: Int, rows: Int): Long
+    @JvmStatic external fun nativeSessionTerminalPoll(handle: Long, maxBytes: Int): ByteArray?
+    @JvmStatic external fun nativeSessionTerminalInputBytes(handle: Long, input: ByteArray): Int
+    @JvmStatic external fun nativeSessionTerminalResizeHandle(handle: Long, columns: Int, rows: Int): Int
+    @JvmStatic external fun nativeSessionTerminalClose(handle: Long): Int
 }
 
 /** Opaque, one-shot authority for a live Rust session. */
@@ -396,6 +424,27 @@ class MilaSessionHandle internal constructor(
     @Synchronized fun terminalResize(columns: Int, rows: Int, readWrite: Boolean): Result<Unit> = runCatching {
         check(!closed)
         check(bindings.sessionTerminalResize(nativeHandle, columns, rows, readWrite) == 0)
+    }
+    @Synchronized fun terminalOpen(columns: Int, rows: Int): Result<Long> = runCatching {
+        check(!closed)
+        bindings.sessionTerminalOpen(nativeHandle, columns, rows).takeIf { it > 0 }
+            ?: error("terminal attach rejected")
+    }
+    @Synchronized fun terminalPoll(handle: Long, maxBytes: Int): Result<ByteArray> = runCatching {
+        check(!closed); require(handle > 0); require(maxBytes in 1..(64 * 1024))
+        bindings.sessionTerminalPoll(handle, maxBytes) ?: error("terminal poll rejected")
+    }
+    @Synchronized fun terminalInputBytes(handle: Long, bytes: ByteArray): Result<Unit> = runCatching {
+        check(!closed); require(handle > 0); require(bytes.size <= 1 shl 20)
+        check(bindings.sessionTerminalInputBytes(handle, bytes) == 0)
+    }
+    @Synchronized fun terminalResizeHandle(handle: Long, columns: Int, rows: Int): Result<Unit> = runCatching {
+        check(!closed); require(handle > 0)
+        check(bindings.sessionTerminalResizeHandle(handle, columns, rows) == 0)
+    }
+    @Synchronized fun terminalClose(handle: Long): Result<Unit> = runCatching {
+        check(!closed); require(handle > 0)
+        check(bindings.sessionTerminalClose(handle) == 0)
     }
     @Synchronized fun sshKeys(): Result<ByteArray> = runCatching {
         check(!closed)
@@ -517,8 +566,15 @@ class LinkedMilaFfiAdapter(
     override fun terminalAttach(from: Long, columns: Int, rows: Int, readWrite: Boolean): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalAttach(from, columns, rows, readWrite) }
     override fun terminalInput(length: Int, readWrite: Boolean): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalInput(length, readWrite) }
     override fun terminalResize(columns: Int, rows: Int, readWrite: Boolean): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalResize(columns, rows, readWrite) }
+    override fun terminalOpen(columns: Int, rows: Int, readWrite: Boolean): Result<Long> = authenticatedValue { authenticatedSession!!.terminalOpen(columns, rows) }
+    override fun terminalPoll(handle: Long, maxBytes: Int): Result<ByteArray> = authenticatedValue { authenticatedSession!!.terminalPoll(handle, maxBytes) }
+    override fun terminalInputBytes(handle: Long, bytes: ByteArray): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalInputBytes(handle, bytes) }
+    override fun terminalResizeHandle(handle: Long, columns: Int, rows: Int): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalResizeHandle(handle, columns, rows) }
+    override fun terminalClose(handle: Long): Result<Unit> = authenticatedTerminal { authenticatedSession!!.terminalClose(handle) }
 
     private fun authenticatedTerminal(operation: () -> Result<Unit>): Result<Unit> =
+        if (authenticatedSession == null) Result.failure(IllegalStateException("authenticated session unavailable")) else operation()
+    private fun <T> authenticatedValue(operation: () -> Result<T>): Result<T> =
         if (authenticatedSession == null) Result.failure(IllegalStateException("authenticated session unavailable")) else operation()
 
     private fun status(value: Int): Result<Unit> = if (value == 0) Result.success(Unit) else Result.failure(IllegalArgumentException("terminal operation rejected"))

@@ -98,6 +98,16 @@ int32_t mila_session_listing(uint64_t handle, uint8_t *output, size_t capacity,
 int32_t mila_session_whoami(uint64_t handle, uint8_t *output, size_t capacity,
                              size_t *written);
 int32_t mila_session_close(uint64_t handle);
+/* Authenticated PTY lifecycle. Buffers are caller-owned and bounded by Rust. */
+MilaFfiStatus mila_session_terminal_attach(uint64_t session_handle, uint32_t columns,
+                                           uint32_t rows, uint64_t *out_terminal_handle);
+MilaFfiStatus mila_session_terminal_poll(uint64_t terminal_handle, uint8_t *out,
+                                          size_t capacity, size_t *written);
+MilaFfiStatus mila_session_terminal_input(uint64_t terminal_handle, const uint8_t *input,
+                                          size_t input_len);
+MilaFfiStatus mila_session_terminal_resize(uint64_t terminal_handle, uint32_t columns,
+                                            uint32_t rows);
+MilaFfiStatus mila_session_terminal_kill(uint64_t terminal_handle);
 
 #ifdef __cplusplus
 }

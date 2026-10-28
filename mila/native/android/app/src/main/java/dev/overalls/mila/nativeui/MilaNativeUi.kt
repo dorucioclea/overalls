@@ -407,13 +407,45 @@ private fun MilaSshKeysPanel(adapter: MilaFfiAdapter, signedIn: Boolean) {
 
 @Composable private fun TerminalControls(adapter: MilaFfiAdapter) {
     var result by remember { mutableStateOf("Terminal idle") }
+    var terminalHandle by remember { mutableStateOf<Long?>(null) }
+    var input by remember { mutableStateOf("") }
+    var output by remember { mutableStateOf("") }
+    val renderer = remember { MilaTerminalRenderer() }
+    LaunchedEffect(terminalHandle) {
+        val handle = terminalHandle ?: return@LaunchedEffect
+        while (terminalHandle == handle) {
+            adapter.terminalPoll(handle).onSuccess { bytes ->
+                if (bytes.isNotEmpty()) {
+                    renderer.append(bytes)
+                    output = renderer.text()
+                }
+            }
+            delay(100)
+        }
+    }
+    DisposableEffect(Unit) { onDispose { terminalHandle?.let { adapter.terminalClose(it) } } }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(MilaStrings.text(MilaMessage.Terminal), style = MaterialTheme.typography.titleMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button({ result = if (adapter.terminalAttach(0, 80, 24, true).isSuccess) "Attached" else "Attach rejected" }) { Text(MilaStrings.text(MilaMessage.Attach)) }
-            Button({ result = if (adapter.terminalInput(0, true).isSuccess) "Input ready" else "Input rejected" }) { Text(MilaStrings.text(MilaMessage.Input)) }
-            Button({ result = if (adapter.terminalResize(80, 24, true).isSuccess) "Resized" else "Resize rejected" }) { Text(MilaStrings.text(MilaMessage.Resize)) }
+            Button({
+                terminalHandle?.let { adapter.terminalClose(it) }
+                terminalHandle = adapter.terminalOpen(80, 24, true).getOrNull()
+                result = if (terminalHandle != null) "Attached" else "Attach rejected"
+            }) { Text(MilaStrings.text(MilaMessage.Attach)) }
+            Button({
+                val handle = terminalHandle
+                result = if (handle != null && adapter.terminalInputBytes(handle, input.toByteArray(Charsets.UTF_8)).isSuccess) {
+                    input = ""; "Input sent"
+                } else "Input rejected"
+            }, enabled = terminalHandle != null && input.isNotEmpty()) { Text(MilaStrings.text(MilaMessage.Input)) }
+            Button({
+                val handle = terminalHandle
+                result = if (handle != null && adapter.terminalResizeHandle(handle, 80, 24).isSuccess) "Resized" else "Resize rejected"
+            }, enabled = terminalHandle != null) { Text(MilaStrings.text(MilaMessage.Resize)) }
+            Button({ terminalHandle?.let { adapter.terminalClose(it) }; terminalHandle = null; result = "Closed" }, enabled = terminalHandle != null) { Text("Close") }
         }
+        OutlinedTextField(value = input, onValueChange = { if (boundedTerminalInput(it)) input = it }, label = { Text("Input") }, enabled = terminalHandle != null)
+        Text(output, style = MaterialTheme.typography.bodySmall)
         Text(result, style = MaterialTheme.typography.labelSmall)
     }
 }

@@ -226,7 +226,9 @@ private struct MachineDetailView: View {
                 Text(mutationStatus).font(.caption).foregroundStyle(.secondary)
                 .onAppear { sharing.setSession(signedIn: signedIn, machine: machine) }
             } else { ContentUnavailableView(MilaStrings.text(.machineUnavailable), systemImage: "questionmark") }
-        }.padding().sheet(isPresented: $showTerminal) { MilaTerminalView() }
+        }.padding().sheet(isPresented: $showTerminal) {
+            MilaTerminalView(transport: (adapter as? LinkedMilaFFIAdapter)?.terminalTransport() ?? MilaNoopTerminalTransport())
+        }
         #if canImport(WebKit)
         .sheet(isPresented: $showWeb) { if let endpoint = webControls.endpoint { MilaWebView(endpoint: endpoint) } }
         #endif
@@ -599,8 +601,11 @@ public struct MilaSSHKeysView: View {
 
 
 private struct MilaTerminalView: View {
-    @StateObject private var terminal = MilaTerminalController()
+    @StateObject private var terminal: MilaTerminalController
     @State private var command = ""
+    init(transport: any MilaTerminalTransport) {
+        _terminal = StateObject(wrappedValue: MilaTerminalController(transport: transport))
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(MilaStrings.text(.terminal)).font(.title2)

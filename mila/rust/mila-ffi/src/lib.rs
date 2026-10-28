@@ -1446,6 +1446,113 @@ fn terminal_status(status: MilaFfiStatus) -> jni::sys::jint {
     status as jni::sys::jint
 }
 
+/// Open an authenticated PTY and return its opaque handle.  Terminal bytes
+/// remain in Rust; Android receives only bounded output chunks through the
+/// poll call below.
+#[no_mangle]
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalOpen(
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    handle: jni::sys::jlong,
+    columns: jni::sys::jint,
+    rows: jni::sys::jint,
+) -> jni::sys::jlong {
+    if handle <= 0 || columns <= 0 || rows <= 0 {
+        return 0;
+    }
+    let mut terminal = 0_u64;
+    let status = session::mila_session_terminal_attach(
+        handle as u64,
+        columns as u32,
+        rows as u32,
+        &mut terminal,
+    );
+    if status == session::SessionStatus::Ok {
+        terminal as jni::sys::jlong
+    } else {
+        0
+    }
+}
+
+/// Poll one bounded PTY output chunk.  A null result means the call failed;
+/// an empty array is a valid no-data/EOF result.
+#[no_mangle]
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalPoll(
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    terminal: jni::sys::jlong,
+    capacity: jni::sys::jint,
+) -> jni::sys::jbyteArray {
+    if terminal <= 0 || !(1..=65_536).contains(&capacity) {
+        return std::ptr::null_mut();
+    }
+    let mut output = vec![0_u8; capacity as usize];
+    let mut written = 0_usize;
+    let status = unsafe {
+        session::mila_session_terminal_poll(
+            terminal as u64,
+            output.as_mut_ptr(),
+            output.len(),
+            &mut written,
+        )
+    };
+    if status != session::SessionStatus::Ok || written > output.len() {
+        return std::ptr::null_mut();
+    }
+    match env.byte_array_from_slice(&output[..written]) {
+        Ok(array) => array.into_raw(),
+        Err(_) => std::ptr::null_mut(),
+    }
+}
+
+/// Write bounded UTF-8/input bytes to an authenticated PTY.
+#[no_mangle]
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalInputBytes(
+    mut env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    terminal: jni::sys::jlong,
+    input: jni::objects::JByteArray<'_>,
+) -> jni::sys::jint {
+    if terminal <= 0 {
+        return session::SessionStatus::Invalid as jni::sys::jint;
+    }
+    let bytes = match env.convert_byte_array(&input) {
+        Ok(value) => value,
+        Err(_) => return session::SessionStatus::Invalid as jni::sys::jint,
+    };
+    let status = unsafe {
+        session::mila_session_terminal_input(terminal as u64, bytes.as_ptr(), bytes.len())
+    };
+    status as jni::sys::jint
+}
+
+#[no_mangle]
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalResizeHandle(
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    terminal: jni::sys::jlong,
+    columns: jni::sys::jint,
+    rows: jni::sys::jint,
+) -> jni::sys::jint {
+    if terminal <= 0 || columns <= 0 || rows <= 0 {
+        return session::SessionStatus::Invalid as jni::sys::jint;
+    }
+    session::mila_session_terminal_resize(terminal as u64, columns as u32, rows as u32)
+        as jni::sys::jint
+}
+
+#[no_mangle]
+pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeSessionTerminalClose(
+    _env: jni::JNIEnv<'_>,
+    _class: jni::objects::JClass<'_>,
+    terminal: jni::sys::jlong,
+) -> jni::sys::jint {
+    if terminal <= 0 {
+        return session::SessionStatus::Invalid as jni::sys::jint;
+    }
+    session::mila_session_terminal_kill(terminal as u64) as jni::sys::jint
+}
+
 #[no_mangle]
 pub extern "system" fn Java_dev_overalls_mila_nativeui_MilaRustFfi_nativeTerminalAttach(
     _env: jni::JNIEnv<'_>,

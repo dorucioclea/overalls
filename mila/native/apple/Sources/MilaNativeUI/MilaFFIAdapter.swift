@@ -256,6 +256,13 @@ public struct LinkedMilaFFIAdapter: MilaFFIAdapter, Sendable {
         liveSession = try MilaLiveSession(trust: trust, host: host, port: port, signer: signer)
     }
 
+    /// Returns the authenticated PTY transport for native terminal presentation.
+    /// Unsigned adapters deliberately return nil so a terminal cannot open.
+    public func terminalTransport() -> (any MilaTerminalTransport)? {
+        guard let liveSession else { return nil }
+        return MilaAuthenticatedTerminalTransport(session: liveSession)
+    }
+
     public func call(_ request: MilaFFIRequest) async throws -> MilaFFIResponse {
         guard abiCompatible() else { throw MilaFFIError.incompatibleABI }
         // Keep the generic request surface useful without allowing arbitrary command

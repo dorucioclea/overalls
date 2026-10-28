@@ -22,7 +22,7 @@ public sealed partial class MainWindow : Window
     private readonly MilaSessionConnection _session = new();
     private readonly MilaTerminalSession _terminal = new();
     private long _terminalGeneration;
-    private DispatcherQueueTimer? _terminalPollTimer;
+    private Microsoft.UI.Dispatching.DispatcherQueueTimer? _terminalPollTimer;
     private ulong _webRevision;
     private Uri? _webUrl;
     private bool _webNavigationBound;

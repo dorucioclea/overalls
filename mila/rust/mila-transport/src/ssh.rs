@@ -238,7 +238,7 @@ impl SshSession {
 /// The channel is deliberately owned by the caller so reads and writes cannot
 /// outlive the certificate-pinned connection that created them.
 pub struct PtySession {
-    reader: russh::ChannelReadHalf<HostPolicy>,
+    reader: russh::ChannelReadHalf,
     writer: russh::ChannelWriteHalf<russh::client::Msg>,
     timeout: Duration,
     closed: bool,

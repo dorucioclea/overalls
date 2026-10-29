@@ -443,7 +443,7 @@ assert lib.assertMsg (vscodeWeb == null || minimumMemoryBytes >= 2147483648) "Br
 # printk.time=1, quiet, loglevel=3 and systemd.show_status=error.
 pkgs.runCommand imageName {
   nativeBuildInputs = [ pkgs.jq ];
-  passthru = { inherit rootfs initrd ubuntuDevelopmentTools bootKernel workspaceSourceEnabled; editorEnabled = vscodeWeb != null; };
+  passthru = { inherit rootfs initrd nixConfig ubuntuDevelopmentTools bootKernel workspaceSourceEnabled; editorEnabled = vscodeWeb != null; };
 } ''
   mkdir -p $out
   ln -s ${bootKernel}/vmlinux $out/kernel

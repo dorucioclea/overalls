@@ -64,7 +64,10 @@ assert lib.hasInfix "version:4" (plain privateImage.buildCommand);
 # guest-quiet-serial-console and ubuntu-prebuilt-platform-trust (ADR-0154).
 assert lib.hasInfix "printk.time=1 quiet loglevel=3 systemd.show_status=error" (plain privateImage.buildCommand);
 assert lib.hasInfix "overalls-platform/overalls-0.crt" rootfsScript;
-assert lib.hasInfix "experimental-features = nix-command flakes" rootfsScript;
+assert lib.hasInfix "experimental-features = nix-command flakes" (builtins.readFile privateImage.nixConfig);
+assert lib.hasInfix
+  (plain "install -D -m 0644 ${privateImage.nixConfig} \"$root/etc/nix/nix.conf\"")
+  rootfsScript;
 assert lib.hasInfix "platform_digest.py" rootfsScript;
 assert lib.hasInfix "lilly-boot-report" rootfsScript;
 assert lib.hasInfix normalizeNixDb rootfsScript;
@@ -90,7 +93,7 @@ assert pkgs.lib.getName packages.ubuntuGuest.ubuntuDevelopmentTools
 # trust, link both packaged clients from its registered development closure,
 # and retain that closure's GC root. Package presence alone does not establish
 # inference compatibility or native guest execution.
-assert lib.hasInfix "for command in devenv codex claude; do" rootfsScript;
+assert lib.hasInfix "for command in devenv codex claude gh git-lfs; do" rootfsScript;
 assert lib.hasInfix
   (plain "ln -s ${privateImage.ubuntuDevelopmentTools}/bin/$command \"$root/usr/local/bin/$command\"")
   rootfsScript;

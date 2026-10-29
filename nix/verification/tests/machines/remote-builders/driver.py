@@ -36,7 +36,7 @@ with subtest("no build delegation: every derivation executes locally on both pee
         assert len(paths) == 6
         for path in paths:
             assert node.succeed(f"cat {path}/host").strip() == node.name, path
-        node.succeed("test $(nix config show distributedBuilds) = false")
+        node.succeed('test -z "$(nix config show builders)"')
         node.fail("test -e /etc/nix/machines")
 
 with subtest("reciprocal unsigned peer substitution avoids rebuilding"):

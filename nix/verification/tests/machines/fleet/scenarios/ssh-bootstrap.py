@@ -62,8 +62,7 @@ with subtest("customer clone boot tolerates roster outage and preserves guest da
             timeout=120,
         )
         # If the destination's same-pool import starts before the source relaunch,
-        # readiness is deferred until that import is adopted (documented in HLDD
-        # 06-workflows), so allow the clone's own budget, not a fixed minute.
+        # readiness is deferred until that import is adopted, so allow the clone's own budget, not a fixed minute.
         host_for(source_vm).wait_until_succeeds(
             f"systemctl is-active --quiet lilly-vm-{source_vm['placement_id']}.service",
             timeout=600,

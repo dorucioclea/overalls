@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:74
+#: lib/marshall_web/live/admin/redaction_live.ex:88
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "Che giấu luồng"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:75
+#: lib/marshall_web/live/admin/redaction_live.ex:89
 #, elixir-autogen, elixir-format
 msgid "Scrub inactive threads"
 msgstr "Dọn dẹp các luồng không hoạt động"
@@ -34,27 +34,27 @@ msgstr "Đã xếp hàng dọn dẹp luồng không hoạt động."
 msgid "The scrub could not be queued."
 msgstr "Không thể xếp hàng việc dọn dẹp."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:77
+#: lib/marshall_web/live/admin/redaction_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Text in prompts, model output, and tool results is scrubbed in bounded background batches. Attachments are not inspected."
 msgstr "Văn bản trong lời nhắc, đầu ra của mô hình và kết quả công cụ được dọn dẹp theo các lô nền có giới hạn. Tệp đính kèm không được kiểm tra."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:78
+#: lib/marshall_web/live/admin/redaction_live.ex:100
 #, elixir-autogen, elixir-format
 msgid "Redaction history is unavailable."
 msgstr "Lịch sử che giấu không khả dụng."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Processed %{count}"
 msgstr "Đã xử lý: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Changed %{count}"
 msgstr "Đã thay đổi: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:83
+#: lib/marshall_web/live/admin/redaction_live.ex:109
 #, elixir-autogen, elixir-format
 msgid "Profile %{digest}"
 msgstr "Hồ sơ %{digest}"
@@ -1055,27 +1055,27 @@ msgstr "Công việc được cung cấp"
 msgid "Workflow ID"
 msgstr "ID quy trình"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:87
+#: lib/marshall_web/live/admin/redaction_live.ex:125
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "Hủy"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:85
+#: lib/marshall_web/live/admin/redaction_live.ex:113
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "Tạm dừng"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:33
+#: lib/marshall_web/live/admin/redaction_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Redaction run updated."
 msgstr "Đã cập nhật lượt chạy che giấu."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:86
+#: lib/marshall_web/live/admin/redaction_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "Tiếp tục"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:35
+#: lib/marshall_web/live/admin/redaction_live.ex:48
 #, elixir-autogen, elixir-format
 msgid "The redaction run could not be updated."
 msgstr "Không thể cập nhật lượt chạy che giấu."

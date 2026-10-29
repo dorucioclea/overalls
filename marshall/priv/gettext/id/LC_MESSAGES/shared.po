@@ -19,41 +19,31 @@ msgstr ""
 msgid "%{value1} local time · %{value2}"
 msgstr "waktu lokal %{value1} · %{value2}"
 
-#: lib/marshall_web/live/hldd_live.ex:31
-#, elixir-autogen, elixir-format
-msgid "%{value1} · HLDD"
-msgstr "%{value1} · HLDD"
-
 #: lib/marshall_web/components/layouts/root.html.heex:41
 #, elixir-autogen, elixir-format
 msgid "A little space for your next big idea."
 msgstr "Sedikit ruang untuk ide besar Anda berikutnya."
 
-#: lib/marshall_web/live/hldd_live.ex:71
-#, elixir-autogen, elixir-format
-msgid "A reference for the system, its configuration, and its operation."
-msgstr "Referensi untuk sistem, konfigurasinya, dan operasinya."
-
-#: lib/marshall_web/components/layouts.ex:337
-#: lib/marshall_web/components/layouts.ex:447
+#: lib/marshall_web/components/layouts.ex:333
+#: lib/marshall_web/components/layouts.ex:433
 #, elixir-autogen, elixir-format
 msgid "AI usage"
 msgstr "Penggunaan AI"
 
-#: lib/marshall_web/components/layouts.ex:416
-#: lib/marshall_web/components/layouts.ex:466
+#: lib/marshall_web/components/layouts.ex:402
+#: lib/marshall_web/components/layouts.ex:452
 #, elixir-autogen, elixir-format
 msgid "Access authority"
 msgstr "Otoritas akses"
 
-#: lib/marshall_web/components/layouts.ex:241
-#: lib/marshall_web/components/layouts.ex:329
-#: lib/marshall_web/components/layouts.ex:453
+#: lib/marshall_web/components/layouts.ex:237
+#: lib/marshall_web/components/layouts.ex:325
+#: lib/marshall_web/components/layouts.ex:439
 #, elixir-autogen, elixir-format
 msgid "Account"
 msgstr "Akun"
 
-#: lib/marshall_web/components/layouts.ex:404
+#: lib/marshall_web/components/layouts.ex:390
 #, elixir-autogen, elixir-format
 msgid "Accounting"
 msgstr "Akuntansi"
@@ -63,21 +53,16 @@ msgstr "Akuntansi"
 msgid "Actions"
 msgstr "Tindakan"
 
-#: lib/marshall_web/live/hldd_live.ex:113
-#, elixir-autogen, elixir-format
-msgid "Adjacent sections"
-msgstr "Bagian bersebelahan"
-
-#: lib/marshall_web/components/layouts.ex:296
-#: lib/marshall_web/components/layouts.ex:413
+#: lib/marshall_web/components/layouts.ex:292
+#: lib/marshall_web/components/layouts.ex:399
 #, elixir-autogen, elixir-format
 msgid "Administration"
 msgstr "Administrasi"
 
-#: lib/marshall_web/components/layouts.ex:245
-#: lib/marshall_web/components/layouts.ex:513
-#: lib/marshall_web/components/layouts.ex:514
-#: lib/marshall_web/controllers/docs_html/show.html.heex:71
+#: lib/marshall_web/components/layouts.ex:241
+#: lib/marshall_web/components/layouts.ex:499
+#: lib/marshall_web/components/layouts.ex:500
+#: lib/marshall_web/controllers/docs_html/show.html.heex:58
 #, elixir-autogen, elixir-format
 msgid "Appearance"
 msgstr "Tampilan"
@@ -88,8 +73,8 @@ msgstr "Tampilan"
 msgid "Attempting to reconnect"
 msgstr "Mencoba menyambungkan kembali"
 
-#: lib/marshall_web/components/layouts.ex:418
-#: lib/marshall_web/components/layouts.ex:467
+#: lib/marshall_web/components/layouts.ex:404
+#: lib/marshall_web/components/layouts.ex:453
 #, elixir-autogen, elixir-format
 msgid "Audit"
 msgstr "Audit aktivitas"
@@ -99,13 +84,13 @@ msgstr "Audit aktivitas"
 msgid "Breadcrumb"
 msgstr "Jejak navigasi"
 
-#: lib/marshall_web/components/layouts.ex:233
+#: lib/marshall_web/components/layouts.ex:229
 #, elixir-autogen, elixir-format
 msgid "Browser"
 msgstr "Peramban"
 
-#: lib/marshall_web/components/layouts.ex:236
-#: lib/marshall_web/components/layouts.ex:342
+#: lib/marshall_web/components/layouts.ex:232
+#: lib/marshall_web/components/layouts.ex:338
 #, elixir-autogen, elixir-format
 msgid "Browser extension"
 msgstr "Ekstensi peramban"
@@ -120,8 +105,8 @@ msgstr "Batalkan"
 msgid "Cancel verification"
 msgstr "Batalkan verifikasi"
 
-#: lib/marshall_web/components/layouts.ex:264
-#: lib/marshall_web/components/layouts.ex:278
+#: lib/marshall_web/components/layouts.ex:260
+#: lib/marshall_web/components/layouts.ex:274
 #, elixir-autogen, elixir-format
 msgid "Close navigation"
 msgstr "Tutup navigasi"
@@ -131,37 +116,32 @@ msgstr "Tutup navigasi"
 msgid "Confirm administrative change"
 msgstr "Konfirmasikan perubahan administratif"
 
-#: lib/marshall_web/live/hldd_live.ex:87
-#, elixir-autogen, elixir-format
-msgid "Contents"
-msgstr "Daftar isi"
-
-#: lib/marshall_web/components/layouts.ex:287
+#: lib/marshall_web/components/layouts.ex:283
 #, elixir-autogen, elixir-format
 msgid "Control room"
 msgstr "Ruang kontrol"
 
-#: lib/marshall_web/components/layouts.ex:445
+#: lib/marshall_web/components/layouts.ex:431
 #, elixir-autogen, elixir-format
 msgid "Control room · %{section}"
 msgstr "Ruang kontrol · %{section}"
 
-#: lib/marshall_web/components/layouts.ex:442
+#: lib/marshall_web/components/layouts.ex:428
 #, elixir-autogen, elixir-format
 msgid "Control room · AI usage"
 msgstr "Ruang kontrol · Penggunaan AI"
 
-#: lib/marshall_web/components/layouts.ex:517
+#: lib/marshall_web/components/layouts.ex:503
 #, elixir-autogen, elixir-format
 msgid "Dark"
 msgstr "Gelap"
 
-#: lib/marshall_web/components/layouts.ex:221
+#: lib/marshall_web/components/layouts.ex:217
 #, elixir-autogen, elixir-format
 msgid "Docs"
 msgstr "Dokumen"
 
-#: lib/marshall_web/components/layouts.ex:356
+#: lib/marshall_web/components/layouts.ex:352
 #, elixir-autogen, elixir-format
 msgid "Docs ↗"
 msgstr "Dokumen ↗"
@@ -171,116 +151,99 @@ msgstr "Dokumen ↗"
 msgid "Documentation"
 msgstr "Dokumentasi"
 
-#: lib/marshall_web/components/layouts.ex:223
-#: lib/marshall_web/components/layouts.ex:355
-#: lib/marshall_web/controllers/docs_html/show.html.heex:45
+#: lib/marshall_web/components/layouts.ex:219
+#: lib/marshall_web/components/layouts.ex:351
+#: lib/marshall_web/controllers/docs_html/show.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Field notes"
 msgstr "Catatan lapangan"
 
-#: lib/marshall_web/components/layouts.ex:405
+#: lib/marshall_web/components/layouts.ex:391
 #, elixir-autogen, elixir-format
 msgid "Fleet AI usage"
 msgstr "Penggunaan AI armada"
 
-#: lib/marshall_web/components/layouts.ex:417
+#: lib/marshall_web/components/layouts.ex:403
 #, elixir-autogen, elixir-format
 msgid "Git mirrors"
 msgstr "Cermin Git"
 
-#: lib/marshall_web/components/layouts.ex:435
-#: lib/marshall_web/components/layouts.ex:459
+#: lib/marshall_web/components/layouts.ex:421
+#: lib/marshall_web/components/layouts.ex:445
 #, elixir-autogen, elixir-format
 msgid "Git repositories"
 msgstr "Repositori Git"
 
-#: lib/marshall_web/components/layouts.ex:371
+#: lib/marshall_web/components/layouts.ex:357
 #, elixir-autogen, elixir-format
 msgid "GitHub ↗"
 msgstr "GitHub ↗"
-
-#: lib/marshall_web/components/layouts.ex:364
-#: lib/marshall_web/live/hldd_live.ex:45
-#, elixir-autogen, elixir-format
-msgid "HLDD"
-msgstr "HLDD"
-
-#: lib/marshall_web/live/hldd_live.ex:68
-#, elixir-autogen, elixir-format
-msgid "HLDD · Design and operations"
-msgstr "HLDD · Desain dan operasi"
-
-#: lib/marshall_web/live/hldd_live.ex:74
-#: lib/marshall_web/live/hldd_live.ex:88
-#, elixir-autogen, elixir-format
-msgid "Handbook contents"
-msgstr "Daftar isi panduan"
 
 #: lib/marshall_web/components/layouts.ex:73
 #, elixir-autogen, elixir-format
 msgid "Home"
 msgstr "Beranda"
 
-#: lib/marshall_web/components/layouts.ex:434
-#: lib/marshall_web/components/layouts.ex:458
+#: lib/marshall_web/components/layouts.ex:420
+#: lib/marshall_web/components/layouts.ex:444
 #, elixir-autogen, elixir-format
 msgid "Integrations"
 msgstr "Integrasi"
 
-#: lib/marshall_web/components/layouts.ex:410
-#: lib/marshall_web/components/layouts.ex:463
+#: lib/marshall_web/components/layouts.ex:396
+#: lib/marshall_web/components/layouts.ex:449
 #, elixir-autogen, elixir-format
 msgid "Jobs"
 msgstr "Tugas"
 
-#: lib/marshall_web/controllers/docs_html/show.html.heex:58
+#: lib/marshall_web/controllers/docs_html/show.html.heex:45
 #, elixir-autogen, elixir-format
 msgid "LLM index"
 msgstr "Indeks LLM"
 
-#: lib/marshall_web/components/layouts.ex:516
+#: lib/marshall_web/components/layouts.ex:502
 #, elixir-autogen, elixir-format
 msgid "Light"
 msgstr "Terang"
 
-#: lib/marshall_web/controllers/docs_html/show.html.heex:56
+#: lib/marshall_web/controllers/docs_html/show.html.heex:43
 #, elixir-autogen, elixir-format
 msgid "Machine readable"
 msgstr "Dapat dibaca mesin"
 
-#: lib/marshall_web/components/layouts.ex:433
-#: lib/marshall_web/components/layouts.ex:457
+#: lib/marshall_web/components/layouts.ex:419
+#: lib/marshall_web/components/layouts.ex:443
 #, elixir-autogen, elixir-format
 msgid "Machines"
 msgstr "Mesin"
 
-#: lib/marshall_web/components/layouts.ex:281
+#: lib/marshall_web/components/layouts.ex:277
 #, elixir-autogen, elixir-format
 msgid "Made to get dirty"
 msgstr "Dibuat untuk bekerja keras"
 
-#: lib/marshall_web/components/layouts.ex:297
+#: lib/marshall_web/components/layouts.ex:293
 #, elixir-autogen, elixir-format
 msgid "Main"
 msgstr "Utama"
 
-#: lib/marshall_web/components/layouts.ex:381
+#: lib/marshall_web/components/layouts.ex:367
 #, elixir-autogen, elixir-format
 msgid "Make yourself comfy"
 msgstr "Buat diri Anda nyaman"
 
-#: lib/marshall_web/controllers/docs_html/show.html.heex:63
+#: lib/marshall_web/controllers/docs_html/show.html.heex:50
 #, elixir-autogen, elixir-format
 msgid "Markdown for this page"
 msgstr "Markdown untuk halaman ini"
 
-#: lib/marshall_web/components/layouts.ex:259
+#: lib/marshall_web/components/layouts.ex:255
 #, elixir-autogen, elixir-format
 msgid "Menu"
 msgstr "Pilihan"
 
-#: lib/marshall_web/components/layouts.ex:408
-#: lib/marshall_web/components/layouts.ex:461
+#: lib/marshall_web/components/layouts.ex:394
+#: lib/marshall_web/components/layouts.ex:447
 #, elixir-autogen, elixir-format
 msgid "Node maintenance"
 msgstr "Pemeliharaan node"
@@ -290,47 +253,39 @@ msgstr "Pemeliharaan node"
 msgid "Open Overalls"
 msgstr "Buka Overalls"
 
-#: lib/marshall_web/components/layouts.ex:406
+#: lib/marshall_web/components/layouts.ex:392
 #, elixir-autogen, elixir-format
 msgid "Operations"
 msgstr "Operasi"
 
-#: lib/marshall_web/controllers/docs_html/show.html.heex:32
-#: lib/marshall_web/live/hldd_live.ex:69
-#, elixir-autogen, elixir-format
-msgid "Overalls"
-msgstr "Overalls"
-
-#: lib/marshall_web/components/layouts.ex:430
-#: lib/marshall_web/components/layouts.ex:454
+#: lib/marshall_web/components/layouts.ex:416
+#: lib/marshall_web/components/layouts.ex:440
 #, elixir-autogen, elixir-format
 msgid "Overview"
 msgstr "Ringkasan"
 
-#: lib/marshall_web/components/layouts.ex:411
-#: lib/marshall_web/components/layouts.ex:464
+#: lib/marshall_web/components/layouts.ex:397
+#: lib/marshall_web/components/layouts.ex:450
 #, elixir-autogen, elixir-format
 msgid "Platform status"
 msgstr "Status platform"
 
-#: lib/marshall_web/components/layouts.ex:352
-#: lib/marshall_web/components/layouts.ex:365
+#: lib/marshall_web/components/layouts.ex:348
 #, elixir-autogen, elixir-format
 msgid "Reference"
 msgstr "Referensi"
 
-#: lib/marshall_web/components/layouts.ex:243
-#: lib/marshall_web/controllers/docs_html/show.html.heex:34
+#: lib/marshall_web/components/layouts.ex:239
 #, elixir-autogen, elixir-format
 msgid "Sign in"
 msgstr "Masuk"
 
-#: lib/marshall_web/components/layouts.ex:393
+#: lib/marshall_web/components/layouts.ex:379
 #, elixir-autogen, elixir-format
 msgid "Sign out"
 msgstr "Keluar"
 
-#: lib/marshall_web/components/layouts.ex:214
+#: lib/marshall_web/components/layouts.ex:210
 #: lib/marshall_web/components/layouts/root.html.heex:38
 #: lib/marshall_web/controllers/docs_html/show.html.heex:26
 #, elixir-autogen, elixir-format
@@ -342,24 +297,23 @@ msgstr "Lewati ke konten"
 msgid "Something went wrong!"
 msgstr "Terjadi kesalahan!"
 
-#: lib/marshall_web/components/layouts.ex:227
+#: lib/marshall_web/components/layouts.ex:223
 #, elixir-autogen, elixir-format
 msgid "Source"
 msgstr "Sumber"
 
-#: lib/marshall_web/components/layouts.ex:370
-#: lib/marshall_web/controllers/docs_html/show.html.heex:36
+#: lib/marshall_web/components/layouts.ex:356
 #, elixir-autogen, elixir-format
 msgid "Source code"
 msgstr "Kode sumber"
 
-#: lib/marshall_web/components/layouts.ex:515
+#: lib/marshall_web/components/layouts.ex:501
 #, elixir-autogen, elixir-format
 msgid "System"
 msgstr "Sistem"
 
-#: lib/marshall_web/components/layouts.ex:436
-#: lib/marshall_web/components/layouts.ex:460
+#: lib/marshall_web/components/layouts.ex:422
+#: lib/marshall_web/components/layouts.ex:446
 #, elixir-autogen, elixir-format
 msgid "Teams"
 msgstr "Tim"
@@ -369,19 +323,19 @@ msgstr "Tim"
 msgid "This change needs a fresh passkey verification. Your verification lasts 15 minutes."
 msgstr "Perubahan ini memerlukan verifikasi kunci sandi baru. Verifikasi Anda berlaku selama 15 menit."
 
-#: lib/marshall_web/components/layouts.ex:431
-#: lib/marshall_web/components/layouts.ex:455
+#: lib/marshall_web/components/layouts.ex:417
+#: lib/marshall_web/components/layouts.ex:441
 #, elixir-autogen, elixir-format
 msgid "Threads"
 msgstr "Utas"
 
-#: lib/marshall_web/components/layouts.ex:388
+#: lib/marshall_web/components/layouts.ex:374
 #, elixir-autogen, elixir-format
 msgid "Time zone"
 msgstr "Zona waktu"
 
-#: lib/marshall_web/components/layouts.ex:415
-#: lib/marshall_web/components/layouts.ex:465
+#: lib/marshall_web/components/layouts.ex:401
+#: lib/marshall_web/components/layouts.ex:451
 #, elixir-autogen, elixir-format
 msgid "Users"
 msgstr "Pengguna"
@@ -401,34 +355,34 @@ msgstr "Kami tidak dapat menemukan internet"
 msgid "Welcome to Overalls. Make yourself at home."
 msgstr "Selamat datang di Overalls. Anggap seperti rumah sendiri."
 
-#: lib/marshall_web/components/layouts.ex:409
-#: lib/marshall_web/components/layouts.ex:462
+#: lib/marshall_web/components/layouts.ex:395
+#: lib/marshall_web/components/layouts.ex:448
 #, elixir-autogen, elixir-format
 msgid "Workloads"
 msgstr "Beban kerja"
 
-#: lib/marshall_web/components/layouts.ex:283
-#: lib/marshall_web/components/layouts.ex:469
+#: lib/marshall_web/components/layouts.ex:279
+#: lib/marshall_web/components/layouts.ex:455
 #, elixir-autogen, elixir-format
 msgid "Workspace"
 msgstr "Ruang kerja"
 
-#: lib/marshall_web/components/layouts.ex:282
+#: lib/marshall_web/components/layouts.ex:278
 #, elixir-autogen, elixir-format
 msgid "Workspace mode"
 msgstr "Mode ruang kerja"
 
-#: lib/marshall_web/components/layouts.ex:270
+#: lib/marshall_web/components/layouts.ex:266
 #, elixir-autogen, elixir-format
 msgid "Workspace navigation"
 msgstr "Navigasi ruang kerja"
 
-#: lib/marshall_web/components/layouts.ex:322
+#: lib/marshall_web/components/layouts.ex:318
 #, elixir-autogen, elixir-format
 msgid "Your account"
 msgstr "Akun Anda"
 
-#: lib/marshall_web/components/layouts.ex:428
+#: lib/marshall_web/components/layouts.ex:414
 #, elixir-autogen, elixir-format
 msgid "Your workspace"
 msgstr "Ruang kerja Anda"
@@ -438,29 +392,24 @@ msgstr "Ruang kerja Anda"
 msgid "close"
 msgstr "tutup"
 
-#: lib/marshall_web/live/hldd_live.ex:85
-#, elixir-autogen, elixir-format
-msgid "← All sections"
-msgstr "← Semua bagian"
-
-#: lib/marshall_web/components/layouts.ex:421
-#: lib/marshall_web/components/layouts.ex:468
+#: lib/marshall_web/components/layouts.ex:407
+#: lib/marshall_web/components/layouts.ex:454
 #, elixir-autogen, elixir-format
 msgid "SCIM provisioning"
 msgstr "Penyediaan SCIM"
 
-#: lib/marshall_web/components/layouts.ex:420
+#: lib/marshall_web/components/layouts.ex:406
 #, elixir-autogen, elixir-format
 msgid "Artifact moderation"
 msgstr "Moderasi artefak"
 
-#: lib/marshall_web/components/layouts.ex:432
-#: lib/marshall_web/components/layouts.ex:456
+#: lib/marshall_web/components/layouts.ex:418
+#: lib/marshall_web/components/layouts.ex:442
 #, elixir-autogen, elixir-format
 msgid "Artifacts"
 msgstr "Artefak"
 
-#: lib/marshall_web/components/layouts.ex:419
+#: lib/marshall_web/components/layouts.ex:405
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "Penyensoran utas"

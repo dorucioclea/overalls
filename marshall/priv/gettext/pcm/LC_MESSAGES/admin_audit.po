@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:74
+#: lib/marshall_web/live/admin/redaction_live.ex:88
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "Thread redaction work"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:75
+#: lib/marshall_web/live/admin/redaction_live.ex:89
 #, elixir-autogen, elixir-format
 msgid "Scrub inactive threads"
 msgstr "Clean inactive threads"
@@ -34,27 +34,27 @@ msgstr "We don put inactive thread cleaning for line."
 msgid "The scrub could not be queued."
 msgstr "We no fit put di cleaning for line."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:77
+#: lib/marshall_web/live/admin/redaction_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Text in prompts, model output, and tool results is scrubbed in bounded background batches. Attachments are not inspected."
 msgstr "We dey clean text for prompts, model output and tool results small small for background. We no dey check attachments."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:78
+#: lib/marshall_web/live/admin/redaction_live.ex:100
 #, elixir-autogen, elixir-format
 msgid "Redaction history is unavailable."
 msgstr "We no fit show di redaction history now."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Processed %{count}"
 msgstr "We don process %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Changed %{count}"
 msgstr "We don change %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:83
+#: lib/marshall_web/live/admin/redaction_live.ex:109
 #, elixir-autogen, elixir-format
 msgid "Profile %{digest}"
 msgstr "Di profile %{digest}"
@@ -1055,27 +1055,27 @@ msgstr "Dem don offer work"
 msgid "Workflow ID"
 msgstr "ID for di workflow"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:87
+#: lib/marshall_web/live/admin/redaction_live.ex:125
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "Cancel am"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:85
+#: lib/marshall_web/live/admin/redaction_live.ex:113
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "Make e pause"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:33
+#: lib/marshall_web/live/admin/redaction_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Redaction run updated."
 msgstr "We don update di redaction run."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:86
+#: lib/marshall_web/live/admin/redaction_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "Make e continue"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:35
+#: lib/marshall_web/live/admin/redaction_live.ex:48
 #, elixir-autogen, elixir-format
 msgid "The redaction run could not be updated."
 msgstr "We no fit update di redaction run."

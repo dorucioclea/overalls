@@ -1,6 +1,0 @@
-interface:
-  display_name: "HLDD Maintenance"
-  short_description: "Maintain the handbook, security coverage and mandatory review gate"
-  default_prompt: "Use $hldd-maintenance to update the HLDD, scenario and security test evidence, and reviewed source receipts for this change."
-policy:
-  allow_implicit_invocation: true

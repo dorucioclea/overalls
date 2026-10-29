@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:74
+#: lib/marshall_web/live/admin/redaction_live.ex:88
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "Thread-Schwärzung"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:75
+#: lib/marshall_web/live/admin/redaction_live.ex:89
 #, elixir-autogen, elixir-format
 msgid "Scrub inactive threads"
 msgstr "Inaktive Threads bereinigen"
@@ -34,27 +34,27 @@ msgstr "Bereinigung inaktiver Threads eingereiht."
 msgid "The scrub could not be queued."
 msgstr "Die Bereinigung konnte nicht eingereiht werden."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:77
+#: lib/marshall_web/live/admin/redaction_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Text in prompts, model output, and tool results is scrubbed in bounded background batches. Attachments are not inspected."
 msgstr "Text in Prompts, Modellausgaben und Werkzeugergebnissen wird in begrenzten Hintergrundstapeln bereinigt. Anhänge werden nicht geprüft."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:78
+#: lib/marshall_web/live/admin/redaction_live.ex:100
 #, elixir-autogen, elixir-format
 msgid "Redaction history is unavailable."
 msgstr "Der Schwärzungsverlauf ist nicht verfügbar."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Processed %{count}"
 msgstr "Verarbeitet: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Changed %{count}"
 msgstr "Geändert: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:83
+#: lib/marshall_web/live/admin/redaction_live.ex:109
 #, elixir-autogen, elixir-format
 msgid "Profile %{digest}"
 msgstr "Profil %{digest}"
@@ -1063,27 +1063,27 @@ msgstr "Arbeit angeboten"
 msgid "Workflow ID"
 msgstr "Workflow-ID"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:87
+#: lib/marshall_web/live/admin/redaction_live.ex:125
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:85
+#: lib/marshall_web/live/admin/redaction_live.ex:113
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "Pausieren"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:33
+#: lib/marshall_web/live/admin/redaction_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Redaction run updated."
 msgstr "Schwärzungslauf aktualisiert."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:86
+#: lib/marshall_web/live/admin/redaction_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "Fortsetzen"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:35
+#: lib/marshall_web/live/admin/redaction_live.ex:48
 #, elixir-autogen, elixir-format
 msgid "The redaction run could not be updated."
 msgstr "Der Schwärzungslauf konnte nicht aktualisiert werden."

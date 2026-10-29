@@ -6,9 +6,9 @@ runtime projections with certificate-pinned SSH machine reads and pagination;
 native adapter integration and full Flutter replacement remain partial, as
 recorded in the [session review](reviews/2026-10-21-mila-native-session.md).
 
-[ADR-0250](decisions/0250-independent-hldd-review-records.md) separates HLDD source
-and chapter review currency to let independent work merge without unrelated
-receipt churn. It retains explicit review, scenario evidence and evaluated views.
+[ADR-0263](decisions/0263-retire-hldd.md) retires the authenticated HLDD handbook,
+its review receipts and all HLDD gates, superseding ADR-0250. ADRs, architecture
+reviews, contracts and native/machine tests remain the design record.
 
 [ADR-0207](decisions/0207-bundled-multilingual-font-fallback.md) accepts bundled
 Noto script fallbacks while retaining JetBrains Mono as the primary grid font.
@@ -524,9 +524,9 @@ retains shared navigation, diagrams, generated NixOS option reference, and a
 mandatory source-review gate. User scenarios explicitly record layered security
 boundaries, preferred NixOS/property evidence and testing gaps. Validation is
 tracked in the [section review](reviews/2026-09-25-hldd-sections.md).
-Mandatory [Ash and topology views](reviews/2026-09-25-hldd-views.md) add literal
-domain/resource ownership and evaluated fleet placement, with maintained authority
-diagrams, explanations and checks independent of review receipts.
+Mandatory [Ash and topology views](reviews/2026-09-25-hldd-views.md) added literal
+domain/resource ownership and evaluated fleet placement. ADR-0263 later retired
+the handbook, its views and its gates.
 
 
 [ADR-0119](decisions/0119-authenticated-control-room-reads.md) opens the Control room
@@ -1742,7 +1742,7 @@ escape cleanup or physical storage acceptance; those remain open.
 
 ## Contract verification
 
-ADR-0186 records the Covenant test-only contract layer used by all Elixir applications. Covenant obligations and tests provide deterministic executable evidence while existing ADR, HLDD, native and integration records remain authoritative for deployment and isolation guarantees.
+ADR-0186 records the Covenant test-only contract layer used by all Elixir applications. Covenant obligations and tests provide deterministic executable evidence while existing ADR, native and integration records remain authoritative for deployment and isolation guarantees.
 
 Localization follows [ADR-0201](decisions/0201-localized-human-surfaces.md): validated user/browser locale selection, offline catalogs and direction-aware human surfaces preserve protocol identifiers and execution authority. Implementation remains partial.
 

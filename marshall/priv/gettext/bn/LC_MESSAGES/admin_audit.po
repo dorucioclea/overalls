@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:74
+#: lib/marshall_web/live/admin/redaction_live.ex:88
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "আলোচনা সম্পাদন"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:75
+#: lib/marshall_web/live/admin/redaction_live.ex:89
 #, elixir-autogen, elixir-format
 msgid "Scrub inactive threads"
 msgstr "নিষ্ক্রিয় আলোচনা পরিষ্কার করুন"
@@ -34,27 +34,27 @@ msgstr "নিষ্ক্রিয় আলোচনা পরিষ্কা�
 msgid "The scrub could not be queued."
 msgstr "পরিষ্কারের কাজ সারিতে রাখা যায়নি।"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:77
+#: lib/marshall_web/live/admin/redaction_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Text in prompts, model output, and tool results is scrubbed in bounded background batches. Attachments are not inspected."
 msgstr "প্রম্পট, মডেলের আউটপুট এবং টুলের ফলাফলের লেখা পটভূমিতে সীমিত ব্যাচে পরিষ্কার করা হয়। সংযুক্তি পরীক্ষা করা হয় না।"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:78
+#: lib/marshall_web/live/admin/redaction_live.ex:100
 #, elixir-autogen, elixir-format
 msgid "Redaction history is unavailable."
 msgstr "সম্পাদনের ইতিহাস উপলভ্য নয়।"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Processed %{count}"
 msgstr "প্রক্রিয়াকৃত: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Changed %{count}"
 msgstr "পরিবর্তিত: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:83
+#: lib/marshall_web/live/admin/redaction_live.ex:109
 #, elixir-autogen, elixir-format
 msgid "Profile %{digest}"
 msgstr "প্রোফাইল %{digest}"
@@ -1055,27 +1055,27 @@ msgstr "কাজের প্রস্তাব"
 msgid "Workflow ID"
 msgstr "কর্মপ্রবাহের আইডি"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:87
+#: lib/marshall_web/live/admin/redaction_live.ex:125
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "বাতিল করুন"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:85
+#: lib/marshall_web/live/admin/redaction_live.ex:113
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "বিরতি দিন"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:33
+#: lib/marshall_web/live/admin/redaction_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Redaction run updated."
 msgstr "সম্পাদনের রান হালনাগাদ হয়েছে।"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:86
+#: lib/marshall_web/live/admin/redaction_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "আবার শুরু করুন"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:35
+#: lib/marshall_web/live/admin/redaction_live.ex:48
 #, elixir-autogen, elixir-format
 msgid "The redaction run could not be updated."
 msgstr "সম্পাদনের রান হালনাগাদ করা যায়নি।"

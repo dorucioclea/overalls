@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:74
+#: lib/marshall_web/live/admin/redaction_live.ex:88
 #, elixir-autogen, elixir-format
 msgid "Thread redaction"
 msgstr "चर्चा संपादन"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:75
+#: lib/marshall_web/live/admin/redaction_live.ex:89
 #, elixir-autogen, elixir-format
 msgid "Scrub inactive threads"
 msgstr "निष्क्रिय चर्चा साफ करा"
@@ -34,27 +34,27 @@ msgstr "निष्क्रिय चर्चांची साफसफा�
 msgid "The scrub could not be queued."
 msgstr "साफसफाई रांगेत टाकता आली नाही."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:77
+#: lib/marshall_web/live/admin/redaction_live.ex:95
 #, elixir-autogen, elixir-format
 msgid "Text in prompts, model output, and tool results is scrubbed in bounded background batches. Attachments are not inspected."
 msgstr "प्रॉम्प्ट, मॉडेल आउटपुट आणि साधनांच्या निकालांतील मजकूर पार्श्वभूमीत मर्यादित गटांमध्ये साफ केला जातो. संलग्नके तपासली जात नाहीत."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:78
+#: lib/marshall_web/live/admin/redaction_live.ex:100
 #, elixir-autogen, elixir-format
 msgid "Redaction history is unavailable."
 msgstr "संपादन इतिहास उपलब्ध नाही."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Processed %{count}"
 msgstr "प्रक्रिया केलेले: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:82
+#: lib/marshall_web/live/admin/redaction_live.ex:104
 #, elixir-autogen, elixir-format
 msgid "Changed %{count}"
 msgstr "बदललेले: %{count}"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:83
+#: lib/marshall_web/live/admin/redaction_live.ex:109
 #, elixir-autogen, elixir-format
 msgid "Profile %{digest}"
 msgstr "प्रोफाइल %{digest}"
@@ -1061,27 +1061,27 @@ msgstr "काम देऊ केले"
 msgid "Workflow ID"
 msgstr "वर्कफ्लो ID"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:87
+#: lib/marshall_web/live/admin/redaction_live.ex:125
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr "रद्द करा"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:85
+#: lib/marshall_web/live/admin/redaction_live.ex:113
 #, elixir-autogen, elixir-format
 msgid "Pause"
 msgstr "विराम द्या"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:33
+#: lib/marshall_web/live/admin/redaction_live.ex:41
 #, elixir-autogen, elixir-format
 msgid "Redaction run updated."
 msgstr "संपादन रन अद्ययावत केला."
 
-#: lib/marshall_web/live/admin/redaction_live.ex:86
+#: lib/marshall_web/live/admin/redaction_live.ex:117
 #, elixir-autogen, elixir-format
 msgid "Resume"
 msgstr "पुन्हा सुरू करा"
 
-#: lib/marshall_web/live/admin/redaction_live.ex:35
+#: lib/marshall_web/live/admin/redaction_live.ex:48
 #, elixir-autogen, elixir-format
 msgid "The redaction run could not be updated."
 msgstr "संपादन रन अद्ययावत करता आला नाही."

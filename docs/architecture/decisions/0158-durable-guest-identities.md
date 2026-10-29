@@ -158,7 +158,7 @@ sharing and packaged Lyra discovery/home. The complete NixOS SSH journey and
 Ubuntu email-continuity subtest passed unchanged identity/home/client setup;
 Ubuntu's run later failed its agent-authentication matrix. Editor authority email
 continuity passed at the application/database boundary, while current native
-editor runs remain partial. The [scenario ledger](../../../marshall/priv/hldd/scenarios)
+editor runs remain partial. The scenario ledger (`marshall/priv/hldd/scenarios`, removed by ADR-0263)
 retains each assertion and execution scope. Separately authorized live preparation
 on 2026-10-10 completed deletion of all four scoped guests through normal lifecycle
 authority, released their holds and confirmed native service/dataset absence on

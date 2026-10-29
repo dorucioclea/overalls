@@ -1,5 +1,5 @@
 /* Page-specific presentation: overview, machines, clone workflow, terminal
-   chrome, handbook, public docs, agent threads and error pages. */
+   chrome, public docs, agent threads and error pages. */
 
 /* Overview */
 .overview-grid {
@@ -643,126 +643,26 @@ button.machine-editor-link,
   margin: 0;
 }
 
-/* Handbook */
-.hldd-heading {
-  margin-bottom: var(--line-height);
-  border-bottom: calc(var(--border-thickness) * 3) double var(--text-color);
-}
-.hldd-heading > :last-child {
-  margin-bottom: calc(var(--line-height) - var(--border-thickness) * 3);
-}
-.hldd-heading h1 {
-  margin-bottom: var(--line-height);
-}
-.hldd-index {
-  list-style: none;
-  padding: 0;
-  columns: 2;
-  column-gap: 2ch;
-}
-.hldd-index li::before {
-  content: none;
-}
-.hldd-index a {
-  display: block;
-  text-decoration: none;
-  padding: 0 1ch;
-}
-.hldd-index a:hover {
-  background: var(--background-color-alt);
-}
-.hldd-section-number {
-  display: inline-block;
-  width: 3ch;
-  color: var(--text-color-alt);
-}
-.hldd-grid {
-  display: grid;
-  grid-template-columns: 28ch minmax(0, 1fr);
-  gap: var(--line-height) 2ch;
-}
-.hldd-grid > div {
-  min-width: 0;
-}
-.hldd-contents {
-  align-self: start;
-}
-.hldd-contents details {
-  border: 0;
-  padding: 0;
-}
-.hldd-contents nav a {
-  display: block;
-  text-decoration: none;
-  padding: 0 1ch;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.hldd-contents nav a[aria-current="page"] {
-  background: var(--text-color);
-  color: var(--background-color);
-}
-.hldd-pagination {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0 2ch;
-  padding-top: var(--line-height);
-  border-top: var(--border-thickness) solid var(--text-color);
-}
-.hldd-prose {
-  min-width: 0;
-  max-width: calc(min(90ch, round(down, 100%, 1ch)));
-}
-.hldd-prose section {
-  scroll-margin-top: var(--line-height);
-}
-.hldd-prose h2, .hldd-prose h3 {
-  overflow-wrap: anywhere;
-}
-.hldd-prose pre, .docs-content pre {
+/* Public docs prose */
+.docs-content pre {
   padding: 0 1ch;
   background: var(--background-color-alt);
   max-width: 100%;
 }
-.hldd-prose code, .docs-content code {
+.docs-content code {
   overflow-wrap: anywhere;
 }
-.hldd-prose table, .docs-content table {
+.docs-content table {
   width: 100%;
   table-layout: auto;
 }
-.hldd-prose td, .docs-content td {
+.docs-content td {
   overflow-wrap: anywhere;
 }
-.hldd-prose blockquote, .docs-content blockquote {
+.docs-content blockquote {
   margin: 0 0 var(--line-height);
   padding-inline-start: calc(2ch - var(--border-thickness));
   border-inline-start: var(--border-thickness) solid var(--text-color);
-}
-.hldd-diagram {
-  background: var(--background-color);
-  overflow-x: auto;
-}
-.hldd-diagram svg {
-  display: block;
-  margin: 0 auto;
-  height: auto;
-  max-width: 100%;
-  min-width: max(36rem, 576px);
-}
-@media (max-width: 1000px) {
-  .hldd-index {
-    columns: 1;
-  }
-  .hldd-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .hldd-contents {
-    position: static;
-    max-height: none;
-  }
 }
 
 /* Public docs */

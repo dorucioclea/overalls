@@ -100,8 +100,6 @@ defmodule MarshallWeb.Router do
     # session and install LiveUserAuth's required-user hook in their modules.
     ash_authentication_live_session :authenticated_routes,
       on_mount_prepend: MarshallWeb.DatabaseWait do
-      live "/hldd", HLDDLive, :index
-      live "/hldd/:section", HLDDLive, :section
       live "/overview", OverviewLive, :index
       live "/launch", LaunchLive, :index
       live "/admin/users", Admin.UsersLive, :index

@@ -12,9 +12,6 @@ flowchart LR
   Overalls -->|"Agent prompts and SSH setup"| Marshall["Marshall"]
 ```
 
-See the [SSH handbook](../marshall/priv/hldd/08-interactive.md#developer-ssh) and
-[agent handbook](../marshall/priv/hldd/11-agents.md).
-
 ## Repository launch
 
 `overalls open https://github.com/OWNER/REPO[/tree/BRANCH|/commit/SHA|/pull/N] [-- COMMAND...]`

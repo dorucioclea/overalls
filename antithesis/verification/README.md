@@ -169,7 +169,7 @@ safety assertion in the selected profile; catalog-only candidates still count
 toward N but cannot be reserved as mutants. A receipt binds operator-reviewed
 patch bytes and identities; it does not prove the patch's semantic effect.
 
-The source inventory intentionally includes compiled `marshall/priv/hldd` and
+The source inventory intentionally includes compiled `marshall/priv/docs` and
 the executable `antithesis/test` tree. The frozen assertion roster is scoped to
 selected commands, their traced runtime imports, and compiled selected services;
 the standalone assertion scan remains a full source discovery report. The freeze

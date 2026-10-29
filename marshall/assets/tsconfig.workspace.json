@@ -8,5 +8,5 @@
     "module": "nodenext",
     "lib": ["es2023", "dom"]
   },
-  "files": ["js/handbook.js", "js/workspace.js", "js/palette.js", "js/grid.js", "js/appearance.js", "js/terminals/tickets.js", "js/terminals/boot_log.js", "js/repository_launch.js", "js/admin_elevation.js", "js/thread_composer.js", "js/artifact_frame.js", "js/browser_extension_presence.js"]
+  "files": ["js/workspace.js", "js/palette.js", "js/grid.js", "js/appearance.js", "js/terminals/tickets.js", "js/terminals/boot_log.js", "js/repository_launch.js", "js/admin_elevation.js", "js/thread_composer.js", "js/artifact_frame.js", "js/browser_extension_presence.js"]
 }

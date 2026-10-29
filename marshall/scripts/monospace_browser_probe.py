@@ -1005,7 +1005,6 @@ GRID_ROUTES = (
     "machine",
     "boot-log",
     "account",
-    "hldd",
 )
 
 
@@ -1043,8 +1042,6 @@ def run(fixture: Context, artifacts: Path) -> None:
             "git": "/git",
             "usage": "/usage",
             "account": "/settings",
-            "hldd": "/hldd",
-            "hldd-section": "/hldd/system",
         }
         for theme in ("light", "dark"):
             page.locator("[data-appearance]").select_option(theme)
@@ -1111,8 +1108,6 @@ def run(fixture: Context, artifacts: Path) -> None:
                         "browser@example.test"
                     )
                     expect(page.locator("#settings_commit_trailers_enabled")).not_to_be_checked()
-                if name == "hldd-section":
-                    expect(page.locator("pre.hldd-diagram svg").first).to_be_visible()
                 if name == "account":
                     check_account(page, fixture["origin"], theme)
                     visit(page, fixture["origin"], route)

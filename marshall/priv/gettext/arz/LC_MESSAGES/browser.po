@@ -84,167 +84,162 @@ msgstr "ما قدرناش ننسخ. حدّد النص وانسخه بإيدك."
 msgid "Could not update access. Check the account's machine access."
 msgstr "ما قدرناش نحدّث الوصول. راجع وصول الحساب للجهاز."
 
-#: lib/marshall_web/browser_messages.ex:31
-#, elixir-autogen, elixir-format
-msgid "Design diagram; explanation follows in the handbook"
-msgstr "رسم التصميم؛ الشرح بعده في الدليل"
-
-#: lib/marshall_web/browser_messages.ex:32
+#: lib/marshall_web/browser_messages.ex:30
 #, elixir-autogen, elixir-format
 msgid "Enter full screen"
 msgstr "افتح ملء الشاشة"
 
-#: lib/marshall_web/browser_messages.ex:33
+#: lib/marshall_web/browser_messages.ex:31
 #, elixir-autogen, elixir-format
 msgid "Exit full screen"
 msgstr "اخرج من ملء الشاشة"
 
-#: lib/marshall_web/browser_messages.ex:35
+#: lib/marshall_web/browser_messages.ex:33
 #, elixir-autogen, elixir-format
 msgid "Input buffer full — that input was not sent"
 msgstr "مخزن الإدخال مليان — الإدخال ده ما اتبعتش"
 
-#: lib/marshall_web/browser_messages.ex:42
+#: lib/marshall_web/browser_messages.ex:40
 #, elixir-autogen, elixir-format
 msgid "Match found"
 msgstr "لقينا تطابق"
 
-#: lib/marshall_web/browser_messages.ex:43
+#: lib/marshall_web/browser_messages.ex:41
 #, elixir-autogen, elixir-format
 msgid "No matches"
 msgstr "مفيش تطابقات"
 
-#: lib/marshall_web/browser_messages.ex:45
+#: lib/marshall_web/browser_messages.ex:43
 #, elixir-autogen, elixir-format
 msgid "Open this link?\n\n%{url}"
 msgstr "تفتح الرابط ده؟\n\n%{url}"
 
-#: lib/marshall_web/browser_messages.ex:46
+#: lib/marshall_web/browser_messages.ex:44
 #, elixir-autogen, elixir-format
 msgid "Opening…"
 msgstr "بنفتح…"
 
-#: lib/marshall_web/browser_messages.ex:48
+#: lib/marshall_web/browser_messages.ex:46
 #, elixir-autogen, elixir-format
 msgid "Passkey request cancelled. You can try again."
 msgstr "طلب مفتاح المرور اتلغى. تقدر تجرّب تاني."
 
-#: lib/marshall_web/browser_messages.ex:50
+#: lib/marshall_web/browser_messages.ex:48
 #, elixir-autogen, elixir-format
 msgid "Passkey verification failed or unavailable. Try again."
 msgstr "التأكد بمفتاح المرور فشل أو مش متاح. جرّب تاني."
 
-#: lib/marshall_web/browser_messages.ex:52
+#: lib/marshall_web/browser_messages.ex:50
 #, elixir-autogen, elixir-format
 msgid "Terminal name (this browser only; empty restores the generated name)"
 msgstr "اسم الطرفية (للمتصفح ده بس؛ سيبه فاضي عشان يرجع الاسم المتولّد)"
 
-#: lib/marshall_web/browser_messages.ex:57
+#: lib/marshall_web/browser_messages.ex:55
 #, elixir-autogen, elixir-format
 msgid "The result could not be confirmed. Reload the page and check the result before retrying."
 msgstr "ما قدرناش نتأكد من النتيجة. حمّل الصفحة تاني وراجع النتيجة قبل ما تعيد المحاولة."
 
-#: lib/marshall_web/browser_messages.ex:62
+#: lib/marshall_web/browser_messages.ex:60
 #, elixir-autogen, elixir-format
 msgid "This machine asks to write %{bytes} bytes to your clipboard. Type once, session, or mute."
 msgstr "الجهاز ده عايز يكتب %{bytes} بايت في الحافظة. اكتب once أو session أو mute."
 
-#: lib/marshall_web/browser_messages.ex:68
+#: lib/marshall_web/browser_messages.ex:66
 #, elixir-autogen, elixir-format
 msgid "This repository link could not be launched. Open the link again."
 msgstr "ما قدرناش نشغّل رابط المستودع ده. افتحه تاني."
 
-#: lib/marshall_web/browser_messages.ex:72
+#: lib/marshall_web/browser_messages.ex:70
 #, elixir-autogen, elixir-format
 msgid "Type to interact"
 msgstr "اكتب عشان تتفاعل"
 
-#: lib/marshall_web/browser_messages.ex:73
+#: lib/marshall_web/browser_messages.ex:71
 #, elixir-autogen, elixir-format
 msgid "Updating viewing access…"
 msgstr "بنحدّث صلاحية المشاهدة…"
 
-#: lib/marshall_web/browser_messages.ex:75
+#: lib/marshall_web/browser_messages.ex:73
 #, elixir-autogen, elixir-format
 msgid "Verification could not be completed. Try again."
 msgstr "ما قدرناش نكمّل التحقق. جرّب تاني."
 
-#: lib/marshall_web/browser_messages.ex:77
+#: lib/marshall_web/browser_messages.ex:75
 #, elixir-autogen, elixir-format
 msgid "Verify with your passkey to %{action}. This runs once after verification."
 msgstr "اتأكد بمفتاح المرور بتاعك عشان %{action}. ده بيتنفّذ مرة واحدة بعد التحقق."
 
-#: lib/marshall_web/browser_messages.ex:82
+#: lib/marshall_web/browser_messages.ex:80
 #, elixir-autogen, elixir-format
 msgid "View only"
 msgstr "مشاهدة بس"
 
-#: lib/marshall_web/browser_messages.ex:83
+#: lib/marshall_web/browser_messages.ex:81
 #, elixir-autogen, elixir-format
 msgid "Viewing access updated."
 msgstr "صلاحية المشاهدة اتحدّثت."
 
-#: lib/marshall_web/browser_messages.ex:84
+#: lib/marshall_web/browser_messages.ex:82
 #, elixir-autogen, elixir-format
 msgid "Waiting for your passkey…"
 msgstr "مستنّيين مفتاح المرور بتاعك…"
 
-#: lib/marshall_web/browser_messages.ex:86
+#: lib/marshall_web/browser_messages.ex:84
 #, elixir-autogen, elixir-format
 msgid "complete this administrative change"
 msgstr "تكمّل التغيير الإداري ده"
 
-#: lib/marshall_web/browser_messages.ex:87
+#: lib/marshall_web/browser_messages.ex:85
 #, elixir-autogen, elixir-format
 msgid "just now"
 msgstr "دلوقتي حالًا"
 
-#: lib/marshall_web/browser_messages.ex:88
+#: lib/marshall_web/browser_messages.ex:86
 #, elixir-autogen, elixir-format
 msgid "● live"
 msgstr "● مباشر"
 
-#: lib/marshall_web/browser_messages.ex:89
+#: lib/marshall_web/browser_messages.ex:87
 #, elixir-autogen, elixir-format
 msgid "● read-only"
 msgstr "● قراءة بس"
 
-#: lib/marshall_web/browser_messages.ex:90
+#: lib/marshall_web/browser_messages.ex:88
 #, elixir-autogen, elixir-format
 msgid "⟳ reconnecting…"
 msgstr "⟳ بنتصل تاني…"
 
-#: lib/marshall_web/browser_messages.ex:91
+#: lib/marshall_web/browser_messages.ex:89
 #, elixir-autogen, elixir-format
 msgid "⟳ restoring scrollback…"
 msgstr "⟳ بنرجّع سجل الطرفية…"
 
-#: lib/marshall_web/browser_messages.ex:38
+#: lib/marshall_web/browser_messages.ex:36
 #, elixir-autogen, elixir-format
 msgid "Connecting…"
 msgstr "بنتصل…"
 
-#: lib/marshall_web/browser_messages.ex:41
+#: lib/marshall_web/browser_messages.ex:39
 #, elixir-autogen, elixir-format
 msgid "Diagram unavailable. Source:\n%{source}"
 msgstr "الرسم مش متاح. المصدر:\n%{source}"
 
-#: lib/marshall_web/browser_messages.ex:39
+#: lib/marshall_web/browser_messages.ex:37
 #, elixir-autogen, elixir-format
 msgid "No terminals"
 msgstr "مفيش طرفيات"
 
-#: lib/marshall_web/browser_messages.ex:37
+#: lib/marshall_web/browser_messages.ex:35
 #, elixir-autogen, elixir-format
 msgid "— output before this view is not in the scrollback window —"
 msgstr "— المخرجات اللي قبل العرض ده مش موجودة في نافذة السجل —"
 
-#: lib/marshall_web/browser_messages.ex:69
+#: lib/marshall_web/browser_messages.ex:67
 #, elixir-autogen, elixir-format
 msgid "Terminal input"
 msgstr "الكتابة في التيرمينال"
 
-#: lib/marshall_web/browser_messages.ex:71
+#: lib/marshall_web/browser_messages.ex:69
 #, elixir-autogen, elixir-format
 msgid "Too much output to announce, navigate to rows manually to read"
 msgstr "المخرجات كتير قوي ومش هينفع تتقري بصوت؛ اتنقل بين الصفوف بنفسك عشان تقراها"

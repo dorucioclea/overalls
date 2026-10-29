@@ -264,32 +264,6 @@ defmodule Overalls.LocalizationCatalogMigrationTest do
     end
   end
 
-  test "only exact excluded HLDD prose may leave documentation catalogs", %{temporary: temporary} do
-    fixture = fixture(temporary, :marshall)
-    source = "Excluded HLDD prose.\n"
-    hldd = Path.join(fixture.root, "marshall/priv/hldd/01-overview.md")
-    File.mkdir_p!(Path.dirname(hldd))
-    File.write!(hldd, source)
-
-    add_original(fixture, "documentation", %Singular{msgid: [source], msgstr: ["translated HLDD"]})
-
-    plan = Migration.plan(fixture.root, fixture.snapshot, [:marshall])
-    [application] = plan.report["applications"]
-    assert length(application["excluded_hldd_messages"]) == 1
-    assert :ok = Migration.apply(plan, :write)
-
-    assert Enum.all?(
-             catalog(fixture, "documentation").messages,
-             &(Migration.identity(&1) != {nil, source, nil})
-           )
-
-    File.write!(hldd, "Different prose.\n")
-
-    assert_raise ArgumentError, ~r/Unmapped original/, fn ->
-      Migration.plan(fixture.root, fixture.snapshot, [:marshall])
-    end
-  end
-
   test "unknown domains and stale original locale identities fail closed", %{temporary: temporary} do
     fixture = fixture(temporary, :porsche)
     path = Path.join(fixture.root, "porsche/priv/gettext/unmapped.pot")

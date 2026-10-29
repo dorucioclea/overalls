@@ -62,7 +62,7 @@ this skill is not evidence: run the checks in the last section.
    `marshall/priv/static/fonts/README.md`. Check bundled glyph coverage and
    observe representative script shaping in LTR and RTL at mobile and desktop
    widths; a font-family declaration alone does not establish actual coverage.
-5. Run the gates in the next section, then update the handbook, ADRs and
+5. Run the gates in the next section, then update ADRs and
    contracts as the repository guidance requires.
 
 Forbidden patterns are listed in [references/forbidden.md](references/forbidden.md).
@@ -90,8 +90,7 @@ CHROMIUM_PATH=$(command -v chromium) python3 -I scripts/monospace_browser_probe.
   $SCRATCH/context.json $SCRATCH/artifacts
 ```
 
-Keep the context file and screenshots outside the repository; the handbook
-digest covers untracked files. See [references/verification.md](references/verification.md).
+Keep the context file and screenshots outside the repository. See [references/verification.md](references/verification.md).
 
 `assets/monospace.css` in this skill is a reference copy of the base
 stylesheet; `marshall/assets/css/monospace.css` is the source of truth.

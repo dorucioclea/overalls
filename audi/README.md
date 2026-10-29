@@ -15,5 +15,4 @@ flowchart LR
   Audi --> Services["Ziggy and Galileo"]
 ```
 
-See [Audi operations](../docs/services/audi.md) and the
-[networking handbook](../marshall/priv/hldd/09-network.md).
+See [Audi operations](../docs/services/audi.md).

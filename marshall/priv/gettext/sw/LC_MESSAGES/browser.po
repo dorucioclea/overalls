@@ -84,167 +84,162 @@ msgstr "Haikuweza kunakili. Chagua maandishi na uyanakili mwenyewe."
 msgid "Could not update access. Check the account's machine access."
 msgstr "Haikuweza kusasisha ufikiaji. Angalia ufikiaji wa mashine ya akaunti."
 
-#: lib/marshall_web/browser_messages.ex:31
-#, elixir-autogen, elixir-format
-msgid "Design diagram; explanation follows in the handbook"
-msgstr "Mchoro wa kubuni; maelezo yanafuata katika kitabu cha mwongozo"
-
-#: lib/marshall_web/browser_messages.ex:32
+#: lib/marshall_web/browser_messages.ex:30
 #, elixir-autogen, elixir-format
 msgid "Enter full screen"
 msgstr "Ingiza skrini nzima"
 
-#: lib/marshall_web/browser_messages.ex:33
+#: lib/marshall_web/browser_messages.ex:31
 #, elixir-autogen, elixir-format
 msgid "Exit full screen"
 msgstr "Ondoka kwenye skrini nzima"
 
-#: lib/marshall_web/browser_messages.ex:35
+#: lib/marshall_web/browser_messages.ex:33
 #, elixir-autogen, elixir-format
 msgid "Input buffer full — that input was not sent"
 msgstr "Bafa ya ingizo imejaa — ingizo hilo halikutumwa"
 
-#: lib/marshall_web/browser_messages.ex:42
+#: lib/marshall_web/browser_messages.ex:40
 #, elixir-autogen, elixir-format
 msgid "Match found"
 msgstr "Imepatikana"
 
-#: lib/marshall_web/browser_messages.ex:43
+#: lib/marshall_web/browser_messages.ex:41
 #, elixir-autogen, elixir-format
 msgid "No matches"
 msgstr "Hakuna zinazolingana"
 
-#: lib/marshall_web/browser_messages.ex:45
+#: lib/marshall_web/browser_messages.ex:43
 #, elixir-autogen, elixir-format
 msgid "Open this link?\n\n%{url}"
 msgstr "Ufungue kiungo hiki?\n\n%{url}"
 
-#: lib/marshall_web/browser_messages.ex:46
+#: lib/marshall_web/browser_messages.ex:44
 #, elixir-autogen, elixir-format
 msgid "Opening…"
 msgstr "Inafungua…"
 
-#: lib/marshall_web/browser_messages.ex:48
+#: lib/marshall_web/browser_messages.ex:46
 #, elixir-autogen, elixir-format
 msgid "Passkey request cancelled. You can try again."
 msgstr "Ombi la ufunguo wa kuingia limeghairiwa. Unaweza kujaribu tena."
 
-#: lib/marshall_web/browser_messages.ex:50
+#: lib/marshall_web/browser_messages.ex:48
 #, elixir-autogen, elixir-format
 msgid "Passkey verification failed or unavailable. Try again."
 msgstr "Uthibitishaji wa ufunguo wa kuingia umeshindwa au haupatikani. Jaribu tena."
 
-#: lib/marshall_web/browser_messages.ex:52
+#: lib/marshall_web/browser_messages.ex:50
 #, elixir-autogen, elixir-format
 msgid "Terminal name (this browser only; empty restores the generated name)"
 msgstr "Jina la kituo (kivinjari hiki pekee; tupu hurejesha jina lililotolewa)"
 
-#: lib/marshall_web/browser_messages.ex:57
+#: lib/marshall_web/browser_messages.ex:55
 #, elixir-autogen, elixir-format
 msgid "The result could not be confirmed. Reload the page and check the result before retrying."
 msgstr "Matokeo hayakuweza kuthibitishwa. Pakia upya ukurasa na uangalie matokeo kabla ya kujaribu tena."
 
-#: lib/marshall_web/browser_messages.ex:62
+#: lib/marshall_web/browser_messages.ex:60
 #, elixir-autogen, elixir-format
 msgid "This machine asks to write %{bytes} bytes to your clipboard. Type once, session, or mute."
 msgstr "Mashine hii inaomba kuandika %{bytes} baiti kwenye ubao wako wa kunakili. Andika mara moja, kipindi, au bubu."
 
-#: lib/marshall_web/browser_messages.ex:68
+#: lib/marshall_web/browser_messages.ex:66
 #, elixir-autogen, elixir-format
 msgid "This repository link could not be launched. Open the link again."
 msgstr "Kiungo hiki cha hazina hakikuweza kuzinduliwa. Fungua kiungo tena."
 
-#: lib/marshall_web/browser_messages.ex:72
+#: lib/marshall_web/browser_messages.ex:70
 #, elixir-autogen, elixir-format
 msgid "Type to interact"
 msgstr "Andika ili kuingiliana"
 
-#: lib/marshall_web/browser_messages.ex:73
+#: lib/marshall_web/browser_messages.ex:71
 #, elixir-autogen, elixir-format
 msgid "Updating viewing access…"
 msgstr "Inasasisha ufikiaji wa kutazama..."
 
-#: lib/marshall_web/browser_messages.ex:75
+#: lib/marshall_web/browser_messages.ex:73
 #, elixir-autogen, elixir-format
 msgid "Verification could not be completed. Try again."
 msgstr "Uthibitishaji haukuweza kukamilika. Jaribu tena."
 
-#: lib/marshall_web/browser_messages.ex:77
+#: lib/marshall_web/browser_messages.ex:75
 #, elixir-autogen, elixir-format
 msgid "Verify with your passkey to %{action}. This runs once after verification."
 msgstr "Thibitisha kwa kutumia nenosiri lako kwa %{action} . Hii inaendeshwa mara moja baada ya uthibitishaji."
 
-#: lib/marshall_web/browser_messages.ex:82
+#: lib/marshall_web/browser_messages.ex:80
 #, elixir-autogen, elixir-format
 msgid "View only"
 msgstr "Tazama pekee"
 
-#: lib/marshall_web/browser_messages.ex:83
+#: lib/marshall_web/browser_messages.ex:81
 #, elixir-autogen, elixir-format
 msgid "Viewing access updated."
 msgstr "Idhini ya kutazama imesasishwa."
 
-#: lib/marshall_web/browser_messages.ex:84
+#: lib/marshall_web/browser_messages.ex:82
 #, elixir-autogen, elixir-format
 msgid "Waiting for your passkey…"
 msgstr "Inasubiri ufunguo wako wa kuingia…"
 
-#: lib/marshall_web/browser_messages.ex:86
+#: lib/marshall_web/browser_messages.ex:84
 #, elixir-autogen, elixir-format
 msgid "complete this administrative change"
 msgstr "kamilisha mabadiliko haya ya kiutawala"
 
-#: lib/marshall_web/browser_messages.ex:87
+#: lib/marshall_web/browser_messages.ex:85
 #, elixir-autogen, elixir-format
 msgid "just now"
 msgstr "sasa hivi"
 
-#: lib/marshall_web/browser_messages.ex:88
+#: lib/marshall_web/browser_messages.ex:86
 #, elixir-autogen, elixir-format
 msgid "● live"
 msgstr "● moja kwa moja"
 
-#: lib/marshall_web/browser_messages.ex:89
+#: lib/marshall_web/browser_messages.ex:87
 #, elixir-autogen, elixir-format
 msgid "● read-only"
 msgstr "● kusoma pekee"
 
-#: lib/marshall_web/browser_messages.ex:90
+#: lib/marshall_web/browser_messages.ex:88
 #, elixir-autogen, elixir-format
 msgid "⟳ reconnecting…"
 msgstr "⟳ inaunganisha tena..."
 
-#: lib/marshall_web/browser_messages.ex:91
+#: lib/marshall_web/browser_messages.ex:89
 #, elixir-autogen, elixir-format
 msgid "⟳ restoring scrollback…"
 msgstr "⟳ inarejesha historia ya terminali…"
 
-#: lib/marshall_web/browser_messages.ex:38
+#: lib/marshall_web/browser_messages.ex:36
 #, elixir-autogen, elixir-format
 msgid "Connecting…"
 msgstr "Inaunganisha..."
 
-#: lib/marshall_web/browser_messages.ex:41
+#: lib/marshall_web/browser_messages.ex:39
 #, elixir-autogen, elixir-format
 msgid "Diagram unavailable. Source:\n%{source}"
 msgstr "Mchoro haupatikani. Chanzo:\n%{source}"
 
-#: lib/marshall_web/browser_messages.ex:39
+#: lib/marshall_web/browser_messages.ex:37
 #, elixir-autogen, elixir-format
 msgid "No terminals"
 msgstr "Hakuna terminali"
 
-#: lib/marshall_web/browser_messages.ex:37
+#: lib/marshall_web/browser_messages.ex:35
 #, elixir-autogen, elixir-format
 msgid "— output before this view is not in the scrollback window —"
 msgstr "— matokeo ya kabla ya mwonekano huu hayapo katika historia ya terminali —"
 
-#: lib/marshall_web/browser_messages.ex:69
+#: lib/marshall_web/browser_messages.ex:67
 #, elixir-autogen, elixir-format
 msgid "Terminal input"
 msgstr "Ingizo la terminali"
 
-#: lib/marshall_web/browser_messages.ex:71
+#: lib/marshall_web/browser_messages.ex:69
 #, elixir-autogen, elixir-format
 msgid "Too much output to announce, navigate to rows manually to read"
 msgstr "Matokeo ni mengi mno kutangazwa; pitia safu mlalo mwenyewe ili kuyasoma"

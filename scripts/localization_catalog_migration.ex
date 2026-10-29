@@ -34,21 +34,16 @@ defmodule Overalls.LocalizationCatalogMigration do
   # @cc [owner:ghuntley,label:verification] localization-migration-exact-preservation
   # Every target message MUST reuse exactly one original domain/context/source/
   # plural identity. Translations and review records MUST be preserved in every
-  # destination. Only messages found exclusively in excluded HLDD prose MAY be
-  # removed. Explicit new-source records MAY initialize empty translations, but
+  # destination. Explicit new-source records MAY initialize empty translations, but
   # MUST remain separately reported. Unknown or conflicting identities MUST fail.
-  @spec plan(Path.t(), Path.t(), [app()], term(), String.t() | nil) :: plan()
-  def plan(root, snapshot, apps \\ @apps, new_sources \\ [], historical_hldd \\ nil) do
+  @spec plan(Path.t(), Path.t(), [app()], term()) :: plan()
+  def plan(root, snapshot, apps \\ @apps, new_sources \\ []) do
     unless apps != [] and Enum.all?(apps, &(&1 in @apps)) and Enum.uniq(apps) == apps,
       do: raise(ArgumentError, "Invalid application selection")
 
     additions = parse_additions!(new_sources)
 
-    unless is_nil(historical_hldd) or
-             (is_binary(historical_hldd) and Regex.match?(~r/^[a-f0-9]{7,40}$/, historical_hldd)),
-           do: raise(ArgumentError, "Historical HLDD revision must be a commit ID")
-
-    results = Enum.map(apps, &app_plan(root, snapshot, &1, additions, historical_hldd))
+    results = Enum.map(apps, &app_plan(root, snapshot, &1, additions))
     used_additions = results |> Enum.flat_map(& &1.additions) |> MapSet.new()
     unless additions == used_additions, do: raise(ArgumentError, "Stale new-source inventory")
     files = Enum.reduce(results, %{}, &Map.merge(&2, &1.files))
@@ -109,8 +104,8 @@ defmodule Overalls.LocalizationCatalogMigration do
   @spec report(plan()) :: binary()
   def report(plan), do: IO.iodata_to_binary([encode_json(plan.report), "\n"])
 
-  @spec app_plan(Path.t(), Path.t(), app(), additions(), String.t() | nil) :: app_plan()
-  defp app_plan(root, snapshot, app, additions, historical_hldd) do
+  @spec app_plan(Path.t(), Path.t(), app(), additions()) :: app_plan()
+  defp app_plan(root, snapshot, app, additions) do
     app_name = Atom.to_string(app)
     destination = Path.join([root, app_name, "priv/gettext"])
     original = Path.join([snapshot, app_name, "gettext"])
@@ -118,7 +113,7 @@ defmodule Overalls.LocalizationCatalogMigration do
     old_templates = read_catalogs(original, "*.pot")
     mappings = mappings(app, templates, old_templates, additions)
     mapping_index = Map.new(mappings, &{{&1.to, &1.identity}, &1.from})
-    removed = removed_identities(root, app, old_templates, mappings, historical_hldd)
+    :ok = validate_mapped!(app, old_templates, mappings)
 
     locales =
       original
@@ -199,9 +194,7 @@ defmodule Overalls.LocalizationCatalogMigration do
             %{"name" => domain, "messages" => length(template.messages)}
           end),
         "mappings" => Enum.map(mappings, &mapping_json/1),
-        "new_messages" => Enum.count(mappings, &is_nil(&1.from)),
-        "historical_hldd_revision" => historical_hldd,
-        "excluded_hldd_messages" => Enum.map(removed, &identity_digest/1)
+        "new_messages" => Enum.count(mappings, &is_nil(&1.from))
       }
     }
   end
@@ -337,96 +330,18 @@ defmodule Overalls.LocalizationCatalogMigration do
 
   defp parse_additions!(_records), do: raise(ArgumentError, "New-source inventory must be a list")
 
-  @spec removed_identities(
-          Path.t(),
-          app(),
-          %{String.t() => Expo.Messages.t()},
-          [mapping()],
-          String.t() | nil
-        ) :: [
-          identity()
-        ]
-  defp removed_identities(root, app, originals, mappings, historical_hldd) do
+  @spec validate_mapped!(app(), %{String.t() => Expo.Messages.t()}, [mapping()]) :: :ok
+  defp validate_mapped!(app, originals, mappings) do
     used = MapSet.new(mappings, &{&1.from, &1.identity})
-    excluded = if app == :marshall, do: hldd_sources(root, historical_hldd), else: MapSet.new()
 
-    originals
-    |> Enum.flat_map(fn {domain, catalog} ->
-      Enum.flat_map(catalog.messages, fn message ->
-        id = identity(message)
+    for {domain, catalog} <- originals, message <- catalog.messages do
+      id = identity(message)
 
-        cond do
-          MapSet.member?(used, {domain, id}) ->
-            []
+      unless MapSet.member?(used, {domain, id}),
+        do: raise(ArgumentError, "Unmapped original #{app}/#{domain} identity: #{inspect(id)}")
+    end
 
-          domain == "documentation" and MapSet.member?(excluded, id) ->
-            [id]
-
-          true ->
-            raise(ArgumentError, "Unmapped original #{app}/#{domain} identity: #{inspect(id)}")
-        end
-      end)
-    end)
-    |> Enum.sort()
-  end
-
-  @spec hldd_sources(Path.t(), String.t() | nil) :: MapSet.t(identity())
-  defp hldd_sources(root, historical_hldd) do
-    current =
-      root
-      |> Path.join("marshall/priv/hldd/*.md")
-      |> Path.wildcard()
-      |> Enum.flat_map(fn path -> path |> File.read!() |> markdown_units() end)
-
-    historical =
-      if is_nil(historical_hldd), do: [], else: historical_hldd_sources(root, historical_hldd)
-
-    MapSet.new(current ++ historical, &{nil, &1, nil})
-  end
-
-  @spec historical_hldd_sources(Path.t(), String.t()) :: [String.t()]
-  defp historical_hldd_sources(root, revision) do
-    {paths, 0} =
-      System.cmd("git", ["ls-tree", "-r", "--name-only", revision, "--", "marshall/priv/hldd"],
-        cd: root,
-        stderr_to_stdout: true
-      )
-
-    paths
-    |> String.split("\n", trim: true)
-    |> Enum.filter(&String.ends_with?(&1, ".md"))
-    |> Enum.flat_map(fn path ->
-      {source, 0} =
-        System.cmd("git", ["show", "#{revision}:#{path}"], cd: root, stderr_to_stdout: true)
-
-      markdown_units(source)
-    end)
-  end
-
-  @spec markdown_units(String.t()) :: [String.t()]
-  defp markdown_units(markdown) do
-    {units, _fence} =
-      markdown
-      |> String.split(~r/(\n\s*\n)/, include_captures: true, trim: false)
-      |> Enum.map_reduce(nil, fn block, fence ->
-        {next, fenced?} =
-          Enum.reduce(String.split(block, "\n"), {fence, not is_nil(fence)}, fn line,
-                                                                                {open, seen} ->
-            case Regex.run(~r/^\s*(`{3,}|~{3,})/, line) do
-              [_, marker] when is_nil(open) -> {String.first(marker), true}
-              [_, marker] -> if String.first(marker) == open, do: {nil, true}, else: {open, seen}
-              nil -> {open, seen}
-            end
-          end)
-
-        prose? =
-          not fenced? and String.trim(block) != "" and
-            not String.contains?(block, "{{COMMAND_REFERENCE}}")
-
-        {if(prose?, do: block), next}
-      end)
-
-    Enum.reject(units, &is_nil/1)
+    :ok
   end
 
   @spec validate_original!(
@@ -545,10 +460,6 @@ defmodule Overalls.LocalizationCatalogMigration do
       "msgid_plural" => plural
     }
   end
-
-  @spec identity_digest(identity()) :: String.t()
-  defp identity_digest(id),
-    do: :crypto.hash(:sha256, :erlang.term_to_binary(id)) |> Base.encode16(case: :lower)
 
   @spec text(nil | iodata()) :: String.t() | nil
   defp text(nil), do: nil

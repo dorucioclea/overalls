@@ -138,4 +138,4 @@ HTTPS through both public gateway addresses. Nix evaluation and the isolated
 fleet machine test do not establish this physical cutover.
 
 The coordinated memory-suspension and relay credential cutover, refusal checks
-and held-connection acceptance are described in [HLDD operations](../../marshall/priv/hldd/14-operations.md#memory-suspension-and-ingress-handoff-rollout).
+and held-connection acceptance are recorded in the architecture reviews.

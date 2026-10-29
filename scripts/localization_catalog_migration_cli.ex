@@ -7,10 +7,9 @@ defmodule Overalls.LocalizationCatalogMigration.CLI do
           root: Path.t(),
           mode: :dry_run | :check | :write,
           report: Path.t() | nil,
-          new_sources: Path.t() | nil,
-          hldd_revision: String.t() | nil
+          new_sources: Path.t() | nil
         }
-  @usage "usage: migrate_localization_catalogs.exs --snapshot PATH [--root PATH] [--new-sources PATH] [--hldd-revision COMMIT] [--write|--check] [--report PATH]"
+  @usage "usage: migrate_localization_catalogs.exs --snapshot PATH [--root PATH] [--new-sources PATH] [--write|--check] [--report PATH]"
 
   @spec run([String.t()]) :: :ok
   def run(args) do
@@ -26,8 +25,7 @@ defmodule Overalls.LocalizationCatalogMigration.CLI do
         options.root,
         options.snapshot,
         [:marshall, :porsche],
-        new_sources,
-        options.hldd_revision
+        new_sources
       )
 
     :ok = Migration.apply(plan, options.mode)
@@ -49,8 +47,7 @@ defmodule Overalls.LocalizationCatalogMigration.CLI do
           write: :boolean,
           check: :boolean,
           report: :string,
-          new_sources: :string,
-          hldd_revision: :string
+          new_sources: :string
         ]
       )
 
@@ -73,8 +70,7 @@ defmodule Overalls.LocalizationCatalogMigration.CLI do
       root: options[:root] || Path.expand("..", __DIR__),
       mode: mode,
       report: options[:report],
-      new_sources: options[:new_sources],
-      hldd_revision: options[:hldd_revision]
+      new_sources: options[:new_sources]
     }
   end
 end

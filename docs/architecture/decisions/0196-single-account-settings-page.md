@@ -85,7 +85,8 @@ old-link requirement ("breaking changes acceptable for links").
    (`#nav-account`, `/settings`),
    followed by AI usage (`#nav-usage`, `/usage`, moved out of "Your
    workspace"), then the existing browser extension, field notes, HLDD and
-   source code links. `#nav-profile` and the Security and SSH keys entries
+   source code links. (Correction: [ADR-0263](0263-retire-hldd.md) removed the
+   HLDD link; Source code now follows field notes.) `#nav-profile` and the Security and SSH keys entries
    are gone.
 5. **Stable contracts.** Every element id, hook, `data-*` and label that the
    LiveView tests, the browser probes, the NixOS browser tests and the

@@ -15,13 +15,13 @@ ExUnit tests where those provide the required evidence.
 ## Before editing
 
 1. Read the repository `AGENTS.md`, the target application's `AGENTS.md`, ancestor
-   `CONTRACTS` files, relevant ADRs, and the current HLDD testing section.
+   `CONTRACTS` files, and relevant ADRs.
 2. Find the application's reviewed Events catalog before adding diagnostics. Hegel
    failures and test telemetry must use catalogued metadata and must not expose
    credentials, tokens, terminal bytes, command arguments, or payloads.
 3. Identify the existing property runner, dependency pin, fixtures, sandbox ownership,
    and whether the property crosses a native, host, distributed, or machine boundary.
-   Record architecture and HLDD impact before implementation.
+   Record architecture impact before implementation.
 
 ## Write properties
 
@@ -98,7 +98,7 @@ Review each property for:
 
 Run the smallest focused property or replay first, then the target application's
 `mix precommit`. Shared protocol changes require both Marshall and Lilly consumer
-checks. Run contract, ADR, logging, conflict-marker, and HLDD checks required by the
+checks. Run contract, ADR, logging, and conflict-marker checks required by the
 repository. Record exact seeds/replay identifiers, test counts, and known skipped
 boundaries; do not describe a passing BEAM property as proof of physical isolation or
 production recovery.
@@ -114,8 +114,7 @@ override does not verify the packaged current pin. Exercise both successful
 generation and a deliberate failure/replay through the native engine. For a
 full-suite request, inventory every Mix application and default exclusions;
 enable required distributed/host/capacity fixtures in an isolated environment.
-Report unfinished and excluded tests separately from passes. Review and record
-HLDD groups individually; never bulk-refresh receipts to make a gate pass.
+Report unfinished and excluded tests separately from passes.
 
 For failures, retain the minimized replay and original exception, identify whether the
 cause is a generator, oracle, fixture cleanup, engine, or product defect, and add a

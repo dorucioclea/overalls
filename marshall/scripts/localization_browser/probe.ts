@@ -67,7 +67,7 @@ const advance = registerCustomAction("deterministicLocalizationAdvance", async (
     const allowed = ["en", "zh-Hans", "hi", "es", "ar", "fr", "bn", "pt-BR", "pt-PT", "ru", "ur", "id", "de", "ja", "pcm", "mr", "te", "tr", "ta", "vi", "ko", "fil", "et", "fi", "sv", "arz", "sw", "ha"];
     const expected = allowed[Number(store.getItem("localization.index") || "0")];
     if (!expected) throw new Error("Invalid route locale index.");
-    const routes = ["/overview", "/machines", "/hldd", "/hldd/system", "/docs", "/docs/quickstart"];
+    const routes = ["/overview", "/machines", "/docs", "/docs/quickstart"];
     const routeIndex = Number(store.getItem("localization.routeIndex") || "0");
     const route = routes[routeIndex];
     if (!route) throw new Error("Invalid localization route index.");
@@ -79,12 +79,6 @@ const advance = registerCustomAction("deterministicLocalizationAdvance", async (
     if (document.documentElement.lang !== (publicDocs ? "ja" : expected)) throw new Error("Route locale did not follow its authority.");
     if (document.documentElement.dir !== (["ar", "arz", "ur"].includes(publicDocs ? "ja" : expected) ? "rtl" : "ltr")) throw new Error("Route direction mismatches.");
     if (publicDocs && !document.querySelector("#public-documentation")) throw new Error("Localized public guide is absent.");
-    if (route === "/hldd" && document.querySelector("[data-hldd-section]")) throw new Error("Handbook index preloads chapter contents.");
-    if (route === "/hldd/system") {
-      const chapter = document.querySelector('[data-hldd-section="system"]');
-      if (!chapter || chapter.getAttribute("lang") !== "en" || chapter.getAttribute("dir") !== "ltr" || chapter.querySelector("h1")?.textContent !== "System overview") throw new Error("Handbook contents were translated or lost English direction.");
-      if (document.querySelectorAll("[data-hldd-section]").length !== 1) throw new Error("Handbook delivered multiple chapters.");
-    }
     if (route === "/machines") {
       const rows = Array.from(document.querySelectorAll("#machines tr.machine-row"));
       const resources = document.querySelector("#machines .resource-values");

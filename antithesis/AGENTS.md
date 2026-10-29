@@ -3,7 +3,7 @@
 The harness is a source-built, isolated verification environment. Read
 `scratchbook/sut-analysis.md` and `scratchbook/deployment-topology.md` before
 changing its service graph. Follow the repository's root `AGENTS.md` and
-`CONTRACTS` requirements, especially architecture impact, HLDD, typed code,
+`CONTRACTS` requirements, especially architecture impact, typed code,
 secret custody and truthful verification claims.
 
 Use `antithesis-setup` for image and Compose scaffolding,

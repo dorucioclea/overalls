@@ -12,5 +12,4 @@ flowchart LR
   Lilly -->|"Enforce isolation"| Network["Guest networks"]
 ```
 
-See the [machine lifecycle handbook](../marshall/priv/hldd/04-lifecycle.md) and
-[deployment guide](../docs/operations/deployment.md).
+See the [deployment guide](../docs/operations/deployment.md).

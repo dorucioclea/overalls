@@ -13,5 +13,4 @@ flowchart LR
   Brady -->|"Current guest identity"| Lilly["Lilly"]
 ```
 
-See the [Brady design](../docs/services/brady-design.md) and
-[supporting-services handbook](../marshall/priv/hldd/10-services.md#brady).
+See the [Brady design](../docs/services/brady-design.md).

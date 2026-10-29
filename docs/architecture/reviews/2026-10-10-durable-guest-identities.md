@@ -44,7 +44,7 @@ do not create a confidentiality boundary between sudo-capable writers.
 Source review covers the Accounts allocator/resource/mailbox boundary, SSH
 discovery and roster, browser personal terminal allocation, Editor identity and
 renewal, Lyra helper and guest editor broker. Tests are classified in the
-[scenario ledger](../../../marshall/priv/hldd/scenarios); present fixtures
+scenario ledger (`marshall/priv/hldd/scenarios`, removed by ADR-0263); present fixtures
 are not recorded native execution.
 
 The pinned development runtime and disposable PostgreSQL test partition recorded

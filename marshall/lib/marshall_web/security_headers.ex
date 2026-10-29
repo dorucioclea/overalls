@@ -22,8 +22,8 @@ defmodule MarshallWeb.SecurityHeaders do
                          false
                        )
 
-  # Only the xterm.js and Mermaid vendor renderers need `'unsafe-inline'`: both
-  # create `<style>` elements and set `style` attributes (`setAttribute("style")`),
+  # Only the xterm.js vendor renderer needs `'unsafe-inline'`: it
+  # creates `<style>` elements and sets `style` attributes (`setAttribute("style")`),
   # which a nonce cannot cover. Scripts stay strictly same-origin; the vendored
   # xterm image addon compiles its bundled sixel decoder with WebAssembly, so
   # `'wasm-unsafe-eval'` (ADR-0230) admits WebAssembly compilation only, never

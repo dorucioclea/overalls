@@ -30,7 +30,7 @@ the compact-Nix and terminal-daemon checks.
 
 ## Standalone browser typing
 
-The Teams, Control room and handbook checks execute their `checkedBrowser`
+The Teams and Control room checks execute their `checkedBrowser`
 artifacts. The default OSS fleet command executes `defaultOssBrowser`; the fleet
 client executes the typed Audi and Porsche browser artifacts; Inception deploys
 its checked browser artifact to the guest. Each artifact copies the actual helper
@@ -44,7 +44,6 @@ Build these artifacts without booting machines:
 nix build .#checks.x86_64-linux.teams-browser.checkedBrowser \
   .#checks.x86_64-linux.control-room-browser.checkedBrowser \
   .#checks.x86_64-linux.credential-self-service-browser.checkedBrowser \
-  .#checks.x86_64-linux.hldd-browser.checkedBrowser \
   .#checks.x86_64-linux.default-oss-creation.defaultOssBrowser \
   .#checks.x86_64-linux.inception.checkedBrowser \
   .#checks.x86_64-linux.audi-fleet.audiBrowser \
@@ -305,22 +304,6 @@ subprocess is checked separately from the composed machine driver: the
 `mfa-login-browser.checkedBrowser` artifact copies the source outside repository
 type-check exclusions and runs pinned `ty` with the execution Python and
 Playwright. The machine executes that checked artifact.
-
-The `hldd-browser` machine test boots the real Marshall release and PostgreSQL,
-then checks anonymous refusal, a body-free contents page, individual section
-navigation, direct links, browser history, Mermaid, themes, mobile, print and
-public-route isolation over verified TLS. It verifies the persisted reader remains
-ordinary after login and journey completion; revoking its stored login must refuse
-both mounted section navigation and a fresh deep link carrying the old cookie.
-Both signed-in navigation contexts must place Source code immediately after HLDD
-with its exact repository href and ordinary navigation; the test does not request GitHub.
-An aborted fixture login must fail with fixed diagnostics that omit its bearer URL.
-Previous sections and diagrams must be removed on navigation. It makes no guest,
-MFA, cross-replica, revocation-administration-UI or measured browser-heap claim.
-
-The `hldd` check validates handbook source-review receipts, scenario/security
-coverage and the evaluated NixOS option reference. It does not run the cited native
-tests or establish their current execution result.
 
 ## Suite ownership
 

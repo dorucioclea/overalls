@@ -318,7 +318,7 @@ credentials, and replay blobs by default; report only safe labels, locations, se
 and bounded structural metadata unless a test explicitly opts in.
 
 Run a focused property or replay before the application's `mix precommit`. Protocol
-changes require both Marshall and Lilly consumer gates. Preserve contract, ADR, HLDD,
+changes require both Marshall and Lilly consumer gates. Preserve contract, ADR,
 logging, and machine-test evidence boundaries when reporting results.
 
 Protocol's `workspace_source_test.exs` and `view_test.exs` still use StreamData.

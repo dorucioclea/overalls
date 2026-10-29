@@ -27,8 +27,6 @@ defmodule MarshallWeb.BrowserMessages do
         dgettext("browser", "Could not copy. Select the text and copy it manually."),
       "Could not update access. Check the account's machine access." =>
         dgettext("browser", "Could not update access. Check the account's machine access."),
-      "Design diagram; explanation follows in the handbook" =>
-        dgettext("browser", "Design diagram; explanation follows in the handbook"),
       "Enter full screen" => dgettext("browser", "Enter full screen"),
       "Exit full screen" => dgettext("browser", "Exit full screen"),
       "Input buffer full — that input was not sent" =>

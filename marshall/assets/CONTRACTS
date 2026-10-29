@@ -23,11 +23,6 @@ in multiples of `--line-height`, borders of `--border-thickness`. Renderer-owned
 DOM (xterm, SVG diagrams) and overlays are the only elements allowed off the
 grid; the probe asserts zero off-grid elements on the workspace routes.
 
-@cc [owner:ghuntley,label:product] handbook-diagram-scroll-containment
-Handbook SVG diagrams MUST retain a minimum readable width of 576 CSS pixels.
-When that width exceeds the chapter body, the diagram container MUST permit
-horizontal scrolling without creating horizontal page overflow.
-
 @cc [owner:ghuntley,label:security] terminal-browser-untrusted-bytes
 Guest output MUST reach xterm as bytes, never HTML. The terminal integration
 MUST refuse guest clipboard reads (there is no opt-in), bound and consent-gate

@@ -14,18 +14,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:140
+#: lib/marshall_web/live/admin/artifacts_live.ex:143
 #, elixir-autogen, elixir-format
 msgid "Abuse"
 msgstr "Abuso"
 
-#: lib/marshall_web/live/artifacts_live.ex:157
-#: lib/marshall_web/live/artifacts_live.ex:185
+#: lib/marshall_web/live/artifacts_live.ex:166
+#: lib/marshall_web/live/artifacts_live.ex:195
 #, elixir-autogen, elixir-format
 msgid "Access could not be changed."
 msgstr "Não foi possível alterar o acesso."
 
-#: lib/marshall_web/live/artifacts_live.ex:151
+#: lib/marshall_web/live/artifacts_live.ex:160
 #, elixir-autogen, elixir-format
 msgid "Access updated."
 msgstr "Acesso atualizado."
@@ -40,7 +40,7 @@ msgstr "Os administradores podem eliminar artefactos com um motivo registado. O 
 msgid "Artifact deleted for moderation."
 msgstr "Artefacto eliminado por moderação."
 
-#: lib/marshall_web/live/artifacts_live.ex:128
+#: lib/marshall_web/live/artifacts_live.ex:133
 #, elixir-autogen, elixir-format
 msgid "Artifact deleted."
 msgstr "Artefacto eliminado."
@@ -50,13 +50,13 @@ msgstr "Artefacto eliminado."
 msgid "Artifact moderation"
 msgstr "Moderação de artefactos"
 
-#: lib/marshall_web/live/artifacts_live.ex:271
+#: lib/marshall_web/live/artifacts_live.ex:292
 #, elixir-autogen, elixir-format
 msgid "Artifact sections"
 msgstr "Secções do artefacto"
 
 #: lib/marshall_web/live/artifacts_live.ex:16
-#: lib/marshall_web/live/artifacts_live.ex:232
+#: lib/marshall_web/live/artifacts_live.ex:244
 #, elixir-autogen, elixir-format
 msgid "Artifacts"
 msgstr "Artefactos"
@@ -72,29 +72,29 @@ msgid "Bytes"
 msgstr "Bytes"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:112
-#: lib/marshall_web/live/admin/artifacts_live.ex:128
-#: lib/marshall_web/live/artifacts_live.ex:291
+#: lib/marshall_web/live/admin/artifacts_live.ex:131
+#: lib/marshall_web/live/artifacts_live.ex:318
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr "Eliminar"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:127
-#: lib/marshall_web/live/artifacts_live.ex:289
+#: lib/marshall_web/live/admin/artifacts_live.ex:129
+#: lib/marshall_web/live/artifacts_live.ex:316
 #, elixir-autogen, elixir-format
 msgid "Delete this artifact and every version?"
 msgstr "Eliminar este artefacto e todas as versões?"
 
-#: lib/marshall_web/live/artifacts_live.ex:353
+#: lib/marshall_web/live/artifacts_live.ex:391
 #, elixir-autogen, elixir-format
 msgid "Email"
 msgstr "E-mail"
 
-#: lib/marshall_web/live/artifacts_live.ex:318
+#: lib/marshall_web/live/artifacts_live.ex:349
 #, elixir-autogen, elixir-format
 msgid "Files"
 msgstr "Ficheiros"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:141
+#: lib/marshall_web/live/admin/artifacts_live.ex:144
 #, elixir-autogen, elixir-format
 msgid "Legal"
 msgstr "Jurídico"
@@ -104,17 +104,17 @@ msgstr "Jurídico"
 msgid "Moderation reason"
 msgstr "Motivo da moderação"
 
-#: lib/marshall_web/live/artifacts_live.ex:244
+#: lib/marshall_web/live/artifacts_live.ex:256
 #, elixir-autogen, elixir-format
 msgid "No artifacts yet."
 msgstr "Ainda não existem artefactos."
 
-#: lib/marshall_web/live/artifacts_live.ex:262
+#: lib/marshall_web/live/artifacts_live.ex:283
 #, elixir-autogen, elixir-format
 msgid "Older artifacts"
 msgstr "Artefactos mais antigos"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:144
+#: lib/marshall_web/live/admin/artifacts_live.ex:147
 #, elixir-autogen, elixir-format
 msgid "Other"
 msgstr "Outro"
@@ -124,53 +124,53 @@ msgstr "Outro"
 msgid "Owner"
 msgstr "Proprietário"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:143
+#: lib/marshall_web/live/admin/artifacts_live.ex:146
 #, elixir-autogen, elixir-format
 msgid "Owner request"
 msgstr "Pedido do proprietário"
 
-#: lib/marshall_web/live/artifacts_live.ex:235
+#: lib/marshall_web/live/artifacts_live.ex:247
 #, elixir-autogen, elixir-format
 msgid "Pages your agents publish from threads. Each publish creates a new version; only people you share with can open them."
 msgstr "Páginas que os seus agentes publicam a partir de tópicos. Cada publicação cria uma nova versão; só as pessoas com quem partilha as podem abrir."
 
-#: lib/marshall_web/live/artifacts_live.ex:345
+#: lib/marshall_web/live/artifacts_live.ex:381
 #, elixir-autogen, elixir-format
 msgid "People with access"
 msgstr "Pessoas com acesso"
 
-#: lib/marshall_web/live/artifacts_live.ex:330
+#: lib/marshall_web/live/artifacts_live.ex:361
 #, elixir-autogen, elixir-format
 msgid "Published"
 msgstr "Publicado"
 
-#: lib/marshall_web/live/artifacts_live.ex:349
+#: lib/marshall_web/live/artifacts_live.ex:386
 #, elixir-autogen, elixir-format
 msgid "Remove"
 msgstr "Remover"
 
-#: lib/marshall_web/live/artifacts_live.ex:355
+#: lib/marshall_web/live/artifacts_live.ex:399
 #, elixir-autogen, elixir-format
 msgid "Role"
 msgstr "Função"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:101
-#: lib/marshall_web/live/artifacts_live.ex:241
+#: lib/marshall_web/live/artifacts_live.ex:253
 #, elixir-autogen, elixir-format
 msgid "Search titles"
 msgstr "Pesquisar títulos"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:142
+#: lib/marshall_web/live/admin/artifacts_live.ex:145
 #, elixir-autogen, elixir-format
 msgid "Security"
 msgstr "Segurança"
 
-#: lib/marshall_web/live/artifacts_live.ex:361
+#: lib/marshall_web/live/artifacts_live.ex:405
 #, elixir-autogen, elixir-format
 msgid "Share"
 msgstr "Partilhar"
 
-#: lib/marshall_web/live/artifacts_live.ex:283
+#: lib/marshall_web/live/artifacts_live.ex:310
 #, elixir-autogen, elixir-format
 msgid "Sharing"
 msgstr "Partilha"
@@ -181,66 +181,66 @@ msgid "That artifact is unavailable."
 msgstr "Esse artefacto não está disponível."
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:39
-#: lib/marshall_web/live/artifacts_live.ex:132
+#: lib/marshall_web/live/artifacts_live.ex:138
 #, elixir-autogen, elixir-format
 msgid "The artifact could not be deleted."
 msgstr "Não foi possível eliminar o artefacto."
 
-#: lib/marshall_web/live/artifacts_live.ex:315
+#: lib/marshall_web/live/artifacts_live.ex:346
 #, elixir-autogen, elixir-format
 msgid "The viewer is unavailable on this deployment."
 msgstr "O visualizador não está disponível nesta implementação."
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:108
-#: lib/marshall_web/live/artifacts_live.ex:248
-#: lib/marshall_web/live/artifacts_live.ex:329
+#: lib/marshall_web/live/artifacts_live.ex:260
+#: lib/marshall_web/live/artifacts_live.ex:360
 #, elixir-autogen, elixir-format
 msgid "Title"
 msgstr "Título"
 
-#: lib/marshall_web/live/artifacts_live.ex:250
+#: lib/marshall_web/live/artifacts_live.ex:262
 #, elixir-autogen, elixir-format
 msgid "Updated"
 msgstr "Atualizado"
 
-#: lib/marshall_web/live/artifacts_live.ex:249
-#: lib/marshall_web/live/artifacts_live.ex:328
+#: lib/marshall_web/live/artifacts_live.ex:261
+#: lib/marshall_web/live/artifacts_live.ex:359
 #, elixir-autogen, elixir-format
 msgid "Version"
 msgstr "Versão"
 
-#: lib/marshall_web/live/artifacts_live.ex:297
+#: lib/marshall_web/live/artifacts_live.ex:329
 #, elixir-autogen, elixir-format
 msgid "Version %{number} of %{current}"
 msgstr "Versão %{number} de %{current}"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:111
-#: lib/marshall_web/live/artifacts_live.ex:276
+#: lib/marshall_web/live/artifacts_live.ex:303
 #, elixir-autogen, elixir-format
 msgid "Versions"
 msgstr "Versões"
 
-#: lib/marshall_web/live/artifacts_live.ex:273
+#: lib/marshall_web/live/artifacts_live.ex:297
 #, elixir-autogen, elixir-format
 msgid "View"
 msgstr "Ver"
 
-#: lib/marshall_web/live/artifacts_live.ex:373
+#: lib/marshall_web/live/artifacts_live.ex:417
 #, elixir-autogen, elixir-format
 msgid "no access"
 msgstr "sem acesso"
 
-#: lib/marshall_web/live/artifacts_live.ex:370
+#: lib/marshall_web/live/artifacts_live.ex:414
 #, elixir-autogen, elixir-format
 msgid "owner"
 msgstr "proprietário"
 
-#: lib/marshall_web/live/artifacts_live.ex:372
+#: lib/marshall_web/live/artifacts_live.ex:416
 #, elixir-autogen, elixir-format
 msgid "viewer"
 msgstr "leitor"
 
-#: lib/marshall_web/live/artifacts_live.ex:371
+#: lib/marshall_web/live/artifacts_live.ex:415
 #, elixir-autogen, elixir-format
 msgid "writer"
 msgstr "editor"

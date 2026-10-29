@@ -19,7 +19,7 @@ the first four; the browser probe catches the rest.
 - Changing an `id`, `data-*`, `aria-*` attribute or hook name that a test or
   probe consumes (`#main-content`, `#workspace-sidebar`, `#navigation-open`,
   `#machine-connect`, `#terminal-*`, `data-terminal-*`, `[data-appearance]`,
-  `#nav-hldd + a#nav-source-code`, `.hldd-prose > section`, `pre.hldd-diagram`,
+  `a#nav-source-code`,
   `.clone-source`, `.auth-panel`, `button.console-button.primary`).
 - Inline `<script>` tags, SVG icon sets, mascots, rounded corners, drop
   shadows, gradients, transitions beyond the drawer slide and `button:active`.

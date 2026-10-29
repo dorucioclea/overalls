@@ -38,11 +38,11 @@ support generated replay, generation advance, interruption, actor death,
 completed-effect recovery and stop/delete observation causality. These are
 ordinary property fixtures, not native launch or storage evidence.
 
-The [scenario ledger](../../../marshall/priv/hldd/scenarios) retains the
+The scenario ledger (`marshall/priv/hldd/scenarios`, removed by ADR-0263) retains the
 existing lifecycle and completed-launch test references, recorded assertion
-names and gaps. The [lifecycle handbook](../../../marshall/priv/hldd/04-lifecycle.md)
+names and gaps. The lifecycle handbook (`marshall/priv/hldd/04-lifecycle.md`, removed by ADR-0263)
 distinguishes those retained tests from the retired Compose workload. The
-[verification reference](../../../marshall/priv/hldd/17-reference.md) identifies
+verification reference (`marshall/priv/hldd/17-reference.md`, removed by ADR-0263) identifies
 fresh hosted and mutation evidence as pending.
 
 ## Validation and remaining work

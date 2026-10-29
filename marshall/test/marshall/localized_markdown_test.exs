@@ -32,8 +32,8 @@ defmodule Marshall.LocalizedMarkdownTest do
 
   # @cc [owner:ghuntley,label:verification] documentation-public-prose-only
   # Generated documentation identities MUST contain only public page prose,
-  # public page titles and command help; HLDD-only prose MUST NOT enter catalogs.
-  test "generated documentation inventory excludes handbook-only prose" do
+  # public page titles and command help.
+  test "generated documentation inventory contains only public prose" do
     public_prose =
       :marshall
       |> Application.app_dir("priv/docs/*.md")

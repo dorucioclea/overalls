@@ -170,42 +170,9 @@
     "domain": "shared",
     "form": 0,
     "locale": "fi",
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "note": "HLDD document acronym with interpolated application title.",
-    "reason": "technical_literal"
-  },
-  {
-    "app": "marshall",
-    "context": null,
-    "domain": "shared",
-    "form": 0,
-    "locale": "fi",
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "note": "GitHub brand with external link glyph.",
-    "reason": "brand"
-  },
-  {
-    "app": "marshall",
-    "context": null,
-    "domain": "shared",
-    "form": 0,
-    "locale": "fi",
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "note": "Repository handbook document acronym.",
-    "reason": "technical_literal"
-  },
-  {
-    "app": "marshall",
-    "context": null,
-    "domain": "shared",
-    "form": 0,
-    "locale": "fi",
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "note": "Application product name.",
     "reason": "brand"
   },
   {
@@ -620,40 +587,7 @@
     "locale": "ha",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "This exact documentation acronym, font control, protocol header or example address remains literal in Hausa."
-  },
-  {
-    "app": "marshall",
-    "locale": "ha",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "This exact product, platform or package name remains unchanged in Hausa."
-  },
-  {
-    "app": "marshall",
-    "locale": "ha",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "This exact documentation acronym, font control, protocol header or example address remains literal in Hausa."
-  },
-  {
-    "app": "marshall",
-    "locale": "ha",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
@@ -972,44 +906,11 @@
     "locale": "sw",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application title remain invariant in Swahili reader chrome."
-  },
-  {
-    "app": "marshall",
-    "locale": "sw",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "GitHub brand and external-link glyph remain unchanged in Swahili."
-  },
-  {
-    "app": "marshall",
-    "locale": "sw",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "HLDD is the exact handbook acronym and remains unchanged in Swahili reader chrome."
-  },
-  {
-    "app": "marshall",
-    "locale": "sw",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "Overalls is the application brand and remains unchanged in Swahili."
   },
   {
     "app": "marshall",
@@ -1269,44 +1170,11 @@
     "locale": "arz",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "HLDD names the untranslated engineering handbook; the bound chapter label and separator retain their source identity."
-  },
-  {
-    "app": "marshall",
-    "locale": "arz",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "GitHub retains its official brand spelling in Egyptian Arabic and the external-link glyph is language independent."
-  },
-  {
-    "app": "marshall",
-    "locale": "arz",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "HLDD identifies the untranslated engineering handbook and retains its source acronym."
-  },
-  {
-    "app": "marshall",
-    "locale": "arz",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "Overalls is the product brand and retains its official spelling in Egyptian Arabic."
   },
   {
     "app": "marshall",
@@ -1390,44 +1258,11 @@
     "locale": "fil",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Filipino; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "fil",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Filipino; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "fil",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Filipino; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "fil",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Filipino; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -1797,44 +1632,11 @@
     "locale": "es",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Spanish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "es",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Spanish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "es",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Spanish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "es",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Spanish; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -2149,17 +1951,6 @@
     "locale": "et",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Estonian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "et",
-    "domain": "shared",
-    "context": null,
     "msgid": "Audit",
     "msgid_plural": null,
     "form": 0,
@@ -2176,28 +1967,6 @@
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Estonian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "et",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Estonian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "et",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Estonian; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -2479,17 +2248,6 @@
     "locale": "pt-BR",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Brazilian Portuguese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-BR",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
@@ -2501,33 +2259,11 @@
     "locale": "pt-BR",
     "domain": "shared",
     "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Brazilian Portuguese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-BR",
-    "domain": "shared",
-    "context": null,
     "msgid": "Menu",
     "msgid_plural": null,
     "form": 0,
     "reason": "cognate",
     "note": "Brazilian Portuguese uses this exact spelling as a native term or conventional software loanword in this interface; bindings and glyphs remain unchanged."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-BR",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Brazilian Portuguese; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -3260,17 +2996,6 @@
     "locale": "fr",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in French; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "fr",
-    "domain": "shared",
-    "context": null,
     "msgid": "Actions",
     "msgid_plural": null,
     "form": 0,
@@ -3326,17 +3051,6 @@
     "locale": "fr",
     "domain": "shared",
     "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in French; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "fr",
-    "domain": "shared",
-    "context": null,
     "msgid": "Machines",
     "msgid_plural": null,
     "form": 0,
@@ -3353,17 +3067,6 @@
     "form": 0,
     "reason": "cognate",
     "note": "French uses this exact spelling as a native term or conventional software loanword in this interface; bindings and glyphs remain unchanged."
-  },
-  {
-    "app": "marshall",
-    "locale": "fr",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in French; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -3876,17 +3579,6 @@
     "locale": "pt-PT",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in European Portuguese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-PT",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
@@ -3898,33 +3590,11 @@
     "locale": "pt-PT",
     "domain": "shared",
     "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in European Portuguese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-PT",
-    "domain": "shared",
-    "context": null,
     "msgid": "Menu",
     "msgid_plural": null,
     "form": 0,
     "reason": "cognate",
     "note": "European Portuguese uses this exact spelling as a native term or conventional software loanword in this interface; bindings and glyphs remain unchanged."
-  },
-  {
-    "app": "marshall",
-    "locale": "pt-PT",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in European Portuguese; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -4316,44 +3986,11 @@
     "locale": "bn",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Bengali; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "bn",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Bengali; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "bn",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Bengali; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "bn",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Bengali; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -4558,44 +4195,11 @@
     "locale": "ar",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Arabic; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ar",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Arabic; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ar",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Arabic; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ar",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Arabic; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -4943,44 +4547,11 @@
     "locale": "id",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Indonesian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "id",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Indonesian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "id",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Indonesian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "id",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Indonesian; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -5086,44 +4657,11 @@
     "locale": "ur",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Urdu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ur",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Urdu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ur",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Urdu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ur",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Urdu; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -5383,44 +4921,11 @@
     "locale": "ru",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Russian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ru",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Russian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ru",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Russian; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ru",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Russian; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -5680,33 +5185,11 @@
     "locale": "ko",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Korean; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ko",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Korean; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ko",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Korean; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -5977,44 +5460,11 @@
     "locale": "te",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Telugu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "te",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Telugu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "te",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Telugu; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "te",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Telugu; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -6450,17 +5900,6 @@
     "locale": "sv",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Swedish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "sv",
-    "domain": "shared",
-    "context": null,
     "msgid": "Administration",
     "msgid_plural": null,
     "form": 0,
@@ -6477,28 +5916,6 @@
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Swedish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "sv",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Swedish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "sv",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Swedish; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -6857,44 +6274,11 @@
     "locale": "zh-Hans",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Simplified Chinese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "zh-Hans",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Simplified Chinese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "zh-Hans",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Simplified Chinese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "zh-Hans",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Simplified Chinese; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -7104,17 +6488,6 @@
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Japanese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ja",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Japanese; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -7440,17 +6813,6 @@
     "locale": "de",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in German; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "de",
-    "domain": "shared",
-    "context": null,
     "msgid": "Audit",
     "msgid_plural": null,
     "form": 0,
@@ -7478,28 +6840,6 @@
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in German; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "de",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in German; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "de",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in German; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -8166,44 +7506,11 @@
     "locale": "mr",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Marathi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "mr",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Marathi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "mr",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Marathi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "mr",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Marathi; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -8507,44 +7814,11 @@
     "locale": "vi",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Vietnamese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "vi",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Vietnamese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "vi",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Vietnamese; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "vi",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Vietnamese; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -8749,44 +8023,11 @@
     "locale": "tr",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Turkish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "tr",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Turkish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "tr",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Turkish; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "tr",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Turkish; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -9134,44 +8375,11 @@
     "locale": "ta",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Tamil; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ta",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Tamil; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ta",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Tamil; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "ta",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Tamil; reviewed for this exact message."
   },
   {
     "app": "marshall",
@@ -9552,44 +8760,11 @@
     "locale": "hi",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD acronym and interpolated application name remains invariant in Hindi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "hi",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
     "note": "The GitHub brand with external-link glyph remains invariant in Hindi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "hi",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The HLDD handbook acronym remains invariant in Hindi; reviewed for this exact message."
-  },
-  {
-    "app": "marshall",
-    "locale": "hi",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "The Overalls application brand remains invariant in Hindi; reviewed for this exact message."
   },
   {
     "app": "porsche",
@@ -9893,40 +9068,7 @@
     "locale": "pcm",
     "domain": "shared",
     "context": null,
-    "msgid": "%{value1} · HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The established HLDD documentation acronym or VM virtual-machine acronym remains literal in Nigerian Pidgin."
-  },
-  {
-    "app": "marshall",
-    "locale": "pcm",
-    "domain": "shared",
-    "context": null,
     "msgid": "GitHub ↗",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "brand",
-    "note": "This exact product, provider, operating-system or package name remains unchanged in Nigerian Pidgin."
-  },
-  {
-    "app": "marshall",
-    "locale": "pcm",
-    "domain": "shared",
-    "context": null,
-    "msgid": "HLDD",
-    "msgid_plural": null,
-    "form": 0,
-    "reason": "technical_literal",
-    "note": "The established HLDD documentation acronym or VM virtual-machine acronym remains literal in Nigerian Pidgin."
-  },
-  {
-    "app": "marshall",
-    "locale": "pcm",
-    "domain": "shared",
-    "context": null,
-    "msgid": "Overalls",
     "msgid_plural": null,
     "form": 0,
     "reason": "brand",
@@ -10095,7 +9237,7 @@
     "msgid_plural": null,
     "form": 0,
     "reason": "technical_literal",
-    "note": "The established HLDD documentation acronym or VM virtual-machine acronym remains literal in Nigerian Pidgin."
+    "note": "The established VM virtual-machine acronym remains literal in Nigerian Pidgin."
   },
   {
     "app": "marshall",

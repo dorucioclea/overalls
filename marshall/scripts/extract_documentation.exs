@@ -1,7 +1,6 @@
 # Run with: mix run --no-start scripts/extract_documentation.exs
 # This deterministic source extraction does not invent translated prose.
 root = Path.expand("..", __DIR__)
-# HLDD chapter content stays authoritative source English and is not extracted.
 paths = Path.wildcard(Path.join(root, "priv/docs/*.md")) |> Enum.sort()
 
 messages =

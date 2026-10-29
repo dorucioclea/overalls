@@ -197,7 +197,7 @@ defmodule MarshallWeb.MFALoginHistoryTest do
       assert Security.recent?(actor) == (state.live and state.elevated)
       assert get(conn, "/admin/usage/export").status == if(allowed, do: 200, else: 404)
 
-      for path <- ["/overview", "/admin/users", "/hldd"] do
+      for path <- ["/overview", "/admin/users"] do
         if allowed do
           {:ok, view, _} = history_live(conn, path)
           assert has_element?(view, "#main-content")

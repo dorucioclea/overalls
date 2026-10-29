@@ -75,5 +75,5 @@ The pure oracle functions in `oracle.py` return `UNEXERCISED` when those proofs
 are missing. Tests cover stale generation/PID reuse, absent source capability,
 and unknown disk content. This harness code changes no product protocol, domain
 boundary or accepted architecture decision. It is not a native Firecracker or
-ZFS acceptance result. The HLDD verification reference records the selected
-profile and its stub boundary; no hosted run is recorded yet.
+ZFS acceptance result. This README records the selected profile and its stub
+boundary; no hosted run is recorded yet.

@@ -27,7 +27,6 @@ defmodule MarshallWeb.LiveObservability do
     MarshallWeb.ArtifactsLive => :artifacts_live,
     MarshallWeb.AutomaticMagicSignInLive => :automatic_magic_sign_in_live,
     MarshallWeb.GitLive => :git_live,
-    MarshallWeb.HLDDLive => :hldd_live,
     MarshallWeb.InferenceLive => :inference_live,
     MarshallWeb.IntegrationsLive => :integrations_live,
     MarshallWeb.LaunchLive => :launch_live,

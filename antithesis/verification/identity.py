@@ -27,7 +27,7 @@ from schema import (
 )
 
 # This is a build-input inventory. Report-only roots are absent; Marshall priv,
-# including priv/hldd, is deliberately part of the compiled release inventory.
+# including priv/docs, is deliberately part of the compiled release inventory.
 SOURCE_DIRS = (
     "marshall",
     "lilly",

@@ -189,17 +189,13 @@ defmodule MarshallWeb.Layouts do
   # administrator membership. Public navigation MUST still require sign-in.
 
   # @cc [owner:ghuntley,label:product] signed-in-reference-navigation
-  # Field notes, HLDD and Source code MUST form their own "Reference" tree
+  # Field notes and Source code MUST form their own "Reference" tree
   # (#nav-reference) after "Your account", in that order, not inside it.
   # In the Control room only the administration tree is shown: neither the
   # "Your account" nor the "Reference" tree renders there.
 
-  # @cc [owner:ghuntley,label:product] signed-in-hldd-reference-navigation
-  # The shared signed-in menu MUST place HLDD immediately below Field notes,
-  # using the same link styling and a Reference hint.
-
   # @cc [owner:ghuntley,label:product] signed-in-source-code-navigation
-  # The shared signed-in menu MUST place Source code immediately below HLDD,
+  # The shared signed-in menu MUST place Source code immediately below Field notes,
   # linking to https://github.com/ghuntley/overalls with ordinary navigation.
 
   # @cc [owner:ghuntley,label:product] browser-extension-guide-navigation
@@ -354,16 +350,6 @@ defmodule MarshallWeb.Layouts do
                   <li>
                     <.link href={~p"/docs"}>{dgettext("shared", "Field notes")}
                     <span class="nav-hint">{dgettext("shared", "Docs ↗")}</span></.link>
-                  </li>
-                  <li>
-                    <.link
-                      id="nav-hldd"
-                      navigate={~p"/hldd"}
-                      aria-current={@active == "hldd" && "page"}
-                    >
-                      {dgettext("shared", "HLDD")}
-                      <span class="nav-hint">{dgettext("shared", "Reference")}</span>
-                    </.link>
                   </li>
                   <li>
                     <.link id="nav-source-code" href="https://github.com/ghuntley/overalls">

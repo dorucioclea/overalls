@@ -7,10 +7,10 @@
   }
   .workspace-sidebar, .mobile-header, #navigation-backdrop,
   .workspace-breadcrumb, .skip-link, #flash-group,
-  .hldd-contents, .hldd-pagination, .appearance-control, .public-header nav {
+  .appearance-control, .public-header nav {
     display: none !important;
   }
-  .workspace-shell, .hldd-grid, .docs-shell {
+  .workspace-shell, .docs-shell {
     display: block;
   }
   .console-main {
@@ -24,10 +24,7 @@
   section {
     break-inside: avoid;
   }
-  .hldd-prose section {
-    break-before: page;
-  }
-  .hldd-prose, .docs-content {
+  .docs-content {
     max-width: none;
   }
 }

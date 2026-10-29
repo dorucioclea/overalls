@@ -11,5 +11,4 @@ flowchart LR
   Enrico -->|"Store and read mirrors"| Cache["Bounded ZFS cache"]
 ```
 
-See the [mirror decision](../docs/architecture/decisions/0097-enrico-git-mirrors.md)
-and [supporting-services handbook](../marshall/priv/hldd/10-services.md#enrico).
+See the [mirror decision](../docs/architecture/decisions/0097-enrico-git-mirrors.md).

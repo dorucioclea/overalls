@@ -13,5 +13,4 @@ flowchart LR
   Lilly --> Guests["Firecracker guests"]
 ```
 
-See the [control-plane handbook](priv/hldd/02-control-plane.md) and
-[architecture overview](../docs/architecture/README.md).
+See the [architecture overview](../docs/architecture/README.md).

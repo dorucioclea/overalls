@@ -246,21 +246,6 @@
           module = self.nixosModules.default; fleetModule = self.nixosModules.fleetBuilds;
           hosts = self.nixosConfigurations;
         };
-        hldd = pkgs.runCommand "overalls-hldd-check" {
-          nativeBuildInputs = [ built.toolchain.elixir (pkgs.python313.withPackages (p: [ p.pyyaml ])) ];
-          LC_ALL = "C.UTF-8";
-          source = ./.;
-          optionDeclarations = pkgs.writeText "overalls-hldd-options.json"
-            (builtins.toJSON (import ./scripts/hldd/options.nix { flake = self; }));
-          deploymentTopology = pkgs.writeText "overalls-hldd-topology.json"
-            (builtins.toJSON (import ./scripts/hldd/topology.nix { flake = self; }));
-        } ''
-          cd "$source"
-          elixir scripts/check_hldd.exs
-          elixir scripts/hldd_options.exs --check "$optionDeclarations"
-          elixir scripts/hldd_views.exs --check "$deploymentTopology"
-          touch "$out"
-        '';
         package-input-lock =
           let
             flakeLock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.buildNixpkgs.locked;

@@ -1,7 +1,6 @@
 import {ThreadComposer} from "./thread_composer.js";
 import {ArtifactFrame} from "./artifact_frame.js";
 import {AndroidDisplay} from "./android_display.js";
-import {Handbook} from "./handbook.js";
 import {WorkspaceNavigation, MachineConnection} from "./workspace.js";
 import {readPalette} from "./palette.js";
 import {adjustMediaPadding, offGridElements, setGridDebug} from "./grid.js";
@@ -80,7 +79,6 @@ const liveSocket = new LiveSocket("/live", Socket, {
     AdminElevation,
     WorkspaceNavigation,
     MachineConnection,
-    Handbook,
     DashboardVisibility,
     RepositoryLaunchComplete,
     ThreadComposer,

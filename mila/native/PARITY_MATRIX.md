@@ -51,7 +51,4 @@ implemented. Native-only CI supplies platform build and integration receipts for
 ## Review record
 
 This is a migration review artifact for ADR-0249, not a claim of completion.
-It has no server schema or protocol impact. The current repository lacks the
-Elixir runtime needed to run `scripts/check_hldd.exs`; the parent change must
-run the mandatory HLDD status/record/check commands and attach receipts for
-this path before merging.
+It has no server schema or protocol impact.

@@ -4,7 +4,7 @@ Structural (fast, run before every commit from `marshall/`):
 
 ```sh
 mix monospace.check     # utility classes, colour literals, external references, JS toggles
-mix workspace.check     # tsc over palette.js, grid.js, handbook.js, workspace.js, …
+mix workspace.check     # tsc over palette.js, grid.js, workspace.js, …
 mix terminal.check      # terminal hook unit tests (hidden/unread class contract)
 mix test test/marshall_web
 ```
@@ -31,14 +31,14 @@ CHROMIUM_PATH=$(command -v chromium) python3 -I scripts/monospace_browser_probe.
   $SCRATCH/context.json $SCRATCH/artifacts
 ```
 
-The probe visits every workspace, machine, settings, handbook and admin route
+The probe visits every workspace, machine, settings and admin route
 in light and dark, at desktop and 390px widths, and asserts: no horizontal
 overflow, JetBrains Mono available, token contrast, zero off-grid elements on
 the workspace routes, drawer focus containment and Escape, draft identity
 across reload, reduced-motion compliance, session-free public docs, no
 utility classes on the sign-in page, and that no request left the fixture
-origin. Its final line is the evidence string quoted by the handbook ledger.
+origin. Its final line is the evidence string to quote in review records.
 
-Native evidence: the NixOS browser machine tests (`hldd-browser`,
-`control-room-browser`, …) render the packaged release in a real browser.
+Native evidence: the NixOS browser machine tests (`control-room-browser`,
+`mfa-login-browser`, …) render the packaged release in a real browser.
 Record only runs that actually executed, with their scope and duration.

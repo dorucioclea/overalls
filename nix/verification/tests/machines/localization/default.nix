@@ -89,7 +89,7 @@ in
     web.succeed("mkdir -p /root/.pki/nssdb; certutil -N --empty-password -d sql:/root/.pki/nssdb")
     web.succeed("certutil -A -d sql:/root/.pki/nssdb -n overalls-fixture -t C,, -i /run/overalls-test/ca.crt")
     web.succeed("python3 /etc/localization-browser-context.py")
-    with subtest("all 28 account locales persist across real routes and English handbook contents"):
+    with subtest("all 28 account locales persist across real routes"):
         web.succeed("python3 ${probes}/run.py /run/overalls-test/localization-context.json /run/overalls-test/localization-browser", timeout=960)
     with subtest("Porsche derives human language from durable account authority and preserves JSON"):
         web.succeed("systemctl start porsche.service")

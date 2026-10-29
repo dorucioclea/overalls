@@ -13,8 +13,7 @@ flowchart LR
   Terminald --> Sessions["PTYs and guest shells"]
 ```
 
-See the [terminal handbook](../../../../marshall/priv/hldd/08-interactive.md) and
-[multiplexer decision](../../../../docs/architecture/decisions/0082-guest-terminal-multiplexer.md).
+See the [multiplexer decision](../../../../docs/architecture/decisions/0082-guest-terminal-multiplexer.md).
 
 `terminald.native` cross-links this same session engine for FreeBSD and illumos.
 The native socket adapters use ADR-0190's sixteen-byte ABI: family45 with BSD

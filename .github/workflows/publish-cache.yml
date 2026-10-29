@@ -16,8 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  # Repository-wide gates: prek hooks (Python ruff/ty, HLDD receipts, conflict
-  # markers, structured-event logging), the ADR checker and contract checks.
+  # Repository-wide gates: prek hooks (Python ruff/ty, conflict markers,
+  # structured-event logging), the ADR checker and contract checks.
   gates:
     runs-on: namespace-profile-cached-amd64-xl;container.privileged=true
     timeout-minutes: 60

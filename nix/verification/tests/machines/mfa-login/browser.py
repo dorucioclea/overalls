@@ -160,7 +160,7 @@ def verify(page: Page) -> None:
 
 
 def ordinary_access(page: Page, replica: str) -> None:
-    for path in ["/overview", "/admin/users", "/hldd"]:
+    for path in ["/overview", "/admin/users"]:
         visit(page, path, replica)
     assert export_status(page, replica) == 200
 
@@ -298,7 +298,7 @@ def main() -> None:
         select_replica(third_context, "third")
         third = third_context.new_page()
         _, third_sockets, _ = observe_sockets(third_context, third, "third")
-        for path in ["/overview", "/admin/users", "/hldd"]:
+        for path in ["/overview", "/admin/users"]:
             visit(third, path, "third", "/sign-in")
         assert export_status(third, "third") == 404
         assert third_sockets

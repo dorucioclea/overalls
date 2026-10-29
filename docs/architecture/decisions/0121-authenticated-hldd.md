@@ -68,22 +68,26 @@ rendering; and the exported Nix check for packaged source and option drift.
 
 ## Implementation evidence
 
-- [Handbook LiveView](../../../marshall/lib/marshall_web/live/hldd_live.ex) and
-  [compiled catalog](../../../marshall/lib/marshall/handbook.ex) implement access
+- Handbook LiveView (`marshall/lib/marshall_web/live/hldd_live.ex`, removed by ADR-0263) and
+  compiled catalog (`marshall/lib/marshall/handbook.ex`, removed by ADR-0263) implement access
   and release-local content.
-- [Review gate](../../../scripts/hldd/gate.ex) and
-  [coverage validation](../../../scripts/hldd/coverage.ex) enforce recorded review
+- Review gate (`scripts/hldd/gate.ex`, removed by ADR-0263) and
+  coverage validation (`scripts/hldd/coverage.ex`, removed by ADR-0263) enforce recorded review
   currency and structural evidence requirements.
-- [Gate properties](../../../marshall/test/architecture/hldd_test.exs) and
-  [web tests](../../../marshall/test/marshall_web/hldd_live_test.exs) exercise the
+- Gate properties (`marshall/test/architecture/hldd_test.exs`, removed by ADR-0263) and
+  web tests (`marshall/test/marshall_web/hldd_live_test.exs`, removed by ADR-0263) exercise the
   new boundaries. The [completion review](../reviews/2026-09-25-hldd.md) records
   passing application, property, native browser, release and packaged-source
   checks, together with their limits and separate deployment acceptance.
   The [reader authority correction](../reviews/2026-09-25-handbook-reader-verification.md)
   withdraws its original native ordinary-user inference while preserving the
   executed rendering evidence; ADR-0122 carries the corrected fixture and scope.
-- [Maintenance skill](../../../.agents/skills/hldd-maintenance/SKILL.md) makes the
+- Maintenance skill (`.agents/skills/hldd-maintenance/SKILL.md`, removed by ADR-0263) makes the
   review procedure discoverable; root guidance makes its use mandatory.
+
+Retired by [ADR-0263](0263-retire-hldd.md); the removal is visible in the
+[Marshall router](../../../marshall/lib/marshall_web/router.ex), which no longer
+serves `/hldd`.
 
 ## Open questions
 

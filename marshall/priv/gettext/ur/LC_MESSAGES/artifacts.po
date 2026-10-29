@@ -11,18 +11,18 @@ msgstr ""
 "Language: ur\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:140
+#: lib/marshall_web/live/admin/artifacts_live.ex:143
 #, elixir-autogen, elixir-format
 msgid "Abuse"
 msgstr "غلط استعمال"
 
-#: lib/marshall_web/live/artifacts_live.ex:157
-#: lib/marshall_web/live/artifacts_live.ex:185
+#: lib/marshall_web/live/artifacts_live.ex:166
+#: lib/marshall_web/live/artifacts_live.ex:195
 #, elixir-autogen, elixir-format
 msgid "Access could not be changed."
 msgstr "رسائی تبدیل نہیں کی جا سکی۔"
 
-#: lib/marshall_web/live/artifacts_live.ex:151
+#: lib/marshall_web/live/artifacts_live.ex:160
 #, elixir-autogen, elixir-format
 msgid "Access updated."
 msgstr "رسائی تازہ کر دی گئی۔"
@@ -37,7 +37,7 @@ msgstr "منتظمین ریکارڈ شدہ وجہ سے آرٹیفیکٹس حذف
 msgid "Artifact deleted for moderation."
 msgstr "آرٹیفیکٹ نگرانی کی وجہ سے حذف کر دیا گیا۔"
 
-#: lib/marshall_web/live/artifacts_live.ex:128
+#: lib/marshall_web/live/artifacts_live.ex:133
 #, elixir-autogen, elixir-format
 msgid "Artifact deleted."
 msgstr "آرٹیفیکٹ حذف کر دیا گیا۔"
@@ -47,13 +47,13 @@ msgstr "آرٹیفیکٹ حذف کر دیا گیا۔"
 msgid "Artifact moderation"
 msgstr "آرٹیفیکٹ کی نگرانی"
 
-#: lib/marshall_web/live/artifacts_live.ex:271
+#: lib/marshall_web/live/artifacts_live.ex:292
 #, elixir-autogen, elixir-format
 msgid "Artifact sections"
 msgstr "آرٹیفیکٹ کے حصے"
 
 #: lib/marshall_web/live/artifacts_live.ex:16
-#: lib/marshall_web/live/artifacts_live.ex:232
+#: lib/marshall_web/live/artifacts_live.ex:244
 #, elixir-autogen, elixir-format
 msgid "Artifacts"
 msgstr "آرٹیفیکٹس"
@@ -69,29 +69,29 @@ msgid "Bytes"
 msgstr "بائٹس"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:112
-#: lib/marshall_web/live/admin/artifacts_live.ex:128
-#: lib/marshall_web/live/artifacts_live.ex:291
+#: lib/marshall_web/live/admin/artifacts_live.ex:131
+#: lib/marshall_web/live/artifacts_live.ex:318
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr "حذف کریں"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:127
-#: lib/marshall_web/live/artifacts_live.ex:289
+#: lib/marshall_web/live/admin/artifacts_live.ex:129
+#: lib/marshall_web/live/artifacts_live.ex:316
 #, elixir-autogen, elixir-format
 msgid "Delete this artifact and every version?"
 msgstr "یہ آرٹیفیکٹ اور اس کے تمام ورژن حذف کریں؟"
 
-#: lib/marshall_web/live/artifacts_live.ex:353
+#: lib/marshall_web/live/artifacts_live.ex:391
 #, elixir-autogen, elixir-format
 msgid "Email"
 msgstr "ای میل"
 
-#: lib/marshall_web/live/artifacts_live.ex:318
+#: lib/marshall_web/live/artifacts_live.ex:349
 #, elixir-autogen, elixir-format
 msgid "Files"
 msgstr "فائلیں"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:141
+#: lib/marshall_web/live/admin/artifacts_live.ex:144
 #, elixir-autogen, elixir-format
 msgid "Legal"
 msgstr "قانونی"
@@ -101,17 +101,17 @@ msgstr "قانونی"
 msgid "Moderation reason"
 msgstr "نگرانی کی وجہ"
 
-#: lib/marshall_web/live/artifacts_live.ex:244
+#: lib/marshall_web/live/artifacts_live.ex:256
 #, elixir-autogen, elixir-format
 msgid "No artifacts yet."
 msgstr "ابھی کوئی آرٹیفیکٹ نہیں۔"
 
-#: lib/marshall_web/live/artifacts_live.ex:262
+#: lib/marshall_web/live/artifacts_live.ex:283
 #, elixir-autogen, elixir-format
 msgid "Older artifacts"
 msgstr "پرانے آرٹیفیکٹس"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:144
+#: lib/marshall_web/live/admin/artifacts_live.ex:147
 #, elixir-autogen, elixir-format
 msgid "Other"
 msgstr "دیگر"
@@ -121,53 +121,53 @@ msgstr "دیگر"
 msgid "Owner"
 msgstr "مالک"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:143
+#: lib/marshall_web/live/admin/artifacts_live.ex:146
 #, elixir-autogen, elixir-format
 msgid "Owner request"
 msgstr "مالک کی درخواست"
 
-#: lib/marshall_web/live/artifacts_live.ex:235
+#: lib/marshall_web/live/artifacts_live.ex:247
 #, elixir-autogen, elixir-format
 msgid "Pages your agents publish from threads. Each publish creates a new version; only people you share with can open them."
 msgstr "وہ صفحات جو آپ کے ایجنٹ گفتگوؤں سے شائع کرتے ہیں۔ ہر اشاعت ایک نیا ورژن بناتی ہے؛ صرف وہ لوگ انہیں کھول سکتے ہیں جن کے ساتھ آپ اشتراک کرتے ہیں۔"
 
-#: lib/marshall_web/live/artifacts_live.ex:345
+#: lib/marshall_web/live/artifacts_live.ex:381
 #, elixir-autogen, elixir-format
 msgid "People with access"
 msgstr "رسائی والے لوگ"
 
-#: lib/marshall_web/live/artifacts_live.ex:330
+#: lib/marshall_web/live/artifacts_live.ex:361
 #, elixir-autogen, elixir-format
 msgid "Published"
 msgstr "شائع شدہ"
 
-#: lib/marshall_web/live/artifacts_live.ex:349
+#: lib/marshall_web/live/artifacts_live.ex:386
 #, elixir-autogen, elixir-format
 msgid "Remove"
 msgstr "ہٹائیں"
 
-#: lib/marshall_web/live/artifacts_live.ex:355
+#: lib/marshall_web/live/artifacts_live.ex:399
 #, elixir-autogen, elixir-format
 msgid "Role"
 msgstr "کردار"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:101
-#: lib/marshall_web/live/artifacts_live.ex:241
+#: lib/marshall_web/live/artifacts_live.ex:253
 #, elixir-autogen, elixir-format
 msgid "Search titles"
 msgstr "عنوانات تلاش کریں"
 
-#: lib/marshall_web/live/admin/artifacts_live.ex:142
+#: lib/marshall_web/live/admin/artifacts_live.ex:145
 #, elixir-autogen, elixir-format
 msgid "Security"
 msgstr "سلامتی"
 
-#: lib/marshall_web/live/artifacts_live.ex:361
+#: lib/marshall_web/live/artifacts_live.ex:405
 #, elixir-autogen, elixir-format
 msgid "Share"
 msgstr "مشترک کریں"
 
-#: lib/marshall_web/live/artifacts_live.ex:283
+#: lib/marshall_web/live/artifacts_live.ex:310
 #, elixir-autogen, elixir-format
 msgid "Sharing"
 msgstr "اشتراک"
@@ -178,66 +178,66 @@ msgid "That artifact is unavailable."
 msgstr "وہ آرٹیفیکٹ دستیاب نہیں۔"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:39
-#: lib/marshall_web/live/artifacts_live.ex:132
+#: lib/marshall_web/live/artifacts_live.ex:138
 #, elixir-autogen, elixir-format
 msgid "The artifact could not be deleted."
 msgstr "آرٹیفیکٹ حذف نہیں کیا جا سکا۔"
 
-#: lib/marshall_web/live/artifacts_live.ex:315
+#: lib/marshall_web/live/artifacts_live.ex:346
 #, elixir-autogen, elixir-format
 msgid "The viewer is unavailable on this deployment."
 msgstr "اس تعیناتی پر ناظر دستیاب نہیں۔"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:108
-#: lib/marshall_web/live/artifacts_live.ex:248
-#: lib/marshall_web/live/artifacts_live.ex:329
+#: lib/marshall_web/live/artifacts_live.ex:260
+#: lib/marshall_web/live/artifacts_live.ex:360
 #, elixir-autogen, elixir-format
 msgid "Title"
 msgstr "عنوان"
 
-#: lib/marshall_web/live/artifacts_live.ex:250
+#: lib/marshall_web/live/artifacts_live.ex:262
 #, elixir-autogen, elixir-format
 msgid "Updated"
 msgstr "تازہ کر دیا گیا"
 
-#: lib/marshall_web/live/artifacts_live.ex:249
-#: lib/marshall_web/live/artifacts_live.ex:328
+#: lib/marshall_web/live/artifacts_live.ex:261
+#: lib/marshall_web/live/artifacts_live.ex:359
 #, elixir-autogen, elixir-format
 msgid "Version"
 msgstr "ورژن"
 
-#: lib/marshall_web/live/artifacts_live.ex:297
+#: lib/marshall_web/live/artifacts_live.ex:329
 #, elixir-autogen, elixir-format
 msgid "Version %{number} of %{current}"
 msgstr "ورژن %{number} از %{current}"
 
 #: lib/marshall_web/live/admin/artifacts_live.ex:111
-#: lib/marshall_web/live/artifacts_live.ex:276
+#: lib/marshall_web/live/artifacts_live.ex:303
 #, elixir-autogen, elixir-format
 msgid "Versions"
 msgstr "ورژنز"
 
-#: lib/marshall_web/live/artifacts_live.ex:273
+#: lib/marshall_web/live/artifacts_live.ex:297
 #, elixir-autogen, elixir-format
 msgid "View"
 msgstr "دیکھیں"
 
-#: lib/marshall_web/live/artifacts_live.ex:373
+#: lib/marshall_web/live/artifacts_live.ex:417
 #, elixir-autogen, elixir-format
 msgid "no access"
 msgstr "کوئی رسائی نہیں"
 
-#: lib/marshall_web/live/artifacts_live.ex:370
+#: lib/marshall_web/live/artifacts_live.ex:414
 #, elixir-autogen, elixir-format
 msgid "owner"
 msgstr "مالک"
 
-#: lib/marshall_web/live/artifacts_live.ex:372
+#: lib/marshall_web/live/artifacts_live.ex:416
 #, elixir-autogen, elixir-format
 msgid "viewer"
 msgstr "ناظر"
 
-#: lib/marshall_web/live/artifacts_live.ex:371
+#: lib/marshall_web/live/artifacts_live.ex:415
 #, elixir-autogen, elixir-format
 msgid "writer"
 msgstr "مصنف"

@@ -24,7 +24,6 @@
     "{config,lib,test,scripts}/**/*.{heex,ex,exs}",
     "priv/*/seeds.exs",
     "../scripts/*.{ex,exs}",
-    "../scripts/hldd/*.{ex,exs}",
     "../.formatter.exs"
   ]
 ]

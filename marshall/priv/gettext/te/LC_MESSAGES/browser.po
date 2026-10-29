@@ -85,37 +85,32 @@ msgid "Could not update access. Check the account's machine access."
 msgstr ""
 "యాక్సెస్‌ను అప్‌డేట్ చేయలేకపోయాం. ఖాతా మెషిన్ యాక్సెస్‌ను తనిఖీ చేయండి."
 
-#: lib/marshall_web/browser_messages.ex:31
-#, elixir-autogen, elixir-format
-msgid "Design diagram; explanation follows in the handbook"
-msgstr "డిజైన్ రేఖాచిత్రం; వివరణ హ్యాండ్‌బుక్‌లో ఉంది"
-
-#: lib/marshall_web/browser_messages.ex:32
+#: lib/marshall_web/browser_messages.ex:30
 #, elixir-autogen, elixir-format
 msgid "Enter full screen"
 msgstr "పూర్తి స్క్రీన్‌లోకి ప్రవేశించండి"
 
-#: lib/marshall_web/browser_messages.ex:33
+#: lib/marshall_web/browser_messages.ex:31
 #, elixir-autogen, elixir-format
 msgid "Exit full screen"
 msgstr "పూర్తి స్క్రీన్‌ నుంచి నిష్క్రమించండి"
 
-#: lib/marshall_web/browser_messages.ex:35
+#: lib/marshall_web/browser_messages.ex:33
 #, elixir-autogen, elixir-format
 msgid "Input buffer full — that input was not sent"
 msgstr "ఇన్‌పుట్ బఫర్ నిండింది — ఆ ఇన్‌పుట్ పంపబడలేదు"
 
-#: lib/marshall_web/browser_messages.ex:42
+#: lib/marshall_web/browser_messages.ex:40
 #, elixir-autogen, elixir-format
 msgid "Match found"
 msgstr "మ్యాచ్ కనుగొనబడింది"
 
-#: lib/marshall_web/browser_messages.ex:43
+#: lib/marshall_web/browser_messages.ex:41
 #, elixir-autogen, elixir-format
 msgid "No matches"
 msgstr "మ్యాచ్‌లు లేవు"
 
-#: lib/marshall_web/browser_messages.ex:45
+#: lib/marshall_web/browser_messages.ex:43
 #, elixir-autogen, elixir-format
 msgid "Open this link?\n\n%{url}"
 msgstr ""
@@ -123,140 +118,140 @@ msgstr ""
 "\n"
 "%{url}"
 
-#: lib/marshall_web/browser_messages.ex:46
+#: lib/marshall_web/browser_messages.ex:44
 #, elixir-autogen, elixir-format
 msgid "Opening…"
 msgstr "తెరుస్తోంది…"
 
-#: lib/marshall_web/browser_messages.ex:48
+#: lib/marshall_web/browser_messages.ex:46
 #, elixir-autogen, elixir-format
 msgid "Passkey request cancelled. You can try again."
 msgstr "పాస్‌కీ అభ్యర్థన రద్దు చేయబడింది. మళ్లీ ప్రయత్నించండి."
 
-#: lib/marshall_web/browser_messages.ex:50
+#: lib/marshall_web/browser_messages.ex:48
 #, elixir-autogen, elixir-format
 msgid "Passkey verification failed or unavailable. Try again."
 msgstr "పాస్‌కీ ధృవీకరణ విఫలమైంది లేదా అందుబాటులో లేదు. మళ్లీ ప్రయత్నించండి."
 
-#: lib/marshall_web/browser_messages.ex:52
+#: lib/marshall_web/browser_messages.ex:50
 #, elixir-autogen, elixir-format
 msgid "Terminal name (this browser only; empty restores the generated name)"
 msgstr ""
 "టెర్మినల్ పేరు (ఈ బ్రౌజర్‌లో మాత్రమే; ఖాళీ చేస్తే రూపొందించిన పేరు "
 "పునరుద్ధరించబడుతుంది)"
 
-#: lib/marshall_web/browser_messages.ex:57
+#: lib/marshall_web/browser_messages.ex:55
 #, elixir-autogen, elixir-format
 msgid "The result could not be confirmed. Reload the page and check the result before retrying."
 msgstr ""
 "ఫలితాన్ని నిర్ధారించలేకపోయాం. పేజీని రీలోడ్ చేసి మళ్లీ ప్రయత్నించే ముందు "
 "ఫలితాన్ని తనిఖీ చేయండి."
 
-#: lib/marshall_web/browser_messages.ex:62
+#: lib/marshall_web/browser_messages.ex:60
 #, elixir-autogen, elixir-format
 msgid "This machine asks to write %{bytes} bytes to your clipboard. Type once, session, or mute."
 msgstr ""
 "ఈ మెషిన్ మీ క్లిప్‌బోర్డ్‌కు %{bytes} బైట్‌లు రాయాలని అడుగుతోంది. once, "
 "session లేదా mute అని టైప్ చేయండి."
 
-#: lib/marshall_web/browser_messages.ex:68
+#: lib/marshall_web/browser_messages.ex:66
 #, elixir-autogen, elixir-format
 msgid "This repository link could not be launched. Open the link again."
 msgstr "ఈ రిపోజిటరీ లింక్‌ను ప్రారంభించలేకపోయాం. లింక్‌ను మళ్లీ తెరవండి."
 
-#: lib/marshall_web/browser_messages.ex:72
+#: lib/marshall_web/browser_messages.ex:70
 #, elixir-autogen, elixir-format
 msgid "Type to interact"
 msgstr "ఇంటరాక్ట్ చేయడానికి టైప్ చేయండి"
 
-#: lib/marshall_web/browser_messages.ex:73
+#: lib/marshall_web/browser_messages.ex:71
 #, elixir-autogen, elixir-format
 msgid "Updating viewing access…"
 msgstr "వీక్షణ యాక్సెస్ అప్‌డేట్ అవుతోంది…"
 
-#: lib/marshall_web/browser_messages.ex:75
+#: lib/marshall_web/browser_messages.ex:73
 #, elixir-autogen, elixir-format
 msgid "Verification could not be completed. Try again."
 msgstr "ధృవీకరణ పూర్తి కాలేదు. మళ్లీ ప్రయత్నించండి."
 
-#: lib/marshall_web/browser_messages.ex:77
+#: lib/marshall_web/browser_messages.ex:75
 #, elixir-autogen, elixir-format
 msgid "Verify with your passkey to %{action}. This runs once after verification."
 msgstr ""
 "%{action} చేయడానికి మీ పాస్‌కీతో ధృవీకరించండి. ధృవీకరణ తర్వాత ఇది ఒక్కసారి "
 "అమలవుతుంది."
 
-#: lib/marshall_web/browser_messages.ex:82
+#: lib/marshall_web/browser_messages.ex:80
 #, elixir-autogen, elixir-format
 msgid "View only"
 msgstr "వీక్షణ మాత్రమే"
 
-#: lib/marshall_web/browser_messages.ex:83
+#: lib/marshall_web/browser_messages.ex:81
 #, elixir-autogen, elixir-format
 msgid "Viewing access updated."
 msgstr "వీక్షణ యాక్సెస్ అప్‌డేట్ అయింది."
 
-#: lib/marshall_web/browser_messages.ex:84
+#: lib/marshall_web/browser_messages.ex:82
 #, elixir-autogen, elixir-format
 msgid "Waiting for your passkey…"
 msgstr "మీ పాస్‌కీ కోసం వేచి ఉంది…"
 
-#: lib/marshall_web/browser_messages.ex:86
+#: lib/marshall_web/browser_messages.ex:84
 #, elixir-autogen, elixir-format
 msgid "complete this administrative change"
 msgstr "ఈ పరిపాలనా మార్పును పూర్తి చేయండి"
 
-#: lib/marshall_web/browser_messages.ex:87
+#: lib/marshall_web/browser_messages.ex:85
 #, elixir-autogen, elixir-format
 msgid "just now"
 msgstr "ఇప్పుడే"
 
-#: lib/marshall_web/browser_messages.ex:88
+#: lib/marshall_web/browser_messages.ex:86
 #, elixir-autogen, elixir-format
 msgid "● live"
 msgstr "● లైవ్"
 
-#: lib/marshall_web/browser_messages.ex:89
+#: lib/marshall_web/browser_messages.ex:87
 #, elixir-autogen, elixir-format
 msgid "● read-only"
 msgstr "● చదవడానికి మాత్రమే"
 
-#: lib/marshall_web/browser_messages.ex:90
+#: lib/marshall_web/browser_messages.ex:88
 #, elixir-autogen, elixir-format
 msgid "⟳ reconnecting…"
 msgstr "⟳ మళ్లీ కనెక్ట్ అవుతోంది…"
 
-#: lib/marshall_web/browser_messages.ex:91
+#: lib/marshall_web/browser_messages.ex:89
 #, elixir-autogen, elixir-format
 msgid "⟳ restoring scrollback…"
 msgstr "⟳ స్క్రోల్‌బ్యాక్ పునరుద్ధరిస్తోంది…"
 
-#: lib/marshall_web/browser_messages.ex:38
+#: lib/marshall_web/browser_messages.ex:36
 #, elixir-autogen, elixir-format
 msgid "Connecting…"
 msgstr "కనెక్ట్ అవుతోంది…"
 
-#: lib/marshall_web/browser_messages.ex:41
+#: lib/marshall_web/browser_messages.ex:39
 #, elixir-autogen, elixir-format
 msgid "Diagram unavailable. Source:\n%{source}"
 msgstr "రేఖాచిత్రం అందుబాటులో లేదు. మూలం:\n%{source}"
 
-#: lib/marshall_web/browser_messages.ex:39
+#: lib/marshall_web/browser_messages.ex:37
 #, elixir-autogen, elixir-format
 msgid "No terminals"
 msgstr "టెర్మినల్‌లు లేవు"
 
-#: lib/marshall_web/browser_messages.ex:37
+#: lib/marshall_web/browser_messages.ex:35
 #, elixir-autogen, elixir-format
 msgid "— output before this view is not in the scrollback window —"
 msgstr "— ఈ వీక్షణకు ముందున్న అవుట్‌పుట్ స్క్రోల్‌బ్యాక్ విండోలో లేదు —"
 
-#: lib/marshall_web/browser_messages.ex:69
+#: lib/marshall_web/browser_messages.ex:67
 #, elixir-autogen, elixir-format
 msgid "Terminal input"
 msgstr "టెర్మినల్ ఇన్‌పుట్"
 
-#: lib/marshall_web/browser_messages.ex:71
+#: lib/marshall_web/browser_messages.ex:69
 #, elixir-autogen, elixir-format
 msgid "Too much output to announce, navigate to rows manually to read"
 msgstr "చదివి వినిపించడానికి అవుట్‌పుట్ చాలా ఎక్కువగా ఉంది; చదవడానికి వరుసలకు స్వయంగా వెళ్లండి"

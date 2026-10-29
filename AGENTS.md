@@ -45,32 +45,6 @@ or [Mila guidance](mila/AGENTS.md) for the component being changed.
   validation performed, and any remaining gaps. Cosmetic changes do not need an
   empty ADR or review report.
 
-## Mandatory HLDD maintenance
-
-- Use [hldd-maintenance](.agents/skills/hldd-maintenance/SKILL.md) for every change
-  affecting documented behavior, configuration, protocols, architecture,
-  operations or verification. Update `/hldd` in the same change; otherwise record
-  a specific reviewed no-impact rationale. This is mandatory, not optional advice.
-- Keep `/hldd` as contents and `/hldd/SECTION` as one section per page. The index
-  must not preload chapter bodies; navigation must remove previous diagram hooks.
-- Maintain visual Ash domain/resource ownership and deployment topology, with
-  concise responsibility, interaction, authority and failure-boundary explanations.
-  Run `elixir scripts/hldd_views.exs --check`; the Nix `hldd` gate checks evaluated
-  placement. New domains, resources, hosts and services must enter these views.
-- Maintain user-facing scenario coverage and explicit security boundaries through
-  identity, authorization, transport, execution fencing, isolation, storage and
-  recovery. Document sensitive operations, expected refusals and untested gaps.
-- Prefer NixOS machine integration tests and property-based tests above other
-  evidence. Distinguish test presence from recorded passing execution and explain
-  missing preferred coverage. Unit tests cannot establish native isolation.
-- Use `elixir scripts/check_hldd.exs status` to identify exact stale paths. Review
-  and record your paths with repeatable `--path` selectors; independent source and
-  chapter receipts live in `docs/hldd/reviews/`. Never restore the legacy aggregate
-  JSON or refresh unrelated receipts after a merge.
-- Run `elixir scripts/check_hldd.exs`, generated-reference checks and the Nix
-  `hldd` check. Precommit/prek reject stale review receipts; never refresh receipts
-  without reviewing the source and corresponding handbook/scenario changes.
-
 ## Temporary reminder: eMudhra compromise follow-ups (from 2026-10-22)
 
 The October 2026 eMudhra intermediate-key compromise left temporary workarounds and
@@ -87,9 +61,7 @@ it is empty.
    delete `nix/domains/system/public-trust.nix` (contract `fleet-distrust-emudhra-roots`)
    and its imports in `nix/domains/system/catalog.nix`,
    `nix/domains/artifacts/guest/configuration.nix` and the `host-kexec` modules in
-   `flake.nix`, and remove the eMudhra paragraph from
-   `marshall/priv/hldd/12-configuration.md` and the public trust module link in
-   `marshall/priv/hldd/20-security.md`. Verify the built host and guest bundles still
+   `flake.nix`. Verify the built host and guest bundles still
    lack the four roots. Keep Marshall's system-store TLS defaults
    (`runtime-postgres-system-trust`, `mail-smtp-system-trust`) and the `rustls-webpki`
    update; they are not part of the workaround.
@@ -110,6 +82,9 @@ it is empty.
 
 ## Verification and implementation
 
+- Prefer NixOS machine integration tests and property-based tests above other
+  evidence. Distinguish test presence from recorded passing execution and explain
+  missing preferred coverage. Unit tests cannot establish native isolation.
 - Inception is known broken and out of scope. Ignore Inception-related
   failures, including the zfs-guest "Inception retains a separate sparse data
   drive" subtest and the Inception machine tests: do not investigate or fix
@@ -184,12 +159,12 @@ it is empty.
 
 Use the [Covenant skill](.agents/skills/covenant/SKILL.md) when adding or maintaining Covenant contracts in any Elixir application. Keep Covenant development/test-only (`only: [:dev, :test]`, `runtime: false`) and preserve existing test-helper behavior while including `Covenant.Formatter`. Contract obligations belong under each application's `contracts/` tree and tagged executable tests under `test/contract/`, with stable IDs `<mix_app>.<component>.I<n>`. Run static and runtime Covenant checks plus the application's normal precommit gate; protocol changes also require Marshall and Lilly consumer checks.
 
-Covenant evidence is limited to behavior observable in the BEAM test VM. Do not use it to claim native Rust/KVM, physical isolation, multi-host recovery, browser, or production deployment guarantees. Preserve the existing `CONTRACTS`, ADR, HLDD, native, machine, and integration evidence, and update architecture/HLDD records when verification scope changes.
+Covenant evidence is limited to behavior observable in the BEAM test VM. Do not use it to claim native Rust/KVM, physical isolation, multi-host recovery, browser, or production deployment guarantees. Preserve the existing `CONTRACTS`, ADR, native, machine, and integration evidence, and update architecture records when verification scope changes.
 
 ## Localization
 
 - Use the [localization skill](.agents/skills/localization/SKILL.md) for every change involving user-facing strings, locale selection, translation catalogs, formatting, bidirectional presentation, or Elixir Localize integration.
 - Before editing, inventory human-facing text and inspect the pinned Localize/Gettext APIs and existing catalogs. Preserve stable source identifiers and machine-facing contracts; do not invent a parallel translation-key system.
 - Centralize typed locale validation, canonicalization, browser negotiation, fallback, and direction. Validate user overrides and keep them isolated per account/session. Bundle deterministic locale data and test malformed input, fallback, placeholders, plural rules, RTL layout, and catalog completeness.
-- Update architecture and HLDD evidence when localization changes documented behavior, configuration, protocols, operations, or verification scope.
-- Assign new messages to the feature domains documented in the localization skill; use native explicit domain APIs and keep catalogs per locale and feature. Only public `/docs/*` prose is translated: `/hldd/*` chapter contents, titles and command reference remain English.
+- Update architecture evidence when localization changes documented behavior, configuration, protocols, operations, or verification scope.
+- Assign new messages to the feature domains documented in the localization skill; use native explicit domain APIs and keep catalogs per locale and feature. Only public `/docs/*` prose is translated.

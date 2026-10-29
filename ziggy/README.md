@@ -12,5 +12,4 @@ flowchart LR
   Ziggy -->|"Model requests"| Providers["Configured providers or host-local Underclass"]
 ```
 
-See [Ziggy configuration](../docs/services/ziggy.md) and the
-[agent handbook](../marshall/priv/hldd/11-agents.md).
+See [Ziggy configuration](../docs/services/ziggy.md).

@@ -216,7 +216,7 @@ provider credential has been revoked.
 Required evidence includes typed state histories, committed multi-replica races,
 controlled TLS provider counts, browser OAuth refusals and actual `gh`/Git/LFS
 through Marshall, Audi, Lilly and Galileo. Each OS and retained-machine update
-needs recorded execution. The review and authenticated HLDD ledger distinguish
+needs recorded execution. The architecture review distinguishes
 presence from results. Parsers, mocked token replies, installed CLIs and
 structural gates do not establish live GitHub, organization consent,
 seven-family runtime or production acceptance.

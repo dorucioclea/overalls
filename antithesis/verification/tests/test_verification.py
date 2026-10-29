@@ -383,21 +383,21 @@ class VerificationTests(unittest.TestCase):
                 ):
                     verify(source + "\n" + extra)
 
-    def test_executable_and_compiled_hldd_in_inventory_but_reports_out(self) -> None:
+    def test_executable_and_compiled_docs_in_inventory_but_reports_out(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             executable = root / "antithesis/test/v1/control/first_probe.py"
-            hldd = root / "marshall/priv/hldd/10-flow.md"
+            docs = root / "marshall/priv/docs/index.md"
             report = root / "antithesis/scratchbook/report.md"
             review = root / "docs/architecture/reviews/review.md"
-            for path in (executable, hldd, report, review):
+            for path in (executable, docs, report, review):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text("v1", encoding="utf-8")
             paths = {
                 str(item["path"]) for item in walk_inputs(root, ("antithesis/test", "marshall"))
             }
             self.assertIn("antithesis/test/v1/control/first_probe.py", paths)
-            self.assertIn("marshall/priv/hldd/10-flow.md", paths)
+            self.assertIn("marshall/priv/docs/index.md", paths)
             self.assertNotIn("antithesis/scratchbook/report.md", paths)
             self.assertNotIn("docs/architecture/reviews/review.md", paths)
             before = walk_inputs(root, ("antithesis/test", "marshall"))

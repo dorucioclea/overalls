@@ -11,9 +11,8 @@ Thread status a state machine.
 [ADR-0261](0261-thread-feed-turn-notifications-and-subscription-revocation.md)
 adds `turn_finished` feed notifications and audited subscription revocation jobs.
 
-[ADR-0250](0250-independent-hldd-review-records.md) replaces aggregate HLDD review
-invalidation with independent source and chapter receipts, YAML scenario and host
-records, and explicit scoped recording. ADR-0122’s delivery requirements continue.
+[ADR-0263](0263-retire-hldd.md) retires the HLDD handbook, its review receipts
+and every HLDD gate, superseding ADR-0250. ADRs and architecture reviews remain.
 
 [ADR-0248](0248-fleet-build-scheduling.md) makes Panterloons the single
 tribuchet build scheduler for itself and Dungarees, which delegates over a
@@ -1081,11 +1080,12 @@ ADR-0015/0037 retain their statuses and accepted rationale.
 | [ADR-0246](0246-panterloons-control-plane-deployment.md) | accepted | partial | Panterloons control-plane deployment |
 | [ADR-0247](0247-sops-operator-source-grant.md) | accepted | partial | SOPS-held operator source grant |
 | [ADR-0248](0248-fleet-build-scheduling.md) | accepted | partial | Fleet build scheduling through a tribuchet hub and grpc:// stores |
-| [ADR-0250](0250-independent-hldd-review-records.md) | accepted | implemented | Independent HLDD review records |
+| [ADR-0250](0250-independent-hldd-review-records.md) | superseded | implemented | Independent HLDD review records |
 | [ADR-0249](0249-mila-rust-core-native-clients.md) | accepted | partial | Mila Rust core with native platform clients |
 | [ADR-0251](0251-thread-owned-durable-attachments.md) | accepted | partial | Thread-owned durable attachments |
 | [ADR-0252](0252-profile-boards-and-thread-subscriptions.md) | accepted | partial | Profile boards and authorized thread subscriptions |
 | [ADR-0262](0262-inception-development-checkout.md) | accepted | partial | Inception development checkout |
+| [ADR-0263](0263-retire-hldd.md) | accepted | implemented | Retire the HLDD handbook and its review gates |
 | [ADR-0253](0253-artifacts-domain.md) | accepted | partial | Artifacts domain for agent-published pages |
 | [ADR-0254](0254-isolated-artifact-content-origin.md) | accepted | partial | Isolated artifact content origin |
 | [ADR-0255](0255-thread-lifecycle-and-server-tool-dispatch.md) | accepted | partial | Thread lifecycle state machine and Oban server-tool dispatch |

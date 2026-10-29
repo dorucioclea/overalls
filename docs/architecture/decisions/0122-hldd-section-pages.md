@@ -75,21 +75,21 @@ covers literal declarations, not extension-generated resource versions.
 
 ## Implementation evidence
 
-- [Catalog](../../../marshall/lib/marshall/handbook.ex) exposes summaries and one
+- Catalog (`marshall/lib/marshall/handbook.ex`, removed by ADR-0263) exposes summaries and one
   compiled chapter lookup; it rewrites inter-section links.
-- [LiveView](../../../marshall/lib/marshall_web/live/hldd_live.ex) and
-  [diagram hook](../../../marshall/assets/js/handbook.js) bound rendered content
+- LiveView (`marshall/lib/marshall_web/live/hldd_live.ex`, removed by ADR-0263) and
+  diagram hook (`marshall/assets/js/handbook.js`, removed by ADR-0263) bound rendered content
   and stop disposed hooks before further diagram work.
-- [Catalog tests](../../../marshall/test/marshall/handbook_test.exs),
-  [web tests](../../../marshall/test/marshall_web/hldd_live_test.exs) and
-  [native browser](../../../nix/verification/tests/machines/hldd/browser.py) test these boundaries.
-- [Maintenance skill](../../../.agents/skills/hldd-maintenance/SKILL.md) preserves
+- Catalog tests (`marshall/test/marshall/handbook_test.exs`, removed by ADR-0263),
+  web tests (`marshall/test/marshall_web/hldd_live_test.exs`, removed by ADR-0263) and
+  native browser (`nix/verification/tests/machines/hldd/browser.py`, removed by ADR-0263) test these boundaries.
+- Maintenance skill (`.agents/skills/hldd-maintenance/SKILL.md`, removed by ADR-0263) preserves
   section delivery and preferred machine/property verification. Passing application,
   native browser, release and deployment results are scoped in the
   [review](../reviews/2026-09-25-hldd-sections.md).
-- [Visual view checker](../../../scripts/hldd/views.ex),
-  [public Nix projection](../../../scripts/hldd/topology.nix) and
-  [regression properties](../../../marshall/test/architecture/hldd_views_test.exs)
+- Visual view checker (`scripts/hldd/views.ex`, removed by ADR-0263),
+  public Nix projection (`scripts/hldd/topology.nix`, removed by ADR-0263) and
+  regression properties (`marshall/test/architecture/hldd_views_test.exs`, removed by ADR-0263)
   enforce required domain and topology views. The
   [visual-view review](../reviews/2026-09-25-hldd-views.md) records scope and validation.
 - [Reader authority review](../reviews/2026-09-25-handbook-reader-verification.md)
@@ -100,6 +100,10 @@ covers literal declarations, not extension-generated resource versions.
   generated chapter histories covering revoked, expired and deleted logins. Its
   integrated native run also checks the shared Source code link's position and
   destination without contacting GitHub, and fixed fixture sign-in diagnostics.
+
+Retired by [ADR-0263](0263-retire-hldd.md); the removal is visible in the
+[Marshall router](../../../marshall/lib/marshall_web/router.ex), which no longer
+serves `/hldd`.
 
 ## Open questions
 

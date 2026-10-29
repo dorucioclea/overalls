@@ -43,7 +43,6 @@ defmodule MarshallWebSurfaceContractTest do
       MarshallWeb.Gettext,
       MarshallWeb.GitLive,
       MarshallWeb.GitRawController,
-      MarshallWeb.HLDDLive,
       MarshallWeb.Health,
       MarshallWeb.InferenceExportController,
       MarshallWeb.InferenceLive,

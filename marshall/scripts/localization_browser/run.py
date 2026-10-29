@@ -14,9 +14,7 @@ import sys
 from pathlib import Path
 from urllib.parse import urlsplit
 
-ROUTES: frozenset[str] = frozenset(
-    ("/overview", "/machines", "/hldd", "/hldd/system", "/docs", "/docs/quickstart")
-)
+ROUTES: frozenset[str] = frozenset(("/overview", "/machines", "/docs", "/docs/quickstart"))
 
 LOCALES: frozenset[str] = frozenset(
     [

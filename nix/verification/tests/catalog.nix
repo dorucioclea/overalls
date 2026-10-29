@@ -81,7 +81,6 @@ buildPkgs.lib.genAttrs [ "marshall-release" "lilly-release" "audi-release" "pors
   credential-self-service-browser = import ./machines/credential-self-service service;
   job-history-browser = import ./machines/job-history service;
   mfa-login-browser = import ./machines/mfa-login service;
-  hldd-browser = import ./machines/hldd service;
   ziggy-service = import ./machines/ziggy-service service;
   agent-cli = import ./machines/agent-cli { pkgs = testPkgs; inherit packages hegel; };
   ziggy-underclass = import ./machines/ziggy-underclass service;

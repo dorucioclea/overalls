@@ -54,7 +54,7 @@ The real first magic-link sign-in therefore promoted the supposed ordinary reade
 The fixture now represents an installed system with a completed bootstrap latch,
 and asserts the reader's persisted non-administrator role immediately after sign-in.
 Review identified the same unconsumed-latch pattern in the separate
-[HLDD fixture](../../../nix/verification/tests/machines/hldd/seed.exs). Its correction and scoped
+HLDD fixture (`nix/verification/tests/machines/hldd/seed.exs`, removed by ADR-0263). Its correction and scoped
 ordinary-reader acceptance are tracked separately by the verification campaign.
 
 The browser waits for an actual connected LiveView after full-page transitions

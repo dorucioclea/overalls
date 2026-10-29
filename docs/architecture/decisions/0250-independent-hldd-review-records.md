@@ -2,11 +2,11 @@
 
 - ID: ADR-0250
 - Date: 2026-10-20
-- Status: accepted
+- Status: superseded
 - Implementation: implemented
 - Components: repository governance, HLDD
 - Supersedes: ADR-0122
-- Superseded by: none
+- Superseded by: ADR-0263
 
 ## Context
 
@@ -79,14 +79,18 @@ remain separate evidence for unchanged delivery boundaries.
 
 ## Implementation evidence
 
-- [Gate](../../../scripts/hldd/gate.ex) implements independent currency and scoped recording.
-- [Migration](../../../scripts/hldd/migration.ex) preserves validated legacy evidence.
-- [YAML adapter](../../../scripts/hldd/yaml_io.py) parses closed data and writes atomically.
-- [Regression tests](../../../marshall/test/architecture/hldd_test.exs) exercise merge and refusal cases.
-- [Workflow](../../hldd/README.md) explains review, migration and concurrent changes.
+- Gate (`scripts/hldd/gate.ex`, removed by ADR-0263) implements independent currency and scoped recording.
+- Migration (`scripts/hldd/migration.ex`, removed by ADR-0263) preserves validated legacy evidence.
+- YAML adapter (`scripts/hldd/yaml_io.py`, removed by ADR-0263) parses closed data and writes atomically.
+- Regression tests (`marshall/test/architecture/hldd_test.exs`, removed by ADR-0263) exercise merge and refusal cases.
+- Workflow (`docs/hldd/README.md`, removed by ADR-0263) explains review, migration and concurrent changes.
 
 The merge/refusal regressions and packaged-source Nix gate passed; see the [review](../reviews/2026-10-20-hldd-independent-reviews.md)
 for executed checks and remaining gaps.
+
+Retired by [ADR-0263](0263-retire-hldd.md); the removal is visible in the
+[Marshall router](../../../marshall/lib/marshall_web/router.ex), which no longer
+serves `/hldd`.
 
 ## Open questions
 
@@ -97,3 +101,6 @@ None.
 [ADR-0122](0122-hldd-section-pages.md) retains section delivery and inherited
 maintenance requirements except for the invalidation semantics replaced here.
 [ADR-0028](0028-colocated-code-contracts.md) governs code contracts.
+
+Superseded by [ADR-0263](0263-retire-hldd.md), which retires the HLDD handbook
+and its review gates.

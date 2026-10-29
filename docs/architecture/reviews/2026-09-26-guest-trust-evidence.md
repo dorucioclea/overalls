@@ -10,7 +10,7 @@ No production protocol, authority, image, deployment topology or storage
 contract changes; the delta is the native probe, its directory contract and
 evidence records.
 
-The [`guest-trust` scenario row](../../../marshall/priv/hldd/scenarios)
+The `guest-trust` scenario row
 held two property entries at `present` (test exists, assertion inspected,
 no execution record on current source) and asked in its `preferred_gap` to
 record the lifecycle/digest property execution and add native terminal

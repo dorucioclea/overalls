@@ -152,7 +152,6 @@ defmodule Marshall.MixProject do
       "logging.check": [fn _ -> Code.eval_file("../scripts/check_logging.exs", __DIR__) end],
       "toolchain.check": [&check_toolchain/1],
       "terminal.check": [&check_terminal/1],
-      "hldd.check": [&check_hldd/1],
       "workspace.check": [&check_workspace/1],
       "monospace.check": [&check_monospace/1],
       "localization.catalogs": ["run --no-start scripts/check_locale_catalogs.exs --strict"],
@@ -161,7 +160,6 @@ defmodule Marshall.MixProject do
       precommit: [
         "toolchain.check",
         "architecture.check",
-        "hldd.check",
         "contracts.check",
         "logging.check",
         "compile --warnings-as-errors",
@@ -184,14 +182,6 @@ defmodule Marshall.MixProject do
   @spec check_monospace([String.t()]) :: :ok
   defp check_monospace(_args) do
     case System.cmd("elixir", ["scripts/check_monospace.exs"], stderr_to_stdout: true) do
-      {output, 0} -> Mix.shell().info(output)
-      {output, _} -> Mix.raise(output)
-    end
-  end
-
-  @spec check_hldd([String.t()]) :: :ok
-  defp check_hldd(_args) do
-    case System.cmd("elixir", ["../scripts/check_hldd.exs"], stderr_to_stdout: true) do
       {output, 0} -> Mix.shell().info(output)
       {output, _} -> Mix.raise(output)
     end

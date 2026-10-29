@@ -81,6 +81,7 @@ in {
         RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_NETLINK" ];
         Environment = [
           "PYTHONDONTWRITEBYTECODE=1"
+          "OVERALLS_FLEET_EXPORTER_PYTHON=${pkgs.python3}/bin/python3"
           "OVERALLS_FLEET_EXPORTER_SCRIPT=${runtime}/runtime.py"
         ];
       };

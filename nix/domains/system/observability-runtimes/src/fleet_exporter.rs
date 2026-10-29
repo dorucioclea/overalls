@@ -9,8 +9,8 @@ fn main() -> ExitCode {
             return ExitCode::from(78);
         }
     };
-    match Command::new("/usr/bin/env")
-        .arg("python3")
+    let python = env::var("OVERALLS_FLEET_EXPORTER_PYTHON").unwrap_or_else(|_| "python3".to_owned());
+    match Command::new(python)
         .arg(script)
         .args(env::args().skip(1))
         .status()

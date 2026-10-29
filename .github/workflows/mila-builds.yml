@@ -124,6 +124,8 @@ jobs:
           }
       - name: Install the pinned Rust toolchain
         uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: 1.97.1
       - name: Build Rust Windows FFI
         run: cargo build --manifest-path mila/rust/Cargo.toml -p mila-ffi --release
       - name: Build native WinUI client (.NET 10)
@@ -152,6 +154,8 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Install the pinned Rust toolchain
         uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: 1.97.1
       - name: Install GTK4 and libadwaita development libraries
         run: |
           sudo apt-get update
@@ -221,6 +225,7 @@ jobs:
       - name: Install Rust Android linker
         uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
         with:
+          toolchain: 1.97.1
           targets: aarch64-linux-android,armv7-linux-androideabi,x86_64-linux-android
       - name: Install cargo-ndk
         timeout-minutes: 10

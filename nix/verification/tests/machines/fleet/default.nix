@@ -1091,7 +1091,7 @@ let
       enable = true;
       bundles.lilly = {
         encryptedFile = "${root}/lilly.enc.json";
-        outputs.credential = { format = "raw"; secrets = [ "LILLY_CREDENTIAL" ]; };
+        outputs."credential.json" = { format = "raw"; secrets = [ "LILLY_CREDENTIAL" ]; };
       };
     };
     systemd.services.overalls-secrets-lilly = {
@@ -1162,7 +1162,7 @@ let
       hostId = host.host;
       controlPlane = "https://control.example.test:5443";
       controlPlaneCAFile = "${root}/ca.crt";
-      credentialFile = "${config.services.overallsSecrets.bundles.lilly.directory}/credential";
+      credentialFile = "${config.services.overallsSecrets.bundles.lilly.directory}/credential.json";
       secretUnits = [ "fleet-credentials.service" "fleet-storage.service" config.services.overallsSecrets.bundles.lilly.unit ];
       egressInterface = "eth2";
       protectedCidrs = [ "11.0.0.2/32" "${hosts.${if name == "l1" then "l2" else "l1"}.ip}/32" ];

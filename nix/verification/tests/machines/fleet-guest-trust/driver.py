@@ -190,9 +190,8 @@ with subtest("authenticated native observations supply admission capacity"):
         machine.wait_until_succeeds("test -s /etc/ssh/ssh_host_ed25519_key.pub")
         machine.succeed("fleet-seal-lilly")
         machine.succeed("touch " + root + "/ready")
-        machine.succeed(
-            "systemctl restart overalls-secrets-lilly.service && systemctl restart lilly.service"
-        )
+        machine.succeed("systemctl restart overalls-secrets-lilly.service")
+        machine.succeed("systemctl restart lilly.service")
         machine.wait_for_unit("lilly.service")
     try:
         eventually(

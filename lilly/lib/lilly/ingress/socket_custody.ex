@@ -43,7 +43,7 @@ defmodule Lilly.Ingress.SocketCustody do
 
     case File.lstat(claim) do
       {:error, :enoent} ->
-        with {:error, :enoent} <- File.lstat(path),
+        with {:error, :enoent} <- Lilly.Host.Privilege.lstat(path),
              do: PrivateFiles.write(directory, "socket-path", path)
 
       {:ok, _} ->
@@ -55,9 +55,9 @@ defmodule Lilly.Ingress.SocketCustody do
   end
 
   defp recover(path) do
-    {:ok, %{uid: uid}} = File.stat("/proc/self")
+    {:ok, %{uid: uid}} = Lilly.Host.Privilege.stat("/proc/self")
 
-    case File.lstat(path) do
+    case Lilly.Host.Privilege.lstat(path) do
       {:error, :enoent} -> :ok
       {:ok, %{uid: ^uid, mode: mode}} when band(mode, 0o170000) == 0o140000 -> File.rm(path)
       _ -> :error

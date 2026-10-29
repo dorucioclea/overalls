@@ -3,6 +3,14 @@ let
   inherit (lib) mkOption mkEnableOption mkIf types;
   cfg = config.services.overallsFleetExporter;
   observabilityRuntimes = import ../observability-runtimes.nix { inherit pkgs; };
+  runtime = pkgs.runCommand "overalls-fleet-exporter" {} ''
+    mkdir -p $out
+    cp ${./runtime.py} $out/runtime.py
+    cp ${./exporter.py} $out/exporter.py
+    cp ${./metrics.py} $out/metrics.py
+    cp ${./backup_status.py} $out/backup_status.py
+    cp ${./terminal_metrics.py} $out/terminal_metrics.py
+  '';
   descriptor = pkgs.writeText "overalls-fleet-exporter.json" (builtins.toJSON {
     port = cfg.port;
     external_interfaces = cfg.externalInterfaces;
@@ -71,7 +79,10 @@ in {
         # guest lifecycle remains exclusively with Lilly's existing services.
         CapabilityBoundingSet = [ "CAP_DAC_READ_SEARCH" "CAP_SYS_ADMIN" "CAP_NET_ADMIN" ];
         RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_NETLINK" ];
-        Environment = "PYTHONDONTWRITEBYTECODE=1";
+        Environment = [
+          "PYTHONDONTWRITEBYTECODE=1"
+          "OVERALLS_FLEET_EXPORTER_SCRIPT=${runtime}/runtime.py"
+        ];
       };
     };
   };

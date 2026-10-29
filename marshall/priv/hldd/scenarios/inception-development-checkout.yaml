@@ -9,7 +9,7 @@ layers:
   - recovery
 boundary: A newly created Inception guest owns a first-boot Git checkout of the canonical Overalls repository.
 denial: A malformed existing workspace is refused and an existing developer checkout is never overwritten.
-scope: The guest bootstrap clones the canonical source, records the exact origin, and preserves a developer edit across stop/start.
+scope: The guest bootstrap clones the canonical source, records the exact origin, and preserves a developer edit across stop/start. Control publication keeps an active DNS-01 proof ahead of optional gateway lookups during both initial issuance and renewal.
 evidence:
   - assertion: self.assertEqual((target / "file.ex").read_text(), "developer edits")
     execution: present

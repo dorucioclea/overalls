@@ -1,6 +1,6 @@
 ---
-digest: 5dd817691affc77412d1bbdcc544dfcccc8393ade6f1d716ccd944ea770f3df1
-disposition: updated
+digest: b38539fd21aa4d5ceda0d8835701d1d25c3ad7771559f77b57fc621273501e86
+disposition: no-impact
 kind: chapter
 mapping_digest: null
 path: marshall/priv/hldd/19-coverage.md
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Reviewed after rebasing onto trunk: regenerated coverage keeps trunk's entries and differs only by the artifact and thread-tool scenario updates recording the 2026-10-28 machine runs and new properties.
+Reviewed the changed coverage chapter scenario wording and retained its partial native evidence boundary.

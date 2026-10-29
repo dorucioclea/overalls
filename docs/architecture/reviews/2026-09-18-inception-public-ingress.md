@@ -1,5 +1,20 @@
 # IPv4 separation and Inception public ingress — implementation review
 
+## Publication bootstrap correction — 2026-10-29
+
+The nested publication projection previously used an inner gateway join for
+all records. During parent gateway bootstrap that join removed the child proof
+along with routes, so DNS-01 could not observe the child until its parent
+already had an address and host key. The projection now retains nested proofs
+with a left gateway join while continuing to gate route records on current
+gateway addresses and host-key readiness. `EnvironmentPublication` also emits
+the VM and DNS-snapshot control hints for the initial `record` action as well
+as `advance`, ensuring replicas refresh the first proof instead of waiting for
+the next poll. The focused Marshall regression starts with an address-less
+gateway, asserts proof-without-route publication, then enables routes after
+the gateway key is installed. A native acceptance rerun with these corrections
+is in progress.
+
 ## Current correction — 2026-10-28
 
 The native run reached both nested control certificate workers and Pebble orders,
@@ -175,7 +190,7 @@ not yet been established.
 
 The [proof hook](../../../nix/domains/artifacts/guest/inception/control_proofs.py) accepts
 one fixed control owner and canonical proof under a boot/generation/job nonce,
-with a nonrenewable three-minute deadline. It completes presentation only after
+with a nonrenewable ten-minute deadline. It completes presentation only after
 fresh parent evidence. The [worker](../../../nix/domains/artifacts/guest/inception/control_worker.py)
 uses independent persistent Lego account state, an isolated environment and a
 bounded process group. Completion, timeout or exit kills remaining hooks before

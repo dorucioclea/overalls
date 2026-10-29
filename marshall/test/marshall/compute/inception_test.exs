@@ -183,6 +183,9 @@ defmodule Marshall.Compute.InceptionTest do
 
     client = Marshall.LillyControl.connect(client)
 
+    vm_id = vm.id
+    :ok = Marshall.Control.Hints.subscribe(:dns_snapshot, vm_id)
+
     assert {:ok, client_offer} =
              Lilly.Control.Client.exchange_inception(
                client,
@@ -190,6 +193,8 @@ defmodule Marshall.Compute.InceptionTest do
                message,
                nil
              )
+
+    assert_receive {:control_hint, :dns_snapshot, ^vm_id}, 5_000
 
     assert client_offer.public == settings
     assert client_offer.parent["origin"] == "https://parent.example"
@@ -233,13 +238,12 @@ defmodule Marshall.Compute.InceptionTest do
     [accepted] = Ledger.read!(EnvironmentPublication, vm_id: vm.id)
     assert accepted.payload == publication
     assert accepted.expires_at == DateTime.add(before.offer_expires_at, -500, :millisecond)
+    assert_receive {:control_hint, :dns_snapshot, ^vm_id}, 5_000
 
     # A second child poll may become ready after the parent replicas have
     # answered the first proof. The refreshed offer must commit that final
     # publication instead of leaving Marshall with the bootstrap payload.
     final_publication = put_in(publication, ["records", Access.at(0), "ready"], true)
-    vm_id = vm.id
-    :ok = Marshall.Control.Hints.subscribe(:dns_snapshot, vm_id)
 
     assert {:ok, final_offer} =
              Lilly.Control.Client.exchange_inception(
@@ -272,6 +276,28 @@ defmodule Marshall.Compute.InceptionTest do
           name: "nested-gateway",
           role: :gateway,
           host_id: c.host.id,
+          addresses: [],
+          token: gateway_token
+        },
+        actor: actor
+      )
+
+    snapshot = fn ->
+      Ingress.dns_snapshot(%{token: dns_token, zone: "apps.example"}, actor: actor)
+    end
+
+    label = "control.#{offer["label"]}.inception"
+    assert {:ok, %{routes: [], proofs: [%{label: ^label}]}} = snapshot.()
+
+    # A nested proof may be published while its parent gateway is still
+    # bootstrapping. Addresses remain withheld until the gateway advertises a
+    # current address and host key.
+    {:ok, _} =
+      Ingress.configure_service(
+        %{
+          name: "nested-gateway",
+          role: :gateway,
+          host_id: c.host.id,
           addresses: ["192.0.2.37"],
           token: gateway_token
         },
@@ -281,13 +307,6 @@ defmodule Marshall.Compute.InceptionTest do
     {public, _} = :crypto.generate_key(:eddsa, :ed25519)
     key = "ssh-ed25519 " <> Base.encode64(<<11::32, "ssh-ed25519", 32::32, public::binary>>)
     {:ok, _} = Ingress.publish_host_key(%{token: gateway_token, public_key: key}, actor: actor)
-
-    snapshot = fn ->
-      Ingress.dns_snapshot(%{token: dns_token, zone: "apps.example"}, actor: actor)
-    end
-
-    label = "control.#{offer["label"]}.inception"
-    assert {:ok, %{routes: [], proofs: [%{label: ^label}]}} = snapshot.()
 
     apex = "apps.#{offer["label"]}.inception"
 

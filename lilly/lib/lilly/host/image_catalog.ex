@@ -69,7 +69,18 @@ defmodule Lilly.Host.ImageCatalog do
   def handle_continue(:verify, %{pending: [%Image{id: id, path: path} | rest]} = state) do
     # An unchanged image skips rehashing through the private digest cache
     # (image-digest-cache-exact-identity, ADR-0176).
-    loaded = if state.cache, do: Image.load_cached(path, state.cache), else: Image.load(path)
+    # Nix-store images are immutable deployment outputs. Structural validation
+    # plus the store's read-only, content-addressed authority avoids rereading
+    # a multi-GiB root artifact during startup; mutable paths retain the
+    # digest-cache path and its full byte verification.
+    loaded =
+      case Image.load_immutable(path) do
+        {:ok, _} = result ->
+          result
+
+        {:error, :invalid_local_image} ->
+          if state.cache, do: Image.load_cached(path, state.cache), else: Image.load(path)
+      end
 
     state =
       case loaded do

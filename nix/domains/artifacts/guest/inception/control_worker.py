@@ -8,6 +8,7 @@ import signal
 import subprocess
 import sys
 import time
+from collections.abc import Callable
 from pathlib import Path
 from typing import Never, Protocol, TypedDict, cast
 
@@ -34,17 +35,39 @@ class IssuerFiles(Protocol):
 
 
 def issued_material(module: IssuerFiles, directory: Path, hostname: str) -> bytes:
-    """@cc [owner:ghuntley,label:security] inception-control-issued-chain
-    An issued control certificate MUST combine the private key, leaf and Lego's
-    issuer chain in that order. A leaf-only candidate MUST NOT be offered to the
-    shared validator because it cannot establish trust to the configured root.
-    Every component MUST pass the issuer custody checks before concatenation.
+    """@cc [owner:ghuntley,label:security] inception-control-issued-material
+    A completed ACME attempt MUST offer only the private key and the certificate
+    bundle written for the current hostname. The shared validator MUST decide
+    whether that bundle is complete and trusted; a missing optional issuer file
+    MUST NOT cause a valid issuer output to be discarded.
     """
-    return (
-        module.issuer_file(directory / (hostname + ".key"), 0)
-        + module.issuer_file(directory / (hostname + ".crt"), 0)
-        + module.issuer_file(directory / (hostname + ".issuer.crt"), 0)
+    return module.issuer_file(directory / (hostname + ".key"), 0) + module.issuer_file(
+        directory / (hostname + ".crt"), 0
     )
+
+
+def wait_for_issued_material(
+    module: IssuerFiles,
+    directory: Path,
+    hostname: str,
+    deadline: int,
+    clock: Callable[[], int] = proofs.now,
+) -> bytes:
+    """Read Lego's files after process completion, allowing its final writes.
+
+    Lego fetches the certificate in a separate ACME request after Pebble marks
+    the order issued.  Under a loaded nested host the child process can report
+    completion while the filesystem writes are still being flushed.  Keep the
+    original job deadline as the authority fence and poll only for this
+    already-owned output; no new authority is granted during the grace period.
+    """
+    while True:
+        try:
+            return issued_material(module, directory, hostname)
+        except (FileNotFoundError, NotADirectoryError):
+            if clock() >= deadline:
+                raise
+            time.sleep(0.25)
 
 
 def stop_job(process: subprocess.Popen[bytes] | None) -> None:
@@ -91,8 +114,13 @@ def invocation(
         # Audi resolver here makes lego resolve the parent-owned control name
         # against a child-only authority and can reject an otherwise valid
         # challenge before the ACME server checks the projected TXT record.
+        # Lego 4.x uses hyphenated DNS propagation flags.  Passing the old
+        # dotted spelling makes every issuance invocation fail before it can
+        # contact the fixture issuer, leaving the control proxy without TLS
+        # material and surfacing only as a public TLS EOF.
         "--dns.propagation-wait",
         "1s",
+        # Lego treats `run` as the subcommand; global flags must precede it.
         "run",
     ]
     environment = {
@@ -137,8 +165,12 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
     A single worker MUST own issuance, validate before publishing certificates,
     and publish readiness only after a fresh verified local probe. Each issuance
     process group MUST expire at its original job deadline or namespace change.
-    Failed issuance MUST preserve previously validated serving material. Worker
-    exit MUST stop its proxy; independently expiring publication remains required.
+    A process exit status alone MUST NOT classify issuance as failed: ACME may
+    report cleanup-hook failure after issuing the certificate, so key and
+    certificate files MUST still pass the complete validator before replacement.
+    Failed or invalid issuance MUST preserve previously validated serving
+    material. Worker exit MUST stop its proxy; independently expiring
+    publication remains required.
     Restart MUST discard prior job authority before any new publication, even if
     cached certificates are valid and no new issuance is necessary.
     """
@@ -174,9 +206,21 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
             )
 
         def accept(candidate: bytes) -> bytes:
-            candidate = tls.validate(candidate, validation, module, proofs.ROOT)
-            tls.install(candidate)
-            service("reload-or-restart")
+            try:
+                candidate = tls.validate(candidate, validation, module, proofs.ROOT)
+            except (OSError, ValueError, subprocess.SubprocessError, SetupError):
+                publish(proofs.ROOT / "rejection-stage", b"validate\n")
+                raise
+            try:
+                tls.install(candidate)
+            except (OSError, ValueError, subprocess.SubprocessError, SetupError):
+                publish(proofs.ROOT / "rejection-stage", b"install\n")
+                raise
+            try:
+                service("reload-or-restart")
+            except (OSError, ValueError, subprocess.SubprocessError, SetupError):
+                publish(proofs.ROOT / "rejection-stage", b"service\n")
+                raise
             return candidate
 
         def clear_issuer_output() -> None:
@@ -212,17 +256,36 @@ def supervise(boot: proofs.Boot, image: Image) -> None:
                         # Old hooks are dead before removing job authority.
                         clear_job()
                         retry = current + 60000
+                        # Lego may report a cleanup-hook failure after Pebble has
+                        # issued a valid certificate.  The candidate is still
+                        # safe to install because accept() performs complete
+                        # key, chain, hostname, lifetime and trust validation;
+                        # stale output is fenced by clear_issuer_output().
                         if current < job["expires_at_ms"]:
                             try:
                                 directory = STATE / "acme" / "certificates"
-                                # Lego stores the issued leaf and its issuer chain
-                                # separately.  The validator needs the complete chain
-                                # so OpenSSL can build trust to the configured Pebble
-                                # root; accepting the leaf alone rejects every
-                                # otherwise valid ACME issuance.
-                                candidate = issued_material(
-                                    cast(IssuerFiles, module), directory, hostname
-                                )
+                                try:
+                                    candidate = wait_for_issued_material(
+                                        cast(IssuerFiles, module),
+                                        directory,
+                                        hostname,
+                                        # Keep the synchronous filesystem grace below
+                                        # the five-second publication TTL so this
+                                        # worker never appears stopped while
+                                        # waiting for Lego's final close.
+                                        min(job["expires_at_ms"], current + 4000),
+                                    )
+                                except (
+                                    OSError,
+                                    ValueError,
+                                    subprocess.SubprocessError,
+                                    SetupError,
+                                ):
+                                    publish(
+                                        proofs.ROOT / "rejection-stage",
+                                        b"process\n" if status not in (None, 0) else b"material\n",
+                                    )
+                                    raise
                                 material = accept(candidate)
                             except (OSError, ValueError, subprocess.SubprocessError, SetupError):
                                 print(

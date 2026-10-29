@@ -23,6 +23,27 @@ defmodule Lilly.Events do
     metadata: [pool_id: :uuid, outcome: :atom, duration_ms: :int]
   )
 
+  defevent("lilly.image_template_quarantined",
+    level: :warning,
+    message: "Image template quarantined",
+    metadata: [
+      pool_id: :uuid,
+      stage:
+        {:enum,
+         [
+           :ready_validation,
+           :verifying_native,
+           :verifying_image_stage,
+           :verifying_image_load,
+           :verifying_digest,
+           :verifying_image_id,
+           :verifying_file_set,
+           :verifying_identities,
+           :sealing
+         ]}
+    ]
+  )
+
   defevent("vm.disk_materialization_step",
     level: :info,
     message: "VM disk materialization step completed",

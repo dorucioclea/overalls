@@ -14,4 +14,4 @@ state: deleted
 version: 2
 ---
 
-The old duplicate ADR path is intentionally deleted as part of the ADR-0261 renumbering; its tombstone preserves the reviewed history.
+The old duplicate ADR path is intentionally deleted as part of the ADR-0262 renumbering; its tombstone preserves the reviewed history.

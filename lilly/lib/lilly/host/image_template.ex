@@ -69,7 +69,7 @@ defmodule Lilly.Host.ImageTemplate do
             lease(pool, image.id, :exclusive, fn ->
               with {:ok, record} when not is_nil(record) <- current(pool, image.id),
                    true <- record.payload["incarnation"] == id,
-                   do: quarantine(pool, record.payload)
+                   do: quarantine(pool, record.payload, :ready_validation)
             end)
 
           other ->
@@ -86,6 +86,17 @@ defmodule Lilly.Host.ImageTemplate do
 
   defp verified(image, fun) do
     with {:ok, verified} <- Image.load(image.path),
+         true <- verified.id == image.id,
+         do: fun.(verified),
+         else: (_ -> {:error, :invalid_local_image})
+  end
+
+  @doc "Use an immutable configured image without creating a ZFS template."
+  @spec with_uncached_image(Image.t(), (Image.t() -> result())) :: result()
+  def with_uncached_image(image, fun), do: immutable_verified(image, fun)
+
+  defp immutable_verified(image, fun) do
+    with {:ok, verified} <- Image.load_immutable(image.path),
          true <- verified.id == image.id,
          do: fun.(verified),
          else: (_ -> {:error, :invalid_local_image})
@@ -240,20 +251,13 @@ defmodule Lilly.Host.ImageTemplate do
   end
 
   defp build(pool, image, %{state: :verifying, payload: value}) do
-    with :ok <- native(pool, value, :off),
-         {:ok, staged} <- Image.load(directory(pool, value)),
-         true <- staged.id == image.id,
-         true <- Enum.sort(Map.keys(staged.files)) == Enum.sort(Image.file_names(image)),
-         :ok <- flush(directory(pool, value)),
-         {:ok, identities} <- Image.identities(staged),
-         next =
-           value |> Map.put("identities", identities) |> Map.put("state", "sealing"),
-         :ok <- write(pool, next),
-         {:ok, record} <- load(pool, next["incarnation"]) do
-      build(pool, image, record)
+    with :ok <- native(pool, value, :off) do
+      case Image.stage(directory(pool, value)) do
+        {:ok, _staged} -> verify_hashed(pool, image, value)
+        {:error, _reason} -> quarantine(pool, value, :verifying_image_stage)
+      end
     else
-      {:error, :storage_busy} -> {:error, :storage_busy}
-      _ -> quarantine(pool, value)
+      _ -> quarantine(pool, value, :verifying_native)
     end
   end
 
@@ -266,15 +270,42 @@ defmodule Lilly.Host.ImageTemplate do
          :ok <- write(pool, Map.put(value, "state", "ready")) do
       :ok
     else
-      {:error, :storage_busy} -> {:error, :storage_busy}
-      _ -> quarantine(pool, value)
+      _ -> quarantine(pool, value, :sealing)
     end
   end
 
   defp build(_, _, %{state: :ready}), do: :ok
   defp build(_, _, _), do: {:error, :template_unconfirmed}
 
-  defp quarantine(pool, value) do
+  defp verify_hashed(pool, image, value) do
+    case Image.load(directory(pool, value)) do
+      {:ok, staged} when staged.id == image.id ->
+        if Enum.sort(Map.keys(staged.files)) == Enum.sort(Image.file_names(image)) do
+          with :ok <- flush(directory(pool, value)),
+               {:ok, identities} <- Image.identities(staged),
+               next =
+                 value |> Map.put("identities", identities) |> Map.put("state", "sealing"),
+               :ok <- write(pool, next),
+               {:ok, record} <- load(pool, next["incarnation"]) do
+            build(pool, image, record)
+          else
+            _ -> quarantine(pool, value, :verifying_identities)
+          end
+        else
+          quarantine(pool, value, :verifying_file_set)
+        end
+
+      {:ok, _staged} ->
+        quarantine(pool, value, :verifying_image_id)
+
+      {:error, _reason} ->
+        quarantine(pool, value, :verifying_digest)
+    end
+  end
+
+  defp quarantine(pool, value, stage) do
+    Lilly.Events.emit("lilly.image_template_quarantined", pool_id: pool.id, stage: stage)
+
     with :ok <- write(pool, Map.put(value, "state", "quarantined")),
          do: {:error, :template_quarantined}
   end

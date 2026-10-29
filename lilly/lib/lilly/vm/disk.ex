@@ -82,7 +82,7 @@ defmodule Lilly.VM.Disk do
   def prepare(pool, image, spec) do
     placement_owner = Lock.current()
 
-    ImageTemplate.with_image(pool, image, fn verified ->
+    image_access(pool, image, spec, fn verified ->
       Lock.with_owner(placement_owner, fn ->
         directory = ZFSDataset.metadata_directory(pool, spec)
 
@@ -138,6 +138,19 @@ defmodule Lilly.VM.Disk do
       end)
     end)
   end
+
+  # The dedicated Inception image is excluded from asynchronous template
+  # prewarming because it is large and profile-specific. Keep its launch path
+  # on the same freshly hashed, uncached authority instead of creating a cache
+  # entry on demand after prewarming deliberately skipped it.
+
+  # @cc [owner:ghuntley,label:capacity;recovery] inception-image-uncached
+  # Inception disk preparation MUST validate the configured image bytes directly
+  # and MUST NOT reserve or publish a template incarnation.
+  defp image_access(_pool, image, %{network: %{profile: :inception}}, fun),
+    do: ImageTemplate.with_uncached_image(image, fun)
+
+  defp image_access(pool, image, _spec, fun), do: ImageTemplate.with_image(pool, image, fun)
 
   # @cc [owner:ghuntley,label:concurrency;recovery] disk-copy-outside-pool-lock
   # Caller MUST hold the placement lock through preparation. Claim/create and

@@ -164,7 +164,7 @@ native acceptance remain unverified or unfinished.
 
 The [control proof hook](../../../nix/domains/artifacts/guest/inception/control_proofs.py)
 now limits updates to the assigned control DNS-01 owner, a current random job
-nonce and one non-renewable five-minute deadline. Its five-second publication
+nonce and one non-renewable ten-minute deadline. Its five-second publication
 heartbeat cannot extend that job; generation/boot changes and delayed cleanup
 fail closed. Five [runtime checks](../../../nix/verification/tests/evaluation/inception-control-proofs.py)
 passed, including actual parent evidence reads and expiry. The hook is not yet

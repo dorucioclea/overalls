@@ -1,6 +1,6 @@
 ---
-digest: 9c512bab15164ab203d5addb78884246f0e4defb4b885cff4d004fad52855246
-disposition: updated
+digest: 5d6cac0ce97e74f779b29fadc40c4a80ebe1caffb800b07f349849a69b1806e1
+disposition: no-impact
 kind: chapter
 mapping_digest: null
 path: marshall/priv/hldd/07-guests.md
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Lilly now refreshes the parent offer after each guest publication collection, including the publication submitted after authoritative observation, so every short-lived result is committed against current authority.
+Reviewed the changed guest chapter text and its evidence; the updated Inception issuance timeout wording is already reflected in this chapter.

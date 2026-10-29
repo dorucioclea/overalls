@@ -46,7 +46,7 @@ identities and Lilly enrollment credentials. Bootstrap retries and restarts
 preserve identities, database contents, source edits and both disks. Never format
 unexpected existing storage or replace developer edits during automatic startup.
 The source-delivery portion of this decision is amended by
-[ADR-0261](0261-inception-development-checkout.md): first boot clones the
+[ADR-0262](0262-inception-development-checkout.md): first boot clones the
 canonical Overalls repository into the durable workspace instead of bundling a
 source snapshot in the image.
 
@@ -139,7 +139,7 @@ passed the real probe and rejected tampered receipt fields. This is single-host
 AMD evidence, not Intel or fleet-wide qualification.
 
 The [Inception image](../../../nix/domains/artifacts/guest/inception/default.nix) builds
-successfully with PostgreSQL, tools and both application releases; ADR-0261
+successfully with PostgreSQL, tools and both application releases; ADR-0262
 records the first-boot source checkout.
 [Bootstrap preparation](../../../nix/domains/artifacts/guest/inception/prepare.py) and
 [runtime identity tests](../../../nix/verification/tests/evaluation/inception-runtime.py)

@@ -145,9 +145,14 @@ defmodule MarshallComputeContractTest do
         minimum_disk_bytes: 68_719_476_736
       })
 
-    assert shape.vcpu >= 16
-    assert shape.memory_bytes >= 34_359_738_368
-    assert shape.disk_bytes >= 68_719_476_736
+    # The profile's declared defaults are an API contract, not just lower
+    # bounds. Keeping these exact values catches accidental drift (for example
+    # changing the form's default while leaving admission's minimum intact).
+    assert shape == %{
+             vcpu: 16,
+             memory_bytes: 34_359_738_368,
+             disk_bytes: 68_719_476_736
+           }
 
     ordinary =
       Marshall.Compute.Profiles.default_shape(:standard, %{

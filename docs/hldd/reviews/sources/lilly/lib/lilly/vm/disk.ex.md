@@ -1,22 +1,22 @@
 ---
-digest: 16acb6e76916ea6955d56446c91b8e40aeb42f967b860a19a85284dd14621a4b
+digest: 8a459e9fbc41a6ca63a4e544dbc193e74fa6ff3dc55ace78254b05edbdfe0a25
 disposition: no-impact
 kind: source
 mapping_digest: f7ae1015b8a6b22d2b48a9d01c1d52b5bf0d4191e2a4cb42263c24f5d17194fc
 path: lilly/lib/lilly/vm/disk.ex
 reviewed_chapters:
-  marshall/priv/hldd/04-lifecycle.md: a3c881206a8331e5dbcd995c9762772639a9e28bdc22102c2a2e64bf63aa7449
-  marshall/priv/hldd/05-storage.md: 27149061e064d86119e32f0e54f6be7a23db26ce058743457de10b5e20c9c43b
-  marshall/priv/hldd/06-workflows.md: 97fca2ee73a5dc431d8f040eb16468eaf0f28233c146be2b53804063fadb565b
-  marshall/priv/hldd/07-guests.md: 0f73d65e0218aa15612a351af492879d87f78f6e864901c932124fc394334f4e
+  marshall/priv/hldd/04-lifecycle.md: f3c40798f402b553640bb25852bcb205c327c87d7ad6735b4f1b243c5616b4a2
+  marshall/priv/hldd/05-storage.md: 20b3d88d2ba330cd1f7a06b8babe2fd180699c1b60432038b1092ff41f66b855
+  marshall/priv/hldd/06-workflows.md: ad304114da706e2daaf6296aac5c058376e50742cc378ad4fc2a9d475d485124
+  marshall/priv/hldd/07-guests.md: 9c512bab15164ab203d5addb78884246f0e4defb4b885cff4d004fad52855246
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/17-reference.md: 7cbeeb5bb6bbbbc170df005edbd41b0b9ea84cc90b0598b4e99b800aa95475b2
-  marshall/priv/hldd/19-coverage.md: 4df19acabce66188a13a367acae5fd2d8dabd1c5c952d8d3e1cd1c08b448f15d
-  marshall/priv/hldd/20-security.md: 0854fe3e151c56e794a8069bd384bf68bb6d76cd7827abfeed6c3fa28e91c83b
-  marshall/priv/hldd/21-domains.md: 587584208f1a71100280b9e438b46416b8b56f0f0af2eda585006ad373ff22dc
-  marshall/priv/hldd/22-topology.md: 03993ebc3b0c89183aa3eafd972187e92b346d929a61f22250e9e1b6774e0b4e
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/19-coverage.md: c2b32b45eee6efb5032e250653970f5f1cb3729118960fd2b43be883f5989017
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Reviewed diagnostics, logging, audit and privacy changes; no-impact evidence remains aligned with implementation.
+The changed lifecycle, image, ingress and disk implementations preserve the existing documented domains, boundaries and evidence.

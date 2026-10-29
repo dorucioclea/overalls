@@ -1037,6 +1037,7 @@ dependencies = [
  "opentelemetry-proto",
  "prost",
  "reqwest",
+ "rustls",
  "rustls-pki-types",
  "serde",
  "serde_json",

@@ -256,11 +256,11 @@ defmodule Marshall.Ingress.Publications do
       JOIN compute_hosts h ON h.id = p.host_id
       CROSS JOIN clock c
       CROSS JOIN LATERAL jsonb_array_elements(p.payload->'records') record
-      CROSS JOIN LATERAL (
+      LEFT JOIN LATERAL (
         SELECT array_agg(DISTINCT addr) AS addresses FROM ingress_services s,
           LATERAL unnest(s.addresses) addr
         WHERE s.host_id = h.id AND s.enabled AND s.role = 'gateway' AND s.ssh_host_key IS NOT NULL
-      ) gateway
+      ) gateway ON TRUE
       WHERE v.profile = 'inception' AND v.desired_state = 'running'
         AND v.host_id = h.id AND v.current_placement_id = p.placement_id
         AND v.execution_epoch = p.execution_epoch AND v.generation = p.vm_generation
@@ -268,7 +268,7 @@ defmodule Marshall.Ingress.Publications do
         AND h.enabled AND h.maintenance_mode <> 'retired'
         AND h.connection_session_id = p.session_id AND h.connection_epoch = p.host_epoch
         AND h.reported_at <= c.now AND h.reported_at >= c.now - ($1::bigint * interval '1 millisecond')
-        AND p.expires_at > c.now AND cardinality(gateway.addresses) > 0
+        AND p.expires_at > c.now
         AND NOT EXISTS (SELECT 1 FROM compute_relocations r
           WHERE r.vm_id = v.id AND r.finished_at IS NULL AND r.committed_at IS NOT NULL)
     ), fleet_proof AS (
@@ -284,6 +284,7 @@ defmodule Marshall.Ingress.Publications do
       UNION ALL
       SELECT n.label, 'route'::text, n.addresses, NULL::text[], n.ttl
       FROM nested n WHERE n.started AND n.record->>'label' <> ''
+        AND cardinality(n.addresses) > 0
         AND (n.record->>'ready')::boolean
       UNION ALL
       SELECT n.label, 'proof'::text, NULL::text[],

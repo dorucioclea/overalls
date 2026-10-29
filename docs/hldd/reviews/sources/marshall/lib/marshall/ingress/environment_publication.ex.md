@@ -1,24 +1,24 @@
 ---
-digest: c10b631c0579709b0afd411252c2762eae3676c31c2b01b5f1155e80bf6b9520
-disposition: updated
+digest: f4beec8e92ee6f3e2012f7565fffe19a65075ed83578563fedb6dd8dffe53dd0
+disposition: no-impact
 kind: source
 mapping_digest: c5d6b9e33b777c90bbc22e5608c825ce6977ecc6384e262a6c79b99b4af3d9a2
 path: marshall/lib/marshall/ingress/environment_publication.ex
 reviewed_chapters:
-  marshall/priv/hldd/02-control-plane.md: 8398bc3791875b6bc8cf22b6602a6efccb886c001a0f78d5a1500a3f5707ff3d
-  marshall/priv/hldd/03-access.md: 9637f378d65cb4e5cd6ca8b852818cbad487a9a6d008a61ede50e7655fbd6669
+  marshall/priv/hldd/02-control-plane.md: 6ca9a834408a12e1c9a666920927dc154ea406239616809492defdb1e6b1bbfe
+  marshall/priv/hldd/03-access.md: 5e197b8346180c9f65c712048048da17934c117a500fe63cfca781cd8933dae6
   marshall/priv/hldd/04-lifecycle.md: f3c40798f402b553640bb25852bcb205c327c87d7ad6735b4f1b243c5616b4a2
-  marshall/priv/hldd/06-workflows.md: 37821743fdd87afefc8e10be455a247a49c10cb8fced69dd60588fe573bce8de
-  marshall/priv/hldd/08-interactive.md: 368f33fbb31c849c8558e3988b6199db2635f59e76065042873e1de42c9eaef3
-  marshall/priv/hldd/11-agents.md: 7d24214acefb26fbd3b08ce582578fd007e6ffa4bd55d986293050de8605356d
-  marshall/priv/hldd/15-monitoring.md: db740282f22afc4c76be24d9db3f9ef4f10bf2745089a754647c6cf7e8fdfeef
-  marshall/priv/hldd/17-reference.md: 7d88fca8dbe56f67c71ea207b0ed860f4cfc005f7cb9f6ccde4ffe4bc718cda5
-  marshall/priv/hldd/19-coverage.md: 9a6c6e497149225fa418d0ec0b2fa9bb578557f066fbd6a194e728073bca669b
-  marshall/priv/hldd/20-security.md: cf1337ba6e78c460d2d00a269abbe3ad011151401179263eb51ab2d90bb4948f
+  marshall/priv/hldd/06-workflows.md: ad304114da706e2daaf6296aac5c058376e50742cc378ad4fc2a9d475d485124
+  marshall/priv/hldd/08-interactive.md: 41e45837cf8394781fd346309e4a81c4b8e37eb50598de6dda13118f01ac5e58
+  marshall/priv/hldd/11-agents.md: d6e2a66aebde7ce5368d470550113cd1d5908d6ec6c0567f765b8cb6dac09eb1
+  marshall/priv/hldd/15-monitoring.md: 47cae9cafce18ef57d278be5b04ce1dce3799f6583aa1a5bfa8ff80babbf1a99
+  marshall/priv/hldd/17-reference.md: 2d37d029f52a735d62ad0006ace6b7ceec68467f31b5b4a5d8c064d146d158d8
+  marshall/priv/hldd/19-coverage.md: b38539fd21aa4d5ceda0d8835701d1d25c3ad7771559f77b57fc621273501e86
+  marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
-  marshall/priv/hldd/22-topology.md: b66172c618dc03b360046d5e1a6f2850265e5eb7acbe02e20c068a0efdf1569f
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-Committed Inception environment publications now emit a DNS snapshot hint in the same transaction as VM authority changes; the regression test asserts the dedicated hint and action mapping. This keeps short-lived child DNS records visible to replicas before certificate issuance.
+Reviewed Marshall Inception publication authority, hint subscriptions and focused tests; existing control-plane and coverage chapters describe the behavior and evidence boundary.

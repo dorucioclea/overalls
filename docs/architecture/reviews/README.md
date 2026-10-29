@@ -5,7 +5,7 @@
 
 - [Mila Windows authenticated SSH keys (2026-10-22)](2026-10-22-mila-windows-ssh-keys.md): typed Rust FFI list/revoke wiring and stale-response fencing in the WinUI client; live Windows/Porsche execution remains open.
 
-- [Inception development checkout (2026-10-22)](2026-10-22-inception-development-checkout.md): ADR-0261 guest-owned canonical Git checkout, corrected offline image source hierarchy, re-enabled CI and focused evidence; native GitHub egress remains an explicit gap.
+- [Inception development checkout (2026-10-22)](2026-10-22-inception-development-checkout.md): ADR-0262 guest-owned canonical Git checkout, corrected offline image source hierarchy, re-enabled CI and focused evidence; native GitHub egress remains an explicit gap.
 
 - [Mila native Apple custody](2026-10-21-mila-apple-custody.md): deployment-scoped Secure Enclave adapter; signed hardware evidence remains open.
 

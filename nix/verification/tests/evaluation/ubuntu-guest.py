@@ -210,6 +210,29 @@ class BootReportTests(unittest.TestCase):
         self.assertIn(boot_report.MARKER + "Bootup is not yet finished", lines)
         self.assertEqual(lines[-1], boot_report.MARKER + "end")
 
+    def test_report_keeps_unit_statuses_bound_to_their_names(self) -> None:
+        def run(arguments: Sequence[str]) -> str | None:
+            if len(arguments) >= 2 and arguments[1] == "time":
+                return "Startup finished in 1s\n"
+            if len(arguments) >= 3 and arguments[1:3] == ["show", "--no-pager"]:
+                unit = arguments[-1]
+                if unit == boot_report.STATUS_UNITS[0]:
+                    return "ActiveState=active\nSubState=running\nResult=success\n"
+                return None
+            return "x\n"
+
+        lines = boot_report.report("/a", "/c", "/j", run, lambda _: None, lambda: 0.0)
+        self.assertIn(
+            boot_report.MARKER
+            + f"status unit={boot_report.STATUS_UNITS[0]} active=active substate=running result=success",
+            lines,
+        )
+        self.assertIn(
+            boot_report.MARKER
+            + f"status unit={boot_report.STATUS_UNITS[1]} active=unknown substate=unknown result=unknown",
+            lines,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

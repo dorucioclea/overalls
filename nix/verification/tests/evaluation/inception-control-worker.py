@@ -122,33 +122,6 @@ class WorkerTest(unittest.TestCase):
             ),
         }
 
-    def test_completed_order_keeps_the_issuer_chain(self) -> None:
-        directory = self.root / "certificates"
-        calls: list[tuple[str, int]] = []
-
-        class Issuer:
-            @staticmethod
-            def issuer_file(path: Path, issuer: int) -> bytes:
-                calls.append((path.name, issuer))
-                return path.name.encode()
-
-        self.assertEqual(
-            worker.issued_material(Issuer(), directory, self.config["origins"]["control"]),
-            (
-                (self.config["origins"]["control"] + ".key").encode()
-                + (self.config["origins"]["control"] + ".crt").encode()
-                + (self.config["origins"]["control"] + ".issuer.crt").encode()
-            ),
-        )
-        self.assertEqual(
-            calls,
-            [
-                (self.config["origins"]["control"] + ".key", 0),
-                (self.config["origins"]["control"] + ".crt", 0),
-                (self.config["origins"]["control"] + ".issuer.crt", 0),
-            ],
-        )
-
     def test_issuer_environment_is_closed_and_fixed_hook_owns_propagation(self) -> None:
         with patch.dict(
             os.environ, {"HTTPS_PROXY": "http://untrusted", "AWS_SECRET_ACCESS_KEY": "sentinel"}
@@ -159,6 +132,8 @@ class WorkerTest(unittest.TestCase):
                 {"run_id": "b" * 64},
             )
         self.assertEqual(args[0], "/immutable/lego")
+        self.assertEqual(args[-1], "run")
+        self.assertEqual(args[args.index("--path") + 1], "/var/lib/inception-control/acme")
         self.assertEqual(args[args.index("--domains") + 1], self.config["origins"]["control"])
         self.assertNotIn("--dns.resolvers", args)
         self.assertEqual(args[args.index("--dns.propagation-wait") + 1], "1s")
@@ -181,6 +156,51 @@ class WorkerTest(unittest.TestCase):
             worker.invocation(
                 {"lego": "/immutable/lego", "hook": "/immutable/hook"}, self.config, {}
             )
+
+    def test_issued_material_uses_lego_bundle_without_optional_issuer_file(self) -> None:
+        calls: list[tuple[str, int]] = []
+
+        class Issuer:
+            @staticmethod
+            def issuer_file(path: Path, issuer: int) -> bytes:
+                calls.append((path.name, issuer))
+                return path.name.encode("ascii")
+
+        hostname = self.config["origins"]["control"]
+        self.assertEqual(
+            worker.issued_material(Issuer(), self.root / "certificates", hostname),
+            (hostname + ".key" + hostname + ".crt").encode("ascii"),
+        )
+        self.assertEqual(
+            calls,
+            [(hostname + ".key", 0), (hostname + ".crt", 0)],
+        )
+
+    def test_wait_for_issued_material_allows_final_filesystem_write(self) -> None:
+        calls = 0
+        sleeps: list[float] = []
+
+        class Issuer:
+            @staticmethod
+            def issuer_file(path: Path, issuer: int) -> bytes:
+                nonlocal calls
+                calls += 1
+                if calls == 1:
+                    raise FileNotFoundError(path)
+                return path.name.encode("ascii")
+
+        clock = iter([100, 100, 1000]).__next__
+        with patch.object(worker.time, "sleep", sleeps.append):
+            material = worker.wait_for_issued_material(
+                Issuer(),
+                self.root / "certificates",
+                self.config["origins"]["control"],
+                2000,
+                clock,
+            )
+        hostname = self.config["origins"]["control"]
+        self.assertEqual(material, (hostname + ".key" + hostname + ".crt").encode("ascii"))
+        self.assertEqual(sleeps, [0.25])
 
     def test_abandoned_issuer_and_hook_are_both_killed(self) -> None:
         marker = self.root / "child.pid"

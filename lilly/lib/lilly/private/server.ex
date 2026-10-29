@@ -21,7 +21,7 @@ defmodule Lilly.Private.Server do
          true <- is_integer(uid) and uid in 0..4_294_967_294,
          true <- OverallsProtocol.uuid?(host),
          true <- is_integer(maximum) and maximum in 1..1024,
-         {:ok, %{uid: service_uid}} <- File.stat("/proc/self"),
+         {:ok, %{uid: service_uid}} <- Lilly.Host.Privilege.stat("/proc/self"),
          true <- trusted_directory?(Path.dirname(path), service_uid),
          {:ok, lock} <- Lilly.Ingress.SocketCustody.acquire(path),
          {:ok, socket} <-
@@ -70,7 +70,7 @@ defmodule Lilly.Private.Server do
   # directories. Existing paths MUST pass exclusive claimed-socket recovery;
   # unknown files or unclaimed sockets MUST NOT be removed or adopted.
   defp trusted_directory?(path, uid) do
-    case File.lstat(path) do
+    case Lilly.Host.Privilege.lstat(path) do
       {:ok, %{type: :directory, uid: owner, mode: mode}} when owner == 0 or owner == uid ->
         (band(mode, 0o022) == 0 or (owner == 0 and band(mode, 0o1000) != 0)) and
           (path == "/" or trusted_directory?(Path.dirname(path), uid))

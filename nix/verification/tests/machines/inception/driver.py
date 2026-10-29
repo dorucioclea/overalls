@@ -101,7 +101,7 @@ outer.succeed(
     # quota as a minimum so the assertion follows the profile contract rather
     # than this fixture's larger host allocation.
     "quota=$(systemctl show -p CPUQuotaPerSecUSec --value lilly.slice); "
-    'case "$quota" in *s) test "${quota%s}" -ge 16 ;; *) exit 1 ;; esac',
+    'case "$quota" in *us) test "${quota%us}" -ge 16000000 ;; *s) test "${quota%s}" -ge 16 ;; *) exit 1 ;; esac',
 )
 outer.wait_for_unit("lilly-hostd.service")
 outer.succeed("test -S /run/lilly-hostd/control.sock")

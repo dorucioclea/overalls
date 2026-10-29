@@ -47,14 +47,14 @@ defmodule Marshall.Ingress.EnvironmentPublication do
     # Control hints (ADR-0140): emitted in the action's transaction.
     change {Marshall.Control.Hints.Change, kind: :vm, from: :vm_id},
       on: [:create, :update, :destroy],
-      where: [action_is([:advance])]
+      where: [action_is([:record, :advance])]
 
     # A child publication changes the zone-wide DNS snapshot as well as the
     # VM's authority. DNS replicas subscribe to this dedicated hint so a
     # short-lived nested proof is refreshed before its child lease expires.
     change {Marshall.Control.Hints.Change, kind: :dns_snapshot, from: :vm_id},
       on: [:create, :update, :destroy],
-      where: [action_is([:advance])]
+      where: [action_is([:record, :advance])]
   end
 
   attributes do

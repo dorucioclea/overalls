@@ -21,7 +21,11 @@ from runtime import SetupError, encode, private_directory, publish, read_private
 ROOT = Path("/run/inception-control")
 NAMESPACE = Path("/run/inception")
 RUN_ID = re.compile(r"[0-9a-f]{64}")
-JOB_TTL_MS = 300_000
+# Native nested hosts can take several minutes between ACME authorization and
+# certificate retrieval while the parent refreshes its short-lived offers. Keep
+# one bounded issuance authority window, but allow that complete ACME exchange
+# to finish before the worker fences the generated files.
+JOB_TTL_MS = 600_000
 PUBLICATION_TTL_MS = 5_000
 
 
@@ -87,7 +91,7 @@ def begin(
     """@cc [owner:ghuntley,label:security;recovery] inception-control-proof-job
     A new certificate job MUST bind the current boot, generation and fixed
     control hostname. It MUST clear previous proofs and have one non-renewable
-    five-minute deadline. Only the single supervised certificate worker may
+    ten-minute deadline. Only the single supervised certificate worker may
     begin jobs; a hook MUST NOT extend or replace job authority.
     """
     current = now() if current is None else current

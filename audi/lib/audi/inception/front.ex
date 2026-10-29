@@ -96,7 +96,7 @@ defmodule Audi.Inception.Front do
           denied(:guest_unreachable, state)
       end
     else
-      _ -> {:close, state}
+      _ -> denied(:nested_unavailable, state)
     end
   end
 

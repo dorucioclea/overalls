@@ -1966,7 +1966,7 @@ Boundary: A newly created Inception guest owns a first-boot Git checkout of the 
 
 Required refusal: A malformed existing workspace is refused and an existing developer checkout is never overwritten.
 
-Tested scope: The guest bootstrap clones the canonical source, records the exact origin, and preserves a developer edit across stop/start.
+Tested scope: The guest bootstrap clones the canonical source, records the exact origin, and preserves a developer edit across stop/start. Control publication keeps an active DNS-01 proof ahead of optional gateway lookups during both initial issuance and renewal.
 
 - **unit, present**: [self.assertEqual((target / "file.ex").read_text(), "developer edits")](repo:nix/verification/tests/evaluation/inception-prepare.py) — Isolated local Git origin; malformed paths, edit retention and origin validation are covered without external network access..
 - **machine, recorded**: [inception-probe verify 1 1](repo:nix/verification/tests/machines/inception/driver.py) — Real Marshall/Lilly nested lifecycle records the `.git` directory, exact GitHub origin, writable development checkout and requested default shape. The later DNS-01 replica timeout prevented the restart/edit-retention phase from running.; [execution record](repo:docs/architecture/reviews/2026-10-22-inception-development-checkout.md).

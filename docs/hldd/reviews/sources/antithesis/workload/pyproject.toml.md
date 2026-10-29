@@ -1,20 +1,16 @@
 ---
-digest: d9022eba1df4f2578b0bbbe918cd81fb9bbde2ab473737080db31e9430c0e614
+digest: 7d29df448c09f80cbe1872eca333d9e76d3261c2db221be74e14f6fc66fdb494
 disposition: no-impact
 kind: source
 mapping_digest: 2272062390f820f27790d68b944163b5a8c4aa097bb58fe18257524d8b10bbd0
-migration:
-  system:
-    chapter_digest: 494e592f230e1f0b746f9eb420ba17cb4c837f31d5d2ce870eac56d922c369a5
-    source_digest: 47039dcaa34d541ff79bf833ddd72228d68396789313d69ec0e6a326674277ee
 path: antithesis/workload/pyproject.toml
 reviewed_chapters:
   marshall/priv/hldd/01-system.md: e746f0ac6783bb5037c9fd2785c8d8b6aee0f5b279cd263d673ad95462566aa2
-  marshall/priv/hldd/17-reference.md: 5513e1fb7deb5378fef4713fb925a9d0c0f2b1bc2539548d98e72c856262e897
-  marshall/priv/hldd/21-domains.md: 4dee7985b92fb3a4f0a28e9f9ca1a905dea34e9a8530fe6c069a9258b475b7c0
-  marshall/priv/hldd/22-topology.md: ac5b8ee15301fa8b20baa8916997f27b5a394695d3093b80cf9ca016e3226631
+  marshall/priv/hldd/17-reference.md: 9b7c3c0ba2c93d62cda3b8c5b3914af2ebbab0f7f9c1e6345bdb926d15c8e8cb
+  marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
+  marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
 state: present
 version: 2
 ---
 
-system: Reviewed the Mila transport model additions; they do not add Ash domains, hosts, deployment topology, or system handbook behavior.
+Static-analysis configuration only: ty now resolves the standard library for python-platform linux, the platform these sources run on, so the python-ty gate gives the CI result on a macOS checkout. No runtime behavior, dependency or documented verification scope changes.

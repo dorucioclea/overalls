@@ -13,6 +13,8 @@ ignore = ["E501"]
 
 [tool.ty.environment]
 python-version = "3.13"
+# Antithesis runs this code in Linux containers; match CI on any host.
+python-platform = "linux"
 
 [tool.ty.src]
 include = ["**/*.py"]

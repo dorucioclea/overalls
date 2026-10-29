@@ -13,7 +13,14 @@ evidence:
   kind: unit
   path: mila/native/linux/src/session.rs
   scope: Widget flow against the fake Porsche.
-gaps: iOS and Android webview and share sheet are not built or run.
+- assertion: testNavigationGuardIsReachedThroughWebKitProtocol
+  execution: present
+  kind: unit
+  path: mila/native/apple/Tests/MilaNativeUITests/MilaWebControlsTests.swift
+  scope: Apple navigation guard invoked through the optional WKNavigationDelegate requirement; allows
+    same-host HTTPS on the endpoint port and cancels HTTP, other hosts or ports and credentialed URLs.
+gaps: The Apple webview is built for iOS and macOS but no live navigation in a running WKWebView is
+  recorded; the Android webview and the share sheets are not run.
 id: mila-web-endpoint
 journey: A user opens, copies, shares or changes the visibility of a machine's web address from Mila
 layers:

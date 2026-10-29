@@ -27,7 +27,8 @@ public struct MilaNativeRootView: View {
     public var body: some View {
         MilaAppLockView(controller: appLock) {
         NavigationSplitView {
-            List(selection: $selection) {
+            // iOS offers List selection only through an optional binding.
+            List(selection: Binding<MilaRoute?>(get: { selection }, set: { if let route = $0 { selection = route } })) {
                 Label(MilaStrings.text(.machines), systemImage: "desktopcomputer").tag(MilaRoute.machines)
                 Label(MilaStrings.text(.threads), systemImage: "bubble.left.and.bubble.right").tag(MilaRoute.threads)
                 Label(MilaStrings.text(.settings), systemImage: "gearshape").tag(MilaRoute.settings)

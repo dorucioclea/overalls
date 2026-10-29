@@ -1355,14 +1355,29 @@ Evidence:
 
 ### Mila build targets
 
-Every platform has native dev and release targets. Apple builds use `devenv shell -- mila-build <ios|macos> <dev|release>`; Linux uses Nix, Android uses Gradle and Windows uses .NET.
+Every platform has native dev and release targets. Apple builds use
+`devenv shell -- mila-build <ios|macos> <dev|release>`
+([`build.sh`](repo:mila/native/apple/build.sh)); Linux uses Nix, Android uses
+Gradle and Windows uses .NET. `mila-run <ios|macos>`
+([`run.sh`](repo:mila/native/apple/run.sh)) builds the Apple dev target and
+launches it on the Mac or in an iOS simulator.
+
+The Apple app is the [`App`](repo:mila/native/apple/App/Package.swift) host
+package, whose only code calls `MilaNativeApp.main()`. `mila-build` compiles
+`mila-ffi` for the Rust target, builds the host for the matching Swift triple
+and assembles `Mila.app` with the package resource bundle under
+`Contents/Resources` (macOS) or the bundle root (iOS). Localized
+`NSFaceIDUsageDescription` text is generated from the catalogs' `lockExplain`
+message by [`apple_infoplist_strings.py`](repo:mila/localization/apple_infoplist_strings.py).
+On Darwin the devenv Rust toolchain is the same release from rust-overlay,
+because nixpkgs' `rustc` carries no iOS standard library.
 
 | Platform | Dev | Release |
 | --- | --- | --- |
 | Linux | `nix build .#tool-mila-linux-dev`, debug bundle | `.#tool-mila-linux-release`, reproducible tarball with SHA-256 sums |
 | Android | debug-key APK | app bundle signed with the upload key from `MILA_ANDROID_UPLOAD_*` |
-| iOS | simulator debug build, or development-signed with `MILA_APPLE_TEAM` | IPA from `MILA_IOS_EXPORT_OPTIONS` |
-| macOS | unsigned debug app with software keys, or development-signed with Secure Enclave keys and the APNs sandbox | Developer ID signed, notarized and stapled DMG, assessed by `spctl` |
+| iOS | ad-hoc signed iOS-simulator `Mila.app` | device IPA signed with `MILA_APPLE_IDENTITY` and the profile named by `MILA_APPLE_PROFILE_RUNNER` |
+| macOS | ad-hoc signed `Mila.app` with no keychain entitlements (sign-in unavailable), or signed with `MILA_APPLE_IDENTITY` and optional profile entitlements | Developer ID signed, hardened, notarized and stapled DMG, assessed by `spctl` |
 | Windows | debug layout with a development MSIX manifest, registered with `Add-AppxPackage -Register` | MSIX packed with MakeAppx, signed and verified with SignTool |
 
 The native Android `mila-release.yml` job separately publishes
@@ -1375,6 +1390,16 @@ verifies its signature as a final step. Secrets reach tools through the
 environment and are redacted from printed plans. Apple builds clear the Nix
 compiler variables and use the system Xcode.
 
+An Apple release requires `MILA_APPLE_TEAM`, `MILA_APPLE_IDENTITY`,
+`MILA_APPLE_PROFILE_RUNNER`, a `MAJOR.MINOR.PATCH` `MILA_VERSION` and, for
+macOS, `MILA_NOTARY_PROFILE`. It refuses a profile from another team or for
+another application identifier than `<team>.dev.overalls.mila`, takes the
+entitlements from that profile, and never falls back to ad-hoc signing. It
+verifies the app signature and signing team; macOS additionally requires an
+`Accepted` notarization, staples and validates the ticket and runs `spctl`.
+No notification service extension is built yet, so the notification-service
+profile is unused and APNs delivery to a closed app remains open.
+
 ### Mila terminals, threads and web
 
 The Rust migration includes a payload-free attachment reducer in
@@ -1386,6 +1411,13 @@ closed, invalid, refused and authority outcomes stop automatic retries. User
 retry starts a new budget. User read-only restriction takes effect immediately;
 input and resize also require an attached read-write server grant. Output before
 the header or from a stale generation is ignored.
+
+The Apple web view's [`MilaWebNavigationGuard`](repo:mila/native/apple/Sources/MilaNativeUI/MilaWebControls.swift)
+allows only credential-free HTTPS navigation to the endpoint's host and port and
+cancels everything else. Its method must match `WKNavigationDelegate`'s
+`@MainActor @Sendable` signature: before 2026-10-29 it did not, WebKit never
+called it, and the guard did not run. An XCTest now calls it through the
+optional protocol requirement, as WebKit does.
 
 Generated action-sequence properties in
 [`terminal.rs`](repo:mila/rust/mila-runtime/tests/terminal.rs) exercise stale

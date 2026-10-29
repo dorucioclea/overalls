@@ -3,3 +3,20 @@ The Apple native package MUST build and test as a standalone Swift package witho
 invoking alternate UI runtime; its release verification MUST use the package's Swift toolchain and typed Rust
 FFI seam.
 
+
+@cc [owner:ghuntley,label:architecture] mila-apple-host-app-entry-only
+The `App` host package MUST contain only the process entry point and bundle
+metadata. Behaviour, strings and authority checks belong to `MilaNativeUI`
+and the Rust FFI, so the app and the package tests exercise the same code.
+
+@cc [owner:ghuntley,label:release] mila-apple-both-platforms-build
+Continuous integration MUST build the app for an iOS target as well as macOS.
+`swift test` compiles only the macOS slice and cannot catch iOS-only
+compile failures.
+
+@cc [owner:ghuntley,label:release;security] mila-apple-release-signing
+`mila-build <ios|macos> release` MUST refuse a missing team, signing identity,
+provisioning profile, version or (macOS) notary profile; MUST refuse a profile
+whose team or application identifier is not this team's `dev.overalls.mila`;
+MUST NOT fall back to ad-hoc signing; and MUST verify the artifact's signature,
+signing team and (macOS) notarization before reporting success.

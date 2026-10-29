@@ -1,13 +1,13 @@
 ---
-digest: b06cd0b78956b667a30da2809d9d0e3c330a9133701aabebda8ef01bb8c9bbf6
+digest: caa66f2e69116fb9e5ab319c6ea277cb165bf35b1f63fbeaa947b115925b005e
 disposition: updated
 kind: source
 mapping_digest: 7f8defe6ddb2c25e6497006dc0096f15a491c6b938a993419fabd8af89498825
 path: mila/native/apple/build.sh
 reviewed_chapters:
-  marshall/priv/hldd/08-interactive.md: 41e45837cf8394781fd346309e4a81c4b8e37eb50598de6dda13118f01ac5e58
+  marshall/priv/hldd/08-interactive.md: 4f647a511001931a5de54096223d5e9e75e5405a6ec5547fc99749e3ee0ab68d
   marshall/priv/hldd/09-network.md: 225196b393bb0b27d8bdc3bac0a787b869f7d22e9d48ed72dc67ccec6d9ae79b
-  marshall/priv/hldd/19-coverage.md: 035e1c0ae0a600a3eaf7f613f740d41a23016b793d093c479390208c07fabdd0
+  marshall/priv/hldd/19-coverage.md: ca523f9fe4b1e2ca0bc8c086cc1e6909b1c8519e91add866cf43770a1121b57e
   marshall/priv/hldd/20-security.md: 24c7bf27384d09e4bc1af6f691e1da2462b03d62aee1605646cb27aa5eb94209
   marshall/priv/hldd/21-domains.md: 64cf0af44004d07c4e5c3402225bb22e5f4f29ae1e8a15b5c7690de8b769efb7
   marshall/priv/hldd/22-topology.md: 2ccae81ed5d94d6f1d3c3cf0a6d88b0a28e9e3f9932631580b5e93fe1c8fa6a4
@@ -15,4 +15,4 @@ state: present
 version: 2
 ---
 
-Restored native Apple build entry point and release packaging for iOS and macOS.
+Apple App host package, rewritten mila-build (system Xcode, per-target Rust and Swift triples, Mila.app assembly, refusing and self-verifying release signing), mila-run, catalog-derived NSFaceIDUsageDescription, iOS List selection and resource-bundle fixes, and the WebKit navigation guard that previously never ran; documented in 08 Mila build targets and web, with scenario evidence in 19.

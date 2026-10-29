@@ -95,10 +95,32 @@ public struct MilaWebView: View {
     public var body: some View { MilaWebViewRepresentable(url: endpoint.url) }
 }
 
+/// @cc [owner:ghuntley,label:security] web-navigation-same-origin
+/// WebKit MUST consult this delegate for every navigation, so its method MUST
+/// match `WKNavigationDelegate`'s `@MainActor @Sendable` handler signature; a
+/// near miss is silently never called. It MUST cancel any navigation that is
+/// not HTTPS, carries credentials, or leaves the endpoint's host and port.
+@MainActor final class MilaWebNavigationGuard: NSObject, WKNavigationDelegate {
+    let origin: URL
+    init(origin: URL) { self.origin = origin }
+    func allows(_ candidate: URL?) -> Bool {
+        guard let candidate,
+              candidate.scheme?.lowercased() == "https",
+              candidate.user == nil, candidate.password == nil,
+              candidate.host?.lowercased() == origin.host?.lowercased(),
+              candidate.port == origin.port else { return false }
+        return true
+    }
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping @MainActor @Sendable (WKNavigationActionPolicy) -> Void) {
+        decisionHandler(allows(navigationAction.request.url) ? .allow : .cancel)
+    }
+}
+
 #if os(iOS)
 struct MilaWebViewRepresentable: UIViewRepresentable {
     let url: URL
-    func makeCoordinator() -> Coordinator { Coordinator(origin: url) }
+    func makeCoordinator() -> MilaWebNavigationGuard { MilaWebNavigationGuard(origin: url) }
     func makeUIView(context: Context) -> WKWebView {
         let view = WKWebView(frame: .zero)
         view.navigationDelegate = context.coordinator
@@ -109,24 +131,11 @@ struct MilaWebViewRepresentable: UIViewRepresentable {
         guard view.url != url else { return }
         view.load(URLRequest(url: url))
     }
-    final class Coordinator: NSObject, WKNavigationDelegate {
-        let origin: URL
-        init(origin: URL) { self.origin = origin }
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            guard let candidate = navigationAction.request.url,
-                  candidate.scheme?.lowercased() == "https",
-                  candidate.user == nil, candidate.password == nil,
-                  candidate.host?.lowercased() == origin.host?.lowercased(),
-                  candidate.port == origin.port else { decisionHandler(.cancel); return }
-            decisionHandler(.allow)
-        }
-    }
 }
 #elseif os(macOS)
 struct MilaWebViewRepresentable: NSViewRepresentable {
     let url: URL
-    func makeCoordinator() -> Coordinator { Coordinator(origin: url) }
+    func makeCoordinator() -> MilaWebNavigationGuard { MilaWebNavigationGuard(origin: url) }
     func makeNSView(context: Context) -> WKWebView {
         let view = WKWebView(frame: .zero)
         view.navigationDelegate = context.coordinator
@@ -136,19 +145,6 @@ struct MilaWebViewRepresentable: NSViewRepresentable {
     func updateNSView(_ view: WKWebView, context: Context) {
         guard view.url != url else { return }
         view.load(URLRequest(url: url))
-    }
-    final class Coordinator: NSObject, WKNavigationDelegate {
-        let origin: URL
-        init(origin: URL) { self.origin = origin }
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
-                     decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            guard let candidate = navigationAction.request.url,
-                  candidate.scheme?.lowercased() == "https",
-                  candidate.user == nil, candidate.password == nil,
-                  candidate.host?.lowercased() == origin.host?.lowercased(),
-                  candidate.port == origin.port else { decisionHandler(.cancel); return }
-            decisionHandler(.allow)
-        }
     }
 }
 #endif

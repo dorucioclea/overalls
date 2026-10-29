@@ -59,3 +59,6 @@ include = [
 
 [tool.ty.environment]
 python-version = "3.13"
+# The checked sources run on NixOS hosts, guests and test VMs. Pin the platform
+# so a macOS checkout reaches the same result as Linux CI.
+python-platform = "linux"

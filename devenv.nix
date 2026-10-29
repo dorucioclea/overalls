@@ -98,6 +98,14 @@ in
   languages.elixir.enable = true;
   languages.elixir.package = toolchain.elixir;
   languages.rust.enable = true;
+  # nixpkgs' rustc ships only the host standard library. On Darwin, take the
+  # same release from rust-overlay with the iOS targets mila-build needs.
+  languages.rust.channel = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "stable";
+  languages.rust.version = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "1.97.1";
+  languages.rust.targets = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin [
+    "aarch64-apple-ios"
+    "aarch64-apple-ios-sim"
+  ];
 
   # @cc [owner:ghuntley,label:build] development-shell-prompt
   # Interactive devenv shells MUST initialize the Starship prompt.
@@ -165,6 +173,13 @@ in
   scripts.mila-rust-build.exec = ''
     cd "$DEVENV_ROOT/mila/rust"
     cargo build --workspace --locked
+  '';
+  # Native Apple app targets (ADR-0235); see mila/native/apple/README.md.
+  scripts.mila-build.exec = ''
+    exec "$DEVENV_ROOT/mila/native/mila-build" "$@"
+  '';
+  scripts.mila-run.exec = ''
+    exec "$DEVENV_ROOT/mila/native/apple/run.sh" "$@"
   '';
 
   # https://devenv.sh/tests/

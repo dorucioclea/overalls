@@ -1,0 +1,3 @@
+import MilaNativeUI
+
+MilaNativeApp.main()

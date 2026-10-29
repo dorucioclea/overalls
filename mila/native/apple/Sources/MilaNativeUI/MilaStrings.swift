@@ -62,8 +62,19 @@ public enum MilaStrings {
         }
     }
 
+    /// SwiftPM's `Bundle.module` looks only at the app bundle's root and the
+    /// build directory. A signed macOS app cannot hold a bundle at its root, so
+    /// the host app places it under `Contents/Resources`; check there first.
+    private static let resources: Bundle = {
+        if let url = Bundle.main.resourceURL?.appendingPathComponent("MilaNativeUI_MilaNativeUI.bundle"),
+           let bundle = Bundle(url: url) {
+            return bundle
+        }
+        return Bundle.module
+    }()
+
     private static func resourceValue(_ message: MilaMessage, locale: String) -> String? {
-        guard let url = Bundle.module.url(forResource: locale, withExtension: "json"),
+        guard let url = resources.url(forResource: locale, withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let domains = root["domains"] as? [String: Any],

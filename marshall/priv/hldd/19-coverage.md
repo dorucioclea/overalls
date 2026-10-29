@@ -2708,18 +2708,19 @@ Tested scope: Pure Dart AppLock under a Hegel StateMachine and Flutter widget te
 
 Coverage: **partial**. Layers: identity, execution.
 
-Boundary: mila-build plans every target from typed inputs; release plans require their signing inputs, verify signatures as the final step and keep secrets out of arguments and printed plans.
+Boundary: mila-build builds every Apple target from typed inputs; release targets require their signing inputs, refuse a profile for another team or application identifier, never fall back to ad-hoc signing and verify signatures (and macOS notarization) as the final step.
 
-Required refusal: A release with demo mode, software keys, a missing signing input or another host's target is refused instead of substituted.
+Required refusal: An Apple release with a missing team, identity, profile, version or notary profile, a malformed version, another team's profile or a non-macOS host is refused instead of substituted.
 
-Tested scope: Pure Dart planner unit and Hegel property tests; macOS and iOS-simulator dev builds run on a Mac. Signed Apple, Android and Windows release paths are not executed.
+Tested scope: Apple dev builds and launches on a Mac and Apple release input refusals; signed release paths and non-Apple targets are not executed here.
 
-- **property, present**: [arbitrary_stale_terminal_handles_refuse_without_writing](repo:mila/rust/mila-ffi/tests/session.rs) — Hegel over platform, host, demo and Apple-team inputs..
-- **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Release planning for Android, iOS, macOS and Windows with no inputs..
+- **manual, recorded**: [require MILA_APPLE_TEAM MILA_APPLE_IDENTITY MILA_APPLE_PROFILE_RUNNER MILA_VERSION](repo:mila/native/apple/build.sh) — Release input refusals on aarch64-darwin without signing material.; [execution record](repo:docs/architecture/reviews/2026-10-29-mila-apple-host-app.md).
+- **manual, recorded**: [MilaNativeApp.main()](repo:mila/native/apple/App/Sources/Mila/main.swift) — macOS and iOS-simulator dev builds through devenv on aarch64-darwin with Xcode 26.2.; [execution record](repo:docs/architecture/reviews/2026-10-29-mila-apple-host-app.md).
+- **unit, present**: [test_english_usage_text_is_required](repo:mila/localization/test_apple_infoplist_strings.py) — Localized Face ID usage text generated from the shared catalogs; empty text and a missing English entry are refused..
 
-**Gaps:** No CI signing environment or Windows host; notarization, SignTool and upload-key signing are planned but not run.
+**Gaps:** No Apple release has run with signing material, so profile matching, notarization, stapling and spctl are unexercised. Ad-hoc dev builds cannot sign in. Linux, Android and Windows targets have no scenario evidence since the Dart planner was removed, and the Windows release job still calls it.
 
-**Preferred test work:** Add release workflows in a protected environment that run each release target and record their signature verification output; NixOS machine tests cannot sign Apple or Windows artifacts.
+**Preferred test work:** Run the Apple release workflow in the protected environment and record its signature, notarization and spctl output; add a property test over build.sh inputs. NixOS machine tests cannot sign Apple or Windows artifacts.
 
 ## A user installs Mila on macOS or Windows, signs in to a deployment and keeps its device key, pins and offline list on that machine
 
@@ -3030,8 +3031,9 @@ Tested scope: Fixture decoding and widget flows against the fake Porsche; no dev
 
 - **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Shared result fixture..
 - **unit, present**: [LiveSession](repo:mila/native/linux/src/session.rs) — Widget flow against the fake Porsche..
+- **unit, present**: [testNavigationGuardIsReachedThroughWebKitProtocol](repo:mila/native/apple/Tests/MilaNativeUITests/MilaWebControlsTests.swift) — Apple navigation guard invoked through the optional WKNavigationDelegate requirement; allows same-host HTTPS on the endpoint port and cancels HTTP, other hosts or ports and credentialed URLs..
 
-**Gaps:** iOS and Android webview and share sheet are not built or run.
+**Gaps:** The Apple webview is built for iOS and macOS but no live navigation in a running WKWebView is recorded; the Android webview and the share sheets are not run.
 
 **Preferred test work:** Record device builds; drive the web tab in mila-desktop.
 

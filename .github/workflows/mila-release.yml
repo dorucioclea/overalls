@@ -2,7 +2,7 @@ name: "mila release"
 
 # Mila's signed release targets (ADR-0235), on a `mila-vX.Y.Z` tag, inside the
 # protected `mila-release` environment that alone holds the signing material.
-# Every job hands mila-build its MILA_* inputs (mila/tool/lib/src/plan.dart);
+# The Apple jobs hand mila-build its MILA_* inputs (mila/native/apple/build.sh);
 # mila-build refuses a missing input and verifies each signature it makes.
 # Signing material is written to job-temporary files and keychains that an
 # always() step removes; nothing is echoed or committed.
@@ -142,10 +142,10 @@ jobs:
         include:
           - platform: macos
             identity_var: MILA_APPLE_IDENTITY
-            artifact: "mila-native-macos-release.tar.gz"
+            artifact: "*.dmg"
           - platform: ios
             identity_var: MILA_IOS_IDENTITY
-            artifact: "mila-native-ios-release.tar.gz"
+            artifact: "*.ipa"
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Setup Nix
@@ -162,6 +162,9 @@ jobs:
           nix profile install "github:cachix/devenv/$rev"
       - name: Build Rust FFI for Apple native verification
         uses: dtolnay/rust-toolchain@683b588c487a69d01f6c6ddf40f036ff682cc2c8 # v1
+        with:
+          toolchain: 1.97.1
+          targets: aarch64-apple-ios
       - name: Compile typed Apple FFI seam
         run: cargo build --manifest-path mila/rust/Cargo.toml -p mila-ffi --release
       - name: Verify Apple native package is Flutter-free
@@ -232,11 +235,10 @@ jobs:
           MILA_APPLE_PROFILE_NOTIFICATION_SERVICE: ${{ matrix.platform == 'macos' && vars.MILA_MACOS_PROFILE_NOTIFICATION_SERVICE || vars.MILA_IOS_PROFILE_NOTIFICATION_SERVICE }}
         run: |
           set -euo pipefail
-          export MILA_FFI_LIB_DIR="$GITHUB_WORKSPACE/mila/rust/target/release"
+          # mila-build refuses a missing input and verifies each signature it
+          # makes; it writes the artifact and its SHA256SUMS.
+          export MILA_VERSION="${GITHUB_REF_NAME#mila-v}"
           ./mila/native/mila-build ${{ matrix.platform }} release
-          out=mila/build/${{ matrix.platform }}-release
-          test -f "$out/${{ matrix.artifact }}"
-          (cd "$out" && shasum -a 256 "${{ matrix.artifact }}" > SHA256SUMS)
       - name: Remove signing material
         if: always()
         run: |

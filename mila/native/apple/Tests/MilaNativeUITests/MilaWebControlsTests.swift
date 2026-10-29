@@ -1,5 +1,14 @@
+import WebKit
 import XCTest
 @testable import MilaNativeUI
+
+@MainActor private final class PolicyBox { var policy: WKNavigationActionPolicy? }
+
+private final class StubNavigationAction: WKNavigationAction {
+    private let stubRequest: URLRequest
+    init(_ url: String) { stubRequest = URLRequest(url: URL(string: url)!); super.init() }
+    override var request: URLRequest { stubRequest }
+}
 
 final class MilaWebControlsTests: XCTestCase {
     @MainActor func testHTTPSOnlyAndCredentialFreeEndpoint() {
@@ -43,8 +52,6 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertEqual(try projection.endpoint(for: id).url.absoluteString, "https://console.example.test/")
         XCTAssertThrowsError(try projection.endpoint(for: UUID()))
     }
-}
-
 
     @MainActor func testSessionInvalidationClearsPublishedWebState() throws {
         let controller = MilaWebControlsController()
@@ -55,3 +62,25 @@ final class MilaWebControlsTests: XCTestCase {
         XCTAssertEqual(controller.policyRevision, 0)
         XCTAssertNil(controller.error)
     }
+
+    /// Calls the delegate the way WebKit does, through the optional protocol
+    /// requirement, so a signature that no longer matches fails here.
+    @MainActor func testNavigationGuardIsReachedThroughWebKitProtocol() {
+        let delegate: any WKNavigationDelegate = MilaWebNavigationGuard(origin: URL(string: "https://console.example.test:8443/app")!)
+        let cases: [(String, WKNavigationActionPolicy)] = [
+            ("https://console.example.test:8443/other", .allow),
+            ("https://CONSOLE.example.test:8443/", .allow),
+            ("http://console.example.test:8443/", .cancel),
+            ("https://console.example.test/", .cancel),
+            ("https://evil.example.test:8443/", .cancel),
+            ("https://user:secret@console.example.test:8443/", .cancel),
+        ]
+        for (url, expected) in cases {
+            let decision = PolicyBox()
+            let reached: Void? = delegate.webView?(WKWebView(frame: .zero), decidePolicyFor: StubNavigationAction(url),
+                                                   decisionHandler: { decision.policy = $0 })
+            XCTAssertNotNil(reached, "WebKit cannot reach the navigation guard")
+            XCTAssertEqual(decision.policy, expected, url)
+        }
+    }
+}

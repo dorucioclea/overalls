@@ -121,21 +121,25 @@ from XCTest, CTest, Dart tests and CI builds.
 
 ## Implementation evidence
 
-- Profile and push selection:
-  [`platform.dart`](../../../mila/app/lib/transport/platform.dart);
-  [`push_registrar.dart`](../../../mila/packages/mila_transport/lib/src/push_registrar.dart)
-  (`DevicePlatform`; only APNs has a sandbox; WNS shape check).
-- Windows owner-only storage:
-  [`owner_only_windows.dart`](../../../mila/packages/mila_transport/lib/src/owner_only_windows.dart)
-  with [`owner_only_test.dart`](../../../mila/packages/mila_transport/test/owner_only_test.dart).
-- macOS: [`MilaPlatform.swift`](../../../mila/app/macos/Runner/MilaPlatform.swift),
-  shared [`MilaKeys.swift`](../../../mila/app/darwin/Shared/MilaKeys.swift) and
-  [`PushPokeTests.swift`](../../../mila/app/darwin/SharedTests/PushPokeTests.swift).
-  The unsigned dev build ran locally on aarch64-darwin with 0700/0600 data files.
-- Windows runner: [`mila/app/windows/runner`](../../../mila/app/windows/runner)
-  and the portable poke opener [`mila/app/native`](../../../mila/app/native).
-- Build planner: [`plan.dart`](../../../mila/tool/lib/src/plan.dart) and
-  [`plan_test.dart`](../../../mila/tool/test/plan_test.dart). Linux targets:
+- The Flutter evidence below was deleted with the Flutter client in `af4ad42e0`
+  and is retained as history, not as current evidence: `platform.dart` and
+  `push_registrar.dart` (profile and push selection), `owner_only_windows.dart`
+  with `owner_only_test.dart` (Windows owner-only storage), `MilaPlatform.swift`,
+  `MilaKeys.swift` and `PushPokeTests.swift` (macOS; the unsigned dev build ran
+  locally on aarch64-darwin with 0700/0600 data files), and the Windows runner
+  and portable poke opener under `mila/app`. Native replacements are tracked in
+  [ADR-0249](0249-mila-rust-core-native-clients.md) and the
+  [parity matrix](../../../mila/native/PARITY_MATRIX.md); on Apple, device keys
+  are in [`MilaDeviceSigner.swift`](../../../mila/native/apple/Sources/MilaNativeUI/MilaDeviceSigner.swift)
+  and push in [`MilaNotifications.swift`](../../../mila/native/apple/Sources/MilaNativeUI/MilaNotifications.swift).
+- Build planner: the Dart planner was removed with the Flutter client. Apple
+  targets now use [`mila-build`](../../../mila/native/mila-build) and
+  [`build.sh`](../../../mila/native/apple/build.sh), which build the
+  [`App`](../../../mila/native/apple/App/Package.swift) host around
+  `MilaNativeUI`, refuse missing release signing inputs or a profile for another
+  team or application identifier, and verify signatures and macOS notarization.
+  `macos dev` and `ios dev` (simulator) were built and launched on aarch64-darwin
+  ([review](../reviews/2026-10-29-mila-apple-host-app.md)). Linux targets:
   [`default.nix`](../../../nix/domains/artifacts/mila/default.nix).
 - Platform enum: [`ssh_command.ex`](../../../protocol/lib/overalls_protocol/ssh_command.ex)
   and [`device.ex`](../../../marshall/lib/marshall/notifications/device.ex).
@@ -146,6 +150,13 @@ Remaining gaps:
 
 - No signed macOS build has run, so the Secure Enclave and APNs paths on macOS
   are unverified.
+- The native Swift client does not implement decision 2's `MILA_SOFTWARE_KEYS`
+  dev custody: `MilaDeviceSigner` refuses software fallback, so an ad-hoc dev
+  build cannot sign in. Either implement the owner-only software keys for
+  unsigned macOS dev builds or replace that part of the decision.
+- The Apple release path has not run with real signing material, and no
+  notification service extension is built, so APNs pokes to a closed app are
+  not delivered by the native client.
 - The Windows runner has not been compiled or run on Windows, and no TPM or
   software-provider key has been exercised.
 - The release workflows have not run with real signing material.

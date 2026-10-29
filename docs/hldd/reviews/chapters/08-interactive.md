@@ -1,5 +1,5 @@
 ---
-digest: 41e45837cf8394781fd346309e4a81c4b8e37eb50598de6dda13118f01ac5e58
+digest: 4f647a511001931a5de54096223d5e9e75e5405a6ec5547fc99749e3ee0ab68d
 disposition: updated
 kind: chapter
 mapping_digest: null
@@ -9,4 +9,4 @@ state: present
 version: 2
 ---
 
-Restored native Apple build entry point and release packaging for iOS and macOS.
+Apple App host package, rewritten mila-build (system Xcode, per-target Rust and Swift triples, Mila.app assembly, refusing and self-verifying release signing), mila-run, catalog-derived NSFaceIDUsageDescription, iOS List selection and resource-bundle fixes, and the WebKit navigation guard that previously never ran; documented in 08 Mila build targets and web, with scenario evidence in 19.

@@ -261,22 +261,19 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - name: Verify parity matrix records remaining native gaps
+      - name: Verify native parity and Flutter removal
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
           matrix = Path("mila/native/PARITY_MATRIX.md").read_text(encoding="utf-8")
-          rows = [line for line in matrix.splitlines() if line.startswith("|") and "---" not in line]
-          if not any("partial" in row for row in rows):
-              raise SystemExit("parity matrix must retain partial evidence until end-to-end parity is proven")
-          if not any("open" in row for row in rows):
-              raise SystemExit("parity matrix must retain open gaps until every native feature is implemented")
-
+          rows = [line.lower() for line in matrix.splitlines() if line.startswith("|") and "---" not in line]
+          if any("partial" in row or "open" in row for row in rows):
+              raise SystemExit("parity matrix still contains open or partial rows")
           workflow = Path(".github/workflows/mila-builds.yml").read_text(encoding="utf-8")
-          if "FLUTTER_VERSION:" not in workflow:
-              raise SystemExit("Flutter CI cannot be removed while parity gaps remain")
-          print("Parity matrix honestly records incomplete native workflows; Flutter remains until closure.")
+          if "FLUTTER_VERSION:" in workflow:
+              raise SystemExit("native workflow must not retain Flutter compatibility variables")
+          print("Native parity is complete and Flutter compatibility is removed.")
           PY
       - name: Require every native platform job to pass
         env:

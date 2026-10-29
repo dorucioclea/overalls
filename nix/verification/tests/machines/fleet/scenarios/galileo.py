@@ -416,6 +416,7 @@ with subtest("execution stop fences a stalled request and restart obtains fresh 
         lambda: galileo_metrics(source_host, "galileo_active_requests") == 0,
         timeout=20,
     )
+    eventually(fresh_hosts, timeout=120)
     lifecycle(galileo_source["vm_id"], "start")
     await_running(galileo_source["vm_id"])
     galileo_source = current_copy(galileo_source["vm_id"])
@@ -443,7 +444,8 @@ with subtest("source relocation resolves new private routing and retires the sta
     old = current_copy(galileo_source["vm_id"])
     old_host = host_for(old)
     move = relocate(galileo_source["vm_id"])
-    moved = await_relocation(move)
+    moved = await_relocation(move, abort_on_readiness_failure=True)
+    await_running(moved["vm_id"])
     assert moved["host_id"] != old["host_id"]
     assert host_for(moved) != old_host
     old_host.fail(

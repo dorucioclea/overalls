@@ -51,6 +51,18 @@ def eventually(probe: Callable[[], bool], timeout: int = 180) -> None:
     raise AssertionError("Guest-trust fixture condition timed out; private output withheld")
 
 
+def execution_ready_snapshot() -> str:
+    return sql(
+        "SELECT COALESCE(json_agg(json_build_object("
+        "'id', id, 'sequence', report_sequence, "
+        "'age_seconds', extract(epoch FROM clock_timestamp() - reported_at), "
+        "'execution_ready', inventory->>'execution_ready', "
+        "'terminal_protocol', inventory->>'terminal_protocol', "
+        "'session_present', connection_session_id IS NOT NULL) ORDER BY id), '[]') "
+        "FROM compute_hosts"
+    )
+
+
 def operator(request: dict[str, object]) -> dict[str, object]:
     with TemporaryDirectory(prefix="guest-trust-private-") as directory:
         path = Path(directory) / "request.json"
@@ -179,15 +191,19 @@ with subtest("authenticated native observations supply admission capacity"):
         machine.succeed("fleet-seal-lilly")
         machine.succeed("touch " + root + "/ready")
         machine.wait_for_unit("lilly.service")
-    eventually(
-        lambda: (
-            sql(
-                "SELECT count(*) FROM compute_hosts WHERE inventory->>'execution_ready'='true' AND reported_at > (statement_timestamp() AT TIME ZONE 'UTC') - interval '5 seconds'"
-            )
-            == "2"
-        ),
-        timeout=300,
-    )
+    try:
+        eventually(
+            lambda: (
+                sql(
+                    "SELECT count(*) FROM compute_hosts WHERE inventory->>'execution_ready'='true' AND reported_at > (statement_timestamp() AT TIME ZONE 'UTC') - interval '5 seconds'"
+                )
+                == "2"
+            ),
+            timeout=300,
+        )
+    except AssertionError:
+        print("execution_ready_snapshot: " + execution_ready_snapshot(), flush=True)
+        raise
     for binding in host_bindings.values():
         operator(dict(action="enable", host_id=binding["host"], enabled=True))
     # The installed guest has the real boot trust receiver and guest-account

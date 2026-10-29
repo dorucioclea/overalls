@@ -6,12 +6,14 @@
 # Requires the agent scenario's first subtest (host services) to have run.
 
 
-def server_tool_operator(machine: MachineLike, request: dict[str, object]) -> dict[str, object]:
+def server_tool_operator(
+    machine: MachineLike, request: dict[str, object], timeout: int = 180
+) -> dict[str, object]:
     """Run one request through the server-tool fixture operator script."""
     path = request_file(machine, request)
     output = machine.succeed(
         "FLEET_OPERATOR_SCRIPT=/etc/fleet-server-tool-operator.exs fleet-op " + shlex.quote(path),
-        timeout=180,
+        timeout=timeout,
     )
     rows = [
         line.removeprefix("FLEET_OK ")

@@ -225,14 +225,16 @@ with subtest("the owner's deletion stops a live ticket and leaves a tombstone"):
 with subtest("a purge interrupted by stopping every replica finishes after restart"):
     for machine in MARSHALLS:
         machine.succeed(f"systemctl stop marshall-{machine.name}.service")
+    # 1,200 entries exceed one 1,000-row purge batch, so one step leaves content.
     interrupted = server_tool_operator(
         m1,
-        dict(action="artifact-purge-interrupted", owner_id=users["member_id"], entries=2500),
+        dict(action="artifact-purge-interrupted", owner_id=users["member_id"], entries=1200),
+        timeout=600,
     )
     purge_id = str(uuid.UUID(str(interrupted["artifact_id"])))
     assert artifact_row_state(purge_id) == "deleting"
     remaining = content_rows(purge_id)
-    assert 0 < remaining < 2500, remaining
+    assert 0 < remaining < 1200, remaining
     assert purged_audits(purge_id) == "0"
     for machine in MARSHALLS:
         machine.succeed(f"systemctl start marshall-{machine.name}.service")

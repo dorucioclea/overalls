@@ -93,8 +93,15 @@ duplicate enqueues) and `thread_tool_property_test.exs` (visibility and replay).
   passed on 2026-10-28, recorded in the
   [review](../reviews/2026-10-21-artifacts-and-thread-tool.md)).
 
-Remaining gaps: no NixOS machine test yet delivers a `turn_finished`
-notification turn to a subscribed agent; that path is BEAM-only.
+- The same machine test finishes the member's tool turn in the followed thread
+  and asserts exactly one `turn_finished` entry carrying only the turn ID and
+  outcome, one completed `subscription_notification` turn for the receiver with
+  its cursor acknowledged, and no feed entry for the notification turn itself;
+  the provider fixture refuses a notification carrying more than its four closed
+  identifiers (all 11 subtests passed on 2026-10-29).
+
+Remaining gaps: delivery between two different machines' threads (rather than
+a thread following itself) is covered only by BEAM tests.
 
 ## Open questions
 

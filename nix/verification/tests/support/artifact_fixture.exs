@@ -242,26 +242,19 @@ defmodule ThreadMachineFixture do
         ) :: Marshall.Threads.Thread.t()
   defp bind_machine!(thread, _owner, nil), do: thread
 
-  defp bind_machine!(thread, owner, vm) do
+  defp bind_machine!(thread, _owner, vm) do
     [root] = Ledger.read!(Marshall.Agents.Root, vm_id: vm.id)
 
-    # A root has exactly one top-level agent thread, so the target is its child.
+    # Provisioning binds a user thread to its root's one top-level agent thread,
+    # so prompts to the machine finish turns that the ADR-0261 feed announces.
     top =
       Marshall.Agents.Thread
       |> Ledger.read!(root_id: root.id)
       |> Enum.find(&is_nil(&1.parent_thread_id))
 
-    agent =
-      Ledger.create!(Marshall.Agents.Thread, :open, %{
-        root_id: root.id,
-        parent_thread_id: top.id,
-        title: "fixture subscription target",
-        created_by_id: owner.id
-      })
-
     thread
     |> Ledger.update!(:record_admitted_machine, %{machine_id: vm.id})
-    |> Ledger.update!(:bind_agent, %{agent_root_id: root.id, agent_thread_id: agent.id})
+    |> Ledger.update!(:bind_agent, %{agent_root_id: root.id, agent_thread_id: top.id})
     |> Ledger.update!(:mark_ready, %{})
   end
 end

@@ -133,9 +133,9 @@ New machine subtests:
 
 - `artifact-agent-publish`: the owner's deletion stops a live viewer ticket and
   leaves a content-free tombstone with one `deleted` and one `purged` audit row;
-  a purge of 2,500 storage entries interrupted after one batch by stopping every
-  Marshall replica finishes after restart with no content rows; a server-tool
-  command queued while the agent-tool queue is paused and every replica restarts
+  a purge of storage entries exceeding one 1,000-row batch (1,200 since
+  2026-10-29), interrupted after one batch by stopping every Marshall replica,
+  finishes after restart with no content rows; a server-tool command queued while the agent-tool queue is paused and every replica restarts
   runs exactly once and publishes exactly one version.
 - `thread-tool`: revoking the member's share moves their subscription to
   `revoked`, deactivates its receivers and writes one
@@ -169,6 +169,35 @@ notification kinds; ADR-0255's dispatch is unchanged. No machine test yet
 exercises a `turn_finished` notification turn delivered to a subscribed agent;
 that path is BEAM-only. Administrator deletion is covered by BEAM tests only,
 because elevation cannot be held by an unattended fixture.
+
+## 2026-10-29 follow-up: turn-finished delivery on the fleet
+
+`thread-tool` gained the subtest "a finished turn notifies the subscriber once
+and is not re-announced": the member's thread-tool turn appends exactly one
+content-free `turn_finished` entry (keys `outcome` and `turn_id` only), the
+member's receiver gets one completed `subscription_notification` turn with its
+cursor acknowledged, no feed job remains and no entry names the notification
+turn. The provider fixture now answers a trailing turn-finished notification
+with a plain reply and refuses one carrying more than `thread_id`,
+`notification_id`, `sequence` and `kind` (contract
+`provider-turn-finished-notification`).
+
+Defect found: the thread-seed fixture bound the shared user thread to a new
+child agent thread instead of the root's top-level thread. Provisioning never
+does that, and ADR-0261 never announces child threads, so no feed entry could
+appear. The fixture now binds the top-level thread, as provisioning does.
+
+Execution on 2026-10-29 (local, on `ab574b032`):
+
+- `nix build .#checks.x86_64-linux.thread-tool` passed: all 11 subtests
+- `nix build .#checks.x86_64-linux.artifact-agent-publish` passed: all 15
+  subtests. The interrupted-purge subtest had timed out under host load with
+  2,500 entries; it now fills 1,200 entries (still more than one 1,000-row
+  batch), allows 600 seconds, and finished in 81 seconds.
+
+Architecture impact: none; this adds evidence for ADR-0261 without changing a
+decision. Remaining gap: delivery between two different machines' threads is
+BEAM-only.
 
 ## Remaining gaps
 

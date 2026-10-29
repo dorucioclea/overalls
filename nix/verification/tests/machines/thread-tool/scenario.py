@@ -5,8 +5,12 @@
 # member, never the owner's private thread). The ADR-0255 Oban job
 # MUST run every thread command without a guest executor identity, each MUST
 # write one tool_finished audit row, and no log may contain thread titles.
-# Revoking the member's share MUST move the member's subscription to `revoked`
-# through the ADR-0261 job, deactivate its receivers and record one audit row.
+# Finishing the tool turn MUST append exactly one content-free ADR-0261
+# `turn_finished` notification, which MUST reach the member's active receiver
+# as one completed subscription-notification turn that is itself never
+# announced. Revoking the member's share MUST move the member's subscription to
+# `revoked` through the ADR-0261 job, deactivate its receivers and record one
+# audit row.
 # Fragment of the fleet driver: users, sql, operator and the server-tool setup
 # helpers are defined by earlier fragments.
 
@@ -76,6 +80,72 @@ with subtest("thread operations write audit rows and logs omit thread content"):
     )
     for title in ["Fleet shared plan", "Fleet private plan"]:
         assert title not in journals, "thread content reached the logs"
+
+with subtest("a finished turn notifies the subscriber once and is not re-announced"):
+    feed_filter = (
+        f"user_thread_id='{shared_thread}' AND kind='turn_finished' "
+        f"AND metadata->>'turn_id'='{thread_turn}'"
+    )
+    eventually(
+        lambda: sql(f"SELECT count(*) FROM agent_thread_tool_events WHERE {feed_filter}") == "1",
+        timeout=180,
+    )
+    sequence = sql(f"SELECT sequence FROM agent_thread_tool_events WHERE {feed_filter}")
+    fields = sql(
+        "SELECT string_agg(key, ',' ORDER BY key) FROM agent_thread_tool_events, "
+        f"jsonb_object_keys(metadata) AS key WHERE {feed_filter}"
+    )
+    assert fields == "outcome,turn_id", "the notification carried more than identifiers"
+    receiver = sql(
+        "SELECT r.id FROM agent_thread_receivers r JOIN agent_thread_tool_subscriptions s "
+        f"ON s.id = r.subscription_id WHERE s.owner_id='{member_id}' "
+        f"AND s.user_thread_id='{shared_thread}' AND r.state='active'"
+    )
+    notified = f"subscription:{receiver}:{sequence}"
+    eventually(
+        lambda: (
+            sql(f"SELECT status FROM agent_turns WHERE request_key='{notified}'") == "completed"
+        ),
+        timeout=300,
+    )
+    notification_turn = sql(f"SELECT id FROM agent_turns WHERE request_key='{notified}'")
+    assert (
+        sql(
+            "SELECT count(*) FROM agent_turns t JOIN threads u ON u.agent_thread_id = t.thread_id "
+            f"WHERE t.id='{notification_turn}' AND u.id='{shared_thread}' "
+            "AND t.maintenance_kind='subscription_notification'"
+        )
+        == "1"
+    ), "the notification turn ran outside the receiver's thread"
+    cursor = sql(f"SELECT \"cursor\" FROM agent_thread_receivers WHERE id='{receiver}'")
+    assert cursor == sequence, "the receiver did not acknowledge the notification"
+    # Notification turns are maintenance and never announced, so a followed
+    # thread cannot wake itself: no feed job is pending and no entry names it.
+    eventually(
+        lambda: (
+            sql(
+                "SELECT count(*) FROM oban_jobs WHERE worker='Marshall.Threads.FeedAppendJob' "
+                "AND state IN ('available','scheduled','executing','retryable')"
+            )
+            == "0"
+        ),
+        timeout=120,
+    )
+    assert (
+        sql(
+            "SELECT count(*) FROM agent_thread_tool_events "
+            f"WHERE metadata->>'turn_id'='{notification_turn}'"
+        )
+        == "0"
+    )
+    delivered = sql(
+        "SELECT count(*) FROM agent_turns t JOIN threads u ON u.agent_thread_id = t.thread_id "
+        f"WHERE u.id='{shared_thread}' AND t.maintenance_kind='subscription_notification'"
+    )
+    entries = sql(
+        f"SELECT count(*) FROM agent_thread_tool_events WHERE user_thread_id='{shared_thread}'"
+    )
+    assert delivered == entries, "a notification turn was announced and delivered again"
 
 with subtest("revoking the share revokes the member's subscription"):
     server_tool_operator(

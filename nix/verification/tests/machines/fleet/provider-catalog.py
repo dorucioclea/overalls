@@ -222,6 +222,33 @@ def thread_script(outputs: list[dict[str, object]]) -> list[dict[str, object]] |
     return None
 
 
+NOTIFICATION_MARKER = "A subscribed thread has a turn-finished notification."
+NOTIFICATION_FIELDS = {"thread_id", "notification_id", "sequence", "kind"}
+
+
+def turn_finished_notification(messages: list[dict[str, object]]) -> bool | None:
+    """@cc [owner:ghuntley,label:verification;security] provider-turn-finished-notification
+    In thread-tool mode a request ending in an ADR-0261 turn-finished
+    notification MUST be answered with a plain reply and no tool call, and a
+    notification carrying anything beyond its four closed identifiers MUST be
+    refused. True marks a valid notification, False its absence and None a
+    malformed one.
+    """
+    last = messages[-1] if messages else None
+    if last is None or last.get("role") != "developer":
+        return False
+    content = last.get("content")
+    if not isinstance(content, str) or not content.startswith(NOTIFICATION_MARKER):
+        return False
+    try:
+        body = object_fields(json.loads(content[content.index(": {") + 2 :]))
+    except ValueError:
+        return None
+    if body is None or set(body) != NOTIFICATION_FIELDS or body.get("kind") != "turn_finished":
+        return None
+    return True
+
+
 def object_list(value: object) -> list[dict[str, object]] | None:
     if not isinstance(value, list):
         return None
@@ -334,7 +361,13 @@ class Handler(BaseHTTPRequestHandler):
             for item in messages[last_prompt_index + 1 :]
             if item.get("type") == "function_call_output"
         ]
-        if sys.argv[3] in SERVER_TOOL_MODES and prompts[-1] in SCRIPTED_PROMPTS[sys.argv[3]]:
+        output: list[dict[str, object]]
+        notified = turn_finished_notification(messages) if sys.argv[3] == "thread-tool" else False
+        if notified is None:
+            return self.reject("notification")
+        if notified:
+            output = [reply_message()]
+        elif sys.argv[3] in SERVER_TOOL_MODES and prompts[-1] in SCRIPTED_PROMPTS[sys.argv[3]]:
             planned = (
                 thread_script(tool_messages)
                 if sys.argv[3] == "thread-tool"
@@ -342,7 +375,7 @@ class Handler(BaseHTTPRequestHandler):
             )
             if planned is None:
                 return self.reject("tool_output")
-            output: list[dict[str, object]] = planned
+            output = planned
         elif prompts[-1] in ("Perform interruptible effect", "Explicitly retry effect"):
             if tool_messages:
                 if prompts[-1] != "Explicitly retry effect" or len(tool_messages) != 1:
@@ -691,6 +724,7 @@ class Handler(BaseHTTPRequestHandler):
             "tools",
             "prompt",
             "tool_output",
+            "notification",
         ],
         status: int = 400,
     ) -> None:
